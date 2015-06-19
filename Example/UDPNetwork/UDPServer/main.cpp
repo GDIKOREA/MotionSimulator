@@ -13,7 +13,7 @@ Silver Moon ( m00n.silv3r@gmail.com )
 
 #define BUFLEN 512  //Max length of buffer
 //#define PORT 10001   //The port on which to listen for incoming data
-#define PORT 4123 //The port on which to listen for incoming data
+#define PORT 20777 //The port on which to listen for incoming data
 
 int main()
 {
