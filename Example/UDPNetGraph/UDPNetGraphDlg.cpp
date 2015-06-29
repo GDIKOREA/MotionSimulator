@@ -279,7 +279,7 @@ void CUDPNetGraphDlg::PacketProcess()
 
 void CUDPNetGraphDlg::ParsePacket(char buff[128])
 {
-	float v = *(float*)&buff[32];
+	float v = *(float*)&buff[24];
 	if (m_graphDlg)
 	{
 		m_graphDlg->SetGraphValue2(v);
@@ -303,7 +303,6 @@ void CUDPNetGraphDlg::ParsePacket(char buff[128])
 // 	break;
 // 	}
 }
-
 
 
 void CUDPNetGraphDlg::OnBnClickedButtonConnect()

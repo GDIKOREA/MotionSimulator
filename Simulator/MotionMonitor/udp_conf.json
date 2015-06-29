@@ -1,0 +1,13 @@
+{
+	"server port" : "8888",
+	"plot command" : "plot1 = 0, 0, 0, 0, 0
+string1 = %f;
+plot2 = 0, 0, 0, 0, 0
+string2 = %*f; %f;
+plot3 = 0, 0, 0, 0, 0
+string3 = %*f; %*f; %f;
+plot4 = 0, 0, 0, 0, 0
+string4 = %*f; %*f; %*f; %f;
+",
+	"xml file path" : "C:\\Users\\JaeJung\\Documents\\My Games\\DiRT3\\hardwaresettings\\hardware_settings_config.xml "
+}

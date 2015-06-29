@@ -9,15 +9,25 @@ Silver Moon (m00n.silv3r@gmail.com)
 */
 #include<stdio.h>
 #include<winsock2.h>
+#include <string>
 
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
 #define SERVER "127.0.0.1"  //ip address of udp server
 #define BUFLEN 512  //Max length of buffer
-#define PORT 10001   //The port on which to listen for incoming data
+#define PORT 8888   //The port on which to listen for incoming data
 
-int main(void)
+int main(char argc, char *argv[])
 {
+	std::string ip = SERVER;
+	int port = PORT;
+
+	if (argc >= 3)
+	{
+		ip = argv[1];
+		port = atoi(argv[2]);
+	}
+
 	struct sockaddr_in si_other;
 	int s, slen = sizeof(si_other);
 	char buf[BUFLEN];
@@ -43,8 +53,10 @@ int main(void)
 	//setup address structure
 	memset((char *)&si_other, 0, sizeof(si_other));
 	si_other.sin_family = AF_INET;
-	si_other.sin_port = htons(PORT);
-	si_other.sin_addr.S_un.S_addr = inet_addr(SERVER);
+	si_other.sin_port = htons(port);
+	si_other.sin_addr.S_un.S_addr = inet_addr(ip.c_str());
+
+	printf("ip = %s, port = %d\n\n", ip.c_str(), port);
 
 	//start communication
 	while (1)
