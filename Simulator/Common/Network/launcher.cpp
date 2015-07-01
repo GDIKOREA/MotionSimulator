@@ -31,8 +31,7 @@ bool	network::LaunchClient(const std::string &ip, const int port, OUT SOCKET &ou
 
 	// TCP/IP 스트림 소켓을 생성합니다.
 	// socket(주소 계열, 소켓 형태, 프로토콜
-	SOCKET clientSocket = socket(AF_INET, SOCK_DGRAM, 0);
-//	SOCKET clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	SOCKET clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (clientSocket == INVALID_SOCKET)
 	{
 		//clog::Error( clog::ERROR_CRITICAL, "socket() error\n" );
@@ -183,3 +182,57 @@ bool network::LaunchUDPServer(const int port, OUT SOCKET &out)
 	return true;
 }
 
+
+
+//------------------------------------------------------------------------
+// 
+//------------------------------------------------------------------------
+bool network::LaunchUDPClient(const std::string &ip, const int port, OUT SOCKADDR_IN &sockAddr, OUT SOCKET &out)
+{
+	// 윈속 버전을 확인 합니다.
+	WORD wVersionRequested = MAKEWORD(1, 1);
+	WSADATA wsaData;
+	int nRet = WSAStartup(wVersionRequested, &wsaData);
+	if (wsaData.wVersion != wVersionRequested)
+	{
+		//clog::Error( clog::ERROR_CRITICAL, "윈속 버전이 틀렸습니다\n" );
+		return false;
+	}
+
+	LPHOSTENT lpHostEntry;
+	lpHostEntry = gethostbyname(ip.c_str());
+	if (lpHostEntry == NULL)
+	{
+		//clog::Error( clog::ERROR_CRITICAL, "gethostbyname() error\n" );
+		return false;
+	}
+
+	// TCP/IP 스트림 소켓을 생성합니다.
+	// socket(주소 계열, 소켓 형태, 프로토콜
+	SOCKET clientSocket = socket(AF_INET, SOCK_DGRAM, 0);
+	if (clientSocket == INVALID_SOCKET)
+	{
+		//clog::Error( clog::ERROR_CRITICAL, "socket() error\n" );
+		return false;
+	}
+
+	// 주소 구조체를 채웁니다.
+	//SOCKADDR_IN saServer;
+	sockAddr.sin_family = AF_INET;
+	sockAddr.sin_addr = *((LPIN_ADDR)*lpHostEntry->h_addr_list); // 서버 주소
+	sockAddr.sin_port = htons(port);
+
+	// 서버로 접속합니다
+	// connect(소켓, 서버 주소, 서버 주소의 길이
+	nRet = connect(clientSocket, (LPSOCKADDR)&sockAddr, sizeof(struct sockaddr));
+	if (nRet == SOCKET_ERROR)
+	{
+		//clog::Error( clog::ERROR_CRITICAL, "connect() error ip=%s, port=%d\n", ip.c_str(), port );
+		closesocket(clientSocket);
+		return false;
+	}
+
+	out = clientSocket;
+
+	return true;
+}

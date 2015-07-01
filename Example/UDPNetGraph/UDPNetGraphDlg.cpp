@@ -88,6 +88,8 @@ END_MESSAGE_MAP()
 CUDPNetGraphDlg::CUDPNetGraphDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CUDPNetGraphDlg::IDD, pParent)
 	, m_Port(10000)
+	, m_IsPrintPacket(TRUE)
+	, m_RcvCount(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_loop = true;
@@ -99,7 +101,10 @@ void CUDPNetGraphDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_PORT, m_Port);
-	DDX_Control(pDX, IDC_LIST_LOG, m_LogList);
+	DDX_Control(pDX, IDC_RICHEDIT2_LOG, m_LogEdit);
+	DDX_Check(pDX, IDC_CHECK_PRINT_PACKET, m_IsPrintPacket);
+	DDX_Text(pDX, IDC_STATIC_RCV_COUNT, m_RcvCount);
+	DDX_Control(pDX, IDC_BUTTON_CONNECT, m_ServerStartButton);
 }
 
 BEGIN_MESSAGE_MAP(CUDPNetGraphDlg, CDialogEx)
@@ -110,6 +115,8 @@ BEGIN_MESSAGE_MAP(CUDPNetGraphDlg, CDialogEx)
 	ON_BN_CLICKED(IDCANCEL, &CUDPNetGraphDlg::OnBnClickedCancel)
 	ON_BN_CLICKED(IDC_BUTTON_CONNECT, &CUDPNetGraphDlg::OnBnClickedButtonConnect)
 	ON_BN_CLICKED(IDC_BUTTON_SHOWGRAPH, &CUDPNetGraphDlg::OnBnClickedButtonShowgraph)
+	ON_BN_CLICKED(IDC_CHECK_PRINT_PACKET, &CUDPNetGraphDlg::OnBnClickedCheckPrintPacket)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -143,6 +150,7 @@ BOOL CUDPNetGraphDlg::OnInitDialog()
 	//  when the application's main window is not a dialog
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
+	m_LogEdit.SetBackgroundColor(FALSE, RGB(0, 0, 0));
 
 	// TODO: Add extra initialization here
 
@@ -270,53 +278,56 @@ void CUDPNetGraphDlg::PacketProcess()
 		}
 		else
 		{
+			buff[result] = NULL;
 			ParsePacket(buff);
 		}
 	}
 }
 
 
-
 void CUDPNetGraphDlg::ParsePacket(char buff[128])
 {
+	if (m_IsPrintPacket)
+	{
+		CString str = str2wstr(buff).c_str();
+		AppendToLogAndScroll(str, RGB(200, 200, 200));
+	}
+
+	++m_RcvCount;
+
 	float v = *(float*)&buff[24];
 	if (m_graphDlg)
 	{
 		m_graphDlg->SetGraphValue2(v);
-//		m_graphDlg->SetGraphValue(buff);
 	}
 
-// 	using namespace network;
-// 	sPacketHeader *header = (sPacketHeader*)buff;
-// 
-// 	switch (header->protocol) 
-// 	{
-// 	case PROTOCOL::LOGIN:
-// 		break;
-// 
-// 	case PROTOCOL::CHATTING:
-// 	{
-// 		const sChatProtocol *protocol = (sChatProtocol*)buff;
-// 		const wstring wstr = str2wstr(protocol->msg);
-// 		//m_ChatList.InsertString(m_ChatList.GetCount(), wstr.c_str());
-// 	}
-// 	break;
-// 	}
+	UpdateData(FALSE);
 }
 
 
 void CUDPNetGraphDlg::OnBnClickedButtonConnect()
 {
 	UpdateData();
-	if (network::LaunchUDPServer(m_Port, m_socket))
+
+	if (m_isConnect)
 	{
-		m_LogList.InsertString(m_LogList.GetCount(), L"접속 성공");
-		m_isConnect = true;
+		closesocket(m_socket);
+		AppendToLogAndScroll(L"서버 종료\n", RGB(255, 255, 255));
+		m_ServerStartButton.SetWindowTextW(L"Server Start");
+		m_isConnect = false;
 	}
 	else
 	{
-		m_LogList.InsertString(m_LogList.GetCount(), L"접속 실패");
-		m_isConnect = false;
+		if (network::LaunchUDPServer(m_Port, m_socket))
+		{
+			AppendToLogAndScroll(L"서버 실행 성공\n", RGB(255, 255, 255));
+			m_ServerStartButton.SetWindowTextW(L"Server Stop");
+			m_isConnect = true;
+		}
+		else
+		{
+			AppendToLogAndScroll(L"Error!! 서버 실행 실패\n", RGB(255, 255, 255));
+		}
 	}
 }
 
@@ -329,4 +340,110 @@ void CUDPNetGraphDlg::OnBnClickedButtonShowgraph()
 		m_graphDlg->Create(CGraphWindow::IDD);
 	}
 	m_graphDlg->ShowWindow(SW_SHOW);
+}
+
+
+void CUDPNetGraphDlg::OnBnClickedCheckPrintPacket()
+{
+	UpdateData();
+}
+
+
+
+// http://www.codeproject.com/Articles/12093/Using-RichEditCtrl-to-Display-Formatted-Logs
+int CUDPNetGraphDlg::AppendToLogAndScroll(CString str, COLORREF color)
+{
+	long nVisible = 0;
+	long nInsertionPoint = 0;
+	CHARFORMAT cf;
+
+	// Initialize character format structure
+	cf.cbSize = sizeof(CHARFORMAT);
+	cf.dwMask = CFM_COLOR;
+	cf.dwEffects = 0; // To disable CFE_AUTOCOLOR
+
+	cf.crTextColor = color;
+
+	// Set insertion point to end of text
+	nInsertionPoint = m_LogEdit.GetWindowTextLength();
+	m_LogEdit.SetSel(nInsertionPoint, -1);
+
+	// Set the character format
+	m_LogEdit.SetSelectionCharFormat(cf);
+
+	// Replace selection. Because we have nothing
+	// selected, this will simply insert
+	// the string at the current caret position.
+	m_LogEdit.ReplaceSel(str);
+
+	// Get number of currently visible lines or maximum number of visible lines
+	// (We must call GetNumVisibleLines() before the first call to LineScroll()!)
+	nVisible = GetNumVisibleLines(&m_LogEdit);
+
+	// Now this is the fix of CRichEditCtrl's abnormal behaviour when used
+	// in an application not based on dialogs. Checking the focus prevents
+	// us from scrolling when the CRichEditCtrl does so automatically,
+	// even though ES_AUTOxSCROLL style is NOT set.
+	if (&m_LogEdit != m_LogEdit.GetFocus())
+	{
+		m_LogEdit.LineScroll(INT_MAX);
+		m_LogEdit.LineScroll(1 - nVisible);
+	}
+
+	// 내용이 너무 많으면 지운다.
+	const int maximumLine = 100;
+	if (m_LogEdit.GetLineCount() > maximumLine)
+	{
+		long nFirstChar = m_LogEdit.CharFromPos(CPoint(0, 0));
+		m_LogEdit.SetSel(0, nFirstChar);
+		m_LogEdit.ReplaceSel(L"");
+	}
+
+	return 0;
+}
+
+
+//http://www.codeproject.com/Articles/12093/Using-RichEditCtrl-to-Display-Formatted-Logs
+int CUDPNetGraphDlg::GetNumVisibleLines(CRichEditCtrl* pCtrl)
+{
+	CRect rect;
+	long nFirstChar, nLastChar;
+	long nFirstLine, nLastLine;
+
+	// Get client rect of rich edit control
+	pCtrl->GetClientRect(rect);
+
+	// Get character index close to upper left corner
+	nFirstChar = pCtrl->CharFromPos(CPoint(0, 0));
+
+	// Get character index close to lower right corner
+	nLastChar = pCtrl->CharFromPos(CPoint(rect.right, rect.bottom));
+	if (nLastChar < 0)
+	{
+		nLastChar = pCtrl->GetTextLength();
+	}
+
+	// Convert to lines
+	nFirstLine = pCtrl->LineFromChar(nFirstChar);
+	nLastLine = pCtrl->LineFromChar(nLastChar);
+
+	return (nLastLine - nFirstLine);
+}
+
+
+void CUDPNetGraphDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialogEx::OnSize(nType, cx, cy);
+
+	if (m_LogEdit.GetSafeHwnd())
+	{
+		CRect rect;
+		m_LogEdit.GetWindowRect(rect);
+
+		ScreenToClient(rect);
+
+		rect.right = rect.left + cx - 20;
+		rect.bottom = cy - 13;
+		m_LogEdit.MoveWindow(rect);
+	}
 }

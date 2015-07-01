@@ -25,6 +25,9 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
+	int AppendToLogAndScroll(CString str, COLORREF color);
+	int GetNumVisibleLines(CRichEditCtrl* pCtrl);
+
 
 // Implementation
 protected:
@@ -45,6 +48,11 @@ public:
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnBnClickedButtonConnect();
 	long m_Port;
-	CListBox m_LogList;
 	afx_msg void OnBnClickedButtonShowgraph();
+	afx_msg void OnBnClickedCheckPrintPacket();
+	CRichEditCtrl m_LogEdit;
+	BOOL m_IsPrintPacket;
+	afx_msg void OnSize(UINT nType, int cx, int cy);
+	int m_RcvCount;
+	CButton m_ServerStartButton;
 };

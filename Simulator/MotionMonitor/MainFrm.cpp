@@ -179,7 +179,7 @@ BOOL CMainFrame::CreateDockingWindows()
 
 	// Create cube3d view
 	m_wndCube3DView = new CCube3DPane();
-	if (!m_wndCube3DView->Create(L"Cube3DView", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_CUBE3D, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+	if (!m_wndCube3DView->Create(L"3DView", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_CUBE3D, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
 	{
 		TRACE0("Failed to create cube 3d View window\n");
 		return FALSE; // failed to create
