@@ -88,6 +88,7 @@
 #define IDD_DIALOG_3D                   311
 #define IDD_DIALOG_SERIAL_GRAPH         312
 #define IDD_DIALOG_UDP_GRAPH            315
+#define IDD_DIALOG_UDP_EDITOR           317
 #define IDC_CHECK_FIXEDMODE             1000
 #define IDC_EDIT_COMMAND                1001
 #define IDC_BUTTON_HELP                 1002
@@ -101,15 +102,20 @@
 #define IDC_EDIT1                       1008
 #define IDC_BUTTON_UDP_SERVER_BIND      1009
 #define IDC_STATIC_PACKET               1010
+#define IDC_STATIC_PACKET_COUNT         1011
 #define IDC_MFCEDITBROWSE_XMLPATH       1012
+#define IDC_RICHEDIT2_UDP_LOG           1013
+#define IDC_EDIT_SERVER_PORT            1014
+#define IDC_BUTTON_CLEAR                1015
+#define IDC_CHECK_PRINT_PACKET          1016
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        317
+#define _APS_NEXT_RESOURCE_VALUE        318
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1013
+#define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

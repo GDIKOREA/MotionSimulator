@@ -8,6 +8,7 @@
 #include "SerialEditorView.h"
 #include "SerialGraphForm.h"
 #include "UDPGraphView.h"
+#include "UDPEditorView.h"
 #include "MainFrm.h"
 
 #ifdef _DEBUG
@@ -190,7 +191,7 @@ BOOL CMainFrame::CreateDockingWindows()
 		m_udpGraphView = new CDockablePaneBase();
 		if (!m_udpGraphView->Create(L"UDP Graph View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_UDP_GRAPH, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
 		{
-			TRACE0("Failed to create SerialGraph View window\n");
+			TRACE0("Failed to create UDP Graph View window\n");
 			return FALSE; // failed to create
 		}
 
@@ -199,6 +200,23 @@ BOOL CMainFrame::CreateDockingWindows()
 		view->ShowWindow(SW_SHOW);
 		m_udpGraphView->SetChildView(view);
 	}
+
+
+	// Create udp graph view
+	{
+		m_udpEditorView = new CDockablePaneBase();
+		if (!m_udpEditorView->Create(L"UDP Editor View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_UDP_EDITOR, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+		{
+			TRACE0("Failed to create UDP Editor View window\n");
+			return FALSE; // failed to create
+		}
+
+		CUDPEditorView *view = new CUDPEditorView(m_udpEditorView);
+		view->Create(CUDPEditorView::IDD, m_udpEditorView);
+		view->ShowWindow(SW_SHOW);
+		m_udpEditorView->SetChildView(view);
+	}
+
 
 	// Create serial editor view
 	{
@@ -233,6 +251,7 @@ BOOL CMainFrame::CreateDockingWindows()
 
 	m_viewList.push_back(m_wndCube3DView);
 	m_viewList.push_back(m_udpGraphView);
+	m_viewList.push_back(m_udpEditorView);
 	m_viewList.push_back(m_wndSerialEditorView);
 	m_viewList.push_back(m_serialGraphView);
 
@@ -260,6 +279,7 @@ void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
 	m_wndSerialEditorView->SetIcon(hClassViewIcon, FALSE);
 	m_serialGraphView->SetIcon(hClassViewIcon, FALSE);
 	m_udpGraphView->SetIcon(hClassViewIcon, FALSE);
+	m_udpEditorView->SetIcon(hClassViewIcon, FALSE);
 }
 
 // CMainFrame diagnostics

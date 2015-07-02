@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D4EBB9DD-6ABE-46CE-B408-5A2768F7CC14}</ProjectGuid>
-    <RootNamespace>MotionMonitor</RootNamespace>
+    <ProjectGuid>{C239B2A1-E76C-413C-8391-86607BF3C1CC}</ProjectGuid>
+    <RootNamespace>UDP2UDP</RootNamespace>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -21,7 +21,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Static</UseOfMfc>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -54,8 +54,6 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>D:\Project\MotionSimulator\Simulator\Common\UIComponent;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -103,121 +101,30 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\UIComponent\BPCtrlAnchorMap.h" />
-    <ClInclude Include="..\Common\UIComponent\C3DView.h" />
-    <ClInclude Include="..\Common\UIComponent\ComPortCombo.h" />
-    <ClInclude Include="..\Common\UIComponent\Controller.h" />
-    <ClInclude Include="..\Common\UIComponent\CubeFlight.h" />
-    <ClInclude Include="..\Common\UIComponent\DockablePaneBase.h" />
-    <ClInclude Include="..\Common\UIComponent\DockablePaneChildView.h" />
-    <ClInclude Include="..\Common\UIComponent\EnumDevices.h" />
-    <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h" />
-    <ClInclude Include="..\Common\UIComponent\PlotWindow.h" />
-    <ClInclude Include="..\Common\UIComponent\Serial.h" />
-    <ClInclude Include="..\Common\UIComponent\SerialCommunication.h" />
-    <ClInclude Include="..\Common\UIComponent\SerialObserver.h" />
-    <ClInclude Include="..\Common\UIComponent\UDPCommunication.h" />
-    <ClInclude Include="..\Common\UIComponent\UDPObserver.h" />
-    <ClInclude Include="..\Common\UIComponent\UIComponent.h" />
-    <ClInclude Include="..\Common\UIComponent\UpdateObserver.h" />
-    <ClInclude Include="Cube3DPane.h" />
-    <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="MotionMonitor.h" />
-    <ClInclude Include="MotionMonitorDoc.h" />
-    <ClInclude Include="MotionMonitorView.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="SerialEditorPane.h" />
-    <ClInclude Include="SerialEditorView.h" />
-    <ClInclude Include="SerialGraphForm.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="UDPEditorView.h" />
-    <ClInclude Include="UDPGraphView.h" />
-    <ClInclude Include="ViewTree.h" />
+    <ClInclude Include="UDP2UDP.h" />
+    <ClInclude Include="UDP2UDPDlg.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\UIComponent\C3DView.cpp" />
-    <ClCompile Include="..\Common\UIComponent\ComPortCombo.cpp" />
-    <ClCompile Include="..\Common\UIComponent\Controller.cpp" />
-    <ClCompile Include="..\Common\UIComponent\CubeFlight.cpp" />
-    <ClCompile Include="..\Common\UIComponent\DockablePaneBase.cpp" />
-    <ClCompile Include="..\Common\UIComponent\DockablePaneChildView.cpp" />
-    <ClCompile Include="..\Common\UIComponent\EnumDevices.cpp" />
-    <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp" />
-    <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp" />
-    <ClCompile Include="..\Common\UIComponent\Serial.cpp" />
-    <ClCompile Include="..\Common\UIComponent\SerialCommunication.cpp" />
-    <ClCompile Include="..\Common\UIComponent\SerialObserver.cpp" />
-    <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp" />
-    <ClCompile Include="Cube3DPane.cpp" />
-    <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="MotionMonitor.cpp" />
-    <ClCompile Include="MotionMonitorDoc.cpp" />
-    <ClCompile Include="MotionMonitorView.cpp" />
-    <ClCompile Include="SerialEditorPane.cpp" />
-    <ClCompile Include="SerialEditorView.cpp" />
-    <ClCompile Include="SerialGraphForm.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="UDPEditorView.cpp" />
-    <ClCompile Include="UDPGraphView.cpp" />
-    <ClCompile Include="ViewTree.cpp" />
+    <ClCompile Include="UDP2UDP.cpp" />
+    <ClCompile Include="UDP2UDPDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="MotionMonitor.rc" />
+    <ResourceCompile Include="UDP2UDP.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\classview.bmp" />
-    <Image Include="res\classview_hc.bmp" />
-    <Image Include="res\class_view.ico" />
-    <Image Include="res\class_view_hc.ico" />
-    <Image Include="res\explorer.bmp" />
-    <Image Include="res\explorer_hc.bmp" />
-    <Image Include="res\fileview.bmp" />
-    <Image Include="res\fileview_hc.bmp" />
-    <Image Include="res\file_view.ico" />
-    <Image Include="res\file_view_hc.ico" />
-    <Image Include="res\menuimages.bmp" />
-    <Image Include="res\menuimages_hc.bmp" />
-    <Image Include="res\MotionMonitor.ico" />
-    <Image Include="res\MotionMonitorDoc.ico" />
-    <Image Include="res\output_wnd.ico" />
-    <Image Include="res\output_wnd_hc.ico" />
-    <Image Include="res\properties.bmp" />
-    <Image Include="res\properties_hc.bmp" />
-    <Image Include="res\properties_wnd.ico" />
-    <Image Include="res\properties_wnd_hc.ico" />
-    <Image Include="res\sort.bmp" />
-    <Image Include="res\sort_hc.bmp" />
-    <Image Include="res\Toolbar.bmp" />
-    <Image Include="res\Toolbar256.bmp" />
-    <Image Include="UserImages.bmp" />
+    <None Include="res\UDP2UDP.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\MotionMonitor.rc2" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Common\AI\AI.vcxproj">
-      <Project>{c7f9eba2-b553-483b-bc34-d25f1c718255}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Common\Common\Common.vcxproj">
-      <Project>{ef9ca22d-0c8f-42e9-ab66-98bc1a640f10}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Common\Graphic\Graphic.vcxproj">
-      <Project>{3a91e3aa-18df-4733-9f41-ed09a61f97e3}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Common\Network\Network.vcxproj">
-      <Project>{a202aa06-f0ee-4b05-86de-da63b9f146d4}</Project>
-    </ProjectReference>
+    <Image Include="res\UDP2UDP.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties RESOURCE_FILE="MotionMonitor.rc" />
-    </VisualStudio>
-  </ProjectExtensions>
 </Project>

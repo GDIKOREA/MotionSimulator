@@ -108,6 +108,15 @@
     <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
+    <ClInclude Include="UDPEditorView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\UDPCommunication.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\UDPObserver.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -177,6 +186,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="UDPEditorView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp">
       <Filter>UIComponent</Filter>
     </ClCompile>
   </ItemGroup>

@@ -52,30 +52,3 @@
 #endif
 
 
-
-
-
-#include "../Common/Common/common.h"
-#include "../Common/Graphic/graphic.h"
-#include "../Common/UIComponent/uicomponent.h"
-#include "../Network/network.h"
-#include <mmsystem.h>
-#include <fstream>
-//#include "Serial.h"
-
-using std::pair;
-
-class C3DView;
-class C3DPhysxView;
-extern C3DView *g_3DView;
-extern C3DPhysxView *g_3DPhysxView;
-
-
-enum VIEW_TYPE {
-	ID_VIEW_SENSOR = 10001,
-	ID_VIEW_CUBE3D,
-	ID_VIEW_SERIAL_EDITOR,
-	ID_VIEW_SERIAL_GRAPH,
-	ID_VIEW_UDP_GRAPH,
-	ID_VIEW_UDP_EDITOR,
-};

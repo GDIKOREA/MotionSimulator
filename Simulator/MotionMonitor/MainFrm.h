@@ -44,6 +44,7 @@ protected:  // control bar embedded members
 	CDockablePaneBase *m_wndSerialEditorView;
 	CDockablePaneBase *m_serialGraphView;
 	CDockablePaneBase *m_udpGraphView;
+	CDockablePaneBase *m_udpEditorView;
 
 // Generated message map functions
 protected:

@@ -1,12 +1,14 @@
 #pragma once
 
 #include "UpdateObserver.h"
+#include "UDPObserver.h"
 
 
 // CDockablePaneChildView dialog
 
 class CDockablePaneChildView : public CDialogEx
-												 , public iUpdateObserver
+							 , public iUpdateObserver
+							 , public iUDPObserver
 {
 public:
 	CDockablePaneChildView(UINT id, CWnd* pParent = NULL);   // standard constructor
@@ -14,6 +16,7 @@ public:
 
 	virtual void UpdateSerial(char *buffer) {}
 	virtual void Update(const float deltaSeconds) {}
+	virtual void UpdateUDP(const char *buffer, const int bufferLen) {}
 
 
 protected:

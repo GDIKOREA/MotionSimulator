@@ -2,7 +2,6 @@
 //
 
 #include "stdafx.h"
-//#include "CubeMonitor.h"
 #include "DockablePaneChildView.h"
 #include "afxdialogex.h"
 #include "controller.h"
@@ -35,9 +34,9 @@ BOOL CDockablePaneChildView::OnInitDialog()
 	__super::OnInitDialog();
 
 	cController::Get()->AddUpdateObserver(this);
+	cController::Get()->AddUDPObserver(this);
 
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// EXCEPTION: OCX Property Pages should return FALSE
+	return TRUE;
 }
 
 

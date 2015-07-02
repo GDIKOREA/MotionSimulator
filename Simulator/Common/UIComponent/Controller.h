@@ -6,12 +6,15 @@
 #pragma once
 
 #include "UpdateObserver.h"
+#include "UDPObserver.h"
 
 
 class cCubeFlight;
 class cSerialCommunication;
+class cUDPCommunication;
 class cController : public common::cSingleton<cController>
 							, public cUpdateObservable
+							, public cUDPObservable
 {
 public:
 	cController();
@@ -23,13 +26,16 @@ public:
 
 	cCubeFlight& GetCubeFlight();
 	cSerialCommunication& GetSerialComm();
+	cUDPCommunication& GetUDPComm();
 
 
 protected:
 	cCubeFlight *m_cubeFlight;
 	cSerialCommunication *m_serialComm;
+	cUDPCommunication *m_udpComm;
 };
 
 
 inline cCubeFlight& cController::GetCubeFlight() { return *m_cubeFlight;  }
 inline cSerialCommunication& cController::GetSerialComm() { return *m_serialComm;  }
+inline cUDPCommunication& cController::GetUDPComm() { return *m_udpComm; }
