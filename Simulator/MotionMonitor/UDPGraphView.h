@@ -16,20 +16,18 @@ public:
 
 	// UpdateObserver Interface
 	virtual void Update(const float deltaSeconds) override;
+	virtual void UpdateUDP(const char *buffer, const int bufferLen) override;
 
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	void CalcGraphWindowSize();
-	void PacketProcess();
-	void ParsePacket(char buff[128]);
 	bool WriteConfigFile(const string &fileName);
 	void ReadHardwareSettingConfigFile(const string &fileName);
 
 
 protected:
-	SOCKET m_socket;
-	bool m_isServerBind;
+// 	SOCKET m_socket;
+// 	bool m_isServerBind;
 	bool m_isPause;
 	CMultiPlotWindow *m_multiPlotWindows;
 	string m_xmlFilePath;

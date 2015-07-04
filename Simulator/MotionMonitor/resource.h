@@ -89,6 +89,9 @@
 #define IDD_DIALOG_SERIAL_GRAPH         312
 #define IDD_DIALOG_UDP_GRAPH            315
 #define IDD_DIALOG_UDP_EDITOR           317
+#define IDD_DIALOG_MOTION_OUTPUT        318
+#define IDD_DIALOG_MOTION_CONTROL       319
+#define IDD_DIALOG_MOTION_INPUT         320
 #define IDC_CHECK_FIXEDMODE             1000
 #define IDC_EDIT_COMMAND                1001
 #define IDC_BUTTON_HELP                 1002
@@ -108,14 +111,28 @@
 #define IDC_EDIT_SERVER_PORT            1014
 #define IDC_BUTTON_CLEAR                1015
 #define IDC_CHECK_PRINT_PACKET          1016
+#define IDC_COMBO_COM_PORTS             1017
+#define IDC_COMBO_COM_BAUDRATE          1018
+#define IDC_BUTTON_CONNECT              1019
+#define IDC_BUTTON_START_SEND_MOTION    1020
+#define IDC_RICHEDIT2_LOG               1021
+#define IDC_RICHEDIT2_OUTPUT_LOG        1022
+#define IDC_STATIC_GRAPH                1024
+#define IDC_SLIDER_YAW_DERIVATION       1026
+#define IDC_EDIT_YAW_DERIVATION         1027
+#define IDC_SLIDER_PITCH_DERIVATION     1028
+#define IDC_EDIT_PITCH_DERIVATION       1029
+#define IDC_SLIDER_YAW_DERIVATION3      1032
+#define IDC_SLIDER_ROLL_DERIVATION      1032
+#define IDC_EDIT_ROLL_DERIVATION        1033
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        318
+#define _APS_NEXT_RESOURCE_VALUE        321
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1017
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

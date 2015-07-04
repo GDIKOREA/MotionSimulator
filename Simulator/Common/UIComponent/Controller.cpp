@@ -39,6 +39,14 @@ bool cController::ConnectSerial(const int portNum, const int baudRate)
 }
 
 
+// 시리얼 통신을 종료한다.
+void cController::CloseSerial()
+{
+	RET(!m_serialComm);
+	m_serialComm->Close();
+}
+
+
 void cController::Update(const float deltaSeconds)
 {
 	RET(!m_serialComm);

@@ -27,7 +27,7 @@ public:
 	int SendData( const char *, int );
 	int ReadDataWaiting( void );
 
-	BOOL IsOpened( void ){ return( m_bOpened ); }
+	BOOL IsOpened( void ) const { return( m_bOpened ); }
 
 protected:
 	BOOL WriteCommByte( unsigned char );

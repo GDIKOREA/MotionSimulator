@@ -19,7 +19,6 @@
 // CMotionMonitorApp
 
 BEGIN_MESSAGE_MAP(CMotionMonitorApp, CWinAppEx)
-	ON_COMMAND(ID_APP_ABOUT, &CMotionMonitorApp::OnAppAbout)
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
@@ -73,6 +72,25 @@ BOOL CMotionMonitorApp::InitInstance()
 	InitCommonControlsEx(&InitCtrls);
 
 	CWinAppEx::InitInstance();
+
+
+	HRESULT hr = CoInitialize(NULL);
+	if (FAILED(hr))
+	{
+		_tprintf(_T("Failed to initialize COM, Error:%x\n"), hr);
+		return false;
+	}
+
+	//Initialize COM security (Required by CEnumerateSerial::UsingWMI)
+	hr = CoInitializeSecurity(NULL, -1, NULL, NULL, RPC_C_AUTHN_LEVEL_DEFAULT, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE, NULL);
+	if (FAILED(hr))
+	{
+		_tprintf(_T("Failed to initialize COM security, Error:%x\n"), hr);
+		CoUninitialize();
+		return false;
+	}
+
+
 
 
 	// Initialize OLE libraries
@@ -138,6 +156,11 @@ BOOL CMotionMonitorApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 	m_pMainWnd->SetWindowTextW(L"Motion Monitor");
+
+	//Close down COM
+	CoUninitialize();
+
+
 	return TRUE;
 }
 
@@ -149,45 +172,6 @@ int CMotionMonitorApp::ExitInstance()
 	return CWinAppEx::ExitInstance();
 }
 
-// CMotionMonitorApp message handlers
-
-
-// CAboutDlg dialog used for App About
-
-class CAboutDlg : public CDialogEx
-{
-public:
-	CAboutDlg();
-
-// Dialog Data
-	enum { IDD = IDD_ABOUTBOX };
-
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-// Implementation
-protected:
-	DECLARE_MESSAGE_MAP()
-};
-
-CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
-{
-}
-
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialogEx::DoDataExchange(pDX);
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-END_MESSAGE_MAP()
-
-// App command to run the dialog
-void CMotionMonitorApp::OnAppAbout()
-{
-	CAboutDlg aboutDlg;
-	aboutDlg.DoModal();
-}
 
 // CMotionMonitorApp customization load/save methods
 
@@ -212,10 +196,6 @@ void CMotionMonitorApp::SaveCustomState()
 }
 
 // CMotionMonitorApp message handlers
-
-
-
-
 
 BOOL CMotionMonitorApp::OnIdle(LONG lCount)
 {

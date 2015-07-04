@@ -103,7 +103,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\UIComponent\AutoHandle.h" />
+    <ClInclude Include="..\Common\UIComponent\AutoHeapAlloc.h" />
+    <ClInclude Include="..\Common\UIComponent\AutoHModule.h" />
     <ClInclude Include="..\Common\UIComponent\BPCtrlAnchorMap.h" />
+    <ClInclude Include="..\Common\UIComponent\BufferedSerial.h" />
     <ClInclude Include="..\Common\UIComponent\C3DView.h" />
     <ClInclude Include="..\Common\UIComponent\ComPortCombo.h" />
     <ClInclude Include="..\Common\UIComponent\Controller.h" />
@@ -111,6 +115,7 @@
     <ClInclude Include="..\Common\UIComponent\DockablePaneBase.h" />
     <ClInclude Include="..\Common\UIComponent\DockablePaneChildView.h" />
     <ClInclude Include="..\Common\UIComponent\EnumDevices.h" />
+    <ClInclude Include="..\Common\UIComponent\enumser.h" />
     <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h" />
     <ClInclude Include="..\Common\UIComponent\PlotWindow.h" />
     <ClInclude Include="..\Common\UIComponent\Serial.h" />
@@ -121,10 +126,15 @@
     <ClInclude Include="..\Common\UIComponent\UIComponent.h" />
     <ClInclude Include="..\Common\UIComponent\UpdateObserver.h" />
     <ClInclude Include="Cube3DPane.h" />
+    <ClInclude Include="Global.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MotionController.h" />
+    <ClInclude Include="MotionControlView.h" />
+    <ClInclude Include="MotionInputView.h" />
     <ClInclude Include="MotionMonitor.h" />
     <ClInclude Include="MotionMonitorDoc.h" />
     <ClInclude Include="MotionMonitorView.h" />
+    <ClInclude Include="MotionOutputView.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SerialEditorPane.h" />
     <ClInclude Include="SerialEditorView.h" />
@@ -133,9 +143,9 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UDPEditorView.h" />
     <ClInclude Include="UDPGraphView.h" />
-    <ClInclude Include="ViewTree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Common\UIComponent\BufferedSerial.cpp" />
     <ClCompile Include="..\Common\UIComponent\C3DView.cpp" />
     <ClCompile Include="..\Common\UIComponent\ComPortCombo.cpp" />
     <ClCompile Include="..\Common\UIComponent\Controller.cpp" />
@@ -143,6 +153,7 @@
     <ClCompile Include="..\Common\UIComponent\DockablePaneBase.cpp" />
     <ClCompile Include="..\Common\UIComponent\DockablePaneChildView.cpp" />
     <ClCompile Include="..\Common\UIComponent\EnumDevices.cpp" />
+    <ClCompile Include="..\Common\UIComponent\enumser.cpp" />
     <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp" />
     <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp" />
     <ClCompile Include="..\Common\UIComponent\Serial.cpp" />
@@ -150,10 +161,15 @@
     <ClCompile Include="..\Common\UIComponent\SerialObserver.cpp" />
     <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp" />
     <ClCompile Include="Cube3DPane.cpp" />
+    <ClCompile Include="Global.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MotionController.cpp" />
+    <ClCompile Include="MotionControlView.cpp" />
+    <ClCompile Include="MotionInputView.cpp" />
     <ClCompile Include="MotionMonitor.cpp" />
     <ClCompile Include="MotionMonitorDoc.cpp" />
     <ClCompile Include="MotionMonitorView.cpp" />
+    <ClCompile Include="MotionOutputView.cpp" />
     <ClCompile Include="SerialEditorPane.cpp" />
     <ClCompile Include="SerialEditorView.cpp" />
     <ClCompile Include="SerialGraphForm.cpp" />
@@ -163,7 +179,6 @@
     </ClCompile>
     <ClCompile Include="UDPEditorView.cpp" />
     <ClCompile Include="UDPGraphView.cpp" />
-    <ClCompile Include="ViewTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MotionMonitor.rc" />

@@ -22,8 +22,8 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	int GetNumVisibleLines(CRichEditCtrl* pCtrl);
-	int AppendToLogAndScroll(CString str, COLORREF color);
+// 	int GetNumVisibleLines(CRichEditCtrl* pCtrl);
+// 	int AppendToLogAndScroll(CString str, COLORREF color);
 
 
 	DECLARE_MESSAGE_MAP()

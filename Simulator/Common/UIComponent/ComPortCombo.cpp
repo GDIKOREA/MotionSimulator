@@ -4,6 +4,10 @@
 
 #include "stdafx.h"
 #include "ComPortCombo.h"
+#include "enumser.h"
+#include <vector>
+#include <string>
+using namespace std;
 
 // CComPortCombo
 
@@ -53,8 +57,19 @@ BOOL CComPortCombo::InitList(int nDefPort /*= -1*/)
 	}
 
 	CEnumDevices Enum;
-	BOOL bResult = Enum.EnumSerialPorts(this, CallbackWrapper, m_bOnlyPresent);
+	// 	BOOL bResult = Enum.EnumSerialPorts(this, CallbackWrapper, m_bOnlyPresent);
+	vector<wstring> friendlyNames;
+	vector<UINT> ports;
+	if (CEnumerateSerial::UsingWMI(ports, friendlyNames))
+	{
+		for (u_int i = 0; i < friendlyNames.size(); ++i)
+		{
+			const int nItem = AddString(friendlyNames[i].c_str());
+			SetItemData(nItem, static_cast<DWORD>(ports[i]));
+		}
+	}
 
+	const BOOL bResult = TRUE;
 	// If no port pre-selected and none item used or only one port present, select first item.
 	if (bResult && GetCurSel() < 0 && (m_bNoneItem || GetCount() == 1))
 		SetCurSel(0);

@@ -103,6 +103,7 @@
   <ItemGroup>
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="stringfunc.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UDP2UDP.h" />
     <ClInclude Include="UDP2UDPDlg.h" />
@@ -112,6 +113,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="stringfunc.cpp" />
     <ClCompile Include="UDP2UDP.cpp" />
     <ClCompile Include="UDP2UDPDlg.cpp" />
   </ItemGroup>
@@ -124,7 +126,17 @@
   <ItemGroup>
     <Image Include="res\UDP2UDP.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Example\Network\Network.vcxproj">
+      <Project>{a202aa06-f0ee-4b05-86de-da63b9f146d4}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="UDP2UDP.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

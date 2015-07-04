@@ -13,7 +13,9 @@ public:
 	virtual ~cSerialCommunication();
 
 	bool ConnectSerial(const int portNum, const int baudRate);
+	void Close();
 	bool ProcessSerialCommunicatoin(const float deltaSeconds);
+	bool IsConnect() const;
 
 
 protected: 
@@ -23,3 +25,6 @@ protected:
 	char m_buff[ MAX_BUFFER]; // 개행문자가 올 때까지의 정보를 저장한다.
 	int m_currentBuffIndex = 0;
 };
+
+
+inline bool cSerialCommunication::IsConnect() const { return m_serial.IsOpened()? true : false;  }

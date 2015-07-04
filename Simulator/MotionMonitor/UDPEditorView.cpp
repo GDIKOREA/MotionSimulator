@@ -14,7 +14,6 @@ CUDPEditorView::CUDPEditorView(CWnd* pParent /*=NULL*/)
 	, m_PacketRcvCount(0)
 	, m_IsPrintPacket(TRUE)
 {
-
 }
 
 CUDPEditorView::~CUDPEditorView()
@@ -87,7 +86,6 @@ void CUDPEditorView::OnSize(UINT nType, int cx, int cy)
 	CRect rcWnd;
 	GetWindowRect(&rcWnd);
 	HandleAnchors(&rcWnd);
-
 }
 
 
@@ -122,7 +120,7 @@ void CUDPEditorView::UpdateUDP(const char *buffer, const int bufferLen)
 	if (m_IsPrintPacket)
 	{
 		CString str = common::str2wstr(buffer).c_str();
-		AppendToLogAndScroll(str, RGB(200,200,200));
+		AppendToLogAndScroll(&m_LogEditor, str, RGB(200,200,200));
 	}
 
 	++m_PacketRcvCount;
@@ -130,82 +128,3 @@ void CUDPEditorView::UpdateUDP(const char *buffer, const int bufferLen)
 }
 
 
-// http://www.codeproject.com/Articles/12093/Using-RichEditCtrl-to-Display-Formatted-Logs
-int CUDPEditorView::AppendToLogAndScroll(CString str, COLORREF color)
-{
-	long nVisible = 0;
-	long nInsertionPoint = 0;
-	CHARFORMAT cf;
-
-	// Initialize character format structure
-	cf.cbSize = sizeof(CHARFORMAT);
-	cf.dwMask = CFM_COLOR;
-	cf.dwEffects = 0; // To disable CFE_AUTOCOLOR
-
-	cf.crTextColor = color;
-
-	// Set insertion point to end of text
-	nInsertionPoint = m_LogEditor.GetWindowTextLength();
-	m_LogEditor.SetSel(nInsertionPoint, -1);
-
-	// Set the character format
-	m_LogEditor.SetSelectionCharFormat(cf);
-
-	// Replace selection. Because we have nothing
-	// selected, this will simply insert
-	// the string at the current caret position.
-	m_LogEditor.ReplaceSel(str);
-
-	// Get number of currently visible lines or maximum number of visible lines
-	// (We must call GetNumVisibleLines() before the first call to LineScroll()!)
-	nVisible = GetNumVisibleLines(&m_LogEditor);
-
-	// Now this is the fix of CRichEditCtrl's abnormal behaviour when used
-	// in an application not based on dialogs. Checking the focus prevents
-	// us from scrolling when the CRichEditCtrl does so automatically,
-	// even though ES_AUTOxSCROLL style is NOT set.
-	if (&m_LogEditor != m_LogEditor.GetFocus())
-	{
-		m_LogEditor.LineScroll(INT_MAX);
-		m_LogEditor.LineScroll(1 - nVisible);
-	}
-
-	// 내용이 너무 많으면 지운다.
-	const int maximumLine = 100;
-	if (m_LogEditor.GetLineCount() > maximumLine)
-	{
-		long nFirstChar = m_LogEditor.CharFromPos(CPoint(0, 0));
-		m_LogEditor.SetSel(0, nFirstChar);
-		m_LogEditor.ReplaceSel(L"");
-	}
-
-	return 0;
-}
-
-
-//http://www.codeproject.com/Articles/12093/Using-RichEditCtrl-to-Display-Formatted-Logs
-int CUDPEditorView::GetNumVisibleLines(CRichEditCtrl* pCtrl)
-{
-	CRect rect;
-	long nFirstChar, nLastChar;
-	long nFirstLine, nLastLine;
-
-	// Get client rect of rich edit control
-	pCtrl->GetClientRect(rect);
-
-	// Get character index close to upper left corner
-	nFirstChar = pCtrl->CharFromPos(CPoint(0, 0));
-
-	// Get character index close to lower right corner
-	nLastChar = pCtrl->CharFromPos(CPoint(rect.right, rect.bottom));
-	if (nLastChar < 0)
-	{
-		nLastChar = pCtrl->GetTextLength();
-	}
-
-	// Convert to lines
-	nFirstLine = pCtrl->LineFromChar(nFirstChar);
-	nLastLine = pCtrl->LineFromChar(nLastChar);
-
-	return (nLastLine - nFirstLine);
-}

@@ -9,6 +9,9 @@
 #include "SerialGraphForm.h"
 #include "UDPGraphView.h"
 #include "UDPEditorView.h"
+#include "MotionOutputView.h"
+#include "MotionControlView.h"
+#include "MotionInputView.h"
 #include "MainFrm.h"
 
 #ifdef _DEBUG
@@ -218,6 +221,54 @@ BOOL CMainFrame::CreateDockingWindows()
 	}
 
 
+	// Create motion output view
+	{
+		m_motionOutputView = new CDockablePaneBase();
+		if (!m_motionOutputView->Create(L"Motion Output View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_MOTION_OUTPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+		{
+			TRACE0("Failed to create Motion Output View window\n");
+			return FALSE; // failed to create
+		}
+
+		CMotionOutputView *view = new CMotionOutputView(m_motionOutputView);
+		view->Create(CMotionOutputView::IDD, m_motionOutputView);
+		view->ShowWindow(SW_SHOW);
+		m_motionOutputView->SetChildView(view);
+	}
+
+
+	// Create motion control view
+	{
+		m_motionControlView = new CDockablePaneBase();
+		if (!m_motionControlView->Create(L"Motion Control View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_MOTION_CONTROL, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+		{
+			TRACE0("Failed to create Motion Control View window\n");
+			return FALSE; // failed to create
+		}
+
+		CMotionControlView *view = new CMotionControlView(m_motionControlView);
+		view->Create(CMotionControlView::IDD, m_motionControlView);
+		view->ShowWindow(SW_SHOW);
+		m_motionControlView->SetChildView(view);
+	}
+
+
+	// Create motion input view
+	{
+		m_motionInputView = new CDockablePaneBase();
+		if (!m_motionInputView->Create(L"Motion Input View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_MOTION_INPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+		{
+			TRACE0("Failed to create Motion Input View window\n");
+			return FALSE; // failed to create
+		}
+
+		CMotionInputView *view = new CMotionInputView(m_motionInputView);
+		view->Create(CMotionInputView::IDD, m_motionInputView);
+		view->ShowWindow(SW_SHOW);
+		m_motionInputView->SetChildView(view);
+	}
+
+
 	// Create serial editor view
 	{
 		m_wndSerialEditorView = new CDockablePaneBase();
@@ -252,6 +303,9 @@ BOOL CMainFrame::CreateDockingWindows()
 	m_viewList.push_back(m_wndCube3DView);
 	m_viewList.push_back(m_udpGraphView);
 	m_viewList.push_back(m_udpEditorView);
+	m_viewList.push_back(m_motionOutputView);
+	m_viewList.push_back(m_motionInputView);
+	m_viewList.push_back(m_motionControlView);
 	m_viewList.push_back(m_wndSerialEditorView);
 	m_viewList.push_back(m_serialGraphView);
 
@@ -280,6 +334,9 @@ void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
 	m_serialGraphView->SetIcon(hClassViewIcon, FALSE);
 	m_udpGraphView->SetIcon(hClassViewIcon, FALSE);
 	m_udpEditorView->SetIcon(hClassViewIcon, FALSE);
+	m_motionOutputView->SetIcon(hClassViewIcon, FALSE);
+	m_motionInputView->SetIcon(hClassViewIcon, FALSE);
+	m_motionControlView->SetIcon(hClassViewIcon, FALSE);
 }
 
 // CMainFrame diagnostics

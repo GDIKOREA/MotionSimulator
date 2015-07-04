@@ -33,7 +33,6 @@ public:
 	virtual void LoadCustomState();
 	virtual void SaveCustomState();
 
-	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
 	virtual BOOL OnIdle(LONG lCount);
 };

@@ -90,6 +90,8 @@ CUDPNetGraphDlg::CUDPNetGraphDlg(CWnd* pParent /*=NULL*/)
 	, m_Port(10000)
 	, m_IsPrintPacket(TRUE)
 	, m_RcvCount(0)
+	, m_IsPrintMemory(FALSE)
+	, m_MaxLine(40)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_loop = true;
@@ -105,6 +107,8 @@ void CUDPNetGraphDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_PRINT_PACKET, m_IsPrintPacket);
 	DDX_Text(pDX, IDC_STATIC_RCV_COUNT, m_RcvCount);
 	DDX_Control(pDX, IDC_BUTTON_CONNECT, m_ServerStartButton);
+	DDX_Check(pDX, IDC_CHECK_PRINT_MEMORY, m_IsPrintMemory);
+	DDX_Text(pDX, IDC_EDIT_MAX_LINE, m_MaxLine);
 }
 
 BEGIN_MESSAGE_MAP(CUDPNetGraphDlg, CDialogEx)
@@ -117,6 +121,8 @@ BEGIN_MESSAGE_MAP(CUDPNetGraphDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_SHOWGRAPH, &CUDPNetGraphDlg::OnBnClickedButtonShowgraph)
 	ON_BN_CLICKED(IDC_CHECK_PRINT_PACKET, &CUDPNetGraphDlg::OnBnClickedCheckPrintPacket)
 	ON_WM_SIZE()
+	ON_BN_CLICKED(IDC_CHECK_PRINT_MEMORY, &CUDPNetGraphDlg::OnBnClickedCheckPrintMemory)
+	ON_EN_CHANGE(IDC_EDIT_MAX_LINE, &CUDPNetGraphDlg::OnEnChangeEditMaxLine)
 END_MESSAGE_MAP()
 
 
@@ -151,6 +157,23 @@ BOOL CUDPNetGraphDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 	m_LogEdit.SetBackgroundColor(FALSE, RGB(0, 0, 0));
+
+	m_font.CreateFont(14,                     // 글자높이
+		10,                     // 글자너비
+		0,                      // 출력각도
+		0,                      // 기준 선에서의각도
+		FW_HEAVY,              // 글자굵기
+		FALSE,                  // Italic 적용여부
+		FALSE,                  // 밑줄적용여부
+		FALSE,                  // 취소선적용여부
+		DEFAULT_CHARSET,       // 문자셋종류
+		OUT_DEFAULT_PRECIS,    // 출력정밀도
+		CLIP_DEFAULT_PRECIS,   // 클리핑정밀도
+		DEFAULT_QUALITY,       // 출력문자품질
+		DEFAULT_PITCH,         // 글꼴Pitch
+		_T("굴림체")           // 글꼴
+		);
+	m_LogEdit.SetFont(&m_font);
 
 	// TODO: Add extra initialization here
 
@@ -279,18 +302,39 @@ void CUDPNetGraphDlg::PacketProcess()
 		else
 		{
 			buff[result] = NULL;
-			ParsePacket(buff);
+			ParsePacket(buff, result);
 		}
 	}
 }
 
 
-void CUDPNetGraphDlg::ParsePacket(char buff[128])
+void CUDPNetGraphDlg::ParsePacket(char buff[128], const int buffLen)
 {
 	if (m_IsPrintPacket)
 	{
-		CString str = str2wstr(buff).c_str();
-		AppendToLogAndScroll(str, RGB(200, 200, 200));
+		if (m_IsPrintMemory)
+		{
+			int maxLen = m_MaxLine;
+			if (m_MaxLine <= 0)
+				maxLen = 10;
+
+			CString str;
+			for (int i = 0; i < buffLen; ++i)
+			{
+				CString s;
+				s.Format(L"%2x", (BYTE)buff[i]);
+				s.MakeUpper();
+				str += s;
+				if (((i + 1) % maxLen) == 0)
+					str += L"\n";
+			}
+			AppendToLogAndScroll(str + L"\n", RGB(200, 200, 200));
+		}
+		else
+		{
+			CString str = str2wstr(buff).c_str();
+			AppendToLogAndScroll(str, RGB(200, 200, 200));
+		}
 	}
 
 	++m_RcvCount;
@@ -446,4 +490,16 @@ void CUDPNetGraphDlg::OnSize(UINT nType, int cx, int cy)
 		rect.bottom = cy - 13;
 		m_LogEdit.MoveWindow(rect);
 	}
+}
+
+
+void CUDPNetGraphDlg::OnBnClickedCheckPrintMemory()
+{
+	UpdateData();
+}
+
+
+void CUDPNetGraphDlg::OnEnChangeEditMaxLine()
+{
+	UpdateData();
 }

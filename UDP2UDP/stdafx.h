@@ -52,3 +52,17 @@
 #endif
 
 
+#include <string>
+#include <sstream>
+#include <vector>
+#include <mmsystem.h>
+
+
+using std::string;
+using std::wstring;
+using std::vector;
+using std::pair;
+
+#include "../Example/Network/network.h"
+#include "stringfunc.h"
+

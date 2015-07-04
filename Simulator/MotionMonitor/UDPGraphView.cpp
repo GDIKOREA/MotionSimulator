@@ -9,6 +9,8 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/foreach.hpp>
+#include "MotionController.h"
+
 
 
 // CUDPGraphView dialog
@@ -16,7 +18,7 @@ CUDPGraphView::CUDPGraphView(CWnd* pParent /*=NULL*/)
 	: CDockablePaneChildView(CUDPGraphView::IDD, pParent)
 	, m_ServerPort(20777)
 	, m_multiPlotWindows(NULL)
-	, m_isServerBind(false)
+//	, m_isServerBind(false)
 	, m_isPause(false)
 {
 }
@@ -213,91 +215,32 @@ void CUDPGraphView::OnBnClickedButtonUpdate()
 	CString str;
 	m_CommandEditor.GetWindowText(str);
 	m_multiPlotWindows->ProcessPlotCommand(str);
+
+	vector<string> names;
+	names.push_back("Yaw");
+	names.push_back("Pitch");
+	names.push_back("Roll");
+	names.push_back("Heave");
+	m_multiPlotWindows->SetPlotName(names);
 }
 
 
 void CUDPGraphView::Update(const float deltaSeconds)
 {
-	if (m_isServerBind && !m_isPause && m_multiPlotWindows)
-		m_multiPlotWindows->DrawGraph(deltaSeconds);
-
-	PacketProcess();
+ 	if (!m_isPause && m_multiPlotWindows)
+ 		m_multiPlotWindows->DrawGraph(deltaSeconds);
 }
 
 
-void CUDPGraphView::OnBnClickedCheckFixedmode()
+void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 {
-	if (m_multiPlotWindows)
-		m_multiPlotWindows->SetFixedWidthMode(m_FixedModeButton.GetCheck() > 0);
-}
-
-
-// UDP 서버 실행.
-void CUDPGraphView::OnBnClickedButtonUdpServerBind()
-{
-	UpdateData();
-
-	if (m_isServerBind)
+	if (bufferLen < 28)
 	{
-		m_isServerBind = false;
-		closesocket(m_socket);
-		m_ServerBindButton.SetWindowTextW(L"Server Start");
-	}
-	else
-	{
-		if (network::LaunchUDPServer(m_ServerPort, m_socket))
-		{
-			m_isServerBind = true;
-			m_ServerBindButton.SetWindowTextW(L"Server Stop");
-
-			CString str;
-			m_CommandEditor.GetWindowText(str);
-			m_multiPlotWindows->ProcessPlotCommand(str);
-
-	// 		m_LogList.InsertString(m_LogList.GetCount(), L"접속 성공");
-		}
-		else
-		{
-	// 		m_LogList.InsertString(m_LogList.GetCount(), L"접속 실패");
-		}
-	}
-}
-
-
-// UDP Network를 통해 패킷을 처리한다.
-void CUDPGraphView::PacketProcess()
-{
-	if (!m_isServerBind)
+		m_PacketString = common::str2wstr(buffer).c_str();
+		UpdateData(FALSE);
 		return;
-
-	const timeval t = { 0, 1 }; // 10 millisecond
-	fd_set readSockets;
-	FD_ZERO(&readSockets);
-	FD_SET(m_socket, &readSockets);
-
-	const int ret = select(readSockets.fd_count, &readSockets, NULL, NULL, &t);
-	if (ret != 0 && ret != SOCKET_ERROR)
-	{
-		char buff[128];
-		const int result = recv(readSockets.fd_array[0], buff, sizeof(buff), 0);
-		if (result == SOCKET_ERROR || result == 0) // 받은 패킷사이즈가 0이면 서버와 접속이 끊겼다는 의미다.
-		{
-			//m_ChatList.InsertString(m_ChatList.GetCount(), L"서버와 연결이 끊김");
-			m_isServerBind = false;
-			closesocket(m_socket);
-			m_ServerBindButton.SetWindowTextW(L"Server Start");
-		}
-		else
-		{
-			ParsePacket(buff);
-		}
 	}
-}
 
-
-// 패킷을 분석한다.
-void CUDPGraphView::ParsePacket(char buff[128])
-{
 	// 패킷의 특정 값만 float으로 변환해서 가져온다.
 	// 프로토콜에 대한 문서는 https://github.com/GDIKOREA/MotionSimulator/wiki/Dirt3-Motion-Data-Capture 를 참조하자.
 	// packet[16~19] : yaw, radian, float
@@ -311,9 +254,9 @@ void CUDPGraphView::ParsePacket(char buff[128])
 	std::stringstream ss;
 	for (int i = 0; i < size; ++i)
 	{
-		float v = *(float*)&buff[ indices[ i]];
+		float v = *(float*)&buffer[indices[i]];
 		values[i] = v;
-		ss << v << ";";		
+		ss << v << ";";
 	}
 
 	m_PacketString = common::str2wstr(ss.str()).c_str();
@@ -329,7 +272,51 @@ void CUDPGraphView::ParsePacket(char buff[128])
 	const float yaw = 0;// -values[0];
 	cController::Get()->GetCubeFlight().SetEulerAngle(roll, yaw, pitch);
 
+	cMotionController::Get()->SetMotion(0, pitch, roll);
 	UpdateData(FALSE);
+}
+
+
+void CUDPGraphView::OnBnClickedCheckFixedmode()
+{
+	if (m_multiPlotWindows)
+		m_multiPlotWindows->SetFixedWidthMode(m_FixedModeButton.GetCheck() > 0);
+}
+
+
+// UDP 서버 실행.
+void CUDPGraphView::OnBnClickedButtonUdpServerBind()
+{
+	UpdateData();
+
+	if (cController::Get()->GetUDPComm().IsConnect())
+	{
+		cController::Get()->GetUDPComm().Close();
+		m_ServerBindButton.SetWindowTextW(L"Server Start");
+	}
+	else
+	{
+		if (cController::Get()->GetUDPComm().InitServer(m_ServerPort))
+		{
+			m_ServerBindButton.SetWindowTextW(L"Server Stop");
+
+			CString str;
+			m_CommandEditor.GetWindowText(str);
+			m_multiPlotWindows->ProcessPlotCommand(str);
+
+			vector<string> names;
+			names.push_back("Yaw");
+			names.push_back("Pitch");
+			names.push_back("Roll");
+			names.push_back("Heave");
+			m_multiPlotWindows->SetPlotName(names);
+		}
+		else
+		{
+			//m_LogList.InsertString(m_LogList.GetCount(), L"접속 실패");
+		}
+
+	}
 }
 
 

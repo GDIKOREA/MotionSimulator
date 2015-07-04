@@ -16,6 +16,7 @@ public:
 	void Update(const float deltaSeconds);
 
 	void SetEulerAngle(const float roll, const float pitch, const float yaw);
+	const Quaternion& GetRotation() const;
 
 
 protected:
@@ -25,3 +26,5 @@ protected:
 	Matrix44 m_tm;
 };
 
+
+inline const Quaternion& cCubeFlight::GetRotation() const { return m_rotate; }

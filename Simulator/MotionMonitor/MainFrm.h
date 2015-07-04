@@ -3,12 +3,9 @@
 //
 
 #pragma once
-#include "FileView.h"
-#include "ClassView.h"
-#include "OutputWnd.h"
-#include "PropertiesWnd.h"
 #include "Cube3DPane.h"
-//#include "SensorPane.h"
+
+
 class CMainFrame : public CFrameWndEx
 {
 	
@@ -45,6 +42,9 @@ protected:  // control bar embedded members
 	CDockablePaneBase *m_serialGraphView;
 	CDockablePaneBase *m_udpGraphView;
 	CDockablePaneBase *m_udpEditorView;
+	CDockablePaneBase *m_motionOutputView;
+	CDockablePaneBase *m_motionInputView;
+	CDockablePaneBase *m_motionControlView;
 
 // Generated message map functions
 protected:

@@ -37,7 +37,7 @@ void CMultiPlotWindow::OnDraw(CDC* pDC)
 
 // str 정보로 그래프를 업데이트 한다.
 // str: 스트링 배열
-void CMultiPlotWindow::SetString(const char *str)
+void CMultiPlotWindow::SetString(const char *str, const int plotIndex)
 {
 	if (m_plotWindows.empty())
 		return;
@@ -47,7 +47,7 @@ void CMultiPlotWindow::SetString(const char *str)
 		float x=0, y;
 		const int ret = sscanf_s(str, plot.scanString.c_str(), &y);
 		if (ret >= 1)
-			plot.wnd->SetPlotXY(x, y);
+			plot.wnd->SetPlotXY(x, y, plotIndex);
 	}
 }
 
@@ -153,7 +153,7 @@ void CMultiPlotWindow::CalcGraphWindowSize()
 
 
 // Plot Command Editor 의 명령어 문자열을 가져와 실행한다.
-void CMultiPlotWindow::ProcessPlotCommand(const CString &str)
+void CMultiPlotWindow::ProcessPlotCommand(const CString &str, const int plotCount)
 {
 	// 명령어 텍스트 가져옴.
 // 	CString str;
@@ -191,7 +191,8 @@ void CMultiPlotWindow::ProcessPlotCommand(const CString &str)
 		// 그래프 설정.
 		wnd->SetPlot(
 			plotInfos[i].xRange, plotInfos[i].yRange,
-			plotInfos[i].xVisibleRange, plotInfos[i].yVisibleRange, plotInfos[i].flags);
+			plotInfos[i].xVisibleRange, plotInfos[i].yVisibleRange, plotInfos[i].flags,
+			plotCount);
 
 		// 그래프 파싱 스트링 설정.
 		m_plotWindows[i].scanString = plotInfos[i].scanString;
@@ -264,5 +265,17 @@ void CMultiPlotWindow::OnSize(UINT nType, int cx, int cy)
 	if (GetSafeHwnd())
 	{
 		CalcGraphWindowSize();
+	}
+}
+
+
+void CMultiPlotWindow::SetPlotName(const vector<string> &names)
+{
+	for (u_int i = 0; i < names.size(); ++i)
+	{
+		if (m_plotWindows.size() > i)
+		{
+			m_plotWindows[i].wnd->SetPlotName(common::str2wstr(names[i]).c_str());
+		}
 	}
 }

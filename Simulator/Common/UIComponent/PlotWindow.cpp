@@ -176,6 +176,7 @@ void CPlotWindow::OnDraw(CDC* pDC)
 		}
 	}
 
+
 	CString strMaxY, strMinY, strCenterY;
 	strMaxY.Format(L"%f", m_maxY);
 	strMinY.Format(L"%f", m_minY);
@@ -183,6 +184,7 @@ void CPlotWindow::OnDraw(CDC* pDC)
 	pDC->TextOutW(5, 0, strMaxY); // maximum y
 	pDC->TextOutW(5, cr.Height() - 20, strMinY); // minimum y
 	pDC->TextOutW(5, cr.Height() / 2 - 20, strCenterY); // center y
+	pDC->TextOutW(cr.Width()/2, 0, m_name); // plot name
 }
 
 

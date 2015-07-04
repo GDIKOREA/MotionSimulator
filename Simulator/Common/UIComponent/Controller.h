@@ -22,6 +22,7 @@ public:
 
 	bool Init();
 	bool ConnectSerial(const int portNum, const int baudRate);
+	void CloseSerial();
 	void Update(const float deltaSeconds);
 
 	cCubeFlight& GetCubeFlight();

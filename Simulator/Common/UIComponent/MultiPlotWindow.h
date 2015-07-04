@@ -12,10 +12,11 @@ public:
 	virtual ~CMultiPlotWindow();
 
 
-	void SetString(const char *str);
+	void SetString(const char *str, const int plotIndex=0);
 	void DrawGraph(const float deltaSeconds);
-	void ProcessPlotCommand(const CString &str);
+	void ProcessPlotCommand(const CString &str, const int plotCount = 1);
 	void SetFixedWidthMode(const bool isFixedWidth);
+	void SetPlotName(const vector<string> &names);
 
 
 protected:
