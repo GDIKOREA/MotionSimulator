@@ -58,7 +58,7 @@
 #include "../Common/Common/common.h"
 #include "../Common/Graphic/graphic.h"
 #include "../Common/UIComponent/uicomponent.h"
-#include "../Network/network.h"
+#include "../Common/Network/network.h"
 #include <mmsystem.h>
 #include <fstream>
 //#include "Serial.h"

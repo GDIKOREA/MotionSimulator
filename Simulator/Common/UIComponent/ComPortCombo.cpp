@@ -60,11 +60,14 @@ BOOL CComPortCombo::InitList(int nDefPort /*= -1*/)
 	// 	BOOL bResult = Enum.EnumSerialPorts(this, CallbackWrapper, m_bOnlyPresent);
 	vector<wstring> friendlyNames;
 	vector<UINT> ports;
-	if (CEnumerateSerial::UsingWMI(ports, friendlyNames))
+	//if (CEnumerateSerial::UsingWMI(ports, friendlyNames))
+	if (CEnumerateSerial::UsingSetupAPI2(ports, friendlyNames))
 	{
 		for (u_int i = 0; i < friendlyNames.size(); ++i)
 		{
-			const int nItem = AddString(friendlyNames[i].c_str());
+			const int nItem = AddString(
+				(common::formatw("COM%d ", ports[i]) + friendlyNames[i]).c_str() );
+
 			SetItemData(nItem, static_cast<DWORD>(ports[i]));
 		}
 	}

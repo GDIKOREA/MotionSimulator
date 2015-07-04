@@ -11,6 +11,14 @@
 #include <boost/foreach.hpp>
 #include "MotionController.h"
 
+#define M_PPI 3.14159265358979323846f
+
+struct sMotionPacket
+{
+	float directX, directY, directZ; // 자동차 방향 벡터
+	float pitch, yaw, roll; // 자동차 상태 radian
+	float speed; // 자동차 속도
+};
 
 
 // CUDPGraphView dialog
@@ -234,30 +242,71 @@ void CUDPGraphView::Update(const float deltaSeconds)
 
 void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 {
-	if (bufferLen < 28)
+	if (bufferLen < 10)
 	{
 		m_PacketString = common::str2wstr(buffer).c_str();
 		UpdateData(FALSE);
 		return;
 	}
 
-	// 패킷의 특정 값만 float으로 변환해서 가져온다.
-	// 프로토콜에 대한 문서는 https://github.com/GDIKOREA/MotionSimulator/wiki/Dirt3-Motion-Data-Capture 를 참조하자.
-	// packet[16~19] : yaw, radian, float
-	// packet[20~23] : pitch, radian, float
-	// packet[24~27] : roll, radian, float
-	// packet[28~31] : heave, float(확실치 않음)
-
-	const int indices[] = { 16, 20, 24, 28 };
-	const int size = sizeof(indices) / sizeof(int);
-	vector<float> values(size);
 	std::stringstream ss;
-	for (int i = 0; i < size; ++i)
+	vector<float> values(4);
+
+	if (0) // Dirt3 Motion
 	{
-		float v = *(float*)&buffer[indices[i]];
-		values[i] = v;
-		ss << v << ";";
+		// 패킷의 특정 값만 float으로 변환해서 가져온다.
+		// 프로토콜에 대한 문서는 https://github.com/GDIKOREA/MotionSimulator/wiki/Dirt3-Motion-Data-Capture 를 참조하자.
+		// packet[16~19] : yaw, radian, float
+		// packet[20~23] : pitch, radian, float
+		// packet[24~27] : roll, radian, float
+		// packet[28~31] : heave, float(확실치 않음)
+
+		const int indices[] = { 16, 20, 24, 28 };
+		const int size = sizeof(indices) / sizeof(int);
+		for (int i = 0; i < size; ++i)
+		{
+			float v = *(float*)&buffer[indices[i]];
+			values[i] = v;
+			ss << v << ";";
+		}
+
+		values[2] -= 1.5f;
 	}
+	else
+	{
+		if (bufferLen >= sizeof(sMotionPacket))
+		{
+			sMotionPacket *packet = (sMotionPacket*)buffer;
+			values[0] = packet->yaw;
+			values[1] = packet->pitch;// +(M_PPI * 2.f);
+			values[2] = packet->roll;// -3.1415f;
+			values[3] = 0;
+
+// 			for (u_int i = 0; i < values.size(); ++i)
+// 			{
+// 				ss << values[i] << ";";
+// 			}
+// 
+// 			values[1] = -values[1]; // 부호 변환.
+		}
+
+	}
+
+
+	// 3D Model에 적용.
+	//const float roll = values[2] - 1.5f;
+	float roll = values[2];
+	float pitch = values[1];
+	const float yaw = 0;// -values[0];
+	cController::Get()->GetCubeFlight().SetEulerAngle(roll, yaw, pitch);
+	Vector3 euler = cController::Get()->GetCubeFlight().GetRotation().Euler();
+	roll = euler.x;
+	pitch = euler.z;
+
+	ss << 0 << ";";
+	ss << pitch << ";";
+	ss << roll << ";";
+	ss << 0 << ";";
 
 	m_PacketString = common::str2wstr(ss.str()).c_str();
 
@@ -266,11 +315,6 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 		m_multiPlotWindows->SetString(ss.str().c_str());
 
 
-	// 3D Model에 적용.
-	const float roll = values[2] - 1.5f;
-	const float pitch = values[1];
-	const float yaw = 0;// -values[0];
-	cController::Get()->GetCubeFlight().SetEulerAngle(roll, yaw, pitch);
 
 	cMotionController::Get()->SetMotion(0, pitch, roll);
 	UpdateData(FALSE);

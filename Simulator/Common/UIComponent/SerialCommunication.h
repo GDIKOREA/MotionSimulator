@@ -16,6 +16,7 @@ public:
 	void Close();
 	bool ProcessSerialCommunicatoin(const float deltaSeconds);
 	bool IsConnect() const;
+	CSerial& GetSerial();
 
 
 protected: 
@@ -28,3 +29,4 @@ protected:
 
 
 inline bool cSerialCommunication::IsConnect() const { return m_serial.IsOpened()? true : false;  }
+inline CSerial& cSerialCommunication::GetSerial() { return m_serial; }

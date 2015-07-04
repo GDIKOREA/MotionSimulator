@@ -120,19 +120,43 @@
 #define IDC_STATIC_GRAPH                1024
 #define IDC_SLIDER_YAW_DERIVATION       1026
 #define IDC_EDIT_YAW_DERIVATION         1027
-#define IDC_SLIDER_PITCH_DERIVATION     1028
-#define IDC_EDIT_PITCH_DERIVATION       1029
-#define IDC_SLIDER_YAW_DERIVATION3      1032
-#define IDC_SLIDER_ROLL_DERIVATION      1032
-#define IDC_EDIT_ROLL_DERIVATION        1033
+#define IDC_SLIDER_PITCH_PROPORTION     1028
+#define IDC_BUTTON_START                1028
+#define IDC_EDIT_PITCH_PROPORTION       1029
+#define IDC_BUTTON_STOP                 1029
+#define IDC_SLIDER_YAW_INTEGRAL         1030
+#define IDC_BUTTON_ORIGIN               1030
+#define IDC_EDIT_YAW_INTEGRAL           1031
+#define IDC_BUTTON_EMERGENCY            1031
+#define IDC_SLIDER_ROLL_PROPORTION      1032
+#define IDC_BUTTON_SERVO_ON             1032
+#define IDC_EDIT_ROLL_PROPORTION        1033
+#define IDC_BUTTON_SERVO_OFF            1033
+#define IDC_SLIDER_YAW_PROPORTION       1034
+#define IDC_CHECK1                      1034
+#define IDC_EDIT_YAW_PROPORTION         1035
+#define IDC_SLIDER_PITCH_INTEGRAL       1036
+#define IDC_EDIT_PITCH_INTEGRAL         1037
+#define IDC_SLIDER_YAW_SCALE2           1038
+#define IDC_EDIT_YAW_SCALE2             1039
+#define IDC_SLIDER_PITCH_DERIVATION     1040
+#define IDC_EDIT_PITCH_DERIVATION       1041
+#define IDC_SLIDER_ROLL_INTEGRAL        1042
+#define IDC_EDIT_ROLL_INTEGRAL          1043
+#define IDC_SLIDER_ROLL_DERIVATION      1044
+#define IDC_EDIT_ROLL_DERIVATION        1045
+#define IDC_SLIDER_PITCH_SCALE2         1046
+#define IDC_EDIT_PITCH_SCALE2           1047
+#define IDC_SLIDER_ROLL_SCALE2          1048
+#define IDC_EDIT_ROLL_SCALE2            1049
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        321
+#define _APS_NEXT_RESOURCE_VALUE        322
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1028
+#define _APS_NEXT_CONTROL_VALUE         1035
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
