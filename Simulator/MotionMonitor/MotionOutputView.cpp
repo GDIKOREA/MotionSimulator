@@ -187,7 +187,7 @@ void CMotionOutputView::Update(const float deltaSeconds)
 // 			AppendToLogAndScroll(&m_Log, str, RGB(200, 200, 200));
 			//m_multiPlotWindows->SetString(common::format("%f;%f;%f;", yaw, pitch, roll).c_str(), 0);
 
-			const int MAX_NOISE = 20;
+			const int MAX_NOISE = 0;
 			const float ct1 = 20.f;
 			const float st1 = 20.f;
 			const float amp1 = MAX_NOISE;
