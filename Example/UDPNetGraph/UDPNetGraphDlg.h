@@ -60,4 +60,6 @@ public:
 	afx_msg void OnBnClickedCheckPrintMemory();
 	int m_MaxLine;
 	afx_msg void OnEnChangeEditMaxLine();
+	BOOL m_IsPrintHexa;
+	afx_msg void OnBnClickedCheckPrintHexa();
 };

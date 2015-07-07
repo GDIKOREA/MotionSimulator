@@ -9,7 +9,7 @@ using namespace network;
 //------------------------------------------------------------------------
 // 
 //------------------------------------------------------------------------
-bool	network::LaunchClient(const std::string &ip, const int port, OUT SOCKET &out)
+bool network::LaunchClient(const std::string &ip, const int port, OUT SOCKET &out)
 {
 	// 윈속 버전을 확인 합니다.
 	WORD wVersionRequested = MAKEWORD(1,1);

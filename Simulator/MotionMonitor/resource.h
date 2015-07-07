@@ -92,6 +92,7 @@
 #define IDD_DIALOG_MOTION_OUTPUT        318
 #define IDD_DIALOG_MOTION_CONTROL       319
 #define IDD_DIALOG_MOTION_INPUT         320
+#define IDD_DIALOG_X2GRAPH              322
 #define IDC_CHECK_FIXEDMODE             1000
 #define IDC_EDIT_COMMAND                1001
 #define IDC_BUTTON_HELP                 1002
@@ -154,7 +155,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        322
+#define _APS_NEXT_RESOURCE_VALUE        323
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1035
 #define _APS_NEXT_SYMED_VALUE           310

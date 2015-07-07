@@ -92,6 +92,7 @@ CUDPNetGraphDlg::CUDPNetGraphDlg(CWnd* pParent /*=NULL*/)
 	, m_RcvCount(0)
 	, m_IsPrintMemory(FALSE)
 	, m_MaxLine(40)
+	, m_IsPrintHexa(FALSE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_loop = true;
@@ -109,6 +110,7 @@ void CUDPNetGraphDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_CONNECT, m_ServerStartButton);
 	DDX_Check(pDX, IDC_CHECK_PRINT_MEMORY, m_IsPrintMemory);
 	DDX_Text(pDX, IDC_EDIT_MAX_LINE, m_MaxLine);
+	DDX_Check(pDX, IDC_CHECK_PRINT_HEXA, m_IsPrintHexa);
 }
 
 BEGIN_MESSAGE_MAP(CUDPNetGraphDlg, CDialogEx)
@@ -123,6 +125,7 @@ BEGIN_MESSAGE_MAP(CUDPNetGraphDlg, CDialogEx)
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_CHECK_PRINT_MEMORY, &CUDPNetGraphDlg::OnBnClickedCheckPrintMemory)
 	ON_EN_CHANGE(IDC_EDIT_MAX_LINE, &CUDPNetGraphDlg::OnEnChangeEditMaxLine)
+	ON_BN_CLICKED(IDC_CHECK_PRINT_HEXA, &CUDPNetGraphDlg::OnBnClickedCheckPrintHexa)
 END_MESSAGE_MAP()
 
 
@@ -322,6 +325,24 @@ void CUDPNetGraphDlg::ParsePacket(char buff[128], const int buffLen)
 			for (int i = 0; i < buffLen; ++i)
 			{
 				CString s;
+				s.Format(L"%c", (BYTE)buff[i]);
+				s.MakeUpper();
+				str += s;
+				if (((i + 1) % maxLen) == 0)
+					str += L"\n";
+			}
+			AppendToLogAndScroll(str + L"\n", RGB(200, 200, 200));
+		}
+		else if (m_IsPrintHexa)
+		{
+			int maxLen = m_MaxLine;
+			if (m_MaxLine <= 0)
+				maxLen = 10;
+
+			CString str;
+			for (int i = 0; i < buffLen; ++i)
+			{
+				CString s;
 				s.Format(L"%2x", (BYTE)buff[i]);
 				s.MakeUpper();
 				str += s;
@@ -500,6 +521,12 @@ void CUDPNetGraphDlg::OnBnClickedCheckPrintMemory()
 
 
 void CUDPNetGraphDlg::OnEnChangeEditMaxLine()
+{
+	UpdateData();
+}
+
+
+void CUDPNetGraphDlg::OnBnClickedCheckPrintHexa()
 {
 	UpdateData();
 }

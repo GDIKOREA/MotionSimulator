@@ -25,6 +25,7 @@ protected:
 	bool m_isStartSendMotion;
 	float m_incTime;
 	float m_incSerialTime;
+	float m_incNoiseTime;
 
 
 	DECLARE_ANCHOR_MAP();

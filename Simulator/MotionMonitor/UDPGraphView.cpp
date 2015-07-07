@@ -271,52 +271,56 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 		}
 
 		values[2] -= 1.5f;
+
+		const float roll = values[2];
+		const float pitch = values[1];
+		const float yaw = 0;// -values[0];
+
+		cController::Get()->GetCubeFlight().SetEulerAngle(roll, yaw, pitch);
+
+		m_PacketString = common::str2wstr(ss.str()).c_str();
+
+		// 그래프 출력
+		if (m_multiPlotWindows)
+			m_multiPlotWindows->SetString(ss.str().c_str());
+
+		cMotionController::Get()->SetMotion(0, pitch, roll);
 	}
 	else
 	{
-		if (bufferLen >= sizeof(sMotionPacket))
-		{
-			sMotionPacket *packet = (sMotionPacket*)buffer;
-			values[0] = packet->yaw;
-			values[1] = packet->pitch;// +(M_PPI * 2.f);
-			values[2] = packet->roll;// -3.1415f;
-			values[3] = 0;
+		if (bufferLen < sizeof(sMotionPacket))
+			return;
 
-// 			for (u_int i = 0; i < values.size(); ++i)
-// 			{
-// 				ss << values[i] << ";";
-// 			}
-// 
-// 			values[1] = -values[1]; // 부호 변환.
-		}
+		sMotionPacket *packet = (sMotionPacket*)buffer;
+		values[0] = packet->yaw;
+		values[1] = packet->pitch;
+		values[2] = packet->roll;
+		values[3] = 0;
 
+		// 3D Model에 적용.
+		float roll = -values[2];
+		float pitch = -values[1];
+		const float yaw = 0;
+		cController::Get()->GetCubeFlight().SetEulerAngle(roll, yaw, pitch);
+		Vector3 euler = cController::Get()->GetCubeFlight().GetRotation().Euler();
+		roll = euler.x;
+		pitch = euler.z;
+
+		ss << 0 << ";";
+		ss << pitch << ";";
+		ss << roll << ";";
+		ss << 0 << ";";
+
+		m_PacketString = common::str2wstr(ss.str()).c_str();
+
+		// 그래프 출력
+		if (m_multiPlotWindows)
+			m_multiPlotWindows->SetString(ss.str().c_str());
+
+		cMotionController::Get()->SetMotion(0, pitch, roll);
 	}
 
-
-	// 3D Model에 적용.
-	//const float roll = values[2] - 1.5f;
-	float roll = values[2];
-	float pitch = values[1];
-	const float yaw = 0;// -values[0];
-	cController::Get()->GetCubeFlight().SetEulerAngle(roll, yaw, pitch);
-	Vector3 euler = cController::Get()->GetCubeFlight().GetRotation().Euler();
-	roll = euler.x;
-	pitch = euler.z;
-
-	ss << 0 << ";";
-	ss << pitch << ";";
-	ss << roll << ";";
-	ss << 0 << ";";
-
-	m_PacketString = common::str2wstr(ss.str()).c_str();
-
-	// 그래프 출력
-	if (m_multiPlotWindows)
-		m_multiPlotWindows->SetString(ss.str().c_str());
-
-
-
-	cMotionController::Get()->SetMotion(0, pitch, roll);
+	
 	UpdateData(FALSE);
 }
 
