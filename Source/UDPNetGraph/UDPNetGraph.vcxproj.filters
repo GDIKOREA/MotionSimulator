@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="UIComponent">
+      <UniqueIdentifier>{4da7a28c-6f6d-404a-b0a5-83bb1a9acc9e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -33,28 +36,43 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PlotWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GraphWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MultiPlotWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stringfunc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AutoHandle.h">
+    <ClInclude Include="..\Common\UIComponent\AutoHandle.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\AutoHeapAlloc.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\AutoHModule.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\BPCtrlAnchorMap.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\PlotWindow.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="MiniFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AutoHeapAlloc.h">
+    <ClInclude Include="udpclient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AutoHModule.h">
+    <ClInclude Include="udpserver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BPCtrlAnchorMap.h">
+    <ClInclude Include="config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="udpnetgraphconfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -68,16 +86,31 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlotWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GraphWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MultiPlotWindow.cpp">
+    <ClCompile Include="stringfunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="stringfunc.cpp">
+    <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="udpclient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="udpserver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="udpnetgraphconfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

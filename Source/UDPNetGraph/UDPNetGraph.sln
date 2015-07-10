@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UDPNetGraph", "UDPNetGraph.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Network", "..\Common\Network\Network.vcxproj", "{A202AA06-F0EE-4B05-86DE-DA63B9F146D4}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "..\Common\Common\Common.vcxproj", "{EF9CA22D-0C8F-42E9-AB66-98BC1A640F10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -21,6 +23,10 @@ Global
 		{A202AA06-F0EE-4B05-86DE-DA63B9F146D4}.Debug|Win32.Build.0 = Debug|Win32
 		{A202AA06-F0EE-4B05-86DE-DA63B9F146D4}.Release|Win32.ActiveCfg = Release|Win32
 		{A202AA06-F0EE-4B05-86DE-DA63B9F146D4}.Release|Win32.Build.0 = Release|Win32
+		{EF9CA22D-0C8F-42E9-AB66-98BC1A640F10}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EF9CA22D-0C8F-42E9-AB66-98BC1A640F10}.Debug|Win32.Build.0 = Debug|Win32
+		{EF9CA22D-0C8F-42E9-AB66-98BC1A640F10}.Release|Win32.ActiveCfg = Release|Win32
+		{EF9CA22D-0C8F-42E9-AB66-98BC1A640F10}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

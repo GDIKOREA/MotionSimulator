@@ -13,6 +13,7 @@ public:
 
 
 	void SetString(const char *str, const int plotIndex=0);
+	void SetXY(const int plotIndex, const float y, const int graphIndex);
 	void DrawGraph(const float deltaSeconds);
 	void ProcessPlotCommand(const CString &str, const int plotCount = 1);
 	void SetFixedWidthMode(const bool isFixedWidth);

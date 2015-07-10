@@ -52,6 +52,15 @@ void CMultiPlotWindow::SetString(const char *str, const int plotIndex)
 }
 
 
+void CMultiPlotWindow::SetXY(const int plotIndex, const float y, const int graphIndex)
+{
+	if ((int)m_plotWindows.size() <= plotIndex)
+		return;
+
+	m_plotWindows[plotIndex].wnd->SetPlotXY(0, y, graphIndex);
+}
+
+
 // 스트링 str에서 plot 정보를 분석해서 SPlotInfo 구조체에 정보를 저장하고 리턴한다.
 // 스트링 분석에 문제가 생기면 false를 리턴하고 종료된다.
 bool CMultiPlotWindow::ParsePlotInfo(const int plotIndex, const wstring &str, SPlotInfo &out)
@@ -79,7 +88,7 @@ bool CMultiPlotWindow::ParsePlotInfo(const int plotIndex, const wstring &str, SP
 	out.yVisibleRange = (float)_wtof(plotParams[3].c_str());
 	out.flags = _wtoi(plotParams[4].c_str());
 
-	out.scanString = wstr2str(strParameters);
+	out.scanString = common::wstr2str(strParameters);
 
 	return true;
 }

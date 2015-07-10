@@ -8,6 +8,8 @@
 #include "afxdialogex.h"
 #include <winsock2.h>
 #include "GraphWindow.h"
+#include "MiniFrame.h"
+#include "udpnetgraphconfig.h"
 
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
@@ -17,32 +19,7 @@
 #endif
 
 
-// CAboutDlg dialog used for App About
-
-class CAboutDlg : public CDialogEx
-{
-public:
-	CAboutDlg();
-
-// Dialog Data
-	enum { IDD = IDD_ABOUTBOX };
-
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-// Implementation
-protected:
-	DECLARE_MESSAGE_MAP()
-};
-
-CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
-{
-}
-
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialogEx::DoDataExchange(pDX);
-}
+cUDPNetGraphConfig g_config;
 
 
 
@@ -77,9 +54,6 @@ std::string wstr2str(const std::wstring &wstr)
 
 
 
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-END_MESSAGE_MAP()
-
 
 // CUDPNetGraphDlg dialog
 
@@ -93,10 +67,10 @@ CUDPNetGraphDlg::CUDPNetGraphDlg(CWnd* pParent /*=NULL*/)
 	, m_IsPrintMemory(FALSE)
 	, m_MaxLine(40)
 	, m_IsPrintHexa(FALSE)
+	, m_ConnectRadioType(1)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_loop = true;
-	m_isConnect = false;
 	m_graphDlg = NULL;
 }
 
@@ -111,6 +85,9 @@ void CUDPNetGraphDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_PRINT_MEMORY, m_IsPrintMemory);
 	DDX_Text(pDX, IDC_EDIT_MAX_LINE, m_MaxLine);
 	DDX_Check(pDX, IDC_CHECK_PRINT_HEXA, m_IsPrintHexa);
+	DDX_Radio(pDX, IDC_RADIO_CLIENT, m_ConnectRadioType);
+	DDX_Control(pDX, IDC_IPADDRESS_IP, m_IpAddr);
+	DDX_Control(pDX, IDC_STATIC_IP, m_StaticIP);
 }
 
 BEGIN_MESSAGE_MAP(CUDPNetGraphDlg, CDialogEx)
@@ -126,6 +103,8 @@ BEGIN_MESSAGE_MAP(CUDPNetGraphDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHECK_PRINT_MEMORY, &CUDPNetGraphDlg::OnBnClickedCheckPrintMemory)
 	ON_EN_CHANGE(IDC_EDIT_MAX_LINE, &CUDPNetGraphDlg::OnEnChangeEditMaxLine)
 	ON_BN_CLICKED(IDC_CHECK_PRINT_HEXA, &CUDPNetGraphDlg::OnBnClickedCheckPrintHexa)
+	ON_BN_CLICKED(IDC_RADIO_CLIENT, &CUDPNetGraphDlg::OnBnClickedRadioClient)
+	ON_BN_CLICKED(IDC_RADIO_SERVER, &CUDPNetGraphDlg::OnBnClickedRadioServer)
 END_MESSAGE_MAP()
 
 
@@ -159,6 +138,8 @@ BOOL CUDPNetGraphDlg::OnInitDialog()
 	//  when the application's main window is not a dialog
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
+
+		
 	m_LogEdit.SetBackgroundColor(FALSE, RGB(0, 0, 0));
 
 	m_font.CreateFont(14,                     // 글자높이
@@ -178,7 +159,37 @@ BOOL CUDPNetGraphDlg::OnInitDialog()
 		);
 	m_LogEdit.SetFont(&m_font);
 
-	// TODO: Add extra initialization here
+
+	//g_config.m_ip;
+	vector<string> token;
+	common::tokenizer(g_config.m_ip, ".", "", token);
+	if (token.size() >= 4)
+	{
+		m_IpAddr.SetAddress(
+			atoi(token[0].c_str()),
+			atoi(token[1].c_str()),
+			atoi(token[2].c_str()),
+			atoi(token[3].c_str()));
+	}
+	else
+	{
+		m_IpAddr.SetAddress(127, 0, 0, 1);
+	}
+
+	m_ConnectRadioType = g_config.m_agentType;
+	m_Port = g_config.m_port;
+
+// 	CMiniFrame *frm = new CMiniFrame();
+// 	frm->Create(NULL, NULL, WS_VISIBLE | WS_SYSMENU | WS_SIZEBOX, CRect(0, 0, 100, 100));
+// 	frm->ShowWindow(SW_SHOW);
+
+	if (1 == m_ConnectRadioType)
+	{
+		m_IpAddr.ShowWindow(SW_HIDE);
+		m_StaticIP.ShowWindow(SW_HIDE);
+	}
+
+	UpdateData(FALSE);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -187,8 +198,6 @@ void CUDPNetGraphDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
 	{
-		CAboutDlg dlgAbout;
-		dlgAbout.DoModal();
 	}
 	else
 	{
@@ -264,18 +273,16 @@ void CUDPNetGraphDlg::MainLoop()
 		}
 
 
+		PacketProcess();
+
+		const int curT = timeGetTime();
+		const int deltaT = curT - oldT;
+		if (deltaT > 10)
 		{
-			PacketProcess();
+			oldT = curT;
 
-			const int curT = timeGetTime();
-			const int deltaT = curT - oldT;
-			if (deltaT > 10)
-			{
-				oldT = curT;
-
-				if (m_graphDlg)
-					m_graphDlg->Update(deltaT/1000.f);
-			}
+			if (m_graphDlg)
+				m_graphDlg->Update(deltaT/1000.f);
 		}
 	}
 }
@@ -284,29 +291,35 @@ void CUDPNetGraphDlg::MainLoop()
 
 void CUDPNetGraphDlg::PacketProcess()
 {
-	if (!m_isConnect)
-		return;
-
-	const timeval t = { 0, 1 }; // 10 millisecond
-	fd_set readSockets;
-	FD_ZERO(&readSockets);
-	FD_SET(m_socket, &readSockets);
-
-	const int ret = select(readSockets.fd_count, &readSockets, NULL, NULL, &t);
-	if (ret != 0 && ret != SOCKET_ERROR)
+	if (0 == m_ConnectRadioType)
 	{
-		char buff[128];
-		const int result = recv(readSockets.fd_array[0], buff, sizeof(buff), 0);
-		if (result == SOCKET_ERROR || result == 0) // 받은 패킷사이즈가 0이면 서버와 접속이 끊겼다는 의미다.
-		{
-			//m_ChatList.InsertString(m_ChatList.GetCount(), L"서버와 연결이 끊김");
-			closesocket(m_socket);
-		}
-		else
+ 		// Client
+		char buff[512];
+
+		// 주기적으로 서버에게 패킷을 보내고, 받는다. 1초에 30번을 보낸다.
+		if ((timeGetTime() - m_clientSndTime) < 33)
+			return;
+
+		m_clientSndTime = timeGetTime();
+
+		m_udpClient.SendData(buff, 1);
+
+		if (const int result = m_udpClient.GetReceiveData(buff, sizeof(buff)))
 		{
 			buff[result] = NULL;
 			ParsePacket(buff, result);
 		}
+	}
+	else
+	{
+ 		// Server 
+		char buff[512];
+		if (const int result = m_udpServer.GetRecvData(buff, sizeof(buff)))
+		{
+			buff[result] = NULL;
+			ParsePacket(buff, result);
+		}
+
 	}
 }
 
@@ -375,26 +388,92 @@ void CUDPNetGraphDlg::OnBnClickedButtonConnect()
 {
 	UpdateData();
 
-	if (m_isConnect)
+	if (0 == m_ConnectRadioType)
 	{
-		closesocket(m_socket);
-		AppendToLogAndScroll(L"서버 종료\n", RGB(255, 255, 255));
-		m_ServerStartButton.SetWindowTextW(L"Server Start");
-		m_isConnect = false;
+		StartClient();
 	}
 	else
 	{
-		if (network::LaunchUDPServer(m_Port, m_socket))
+		StartServer();
+	}
+
+	g_config.m_agentType = m_ConnectRadioType;
+	g_config.m_port = m_Port;
+
+	{
+		DWORD address;
+		m_IpAddr.GetAddress(address);
+		std::stringstream ss;
+		ss << ((address & 0xff000000) >> 24) << "."
+			<< ((address & 0x00ff0000) >> 16) << "."
+			<< ((address & 0x0000ff00) >> 8) << "."
+			<< (address & 0x000000ff);
+		g_config.m_ip = ss.str();
+	}
+
+}
+
+
+// 클라이언트 시작
+bool CUDPNetGraphDlg::StartClient()
+{
+	UpdateData();
+
+	if (m_udpClient.IsConnect())
+	{
+		m_udpClient.Close(true);
+		AppendToLogAndScroll(L"클라이언트 종료\n", RGB(255, 255, 255));
+		m_ServerStartButton.SetWindowTextW(L"Start");
+	}
+	else
+	{
+		DWORD address;
+		m_IpAddr.GetAddress(address);
+		std::stringstream ss;
+		ss << ((address & 0xff000000) >> 24) << "."
+			<< ((address & 0x00ff0000) >> 16) << "."
+			<< ((address & 0x0000ff00) >> 8) << "."
+			<< (address & 0x000000ff);
+		const string ip = ss.str();
+ 		if (m_udpClient.Init(ip, m_Port))		{			AppendToLogAndScroll(L"클라이언트 실행 성공\n", RGB(255, 255, 255));
+			m_ServerStartButton.SetWindowTextW(L"Client Stop");
+		}
+		else
+		{
+			AppendToLogAndScroll(L"Error!! 클라이언트 실행 실패\n", RGB(255, 255, 255));
+		}
+	}
+
+	return true;
+}
+
+
+// 서버 시작.
+bool CUDPNetGraphDlg::StartServer()
+{
+	UpdateData();
+
+	if (m_udpServer.IsConnect())
+	{
+		m_udpServer.Close(true);
+
+		AppendToLogAndScroll(L"서버 종료\n", RGB(255, 255, 255));
+		m_ServerStartButton.SetWindowTextW(L"Start");
+	}
+	else
+	{
+		if (m_udpServer.Init(0, m_Port))
 		{
 			AppendToLogAndScroll(L"서버 실행 성공\n", RGB(255, 255, 255));
 			m_ServerStartButton.SetWindowTextW(L"Server Stop");
-			m_isConnect = true;
 		}
 		else
 		{
 			AppendToLogAndScroll(L"Error!! 서버 실행 실패\n", RGB(255, 255, 255));
 		}
 	}
+
+	return true;
 }
 
 
@@ -520,14 +599,28 @@ void CUDPNetGraphDlg::OnBnClickedCheckPrintMemory()
 	UpdateData();
 }
 
-
 void CUDPNetGraphDlg::OnEnChangeEditMaxLine()
 {
 	UpdateData();
 }
 
-
 void CUDPNetGraphDlg::OnBnClickedCheckPrintHexa()
 {
 	UpdateData();
+}
+
+void CUDPNetGraphDlg::OnBnClickedRadioClient()
+{
+	UpdateData();
+
+	m_IpAddr.ShowWindow(SW_SHOW);
+	m_StaticIP.ShowWindow(SW_SHOW);
+}
+
+void CUDPNetGraphDlg::OnBnClickedRadioServer()
+{
+	UpdateData();
+
+	m_IpAddr.ShowWindow(SW_HIDE);
+	m_StaticIP.ShowWindow(SW_HIDE);
 }

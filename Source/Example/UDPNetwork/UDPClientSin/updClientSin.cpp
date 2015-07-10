@@ -50,7 +50,7 @@ int main(void)
 	si_other.sin_port = htons(PORT);
 	si_other.sin_addr.S_un.S_addr = inet_addr(SERVER);
 
-	int oldT = timeGetTime();;
+	int oldT = timeGetTime();
 	int incT = 0;
 	float x = 0;
 

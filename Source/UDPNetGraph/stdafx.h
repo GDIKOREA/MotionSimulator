@@ -62,5 +62,16 @@ using std::wstring;
 using std::vector;
 using std::pair;
 
+#include "../Common/Common/common.h"
 #include "../Common/Network/network.h"
 
+
+#include "../Common/UIComponent/BPCtrlAnchorMap.h"
+#include "../Common/UIComponent/DockablePaneBase.h"
+#include "../Common/UIComponent/DockablePaneChildView.h"
+#include "../Common/UIComponent/PlotWindow.h"
+#include "../Common/UIComponent/MultiPlotWindow.h"
+
+
+#include "udpnetgraphconfig.h"
+extern cUDPNetGraphConfig g_config;

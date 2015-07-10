@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UDPClient2", "UDPClient2\UD
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UDPClientSin", "UDPClientSin\UDPClientSin.vcxproj", "{11C6CCB3-64A4-4EE9-94E5-67CF42366E8C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UDPServerSin", "UDPServerSin\UDPServerSin.vcxproj", "{D674D39C-2D3E-41B2-8F81-F37DDB95C610}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -33,6 +35,10 @@ Global
 		{11C6CCB3-64A4-4EE9-94E5-67CF42366E8C}.Debug|Win32.Build.0 = Debug|Win32
 		{11C6CCB3-64A4-4EE9-94E5-67CF42366E8C}.Release|Win32.ActiveCfg = Release|Win32
 		{11C6CCB3-64A4-4EE9-94E5-67CF42366E8C}.Release|Win32.Build.0 = Release|Win32
+		{D674D39C-2D3E-41B2-8F81-F37DDB95C610}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D674D39C-2D3E-41B2-8F81-F37DDB95C610}.Debug|Win32.Build.0 = Debug|Win32
+		{D674D39C-2D3E-41B2-8F81-F37DDB95C610}.Release|Win32.ActiveCfg = Release|Win32
+		{D674D39C-2D3E-41B2-8F81-F37DDB95C610}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

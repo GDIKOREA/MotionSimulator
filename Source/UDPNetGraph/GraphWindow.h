@@ -1,6 +1,5 @@
 #pragma once
 
-#include "BPCtrlAnchorMap.h"
 
 
 // CGraphWindow dialog

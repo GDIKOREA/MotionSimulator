@@ -5,8 +5,6 @@
 #include "UDPNetGraph.h"
 #include "GraphWindow.h"
 #include "afxdialogex.h"
-#include "PlotWindow.h"
-#include "MultiPlotWindow.h"
 #include "stringfunc.h"
 
 
@@ -74,7 +72,7 @@ BOOL CGraphWindow::OnInitDialog()
 	m_multiPlotWindows->ShowWindow(SW_SHOW);
 
 
-	string plotCommand;
+	const string plotCommand = g_config.m_plotCommand;
 	CString strComandEditor;
 	if (plotCommand.empty())
 	{
@@ -147,6 +145,8 @@ void CGraphWindow::OnBnClickedButtonUpdate()
 {
 	UpdateData();
 	m_multiPlotWindows->ProcessPlotCommand(m_PlotCommand);
+
+	g_config.m_plotCommand = common::wstr2str((LPCTSTR)m_PlotCommand);
 
 // 	vector<string> names;
 // 	names.push_back("Yaw");

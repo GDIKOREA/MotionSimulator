@@ -5,6 +5,8 @@
 #pragma once
 #include "afxcmn.h"
 #include "afxwin.h"
+#include "udpclient.h"
+#include "udpserver.h"
 
 
 // CUDPNetGraphDlg dialog
@@ -18,24 +20,28 @@ public:
 // Dialog Data
 	enum { IDD = IDD_UDPNETGRAPH_DIALOG };
 
-	SOCKET m_socket;
 	void MainLoop();
 	void PacketProcess();
 	void ParsePacket(char buff[128], const int buffLen);
+
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 	int AppendToLogAndScroll(CString str, COLORREF color);
 	int GetNumVisibleLines(CRichEditCtrl* pCtrl);
+	bool StartClient();
+	bool StartServer();
 
 
 // Implementation
 protected:
 	HICON m_hIcon;
 	bool m_loop;
-	bool m_isConnect;
 	CGraphWindow *m_graphDlg;
 	CFont m_font;
+	cUDPClient m_udpClient;
+	cUDPServer m_udpServer;
+	int m_clientSndTime;
 
 
 	// Generated message map functions
@@ -62,4 +68,9 @@ public:
 	afx_msg void OnEnChangeEditMaxLine();
 	BOOL m_IsPrintHexa;
 	afx_msg void OnBnClickedCheckPrintHexa();
+	afx_msg void OnBnClickedRadioClient();
+	afx_msg void OnBnClickedRadioServer();
+	BOOL m_ConnectRadioType; // 0 : client, 1 : server
+	CIPAddressCtrl m_IpAddr;
+	CStatic m_StaticIP;
 };
