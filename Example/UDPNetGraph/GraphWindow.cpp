@@ -6,15 +6,19 @@
 #include "GraphWindow.h"
 #include "afxdialogex.h"
 #include "PlotWindow.h"
+#include "MultiPlotWindow.h"
+#include "stringfunc.h"
 
 
 // CGraphWindow dialog
 
-IMPLEMENT_DYNAMIC(CGraphWindow, CDialogEx)
+//IMPLEMENT_DYNAMIC(CGraphWindow, CDialogEx)
 
 CGraphWindow::CGraphWindow(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CGraphWindow::IDD, pParent)
-	, m_plotP(NULL)
+	, m_multiPlotWindows(NULL)
+	, m_PlotCommand(_T(""))
+	, m_FixedMode(FALSE)
 {
 	m_incSeconds = 0;
 }
@@ -26,11 +30,26 @@ CGraphWindow::~CGraphWindow()
 void CGraphWindow::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_EDIT_COMMAND, m_PlotCommand);
+	DDX_Check(pDX, IDC_CHECK_FIXEDMODE, m_FixedMode);
 }
+
+
+BEGIN_ANCHOR_MAP(CGraphWindow)
+	ANCHOR_MAP_ENTRY(IDC_STATIC_GRAPH, ANF_LEFT | ANF_RIGHT | ANF_BOTTOM | ANF_TOP)
+	ANCHOR_MAP_ENTRY(IDC_EDIT_COMMAND, ANF_LEFT | ANF_RIGHT | ANF_BOTTOM)
+	ANCHOR_MAP_ENTRY(IDC_BUTTON_UPDATE, ANF_RIGHT | ANF_BOTTOM)
+	ANCHOR_MAP_ENTRY(IDC_BUTTON_HELP, ANF_RIGHT | ANF_BOTTOM)
+	ANCHOR_MAP_ENTRY(IDC_CHECK_FIXEDMODE, ANF_RIGHT | ANF_BOTTOM)
+	ANCHOR_MAP_ENTRY(IDC_STATIC2, ANF_LEFT | ANF_BOTTOM)
+END_ANCHOR_MAP()
 
 
 BEGIN_MESSAGE_MAP(CGraphWindow, CDialogEx)
 	ON_WM_SIZE()
+	ON_BN_CLICKED(IDC_BUTTON_UPDATE, &CGraphWindow::OnBnClickedButtonUpdate)
+	ON_BN_CLICKED(IDC_CHECK_FIXEDMODE, &CGraphWindow::OnBnClickedCheckFixedmode)
+	ON_BN_CLICKED(IDC_BUTTON_HELP, &CGraphWindow::OnBnClickedButtonHelp)
 END_MESSAGE_MAP()
 
 
@@ -41,20 +60,47 @@ BOOL CGraphWindow::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	CRect pr;
-// 	GetWindowRect(pr);
-// 	ScreenToClient(pr);
-	GetClientRect(pr);
+	InitAnchors();
 
-	m_plotP = new CPlotWindow();
-	m_plotP->Create(NULL, NULL, AFX_WS_DEFAULT_VIEW | WS_CHILD, pr,
-		this, 10001);
-	m_plotP->SetScrollSizes(MM_TEXT, CSize(pr.Width() - 30, 100));
-	m_plotP->ShowWindow(SW_SHOW);
-	m_plotP->SetPlot(0, 0, 0, 0, 0, 3);
+// 	CRect rect;
+// 	GetClientRect(rect);
 
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// EXCEPTION: OCX Property Pages should return FALSE
+	CRect hwr;
+	GetDlgItem(IDC_STATIC_GRAPH)->GetWindowRect(hwr);
+	ScreenToClient(hwr);
+
+	m_multiPlotWindows = new CMultiPlotWindow();
+	BOOL result = m_multiPlotWindows->Create(NULL, NULL, WS_VISIBLE | WS_CHILD,
+		hwr, this, AFX_IDW_PANE_FIRST);
+
+	m_multiPlotWindows->SetScrollSizes(MM_TEXT, CSize(hwr.Width() - 30, 100));
+	m_multiPlotWindows->ShowWindow(SW_SHOW);
+
+
+	string plotCommand;
+	CString strComandEditor;
+	if (plotCommand.empty())
+	{
+		strComandEditor = L"plot1 = 0, 0, 0, 0, 0\r\n\
+string1 = %f;\r\n\
+plot2 = 0, 0, 0, 0, 0\r\n\
+string2 = %*f; %f;\r\n\
+plot3 = 0, 0, 0, 0, 0\r\n\
+string3 = %*f; %*f; %f;\r\n\
+plot4 = 0, 0, 0, 0, 0\r\n\
+string4 = %*f; %*f; %*f; %f;\r\n";
+	}
+	else
+	{
+		strComandEditor = common::str2wstr(plotCommand).c_str();
+	}
+
+	m_PlotCommand = strComandEditor;	
+
+
+	UpdateData(FALSE);
+
+	return TRUE;
 }
 
 
@@ -65,19 +111,8 @@ void CGraphWindow::Update(const float deltaSeconds)
 	if (m_incSeconds < 0.033f)
 		return;
 
-	// Z축과 벗어난 각도 값을 cos(theta) 로 변환해 저장한다.
-// 	const Vector3 machineZ = Vector3(0, 0, 1).MultiplyNormal(g_physxView->m_machine.m_sensor.m_tm);
-// 	float delta = acos(machineZ.DotProduct(Vector3(0, 0, 1)));
-// 	Vector3 axis(0, 0, m_motor->m_location.z);
-// 	axis.Normalize();
-// 	delta = (axis.CrossProduct(machineZ).x > 0) ? -delta : delta;
-
-	if (m_plotP)
-	{
-		//m_plotP->SetPlotXY(0, delta);
-		//m_plotP->SetPlotXY(0, delta*m_motor->m_p, 1);
-		m_plotP->DrawPlot(m_incSeconds);
-	}
+	if (m_multiPlotWindows)
+		m_multiPlotWindows->DrawGraph(deltaSeconds);
 }
 
 
@@ -92,21 +127,82 @@ void CGraphWindow::SetGraphValue(const string &str)
 // 		m_plotP->SetPlotXY(0, (float)z, 2);
 // 	}
 
-	m_plotP->SetPlotXY(0, (float)str[16], 0);
+//	m_plotP->SetPlotXY(0, (float)str[16], 0);
+
+	if (m_multiPlotWindows)
+		m_multiPlotWindows->SetString(str.c_str());
 }
 
 void CGraphWindow::SetGraphValue2(float v)
 {
-	m_plotP->SetPlotXY(0, v, 0);
+	if (m_multiPlotWindows)
+		m_multiPlotWindows->SetXY(0, v, 0);
 }
 
 void CGraphWindow::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);
 
-	if (m_plotP && m_plotP->GetSafeHwnd())
+	CRect rcWnd;
+	GetWindowRect(&rcWnd);
+	HandleAnchors(&rcWnd);
+
+	if (m_multiPlotWindows && m_multiPlotWindows->GetSafeHwnd())
 	{
-		m_plotP->MoveWindow(CRect(0, 0, cx, cy));
-		m_plotP->SetScrollSizes(MM_TEXT, CSize(cx - 30, 100));
+		CRect hwr;
+		GetDlgItem(IDC_STATIC_GRAPH)->GetWindowRect(hwr);
+		ScreenToClient(hwr);
+		m_multiPlotWindows->MoveWindow(hwr);
 	}
+}
+
+
+void CGraphWindow::OnBnClickedButtonUpdate()
+{
+	UpdateData();
+	m_multiPlotWindows->ProcessPlotCommand(m_PlotCommand);
+
+// 	vector<string> names;
+// 	names.push_back("Yaw");
+// 	names.push_back("Pitch");
+// 	names.push_back("Roll");
+// 	names.push_back("Heave");
+// 	m_multiPlotWindows->SetPlotName(names);
+}
+
+
+void CGraphWindow::OnBnClickedCheckFixedmode()
+{
+	UpdateData();
+	m_multiPlotWindows->SetFixedWidthMode(m_FixedMode? true : false);
+}
+
+
+void CGraphWindow::OnBnClickedButtonHelp()
+{
+ 	AfxMessageBox(
+ L"\n\
+plot = x-range, y-range, x-visible-range, y-visible-range, option \n\
+	- x-range: 0 - auto \n\
+	- y-range : 0 - auto \n\
+	- x-visible - range : 0 - auto \n\
+	- y-visible - range : 0 - auto \n\
+	- option : \n\
+	 	- x, y scroll \n\
+	 	- line weight\n\
+\n\
+string = sscanf 의 인자로 들어갈 파싱 포맷\n\
+\n\
+예제)\n\
+	- Serial Data\n\
+		- Start, 1234, 1.11, 2.34, 3.33, 4.44\n\
+\n\
+	- Plot Command Script\n\
+		plot1 = 0, 0, 0, 0, 0\n\
+		string1 = %*s %f, %f, %*f, %*f, %*f\n\
+\n\
+		plot2 = 0, 0, 0, 0, 0\n\
+		string2 = %*s %f, %*f, %f, %*f, %*f\n\
+");
+
 }

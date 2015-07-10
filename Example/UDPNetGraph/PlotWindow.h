@@ -6,7 +6,6 @@
 
 class CPlotWindow : public CScrollView
 {
-	DECLARE_DYNCREATE(CPlotWindow)
 public:
 	CPlotWindow();
 	virtual ~CPlotWindow();
@@ -21,11 +20,12 @@ public:
 
 	bool SetPlot(const float x_range, const float y_range,
 		const float x_visble_range, const float y_visible_range, const DWORD flags,
-		const int plotCount = 1);
+		const int plotCount=1);
 
-	void SetPlotXY(const float x, const float y, const int plotIndex = 0);
+	void SetPlotXY(const float x, const float y, const int plotIndex=0);
 	void DrawPlot(const float deltaSeconds);
 	void SetFixedWidthMode(const bool isFixedWidth);
+	void SetPlotName(const CString &str);
 
 
 protected:
@@ -71,8 +71,9 @@ protected:
 	CPen m_plotPens[4];
 	CPen m_gridPen1; // line width 1
 	CPen m_gridPen2; // line width 2
+	CString m_name;
 
-	std::pair<float, float> GetHeadValue(const u_int plotIndex = 0) const;
+	std::pair<float, float> GetHeadValue(const u_int plotIndex=0) const;
 	std::pair<float, float> GetTailValue(const u_int plotIndex = 0) const;
 	int GetDrawStartIndex(const u_int plotIndex, const int currentIndex, const float drawTimeRange);
 
@@ -87,3 +88,4 @@ public:
 
 
 inline void CPlotWindow::SetFixedWidthMode(const bool isFixedWidth) { m_isFixedPlot = isFixedWidth; }
+inline void CPlotWindow::SetPlotName(const CString &str) { m_name = str;  }

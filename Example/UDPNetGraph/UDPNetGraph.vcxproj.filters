@@ -39,6 +39,24 @@
     <ClInclude Include="GraphWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MultiPlotWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stringfunc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoHandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoHeapAlloc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoHModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BPCtrlAnchorMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UDPNetGraph.cpp">
@@ -54,6 +72,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GraphWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiPlotWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stringfunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
