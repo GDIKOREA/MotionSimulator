@@ -62,5 +62,5 @@ using std::wstring;
 using std::vector;
 using std::pair;
 
-#include "../Network/network.h"
+#include "../Common/Network/network.h"
 

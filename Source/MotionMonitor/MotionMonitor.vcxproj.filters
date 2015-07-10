@@ -13,11 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="UIComponent">
-      <UniqueIdentifier>{fb27d1e1-32b1-42d6-a7e9-d57abb2917b6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Pane">
       <UniqueIdentifier>{13b466a1-204b-40b6-9b33-db9627fa53d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIComponent">
+      <UniqueIdentifier>{2414c485-ea86-4cbf-bf61-9ebe62ed2d67}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -45,7 +45,55 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SerialEditorPane.h">
+      <Filter>Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="SerialEditorView.h">
+      <Filter>Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube3DPane.h">
+      <Filter>Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="SerialGraphForm.h">
+      <Filter>Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="UDPGraphView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UDPEditorView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionOutputView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionControlView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionInputView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="X2GraphDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\AutoHandle.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\AutoHeapAlloc.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\AutoHModule.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
     <ClInclude Include="..\Common\UIComponent\BPCtrlAnchorMap.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\BufferedSerial.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\UIComponent\C3DView.h">
@@ -69,6 +117,12 @@
     <ClInclude Include="..\Common\UIComponent\EnumDevices.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\enumser.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
     <ClInclude Include="..\Common\UIComponent\PlotWindow.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
@@ -81,71 +135,17 @@
     <ClInclude Include="..\Common\UIComponent\SerialObserver.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\UIComponent.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\UpdateObserver.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="SerialEditorPane.h">
-      <Filter>Pane</Filter>
-    </ClInclude>
-    <ClInclude Include="SerialEditorView.h">
-      <Filter>Pane</Filter>
-    </ClInclude>
-    <ClInclude Include="Cube3DPane.h">
-      <Filter>Pane</Filter>
-    </ClInclude>
-    <ClInclude Include="SerialGraphForm.h">
-      <Filter>Pane</Filter>
-    </ClInclude>
-    <ClInclude Include="UDPGraphView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="UDPEditorView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\UIComponent\UDPCommunication.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\UIComponent\UDPObserver.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
-    <ClInclude Include="MotionOutputView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\BufferedSerial.h">
+    <ClInclude Include="..\Common\UIComponent\UIComponent.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\enumser.h">
+    <ClInclude Include="..\Common\UIComponent\UpdateObserver.h">
       <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\AutoHandle.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\AutoHeapAlloc.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\AutoHModule.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="MotionController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Global.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MotionControlView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MotionInputView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="X2GraphDialog.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +163,45 @@
     </ClCompile>
     <ClCompile Include="MotionMonitorView.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SerialEditorPane.cpp">
+      <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="SerialEditorView.cpp">
+      <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube3DPane.cpp">
+      <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="SerialGraphForm.cpp">
+      <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="UDPGraphView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UDPEditorView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionOutputView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Global.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionControlView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionInputView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="X2GraphDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\BufferedSerial.cpp">
+      <Filter>UIComponent</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\UIComponent\C3DView.cpp">
       <Filter>UIComponent</Filter>
@@ -185,6 +224,12 @@
     <ClCompile Include="..\Common\UIComponent\EnumDevices.cpp">
       <Filter>UIComponent</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\enumser.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
     <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp">
       <Filter>UIComponent</Filter>
     </ClCompile>
@@ -197,53 +242,8 @@
     <ClCompile Include="..\Common\UIComponent\SerialObserver.cpp">
       <Filter>UIComponent</Filter>
     </ClCompile>
-    <ClCompile Include="SerialEditorPane.cpp">
-      <Filter>Pane</Filter>
-    </ClCompile>
-    <ClCompile Include="SerialEditorView.cpp">
-      <Filter>Pane</Filter>
-    </ClCompile>
-    <ClCompile Include="Cube3DPane.cpp">
-      <Filter>Pane</Filter>
-    </ClCompile>
-    <ClCompile Include="SerialGraphForm.cpp">
-      <Filter>Pane</Filter>
-    </ClCompile>
-    <ClCompile Include="UDPGraphView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="UDPEditorView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp">
       <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="MotionOutputView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\BufferedSerial.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\enumser.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="MotionController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Global.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MotionControlView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MotionInputView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="X2GraphDialog.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
