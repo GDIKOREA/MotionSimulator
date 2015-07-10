@@ -6,7 +6,7 @@
 
 class CDockablePaneChildView;
 class CDockablePaneBase : public CDockablePane
-											,public iSerialObserver
+						,public iSerialObserver
 {
 public:
 	CDockablePaneBase();

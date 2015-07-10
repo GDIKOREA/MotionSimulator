@@ -62,9 +62,6 @@ BOOL CGraphWindow::OnInitDialog()
 
 	InitAnchors();
 
-// 	CRect rect;
-// 	GetClientRect(rect);
-
 	CRect hwr;
 	GetDlgItem(IDC_STATIC_GRAPH)->GetWindowRect(hwr);
 	ScreenToClient(hwr);
@@ -118,17 +115,6 @@ void CGraphWindow::Update(const float deltaSeconds)
 
 void CGraphWindow::SetGraphValue(const string &str)
 {
-//	int x, y, z;
-//	const int ret = sscanf_s(str.c_str(), "%d;%d;%d", &x, &y, &z);
-// 	if (ret >= 3)
-// 	{
-// 		m_plotP->SetPlotXY(0, (float)x, 0);
-// 		m_plotP->SetPlotXY(0, (float)y, 1);
-// 		m_plotP->SetPlotXY(0, (float)z, 2);
-// 	}
-
-//	m_plotP->SetPlotXY(0, (float)str[16], 0);
-
 	if (m_multiPlotWindows)
 		m_multiPlotWindows->SetString(str.c_str());
 }

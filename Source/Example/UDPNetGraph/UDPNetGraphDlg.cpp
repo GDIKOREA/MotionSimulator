@@ -360,10 +360,11 @@ void CUDPNetGraphDlg::ParsePacket(char buff[128], const int buffLen)
 
 	++m_RcvCount;
 
-	float v = *(float*)&buff[24];
+//	float v = *(float*)&buff[24];
 	if (m_graphDlg)
 	{
-		m_graphDlg->SetGraphValue2(v);
+//		m_graphDlg->SetGraphValue2(v);
+		m_graphDlg->SetGraphValue(buff);
 	}
 
 	UpdateData(FALSE);
