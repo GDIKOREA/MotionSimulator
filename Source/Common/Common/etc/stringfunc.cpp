@@ -18,24 +18,42 @@ void common::replaceAll(std::string& str, const std::string& from, const std::st
 // "skdfjskdjf"
 string& common::trim(string &str)
 {
+	// 앞에서부터 검색
 	for (int i=0; i < (int)str.length(); ++i)
 	{
-		if ((str[ i] == '\n') || (str[ i] == '\t') || (str[ i] == ' '))
-			str[ i] = '$';
+		if ((str[i] == '\n') || (str[i] == '\t') || (str[i] == '\r') || (str[i] == ' '))
+		{
+			rotatepopvector(str, i);
+//			str[ i] = '$';
+			--i;
+		}
 		else
 			break;
 	}
 
+	// 뒤에서부터 검색
 	for (int i=str.length()-1; i >= 0; --i)
 	{
-		if ((str[ i] == '\n') || (str[ i] == '\t') || (str[ i] == ' '))
-			str[ i] = '$';
+		if ((str[i] == '\n') || (str[i] == '\t') || (str[i] == '\r') || (str[i] == ' '))
+		{
+			rotatepopvector(str, i);
+//			str[ i] = '$';
+		}
 		else
 			break;
 	}
 
-	replaceAll(str, "$", "");
+//	replaceAll(str, "$", "");
 	return str;
+}
+
+
+// "  skdfjskdjf  "
+// "$$$skdfjskdjf$$$"
+// "skdfjskdjf"
+void common::trimw(wstring &str)
+{
+	str = str2wstr(trim(wstr2str(str)));
 }
 
 

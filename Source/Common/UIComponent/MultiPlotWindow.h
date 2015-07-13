@@ -17,7 +17,6 @@ public:
 	void DrawGraph(const float deltaSeconds);
 	void ProcessPlotCommand(const CString &str, const int plotCount = 1);
 	void SetFixedWidthMode(const bool isFixedWidth);
-	void SetPlotName(const vector<string> &names);
 
 
 protected:
@@ -38,6 +37,7 @@ protected:
 		float yVisibleRange;
 		DWORD flags;
 		string scanString;
+		string name;
 	};
 	vector<SPlotInfo> m_PlotInfos;
 

@@ -232,20 +232,21 @@ void CPlotWindow::Dump(CDumpContext& dc) const
 // CPlotWindow message handlers
 bool CPlotWindow::SetPlot(const float x_range, const float y_range,
 	const float x_visble_range, const float y_visible_range, const DWORD flags,
-	const int plotCount)
+	const int plotCount, const string &name)  // plotCount=1, name=""
 {
 	m_xRange = x_range;
 	m_yRange = y_range;
 	m_xVisibleRange = x_visble_range;
 	m_yVisibleRange = y_visible_range;
 	m_flags = flags;
+	m_name = common::str2wstr(name).c_str();
 
 	//m_plot.resize(2048, pair<float,float>(0.f,0.f));
 
 	m_plots.resize(plotCount);
 	for (u_int i = 0; i < m_plots.size(); ++i)
 	{
-		m_plots[ i].xy.resize(2048, pair<float, float>(0.f, 0.f));
+		m_plots[i].xy.resize(2048, pair<float, float>(0.f, 0.f));
 		m_plots[i].headIdx = 0;
 		m_plots[i].tailIdx = 0;
 		m_plots[i].renderStartIndex = 0;

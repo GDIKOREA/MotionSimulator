@@ -118,12 +118,16 @@ BOOL CUDPGraphView::OnInitDialog()
 	{
 		strComandEditor = L"plot1 = 0, 0, 0, 0, 0\r\n\
 string1 = %f;\r\n\
+name1 = Yaw\r\n\
 plot2 = 0, 0, 0, 0, 0\r\n\
 string2 = %*f; %f;\r\n\
+name2 = Pitch\r\n\
 plot3 = 0, 0, 0, 0, 0\r\n\
 string3 = %*f; %*f; %f;\r\n\
+name3 = Roll\r\n\
 plot4 = 0, 0, 0, 0, 0\r\n\
-string4 = %*f; %*f; %*f; %f;\r\n";
+string4 = %*f; %*f; %*f; %f;\r\n\
+name4 = Heave\r\n";
 	}
 	else
 	{
@@ -223,13 +227,6 @@ void CUDPGraphView::OnBnClickedButtonUpdate()
 	CString str;
 	m_CommandEditor.GetWindowText(str);
 	m_multiPlotWindows->ProcessPlotCommand(str);
-
-	vector<string> names;
-	names.push_back("Yaw");
-	names.push_back("Pitch");
-	names.push_back("Roll");
-	names.push_back("Heave");
-	m_multiPlotWindows->SetPlotName(names);
 }
 
 
@@ -351,13 +348,6 @@ void CUDPGraphView::OnBnClickedButtonUdpServerBind()
 			CString str;
 			m_CommandEditor.GetWindowText(str);
 			m_multiPlotWindows->ProcessPlotCommand(str);
-
-			vector<string> names;
-			names.push_back("Yaw");
-			names.push_back("Pitch");
-			names.push_back("Roll");
-			names.push_back("Heave");
-			m_multiPlotWindows->SetPlotName(names);
 		}
 		else
 		{

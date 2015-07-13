@@ -5,7 +5,6 @@
 #include "UDPNetGraph.h"
 #include "GraphWindow.h"
 #include "afxdialogex.h"
-#include "stringfunc.h"
 
 
 // CGraphWindow dialog
@@ -147,13 +146,6 @@ void CGraphWindow::OnBnClickedButtonUpdate()
 	m_multiPlotWindows->ProcessPlotCommand(m_PlotCommand);
 
 	g_config.m_plotCommand = common::wstr2str((LPCTSTR)m_PlotCommand);
-
-// 	vector<string> names;
-// 	names.push_back("Yaw");
-// 	names.push_back("Pitch");
-// 	names.push_back("Roll");
-// 	names.push_back("Heave");
-// 	m_multiPlotWindows->SetPlotName(names);
 }
 
 

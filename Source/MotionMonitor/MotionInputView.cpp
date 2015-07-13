@@ -93,19 +93,15 @@ void CMotionInputView::OnBnClickedButtonUpdate()
 {
 		CString plotCommand = L"plot1 = 0, 0, 0, 0, 0\r\n\
 string1 = %f;\r\n\
+name1 = Yaw\r\n\
 plot2 = 0, 0, 0, 0, 0\r\n\
 string2 = %*f; %f;\r\n\
+name2 = Pitch\r\n\
 plot3 = 0, 0, 0, 0, 0\r\n\
-string3 = %*f; %*f; %f;\r\n";
+string3 = %*f; %*f; %f;\r\n\
+name3 = Roll\r\n";
 	m_multiPlotWindows->ProcessPlotCommand(plotCommand);	
 	m_multiPlotWindows->SetFixedWidthMode(true);
-
-	vector<string> names;
-	names.push_back("Yaw");
-	names.push_back("Pitch");
-	names.push_back("Roll");
-	names.push_back("Heave");
-	m_multiPlotWindows->SetPlotName(names);
 }
 
 

@@ -9,7 +9,6 @@ cConfig::cConfig()
 
 cConfig::~cConfig()
 {
-
 }
 
 

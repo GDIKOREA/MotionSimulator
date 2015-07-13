@@ -65,17 +65,24 @@ void CMultiPlotWindow::SetXY(const int plotIndex, const float y, const int graph
 // 스트링 분석에 문제가 생기면 false를 리턴하고 종료된다.
 bool CMultiPlotWindow::ParsePlotInfo(const int plotIndex, const wstring &str, SPlotInfo &out)
 {
-	CString plotStr, strStr;
+	CString plotStr, scanStr, nameStr;
 	plotStr.Format(L"plot%d =", plotIndex + 1);
-	strStr.Format(L"string%d =", plotIndex + 1);
+	scanStr.Format(L"string%d =", plotIndex + 1);
+	nameStr.Format(L"name%d =", plotIndex + 1);
 
+	// plot graph parameter
 	wstring plotParameters = ParseKeyValue(str, plotStr.GetBuffer());
 	if (plotParameters.empty())
 		return false;
 
-	wstring strParameters = ParseKeyValue(str, strStr.GetBuffer());
-	if (strParameters.empty())
+	// scanning string
+	wstring scanParameters = ParseKeyValue(str, scanStr.GetBuffer());
+	if (scanParameters.empty())
 		return false;
+
+	// scanning string
+	wstring nameParameters = ParseKeyValue(str, nameStr.GetBuffer());
+	common::trimw(nameParameters);
 
 	vector<wstring> plotParams;
 	common::wtokenizer(plotParameters, L",", L"", plotParams);
@@ -88,7 +95,8 @@ bool CMultiPlotWindow::ParsePlotInfo(const int plotIndex, const wstring &str, SP
 	out.yVisibleRange = (float)_wtof(plotParams[3].c_str());
 	out.flags = _wtoi(plotParams[4].c_str());
 
-	out.scanString = common::wstr2str(strParameters);
+	out.scanString = common::wstr2str(scanParameters);
+	out.name = common::wstr2str(nameParameters);
 
 	return true;
 }
@@ -97,19 +105,19 @@ bool CMultiPlotWindow::ParsePlotInfo(const int plotIndex, const wstring &str, SP
 // key = value1, value2, value3 형태의 스트링을 입력받아
 // value1, value2 ~~  문자열을 리턴한다.
 // 실패하면 빈 문자열을 리턴한다.
-wstring CMultiPlotWindow::ParseKeyValue(const wstring &str, const wstring &key)
+wstring CMultiPlotWindow::ParseKeyValue(const wstring &src, const wstring &key)
 {
-	const int idx = str.find(key);
+	const int idx = src.find(key);
 	if (idx == string::npos)
 		return L"";
 
-	const int beginIdx = str.find(L"=", idx);
+	const int beginIdx = src.find(L"=", idx);
 	if (beginIdx == string::npos)
 		return L"";
 
-	const int endIdx = str.find(L"\n", idx);
+	const int endIdx = src.find(L"\n", idx);
 
-	wstring ret = str.substr(beginIdx + 1, endIdx - beginIdx);
+	wstring ret = src.substr(beginIdx + 1, endIdx - beginIdx);
 	return ret;
 }
 
@@ -201,7 +209,7 @@ void CMultiPlotWindow::ProcessPlotCommand(const CString &str, const int plotCoun
 		wnd->SetPlot(
 			plotInfos[i].xRange, plotInfos[i].yRange,
 			plotInfos[i].xVisibleRange, plotInfos[i].yVisibleRange, plotInfos[i].flags,
-			plotCount);
+			plotCount, plotInfos[i].name);
 
 		// 그래프 파싱 스트링 설정.
 		m_plotWindows[i].scanString = plotInfos[i].scanString;
@@ -274,17 +282,5 @@ void CMultiPlotWindow::OnSize(UINT nType, int cx, int cy)
 	if (GetSafeHwnd())
 	{
 		CalcGraphWindowSize();
-	}
-}
-
-
-void CMultiPlotWindow::SetPlotName(const vector<string> &names)
-{
-	for (u_int i = 0; i < names.size(); ++i)
-	{
-		if (m_plotWindows.size() > i)
-		{
-			m_plotWindows[i].wnd->SetPlotName(common::str2wstr(names[i]).c_str());
-		}
 	}
 }

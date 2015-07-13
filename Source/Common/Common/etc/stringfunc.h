@@ -5,6 +5,7 @@ namespace common
 {
 	void replaceAll(string& str, const string& from, const string& to);
 	string& trim(string &str);
+	void trimw(wstring &str);
 
 	string& lowerCase(string &str);
 	string& upperCase(string &str);
@@ -20,3 +21,4 @@ namespace common
 	void tokenizer(const string &str, const string &delimeter, const string &ignoreStr, OUT vector<string> &out);
 	void wtokenizer(const wstring &str, const wstring &delimeter, const wstring &ignoreStr, OUT vector<wstring> &out);
 }
+

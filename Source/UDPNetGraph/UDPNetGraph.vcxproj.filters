@@ -39,9 +39,6 @@
     <ClInclude Include="GraphWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stringfunc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\UIComponent\AutoHandle.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
@@ -87,9 +84,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GraphWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="stringfunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp">
