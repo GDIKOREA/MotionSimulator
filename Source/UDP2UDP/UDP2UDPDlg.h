@@ -5,14 +5,17 @@
 #pragma once
 #include "afxcmn.h"
 #include "afxwin.h"
+#include "../Common/UIComponent/BPCtrlAnchorMap.h"
 
 
 // CUDP2UDPDlg dialog
+class CProxyWindow;
 class CUDP2UDPDlg : public CDialogEx
 {
 // Construction
 public:
 	CUDP2UDPDlg(CWnd* pParent = NULL);	// standard constructor
+	virtual ~CUDP2UDPDlg();
 
 // Dialog Data
 	enum { IDD = IDD_UDP2UDP_DIALOG };
@@ -22,7 +25,11 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
-	void PacketProcess();
+	void InitProxyWindows();
+	CProxyWindow* AddProxyWindow(const HWND instHwnd = NULL);
+	void RemoveProxyWindow(const HWND removeHwnd);
+	CProxyWindow* FindProxyWindow(const HWND hWnd);
+	void CalculateWindowSize();
 	void Log(const string &str);
 
 
@@ -30,24 +37,25 @@ protected:
 protected:
 	HICON m_hIcon;
 	bool m_loop;
-	SOCKET m_rcvSocket;
-	SOCKET m_sndSocket;
-	SOCKADDR_IN m_sockSndAddr;
-	bool m_isConnect;
+	vector<CProxyWindow*> m_proxyWindows;
+
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+
+	DECLARE_ANCHOR_MAP();
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnBnClickedButtonStart();
-	int m_RcvPort;
-	CIPAddressCtrl m_SndIP;
-	int m_SndPort;
-	CButton m_StartButton;
-	int m_RcvCount;
 	CListBox m_LogList;
+	afx_msg void OnButtonAdd();
+	afx_msg void OnButtonRemove();
+	afx_msg void OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKey);
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
+	virtual BOOL OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult);
 };

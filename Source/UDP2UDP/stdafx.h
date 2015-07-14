@@ -63,6 +63,33 @@ using std::wstring;
 using std::vector;
 using std::pair;
 
-#include "../Example/Network/network.h"
-#include "stringfunc.h"
+#include "../Common/Common/common.h"
+#include "../Common/Network/network.h"
+
+
+
+
+// 전역 윈도우 메세지
+enum {
+
+	// UDP2UDP 접속이 성공하면 ProxyWindow에세 메세지를 부모에게 보낸다.
+	WM_UDP2UDP_START_SUCCESS = (WM_USER+10000),
+		// lParam = ProxyWindow Handle (HWND)
+
+
+	// UDP2UDP 접속이 실패하면, ProxyWindow에세 메세지를 부모에게 보낸다.
+	WM_UDP2UDP_START_FAIL,
+		// lParam = ProxyWindow Handle (HWND)
+
+
+	// UDP2UDP 접속이 종료되면, ProxyWindow에세 메세지를 부모에게 보낸다.
+	WM_UDP2UDP_STOP,
+		// lParam = ProxyWindow Handle (HWND)
+
+
+};
+
+
+#include "udp2udpconfig.h"
+extern cUDP2UDPConfig g_config;
 

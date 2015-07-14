@@ -3,9 +3,8 @@
 //
 #pragma once
 
-#include "config.h"
 
-class cUDPNetGraphConfig : public cConfig
+class cUDPNetGraphConfig : public common::cConfig
 {
 public:
 	cUDPNetGraphConfig();

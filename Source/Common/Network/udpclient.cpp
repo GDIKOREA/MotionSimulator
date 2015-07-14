@@ -2,9 +2,10 @@
 #include "stdafx.h"
 #include "udpclient.h"
 #include <iostream>
+#include <process.h> 
 
 using namespace std;
-
+using namespace network;
 
 unsigned WINAPI UDPClientThreadFunction(void* arg);
 
@@ -36,6 +37,9 @@ cUDPClient::~cUDPClient()
 // UDP 클라언트 생성, ip, port 에 접속을 시도한다.
 bool cUDPClient::Init(const string &ip, const int port)
 {
+	m_ip = ip;
+	m_port = port;
+
 	if (network::LaunchUDPClient(ip, port, m_si_other, m_socket))
 	{
 		cout << "Connect UDP Client ip= " << ip << ", port= " << port << endl;
@@ -58,7 +62,7 @@ bool cUDPClient::Init(const string &ip, const int port)
 void cUDPClient::SendData(const char *buff, const int buffLen)
 {
 	EnterCriticalSection(&m_sndCriticalSection);
-	memcpy(m_sndBuffer, buff, m_sndBuffLen);
+	memcpy(m_sndBuffer, buff, buffLen);
 	m_sndBuffLen = buffLen;
 	LeaveCriticalSection(&m_sndCriticalSection);
 }

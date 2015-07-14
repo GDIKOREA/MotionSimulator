@@ -1,7 +1,11 @@
 
 #include "stdafx.h"
 #include "udpserver.h"
+#include <iostream>
+#include <process.h> 
 
+
+using namespace network;
 
 unsigned WINAPI UDPServerThreadFunction(void* arg);
 
@@ -72,6 +76,7 @@ void cUDPServer::SetRecvData(const char *buff, const int buffLen)
 int cUDPServer::GetRecvData(OUT char *dst, const int maxSize)
 {
 	EnterCriticalSection(&m_CriticalSection);
+	int buffLen = 0;
 	if (maxSize < m_bufferLen)
 	{
 		LeaveCriticalSection(&m_CriticalSection);
@@ -80,12 +85,13 @@ int cUDPServer::GetRecvData(OUT char *dst, const int maxSize)
 
 	if (!m_isReceiveData || (m_bufferLen <= 0))
 	{
+		m_isReceiveData = false;
 		LeaveCriticalSection(&m_CriticalSection);
 		return 0;
 	}
 
 	memcpy(dst, m_buffer, m_bufferLen);
-	const int buffLen = m_bufferLen;
+	buffLen = m_bufferLen;
 	m_isReceiveData = false;
 	LeaveCriticalSection(&m_CriticalSection);
 	return buffLen;

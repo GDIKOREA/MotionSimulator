@@ -7,10 +7,14 @@
 #include "UDP2UDPDlg.h"
 #include "afxdialogex.h"
 #include <mmsystem.h>
+#include "ProxyWindow.h"
 
 #pragma comment(lib, "winmm.lib")
 
 using namespace common;
+
+cUDP2UDPConfig g_config;
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -21,31 +25,54 @@ using namespace common;
 CUDP2UDPDlg::CUDP2UDPDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CUDP2UDPDlg::IDD, pParent)
 	, m_loop(true)
-	, m_RcvPort(0)
-	, m_SndPort(0)
-	, m_isConnect(false)
-	, m_RcvCount(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+}
+
+CUDP2UDPDlg::~CUDP2UDPDlg()
+{
+	//----------------------------------------------------
+	// 환경설정 파일을 저장하고 종료한다.
+	g_config.m_sessions.clear();
+	for each (auto &wnd in m_proxyWindows)
+	{
+		sSessionData data;
+		data.receivePort = wnd->m_RcvPort;
+		data.sendIP = wnd->GetSendIP();
+		data.sendPort = wnd->m_SndPort;
+		g_config.m_sessions.push_back(data);
+	}
+	//----------------------------------------------------
+
+
+	for (u_int i = 0; i < m_proxyWindows.size(); ++i)
+	{
+		CProxyWindow *wnd = m_proxyWindows[i];
+		if (wnd)
+		{
+			wnd->DestroyWindow();
+			delete wnd;
+			wnd = NULL;
+		}
+	}
 }
 
 void CUDP2UDPDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_RCV_PORT, m_RcvPort);
-	DDX_Control(pDX, IDC_IPADDRESS_SND_IP, m_SndIP);
-	DDX_Text(pDX, IDC_EDIT_SND_PORT, m_SndPort);
-	DDX_Control(pDX, IDC_BUTTON_START, m_StartButton);
-	DDX_Text(pDX, IDC_STATIC_RCV_COUNT, m_RcvCount);
 	DDX_Control(pDX, IDC_LIST_LOG, m_LogList);
 }
+
+BEGIN_ANCHOR_MAP(CUDP2UDPDlg)
+	ANCHOR_MAP_ENTRY(IDC_LIST_LOG, ANF_LEFT | ANF_RIGHT | ANF_BOTTOM)
+END_ANCHOR_MAP()
 
 BEGIN_MESSAGE_MAP(CUDP2UDPDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDOK, &CUDP2UDPDlg::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CUDP2UDPDlg::OnBnClickedCancel)
-	ON_BN_CLICKED(IDC_BUTTON_START, &CUDP2UDPDlg::OnBnClickedButtonStart)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -55,13 +82,37 @@ BOOL CUDP2UDPDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
+	InitAnchors();
+
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
-	m_SndIP.SetAddress(127, 0, 0, 1);
 
-	return TRUE;  // return TRUE  unless you set the focus to a control
+	InitProxyWindows();
+	m_proxyWindows[0]->HideRemoveButton();
+
+	return TRUE;
 }
+
+
+// 환경파일을 읽어서, ProxyWindow를 생성한다.
+void CUDP2UDPDlg::InitProxyWindows()
+{
+	if (g_config.m_sessions.empty())
+	{
+		AddProxyWindow();
+		return;
+	}
+
+	for each (auto &session in g_config.m_sessions)
+	{
+		if (CProxyWindow *wnd = AddProxyWindow())
+		{
+			wnd->Init(session.receivePort, session.sendIP, session.sendPort);
+		}
+	}
+}
+
 
 void CUDP2UDPDlg::OnPaint()
 {
@@ -97,14 +148,12 @@ HCURSOR CUDP2UDPDlg::OnQueryDragIcon()
 
 void CUDP2UDPDlg::OnBnClickedOk()
 {
-	// TODO: Add your control notification handler code here
 	//CDialogEx::OnOK();
 }
 
 
 void CUDP2UDPDlg::OnBnClickedCancel()
 {
-	// TODO: Add your control notification handler code here
 	CDialogEx::OnCancel();
 	m_loop = false;
 }
@@ -116,7 +165,8 @@ void CUDP2UDPDlg::MainLoop()
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
 
-	int oldT = 0;
+	int oldT = timeGetTime();
+	int incT = 0;
 	while (m_loop)
 	{
 		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
@@ -125,90 +175,17 @@ void CUDP2UDPDlg::MainLoop()
 			DispatchMessage(&msg);
 		}
 
-		PacketProcess();
-	}
-}
+		const int curT = timeGetTime();
+		const int deltaT = curT - oldT;
+		incT += deltaT;
 
-
-void CUDP2UDPDlg::OnBnClickedButtonStart()
-{
-	UpdateData();
-
-	if (m_isConnect)
-	{
-		closesocket(m_rcvSocket);
-		Log("서버 종료");
- 		m_StartButton.SetWindowTextW(L"Start");
-		m_isConnect = false;
-	}
-	else
-	{
-		if (network::LaunchUDPServer(m_RcvPort, m_rcvSocket))
+		if (incT > 10)
 		{
-			// 서버에 접속을 시도한다.
-			DWORD address;
-			m_SndIP.GetAddress(address);
-
-			std::stringstream ss;
-			ss << ((address & 0xff000000) >> 24) << "."
-				<< ((address & 0x00ff0000) >> 16) << "."
-				<< ((address & 0x0000ff00) >> 8) << "."
-				<< (address & 0x000000ff);
-			const string ip = ss.str();
-
-			if (network::LaunchUDPClient(ip, m_SndPort, m_sockSndAddr, m_sndSocket))
+			incT = 0;
+			for each (auto &wnd in m_proxyWindows)
 			{
-				Log("서버 실행 성공");
- 				m_StartButton.SetWindowTextW(L"Stop");
-				m_isConnect = true;
+				wnd->Update();
 			}
-			else
-			{
-				Log("Error!! 서버 실행 실패");
-				closesocket(m_rcvSocket);
-			}
-		}
-		else
-		{
- 			Log("Error!! 서버 실행 실패");
-		}
-	}
-}
-
-
-void CUDP2UDPDlg::PacketProcess()
-{
-	if (!m_isConnect)
-		return;
-
-	const timeval t = { 0, 1 }; // 10 millisecond
-	fd_set readSockets;
-	FD_ZERO(&readSockets);
-	FD_SET(m_rcvSocket, &readSockets);
-
-	const int ret = select(readSockets.fd_count, &readSockets, NULL, NULL, &t);
-	if (ret != 0 && ret != SOCKET_ERROR)
-	{
-		char buff[128];
-		const int result = recv(readSockets.fd_array[0], buff, sizeof(buff), 0);
-		if (result == SOCKET_ERROR || result == 0) // 받은 패킷사이즈가 0이면 서버와 접속이 끊겼다는 의미다.
-		{
-			Log("서버와 연결이 끊김");
-			closesocket(m_rcvSocket);
-		}
-		else
-		{
-			//buff[result] = NULL;
-			//ParsePacket(buff);
-			// 시리얼로 받은 정보를 UDP 네트워크를 통해 전송한다.
-			int slen = sizeof(m_sockSndAddr);
-			if (sendto(m_sndSocket, buff, result, 0, (struct sockaddr *) &m_sockSndAddr, slen) == SOCKET_ERROR)
-			{
-				//Log( format("sendto() failed with error code : %d", WSAGetLastError()) );
-			}
-
-			++m_RcvCount;
-			UpdateData(FALSE);
 		}
 	}
 }
@@ -219,4 +196,163 @@ void CUDP2UDPDlg::Log(const string &str)
 {
 	m_LogList.InsertString(m_LogList.GetCount(), common::str2wstr(str).c_str());
 	m_LogList.SetTopIndex(m_LogList.GetCount() - 1);
+}
+
+
+// ProxyWindow 버튼 메세지를 받는다.
+BOOL CUDP2UDPDlg::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	const int buttonID = LOWORD(wParam);
+	const HWND hWnd = (HWND)lParam;
+
+	switch (buttonID)
+	{
+	case IDC_BUTTON_ADD:
+	{
+		AddProxyWindow(hWnd);
+	}
+	break;
+
+	case IDC_BUTTON_REMOVE:
+	{
+		RemoveProxyWindow(hWnd);
+		CalculateWindowSize();
+	}
+	break;
+
+	default:
+		return CDialogEx::OnCommand(wParam, lParam);
+	}	
+
+	return TRUE;
+}
+
+
+// ProxyWindow를 생성하고, 추가한다.
+CProxyWindow* CUDP2UDPDlg::AddProxyWindow(const HWND instHwnd)
+{
+	const int W = 400;
+	const int H = 135;
+
+	const int x = 10;
+	const int y = 10 + (m_proxyWindows.size() * (H+10));
+
+	CProxyWindow *wnd = new CProxyWindow(this);
+	wnd->Create(CProxyWindow::IDD, this);
+	wnd->MoveWindow(CRect(x, y, x+W, y+H));
+	wnd->ShowWindow(SW_SHOW);
+	wnd->Init(8888, "192.168.0.1", 8889);
+	m_proxyWindows.push_back(wnd);
+
+	CRect wr;
+	GetWindowRect(wr);
+
+	const int dlgHeight = y + H + 160;
+	MoveWindow(CRect(wr.left, wr.top, wr.right, wr.top+dlgHeight));
+
+	return wnd;
+}
+
+
+// ProxyWindow 를 제거한다.
+void CUDP2UDPDlg::RemoveProxyWindow(const HWND removeHwnd)
+{
+	for each(auto &wnd in m_proxyWindows)
+	{
+		if (wnd->GetSafeHwnd() == removeHwnd)
+		{
+			wnd->DestroyWindow();
+			delete wnd;
+			common::removevector(m_proxyWindows, wnd);
+			break;
+		}
+	}
+}
+
+
+void CUDP2UDPDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialogEx::OnSize(nType, cx, cy);
+
+	CRect rcWnd;
+	GetWindowRect(&rcWnd);
+	HandleAnchors(&rcWnd);
+}
+
+
+// 자식으로 생성된 ProxyWindow 위치를 재 설정한다.
+void CUDP2UDPDlg::CalculateWindowSize()
+{
+	const int W = 400;
+	const int H = 135;
+	const int x = 10;
+	int y = 10;
+
+	for each(auto &wnd in m_proxyWindows)
+	{
+		wnd->MoveWindow(CRect(x, y, x + W, y + H));
+		y += H + 10;
+	}
+
+	CRect wr;
+	GetWindowRect(wr);
+	const int dlgHeight = y + 150;
+	MoveWindow(CRect(wr.left, wr.top, wr.right, wr.top + dlgHeight));
+}
+
+
+// 윈도우 메세지 핸들러
+BOOL CUDP2UDPDlg::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult)
+{
+	switch (message)
+	{
+	case WM_UDP2UDP_START_SUCCESS:
+	{
+		HWND hWnd = (HWND)lParam;
+		if (CProxyWindow *wnd = FindProxyWindow(hWnd))
+		{
+			Log(common::format("Port = %d, 접속 성공", wnd->m_RcvPort));
+		}
+	}
+	break;
+
+	case WM_UDP2UDP_START_FAIL:
+	{
+		HWND hWnd = (HWND)lParam;
+		if (CProxyWindow *wnd = FindProxyWindow(hWnd))
+		{
+			Log(common::format("Port = %d, 접속 실패!!!", wnd->m_RcvPort));
+		}
+	}
+	break;
+
+	case WM_UDP2UDP_STOP:
+	{
+		HWND hWnd = (HWND)lParam;
+		if (CProxyWindow *wnd = FindProxyWindow(hWnd))
+		{
+			Log(common::format("Port = %d, 접속 종료", wnd->m_RcvPort));
+		}
+	}
+	break;
+
+
+	default:
+		return CDialogEx::OnWndMsg(message, wParam, lParam, pResult);
+		break;
+	}
+
+	return TRUE;
+}
+
+
+// proxyWindow중 hWnd 핸들인 것을 찾아 리턴한다.
+CProxyWindow* CUDP2UDPDlg::FindProxyWindow(const HWND hWnd)
+{
+	for each(auto &wnd in m_proxyWindows)
+	{
+		if (wnd->GetSafeHwnd() == hWnd)
+			return wnd;
+	}
+	return NULL;
 }

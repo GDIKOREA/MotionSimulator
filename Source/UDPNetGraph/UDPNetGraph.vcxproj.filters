@@ -60,15 +60,6 @@
     <ClInclude Include="MiniFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="udpclient.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="udpserver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="udpnetgraphconfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -93,15 +84,6 @@
       <Filter>UIComponent</Filter>
     </ClCompile>
     <ClCompile Include="MiniFrame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="udpclient.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="udpserver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="udpnetgraphconfig.cpp">

@@ -5,8 +5,6 @@
 #pragma once
 #include "afxcmn.h"
 #include "afxwin.h"
-#include "udpclient.h"
-#include "udpserver.h"
 
 
 // CUDPNetGraphDlg dialog
@@ -39,8 +37,8 @@ protected:
 	bool m_loop;
 	CGraphWindow *m_graphDlg;
 	CFont m_font;
-	cUDPClient m_udpClient;
-	cUDPServer m_udpServer;
+	network::cUDPClient m_udpClient;
+	network::cUDPServer m_udpServer;
 	int m_clientSndTime;
 
 

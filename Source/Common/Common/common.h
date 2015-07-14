@@ -70,7 +70,7 @@ using std::wstringstream;
 #include "etc/genid.h"
 #include "etc/memorypool.h"
 #include "etc/rand.h"
-
+#include "etc/config.h"
 
 #pragma comment( lib, "d3d9.lib" )
 //#pragma comment( lib, "d3dx9.lib" )

@@ -2,6 +2,8 @@
 #include "stdafx.h"
 #include "config.h"
 
+using namespace common;
+
 
 cConfig::cConfig()
 {
@@ -47,12 +49,13 @@ bool cConfig::Parse(const string &fileName)
 			std::string strCmd((std::istreambuf_iterator<char>(cfgfile)), std::istreambuf_iterator<char>());
 			common::trim(strCmd);
 			m_options[id] = strCmd;
-			continue;
 		}
-
-		cfgfile >> eq >> val;
-		if (eq != "=") throw std::runtime_error("Parse error");
-		m_options[id] = val;
+		else
+		{
+			cfgfile >> eq >> val;
+			if (eq != "=") throw std::runtime_error("Parse error");
+			m_options[id] = val;
+		}
 	}
 
 	UpdateParseData();

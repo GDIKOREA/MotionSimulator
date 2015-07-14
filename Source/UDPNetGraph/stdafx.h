@@ -72,6 +72,5 @@ using std::pair;
 #include "../Common/UIComponent/PlotWindow.h"
 #include "../Common/UIComponent/MultiPlotWindow.h"
 
-
 #include "udpnetgraphconfig.h"
 extern cUDPNetGraphConfig g_config;

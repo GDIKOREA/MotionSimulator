@@ -21,7 +21,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -101,20 +101,26 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\UIComponent\AutoHandle.h" />
+    <ClInclude Include="..\Common\UIComponent\AutoHeapAlloc.h" />
+    <ClInclude Include="..\Common\UIComponent\AutoHModule.h" />
+    <ClInclude Include="..\Common\UIComponent\BPCtrlAnchorMap.h" />
+    <ClInclude Include="ProxyWindow.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="stringfunc.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UDP2UDP.h" />
+    <ClInclude Include="udp2udpconfig.h" />
     <ClInclude Include="UDP2UDPDlg.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ProxyWindow.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="stringfunc.cpp" />
     <ClCompile Include="UDP2UDP.cpp" />
+    <ClCompile Include="udp2udpconfig.cpp" />
     <ClCompile Include="UDP2UDPDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -127,7 +133,10 @@
     <Image Include="res\UDP2UDP.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Example\Network\Network.vcxproj">
+    <ProjectReference Include="..\Common\Common\Common.vcxproj">
+      <Project>{ef9ca22d-0c8f-42e9-ab66-98bc1a640f10}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Network\Network.vcxproj">
       <Project>{a202aa06-f0ee-4b05-86de-da63b9f146d4}</Project>
     </ProjectReference>
   </ItemGroup>

@@ -170,6 +170,7 @@ plot = x-range, y-range, x-visible-range, y-visible-range, option \n\
 	 	- line weight\n\
 \n\
 string = sscanf 의 인자로 들어갈 파싱 포맷\n\
+name = plotname\n\
 \n\
 예제)\n\
 	- Serial Data\n\
@@ -178,9 +179,11 @@ string = sscanf 의 인자로 들어갈 파싱 포맷\n\
 	- Plot Command Script\n\
 		plot1 = 0, 0, 0, 0, 0\n\
 		string1 = %*s %f, %f, %*f, %*f, %*f\n\
+		name1 = cos\n\
 \n\
 		plot2 = 0, 0, 0, 0, 0\n\
 		string2 = %*s %f, %*f, %f, %*f, %*f\n\
+		name2 = sin\n\
 ");
 
 }
