@@ -147,6 +147,9 @@
     <ClInclude Include="..\Common\UIComponent\UpdateObserver.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
+    <ClInclude Include="JoystickView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -244,6 +247,9 @@
     </ClCompile>
     <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp">
       <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="JoystickView.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

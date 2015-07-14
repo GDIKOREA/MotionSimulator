@@ -12,6 +12,7 @@
 #include "MotionOutputView.h"
 #include "MotionControlView.h"
 #include "MotionInputView.h"
+#include "JoystickView.h"
 #include "MainFrm.h"
 
 #ifdef _DEBUG
@@ -269,6 +270,22 @@ BOOL CMainFrame::CreateDockingWindows()
 	}
 
 
+	// Create Joystick view
+	{
+		m_joystickView = new CDockablePaneBase();
+		if (!m_joystickView->Create(L"Joystick View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_JOYSTICK, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+		{
+			TRACE0("Failed to create Joystick View window\n");
+			return FALSE; // failed to create
+		}
+
+		CJoystickView *view = new CJoystickView(m_joystickView);
+		view->Create(CJoystickView::IDD, m_joystickView);
+		view->ShowWindow(SW_SHOW);
+		m_joystickView->SetChildView(view);
+	}
+
+
 	// Create serial editor view
 	{
 		m_wndSerialEditorView = new CDockablePaneBase();
@@ -306,6 +323,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	m_viewList.push_back(m_motionOutputView);
 	m_viewList.push_back(m_motionInputView);
 	m_viewList.push_back(m_motionControlView);
+	m_viewList.push_back(m_joystickView);
 	m_viewList.push_back(m_wndSerialEditorView);
 	m_viewList.push_back(m_serialGraphView);
 
@@ -337,6 +355,7 @@ void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
 	m_motionOutputView->SetIcon(hClassViewIcon, FALSE);
 	m_motionInputView->SetIcon(hClassViewIcon, FALSE);
 	m_motionControlView->SetIcon(hClassViewIcon, FALSE);
+	m_joystickView->SetIcon(hClassViewIcon, FALSE);
 }
 
 // CMainFrame diagnostics

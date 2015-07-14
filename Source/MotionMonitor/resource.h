@@ -93,6 +93,7 @@
 #define IDD_DIALOG_MOTION_CONTROL       319
 #define IDD_DIALOG_MOTION_INPUT         320
 #define IDD_DIALOG_X2GRAPH              322
+#define IDD_DIALOG_JOYSTICK             323
 #define IDC_CHECK_FIXEDMODE             1000
 #define IDC_EDIT_COMMAND                1001
 #define IDC_BUTTON_HELP                 1002
@@ -137,27 +138,47 @@
 #define IDC_CHECK1                      1034
 #define IDC_EDIT_YAW_PROPORTION         1035
 #define IDC_SLIDER_PITCH_INTEGRAL       1036
+#define IDC_SLIDER_YAW                  1036
 #define IDC_EDIT_PITCH_INTEGRAL         1037
+#define IDC_EDIT_YAW                    1037
 #define IDC_SLIDER_YAW_SCALE2           1038
+#define IDC_SLIDER_PITCH                1038
 #define IDC_EDIT_YAW_SCALE2             1039
+#define IDC_EDIT_PITCH                  1039
 #define IDC_SLIDER_PITCH_DERIVATION     1040
+#define IDC_SLIDER_ROLL                 1040
 #define IDC_EDIT_PITCH_DERIVATION       1041
+#define IDC_EDIT_ROLL                   1041
 #define IDC_SLIDER_ROLL_INTEGRAL        1042
+#define IDC_STATIC_YAW                  1042
 #define IDC_EDIT_ROLL_INTEGRAL          1043
+#define IDC_STATIC_PITCH                1043
 #define IDC_SLIDER_ROLL_DERIVATION      1044
+#define IDC_STATIC_ROLL                 1044
 #define IDC_EDIT_ROLL_DERIVATION        1045
+#define IDC_SLIDER_YAW_OFFSET           1045
 #define IDC_SLIDER_PITCH_SCALE2         1046
+#define IDC_STATIC_YAW2                 1046
 #define IDC_EDIT_PITCH_SCALE2           1047
+#define IDC_EDIT_YAW_OFFSET             1047
 #define IDC_SLIDER_ROLL_SCALE2          1048
+#define IDC_SLIDER_PITCH_OFFSET         1048
 #define IDC_EDIT_ROLL_SCALE2            1049
+#define IDC_STATIC_PITCH2               1049
+#define IDC_EDIT_PITCH_OFFSET           1050
+#define IDC_SLIDER_ROLL_OFFSET          1051
+#define IDC_STATIC_ROLL2                1052
+#define IDC_EDIT_ROLL_OFFSET            1053
+#define IDC_BUTTON2                     1054
+#define IDC_BUTTON_RECORD               1054
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        323
+#define _APS_NEXT_RESOURCE_VALUE        324
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1035
+#define _APS_NEXT_CONTROL_VALUE         1055
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

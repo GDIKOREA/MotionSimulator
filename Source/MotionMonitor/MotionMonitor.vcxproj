@@ -127,6 +127,7 @@
     <ClInclude Include="..\Common\UIComponent\UpdateObserver.h" />
     <ClInclude Include="Cube3DPane.h" />
     <ClInclude Include="Global.h" />
+    <ClInclude Include="JoystickView.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MotionController.h" />
     <ClInclude Include="MotionControlView.h" />
@@ -163,6 +164,7 @@
     <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp" />
     <ClCompile Include="Cube3DPane.cpp" />
     <ClCompile Include="Global.cpp" />
+    <ClCompile Include="JoystickView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MotionController.cpp" />
     <ClCompile Include="MotionControlView.cpp" />
