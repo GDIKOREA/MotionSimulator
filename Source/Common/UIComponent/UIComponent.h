@@ -17,4 +17,6 @@ using std::pair;
 #include "C3DView.h"
 //#include "C3DPhysxView.h"
 #include "UDPCommunication.h"
+#include "FileTreeCtrl.h"
+#include "UIUtiltity.h"
 

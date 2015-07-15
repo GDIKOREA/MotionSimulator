@@ -150,6 +150,18 @@
     <ClInclude Include="JoystickView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="motionwave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionWaveView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\FileTreeCtrl.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\UIUtiltity.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -250,6 +262,18 @@
     </ClCompile>
     <ClCompile Include="JoystickView.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="motionwave.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionWaveView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\FileTreeCtrl.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp">
+      <Filter>UIComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

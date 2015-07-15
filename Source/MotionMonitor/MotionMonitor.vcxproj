@@ -116,6 +116,7 @@
     <ClInclude Include="..\Common\UIComponent\DockablePaneChildView.h" />
     <ClInclude Include="..\Common\UIComponent\EnumDevices.h" />
     <ClInclude Include="..\Common\UIComponent\enumser.h" />
+    <ClInclude Include="..\Common\UIComponent\FileTreeCtrl.h" />
     <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h" />
     <ClInclude Include="..\Common\UIComponent\PlotWindow.h" />
     <ClInclude Include="..\Common\UIComponent\Serial.h" />
@@ -124,6 +125,7 @@
     <ClInclude Include="..\Common\UIComponent\UDPCommunication.h" />
     <ClInclude Include="..\Common\UIComponent\UDPObserver.h" />
     <ClInclude Include="..\Common\UIComponent\UIComponent.h" />
+    <ClInclude Include="..\Common\UIComponent\UIUtiltity.h" />
     <ClInclude Include="..\Common\UIComponent\UpdateObserver.h" />
     <ClInclude Include="Cube3DPane.h" />
     <ClInclude Include="Global.h" />
@@ -136,6 +138,8 @@
     <ClInclude Include="MotionMonitorDoc.h" />
     <ClInclude Include="MotionMonitorView.h" />
     <ClInclude Include="MotionOutputView.h" />
+    <ClInclude Include="motionwave.h" />
+    <ClInclude Include="MotionWaveView.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SerialEditorPane.h" />
     <ClInclude Include="SerialEditorView.h" />
@@ -156,12 +160,14 @@
     <ClCompile Include="..\Common\UIComponent\DockablePaneChildView.cpp" />
     <ClCompile Include="..\Common\UIComponent\EnumDevices.cpp" />
     <ClCompile Include="..\Common\UIComponent\enumser.cpp" />
+    <ClCompile Include="..\Common\UIComponent\FileTreeCtrl.cpp" />
     <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp" />
     <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp" />
     <ClCompile Include="..\Common\UIComponent\Serial.cpp" />
     <ClCompile Include="..\Common\UIComponent\SerialCommunication.cpp" />
     <ClCompile Include="..\Common\UIComponent\SerialObserver.cpp" />
     <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp" />
+    <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp" />
     <ClCompile Include="Cube3DPane.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="JoystickView.cpp" />
@@ -173,6 +179,8 @@
     <ClCompile Include="MotionMonitorDoc.cpp" />
     <ClCompile Include="MotionMonitorView.cpp" />
     <ClCompile Include="MotionOutputView.cpp" />
+    <ClCompile Include="motionwave.cpp" />
+    <ClCompile Include="MotionWaveView.cpp" />
     <ClCompile Include="SerialEditorPane.cpp" />
     <ClCompile Include="SerialEditorView.cpp" />
     <ClCompile Include="SerialGraphForm.cpp" />
