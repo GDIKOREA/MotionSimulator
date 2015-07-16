@@ -171,7 +171,7 @@ void CMotionOutputView::Update(const float deltaSeconds)
 		if (m_incTime > 0.1f)
 		{
 			float roll, pitch, yaw;
-			cMotionController::Get()->GetMotion(yaw, pitch, roll);
+			cMotionController::Get()->GetUDPMotion(yaw, pitch, roll);
 
 			float roll_scale, pitch_scale, yaw_scale;
 			cMotionController::Get()->GetScale(yaw_scale, pitch_scale, roll_scale);
@@ -248,8 +248,6 @@ void CMotionOutputView::Update(const float deltaSeconds)
 			if (out_yaw < 0)
 				out_yaw = 0;
 
-
-
 			m_multiPlotWindows->SetString(common::format("%d;%d;%d;", out_yaw, out_pitch, out_roll).c_str(), 0);
 
 			m_multiPlotWindows->DrawGraph(m_incTime);
@@ -261,6 +259,8 @@ void CMotionOutputView::Update(const float deltaSeconds)
 					out_sway, out_surge, out_heave, out_switch);
 
 				AppendToLogAndScroll(&m_OutputLog, common::str2wstr(out+"\n").c_str(), RGB(200, 200, 200));
+
+				// 시리얼 포트로 모션 시뮬레이터 장비에 모션 정보를 전송한다.
 				cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
 			}
 
@@ -347,7 +347,7 @@ void CMotionOutputView::SendMotionControllSwitchMessage(const int state)
 		return;
 
 	float roll, pitch, yaw;
-	cMotionController::Get()->GetMotion(yaw, pitch, roll);
+	cMotionController::Get()->GetUDPMotion(yaw, pitch, roll);
 
 	const int out_pitch = 256;// (int)(pitch * 255) + 255;
 	const int out_roll = 256;

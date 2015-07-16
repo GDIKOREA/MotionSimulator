@@ -47,6 +47,7 @@ protected:  // control bar embedded members
 	CDockablePaneBase *m_motionControlView;
 	CDockablePaneBase *m_joystickView;
 	CDockablePaneBase *m_motionWaveView;
+	CDockablePaneBase *m_mixingView;
 
 
 // Generated message map functions

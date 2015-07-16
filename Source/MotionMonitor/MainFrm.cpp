@@ -14,6 +14,7 @@
 #include "MotionInputView.h"
 #include "JoystickView.h"
 #include "MotionWaveView.h"
+#include "MixingView.h"
 #include "MainFrm.h"
 
 #ifdef _DEBUG
@@ -303,6 +304,21 @@ BOOL CMainFrame::CreateDockingWindows()
 	}
 
 
+	// Create Mixing view
+	{
+		m_mixingView= new CDockablePaneBase();
+		if (!m_mixingView->Create(L"Mixing View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_MIXING, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+		{
+			TRACE0("Failed to create Mixing View window\n");
+			return FALSE; // failed to create
+		}
+
+		CMixingView *view = new CMixingView(m_mixingView);
+		view->Create(CMixingView::IDD, m_mixingView);
+		view->ShowWindow(SW_SHOW);
+		m_mixingView->SetChildView(view);
+	}
+
 
 	// Create serial editor view
 	{
@@ -343,6 +359,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	m_viewList.push_back(m_motionControlView);
 	m_viewList.push_back(m_joystickView);
 	m_viewList.push_back(m_motionWaveView);
+	m_viewList.push_back(m_mixingView);	
 	m_viewList.push_back(m_wndSerialEditorView);
 	m_viewList.push_back(m_serialGraphView);
 
@@ -376,6 +393,7 @@ void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
 	m_motionControlView->SetIcon(hClassViewIcon, FALSE);
 	m_joystickView->SetIcon(hClassViewIcon, FALSE);
 	m_motionWaveView->SetIcon(hClassViewIcon, FALSE);
+	m_mixingView->SetIcon(hClassViewIcon, FALSE);
 }
 
 // CMainFrame diagnostics

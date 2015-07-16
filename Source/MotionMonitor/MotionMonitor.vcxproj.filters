@@ -162,6 +162,12 @@
     <ClInclude Include="..\Common\UIComponent\UIUtiltity.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
+    <ClInclude Include="MixingView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mixingconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -274,6 +280,12 @@
     </ClCompile>
     <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp">
       <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="MixingView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mixingconfig.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

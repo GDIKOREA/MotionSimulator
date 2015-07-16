@@ -13,7 +13,8 @@ namespace common
 		virtual ~cConfig();
 
 		void Init(const string &fileName);
-		void Save(const string &fileName);
+		bool Save(const string &fileName);
+		void ParseStr(const string &str);
 
 
 	protected:

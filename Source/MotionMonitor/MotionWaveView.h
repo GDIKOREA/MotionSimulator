@@ -1,6 +1,5 @@
 #pragma once
 #include "afxcmn.h"
-#include "motionwave.h"
 #include "afxwin.h"
 
 // CMotionWaveView dialog

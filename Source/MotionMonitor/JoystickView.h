@@ -1,7 +1,6 @@
 #pragma once
 #include "afxwin.h"
 #include "afxcmn.h"
-#include "motionwave.h"
 
 
 // CJoystickView dialog

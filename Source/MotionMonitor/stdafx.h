@@ -83,10 +83,11 @@ enum VIEW_TYPE {
 	ID_VIEW_MOTION_INPUT,
 	ID_VIEW_JOYSTICK,
 	ID_VIEW_MOTIONWAVE,
+	ID_VIEW_MIXING,
 };
 
 #define CENUMERATESERIAL_USE_STL
 
 
 #include "Global.h"
-
+#include "motionwave.h"

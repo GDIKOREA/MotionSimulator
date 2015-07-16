@@ -5,24 +5,32 @@
 
 
 cMotionController::cMotionController()
-	: m_yaw(0)
-	, m_pitch(0)
-	, m_roll(0)
-	, m_originalYaw(0)
-	, m_originalPitch(0)
-	, m_originalRoll(0)
+	: m_udpYaw(0)
+	, m_udpPitch(0)
+	, m_udpRoll(0)
+	, m_joystickYaw(0)
+	, m_joystickPitch(0)
+	, m_joystickRoll(0)
+	, m_joystickHeave(0)
+	, m_mwaveYaw(0)
+	, m_mwavePitch(0)
+	, m_mwaveRoll(0)
+	, m_mwaveHeave(0)
+	, m_udpOriginalYaw(0)
+	, m_udpOriginalPitch(0)
+	, m_udpOriginalRoll(0)
 	, m_maxYawDeriv(5)
 	, m_maxPitchDeriv(5)
 	, m_maxRollDeriv(5)
-	, m_YawProportion(0.1f)
-	, m_PitchProportion(0.1f)
-	, m_RollProportion(0.1f)
-	, m_YawScale(1.f)
-	, m_PitchScale(1.f)
-	, m_RollScale(1.f)
-	, m_YawScale2(0.1f)
-	, m_PitchScale2(0.1f)
-	, m_RollScale2(0.1f)
+	, m_udpYawProportion(0.1f)
+	, m_udpPitchProportion(0.1f)
+	, m_udpRollProportion(0.1f)
+	, m_udpYawScale(1.f)
+	, m_udpPitchScale(1.f)
+	, m_udpRollScale(1.f)
+	, m_udpYawScale2(0.1f)
+	, m_udpPitchScale2(0.1f)
+	, m_udpRollScale2(0.1f)
 {
 
 }
@@ -33,7 +41,7 @@ cMotionController::~cMotionController()
 }
 
 
-void cMotionController::SetMotion(const float yaw, const float pitch, const float roll)
+void cMotionController::SetUDPMotion(const float yaw, const float pitch, const float roll)
 {
 	static int oldT = timeGetTime();
 	int curT = timeGetTime();
@@ -44,9 +52,9 @@ void cMotionController::SetMotion(const float yaw, const float pitch, const floa
 
 	oldT = curT;
 
-	float diffY = (yaw - m_yaw) * m_YawProportion;
-	float diffP = (pitch - m_pitch) * m_PitchProportion;
-	float diffR = (roll - m_roll) * m_RollProportion;
+	float diffY = (yaw - m_udpYaw) * m_udpYawProportion;
+	float diffP = (pitch - m_udpPitch) * m_udpPitchProportion;
+	float diffR = (roll - m_udpRoll) * m_udpRollProportion;
 
 // 	const float maxDiffYaw = m_maxYawDeriv;
 // 	const float maxDiffPitch = m_maxPitchDeriv;
@@ -59,52 +67,52 @@ void cMotionController::SetMotion(const float yaw, const float pitch, const floa
 // 	if (abs(diffR) > maxDiffRoll)
 // 		diffR = (diffR > 0) ? maxDiffRoll: -maxDiffRoll;
 
-	m_yaw += diffY;
-	m_pitch += diffP;
-	m_roll += diffR;
+	m_udpYaw += diffY;
+	m_udpPitch += diffP;
+	m_udpRoll += diffR;
 
-	m_originalYaw = yaw;
-	m_originalPitch = pitch;
-	m_originalRoll = roll;
+	m_udpOriginalYaw = yaw;
+	m_udpOriginalPitch = pitch;
+	m_udpOriginalRoll = roll;
 }
 
 
-void cMotionController::GetMotion(float &yaw, float &pitch, float &roll) 
+void cMotionController::GetUDPMotion(float &yaw, float &pitch, float &roll) 
 {
-	yaw = m_yaw;
-	pitch = m_pitch;
-	roll = m_roll;
+	yaw = m_udpYaw;
+	pitch = m_udpPitch;
+	roll = m_udpRoll;
 }
 
 
-void cMotionController::GetOriginalMotion(float &yaw, float &pitch, float &roll)
+void cMotionController::GetUDPOriginalMotion(float &yaw, float &pitch, float &roll)
 {
-	yaw = m_originalYaw;
-	pitch = m_originalPitch;
-	roll = m_originalRoll;
+	yaw = m_udpOriginalYaw;
+	pitch = m_udpOriginalPitch;
+	roll = m_udpOriginalRoll;
 }
 
 
 void cMotionController::GetProportion(OUT float &yaw, OUT float &pitch, OUT float &roll)
 {
-	yaw = m_YawProportion;
-	pitch = m_PitchProportion;
-	roll = m_RollProportion;
+	yaw = m_udpYawProportion;
+	pitch = m_udpPitchProportion;
+	roll = m_udpRollProportion;
 }
 
 
 void cMotionController::GetScale(OUT float &yaw, OUT float &pitch, OUT float &roll)
 {
-	yaw = m_YawScale;
-	pitch = m_PitchScale;
-	roll = m_RollScale;
+	yaw = m_udpYawScale;
+	pitch = m_udpPitchScale;
+	roll = m_udpRollScale;
 }
 
 
 void cMotionController::GetScale2(OUT float &yaw, OUT float &pitch, OUT float &roll)
 {
-	yaw = m_YawScale2;
-	pitch = m_PitchScale2;
-	roll = m_RollScale2;
+	yaw = m_udpYawScale2;
+	pitch = m_udpPitchScale2;
+	roll = m_udpRollScale2;
 }
 

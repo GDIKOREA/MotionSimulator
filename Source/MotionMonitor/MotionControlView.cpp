@@ -171,11 +171,11 @@ void CMotionControlView::Update(const float deltaSeconds)
 	if (m_incTime > 0.033f)
 	{
 		float roll, pitch, yaw;
-		cMotionController::Get()->GetMotion(yaw, pitch, roll);
+		cMotionController::Get()->GetUDPMotion(yaw, pitch, roll);
 		m_multiPlotWindows->SetString( common::format("%f;%f;%f;", yaw, pitch, roll).c_str(), 1 );
 
 		float originalRoll, originalPitch, originalYaw;
-		cMotionController::Get()->GetOriginalMotion(originalYaw, originalPitch, originalRoll);
+		cMotionController::Get()->GetUDPOriginalMotion(originalYaw, originalPitch, originalRoll);
 		m_multiPlotWindows->SetString(common::format("%f;%f;%f;", originalYaw, originalPitch, originalRoll).c_str(), 0);
 
 
@@ -210,7 +210,7 @@ void CMotionControlView::OnNMCustomdrawSliderYawDerivation(NMHDR *pNMHDR, LRESUL
 	const float deriv = r * 1;
 
 	m_EditYawMaxDeriv = deriv;
-	cMotionController::Get()->SetYawScale(deriv);
+	cMotionController::Get()->m_udpYawScale = deriv;
 
 	UpdateData(FALSE);
 
@@ -226,7 +226,7 @@ void CMotionControlView::OnNMCustomdrawSliderPitchDerivation(NMHDR *pNMHDR, LRES
  	const float deriv = r * 1;
  
  	m_EditPitchMaxDeriv = deriv;
- 	cMotionController::Get()->SetPitchScale(deriv);
+ 	cMotionController::Get()->m_udpPitchScale = deriv;
 
  	UpdateData(FALSE);
 
@@ -242,7 +242,7 @@ void CMotionControlView::OnNMCustomdrawSliderRollDerivation(NMHDR *pNMHDR, LRESU
 	const float deriv = r * 1;
 
 	m_EditRollMaxDeriv = deriv;
-	cMotionController::Get()->SetRollScale(deriv);
+	cMotionController::Get()->m_udpRollScale = deriv;
 
 	UpdateData(FALSE);
 
@@ -258,7 +258,7 @@ void CMotionControlView::OnNMCustomdrawSliderYawProportion(NMHDR *pNMHDR, LRESUL
 	const float deriv = r * 1;
 
 	m_EditYawProportion = deriv;
-	cMotionController::Get()->SetYawProportion(deriv);
+	cMotionController::Get()->m_udpYawProportion = deriv;
 
 	UpdateData(FALSE);
 
@@ -274,7 +274,7 @@ void CMotionControlView::OnNMCustomdrawSliderPitchProportion(NMHDR *pNMHDR, LRES
 	const float deriv = r * 1;
 
 	m_EditPitchProp = deriv;
-	cMotionController::Get()->SetPitchProportion(deriv);
+	cMotionController::Get()->m_udpPitchProportion = deriv;
 
 	UpdateData(FALSE);
 
@@ -290,7 +290,7 @@ void CMotionControlView::OnNMCustomdrawSliderRollProportion(NMHDR *pNMHDR, LRESU
 	const float deriv = r * 1;
 
 	m_EditRollProp = deriv;
-	cMotionController::Get()->SetRollProportion(deriv);
+	cMotionController::Get()->m_udpRollProportion = deriv;
 
 	UpdateData(FALSE);
 
@@ -306,7 +306,7 @@ void CMotionControlView::OnNMCustomdrawSliderYawScale2(NMHDR *pNMHDR, LRESULT *p
 	const float deriv = r * 1;
 
 	m_EditYawScale2 = deriv;
-	cMotionController::Get()->SetYawScale2(deriv);
+	cMotionController::Get()->m_udpYawScale2 = deriv;
 
 	UpdateData(FALSE);
 
@@ -322,7 +322,7 @@ void CMotionControlView::OnNMCustomdrawSliderPitchScale2(NMHDR *pNMHDR, LRESULT 
 	const float deriv = r * 1;
 
 	m_EditPitchScale2 = deriv;
-	cMotionController::Get()->SetPitchScale2(deriv);
+	cMotionController::Get()->m_udpPitchScale2 = deriv;
 
 	UpdateData(FALSE);
 
@@ -338,7 +338,7 @@ void CMotionControlView::OnNMCustomdrawSliderRollScale2(NMHDR *pNMHDR, LRESULT *
 	const float deriv = r * 1;
 
 	m_EditRollScale2 = deriv;
-	cMotionController::Get()->SetRollScale2(deriv);
+	cMotionController::Get()->m_udpRollScale2 = deriv;
 
 	UpdateData(FALSE);
 	

@@ -43,6 +43,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)..\Bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -131,6 +132,8 @@
     <ClInclude Include="Global.h" />
     <ClInclude Include="JoystickView.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="mixingconfig.h" />
+    <ClInclude Include="MixingView.h" />
     <ClInclude Include="MotionController.h" />
     <ClInclude Include="MotionControlView.h" />
     <ClInclude Include="MotionInputView.h" />
@@ -172,6 +175,8 @@
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="JoystickView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="mixingconfig.cpp" />
+    <ClCompile Include="MixingView.cpp" />
     <ClCompile Include="MotionController.cpp" />
     <ClCompile Include="MotionControlView.cpp" />
     <ClCompile Include="MotionInputView.cpp" />

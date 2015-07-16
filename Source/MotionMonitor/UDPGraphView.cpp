@@ -281,7 +281,7 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 		if (m_multiPlotWindows)
 			m_multiPlotWindows->SetString(ss.str().c_str());
 
-		cMotionController::Get()->SetMotion(0, pitch, roll);
+		cMotionController::Get()->SetUDPMotion(0, pitch, roll);
 	}
 	else
 	{
@@ -314,7 +314,7 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 		if (m_multiPlotWindows)
 			m_multiPlotWindows->SetString(ss.str().c_str());
 
-		cMotionController::Get()->SetMotion(0, pitch, roll);
+		cMotionController::Get()->SetUDPMotion(0, pitch, roll);
 	}
 
 	

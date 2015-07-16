@@ -116,7 +116,7 @@ void CMotionInputView::Update(const float deltaSeconds)
 	if (m_incTime > 0.033f)
 	{
 		float roll, pitch, yaw;
-		cMotionController::Get()->GetOriginalMotion(yaw, pitch, roll);
+		cMotionController::Get()->GetUDPOriginalMotion(yaw, pitch, roll);
 		m_multiPlotWindows->SetString(common::format("%f;%f;%f;", yaw, pitch, roll).c_str());
 
 		m_multiPlotWindows->DrawGraph(m_incTime);

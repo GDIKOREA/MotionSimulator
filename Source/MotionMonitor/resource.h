@@ -95,6 +95,7 @@
 #define IDD_DIALOG_X2GRAPH              322
 #define IDD_DIALOG_JOYSTICK             323
 #define IDD_DIALOG_MWAVE                324
+#define IDD_DIALOG_MIXING               326
 #define IDC_CHECK_FIXEDMODE             1000
 #define IDC_EDIT_COMMAND                1001
 #define IDC_BUTTON_HELP                 1002
@@ -179,15 +180,16 @@
 #define IDC_BUTTON_PLAY                 1058
 #define IDC_SLIDER_HEAVE                1059
 #define IDC_STATIC_HEAVE                1060
+#define IDC_RICHEDIT2_COMMAND           1060
 #define IDC_EDIT_HEAVE                  1061
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        326
+#define _APS_NEXT_RESOURCE_VALUE        327
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1060
+#define _APS_NEXT_CONTROL_VALUE         1062
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

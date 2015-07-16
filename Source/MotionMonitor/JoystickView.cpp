@@ -6,7 +6,7 @@
 #include "JoystickView.h"
 #include "afxdialogex.h"
 #include <stdio.h>
-#include "motionwave.h"
+#include "MotionController.h"
 
 
 #define _USE_MATH_DEFINES
@@ -253,6 +253,11 @@ void CJoystickView::Update(const float deltaSeconds)
 		const float pitch = (m_AxisY + m_PitchOffset) * m_PitchScale;
 		const float roll = (m_AxisX + m_RollOffset) * m_RollScale;
 		const float heave = (m_AxisH + m_HeaveOffset) * m_HeaveScale;
+
+		cMotionController::Get()->m_joystickYaw = yaw;
+		cMotionController::Get()->m_joystickPitch = pitch;
+		cMotionController::Get()->m_joystickRoll = roll;
+		cMotionController::Get()->m_joystickHeave = heave;
 
 		if (m_isRecord)
 		{
