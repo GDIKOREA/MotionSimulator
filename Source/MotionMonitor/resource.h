@@ -182,14 +182,16 @@
 #define IDC_STATIC_HEAVE                1060
 #define IDC_RICHEDIT2_COMMAND           1060
 #define IDC_EDIT_HEAVE                  1061
+#define IDC_BUTTON_REFRESH              1066
+#define IDC_STATIC_GROUP                1067
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        327
+#define _APS_NEXT_RESOURCE_VALUE        328
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1062
+#define _APS_NEXT_CONTROL_VALUE         1070
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

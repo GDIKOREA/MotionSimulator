@@ -27,6 +27,7 @@ CUDPGraphView::CUDPGraphView(CWnd* pParent /*=NULL*/)
 	, m_ServerPort(20777)
 	, m_multiPlotWindows(NULL)
 //	, m_isServerBind(false)
+	, m_incTime(0)
 	, m_isPause(false)
 {
 }
@@ -232,6 +233,8 @@ void CUDPGraphView::OnBnClickedButtonUpdate()
 
 void CUDPGraphView::Update(const float deltaSeconds)
 {
+	m_incTime += deltaSeconds;
+
  	if (!m_isPause && m_multiPlotWindows)
  		m_multiPlotWindows->DrawGraph(deltaSeconds);
 }
@@ -281,7 +284,8 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 		if (m_multiPlotWindows)
 			m_multiPlotWindows->SetString(ss.str().c_str());
 
-		cMotionController::Get()->SetUDPMotion(0, pitch, roll);
+		cMotionController::Get()->m_udpMod.Update(m_incTime, 0, pitch, roll, 0);
+		m_incTime = 0;
 	}
 	else
 	{
@@ -314,7 +318,8 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 		if (m_multiPlotWindows)
 			m_multiPlotWindows->SetString(ss.str().c_str());
 
-		cMotionController::Get()->SetUDPMotion(0, pitch, roll);
+		cMotionController::Get()->m_udpMod.Update(m_incTime, 0, pitch, roll, 0);
+		m_incTime = 0;
 	}
 
 	

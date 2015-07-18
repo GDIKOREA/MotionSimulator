@@ -151,6 +151,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UDPEditorView.h" />
     <ClInclude Include="UDPGraphView.h" />
+    <ClInclude Include="motionwavemodulator.h" />
     <ClInclude Include="X2GraphDialog.h" />
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +196,7 @@
     </ClCompile>
     <ClCompile Include="UDPEditorView.cpp" />
     <ClCompile Include="UDPGraphView.cpp" />
+    <ClCompile Include="motionwavemodulator.cpp" />
     <ClCompile Include="X2GraphDialog.cpp" />
   </ItemGroup>
   <ItemGroup>

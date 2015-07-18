@@ -3,6 +3,8 @@
 //
 #pragma once
 
+#include "motionwavemodulator.h"
+
 
 class cMotionController : public common::cSingleton<cMotionController>
 {
@@ -10,47 +12,21 @@ public:
 	cMotionController();
 	virtual ~cMotionController();
 
-	void SetUDPMotion(const float yaw, const float pitch, const float roll);
-	void GetUDPMotion(float &yaw, float &pitch, float &roll);
-	void GetUDPOriginalMotion(float &yaw, float &pitch, float &roll);
-
-	void GetProportion(OUT float &yaw, OUT float &pitch, OUT float &roll);
-	void GetScale(OUT float &yaw, OUT float &pitch, OUT float &roll);
-	void GetScale2(OUT float &yaw, OUT float &pitch, OUT float &roll);
-
 
 public:
-	float m_udpYaw;
-	float m_udpPitch;
-	float m_udpRoll;
+	// 최종적으로 계산된 값.
+	float m_yaw;
+	float m_pitch;
+	float m_roll;
+	float m_heave;
 
-	float m_joystickYaw;
-	float m_joystickPitch;
-	float m_joystickRoll;
-	float m_joystickHeave;
+	
+	// Joystick으로부터 받아서 계산된 값
+	cMotionWaveModulator m_joystickMod;
 
-	float m_mwaveYaw;
-	float m_mwavePitch;
-	float m_mwaveRoll;
-	float m_mwaveHeave;
+	// UDP로 부터 받아서 계산된 값
+	cMotionWaveModulator m_udpMod;
 
-	float m_udpOriginalYaw;
-	float m_udpOriginalPitch;
-	float m_udpOriginalRoll;
-
-	float m_maxYawDeriv;
-	float m_maxPitchDeriv;
-	float m_maxRollDeriv;
-
-	float m_udpYawProportion;
-	float m_udpPitchProportion;
-	float m_udpRollProportion;
-
-	float m_udpYawScale;
-	float m_udpPitchScale;
-	float m_udpRollScale;
-
-	float m_udpYawScale2;
-	float m_udpPitchScale2;
-	float m_udpRollScale2;
+	// MotionWave로부터 받아서 계산된 값.
+	cMotionWaveModulator m_mwavMod;
 };

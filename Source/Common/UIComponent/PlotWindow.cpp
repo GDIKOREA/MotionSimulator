@@ -89,6 +89,7 @@ void CPlotWindow::OnDraw(CDC* pDC)
 	}
 
 	const float timeElapse = m_plots[0].xy[m_plots[0].renderStartIndex].first - m_startTime; // 지나간 시간만큼 timeline을 이동시킨다.
+	const float renderStartX = m_plots[0].xy[m_plots[0].renderStartIndex].first;
 
 	if (oneSecondsWidth == 0)
 		return;
@@ -144,7 +145,8 @@ void CPlotWindow::OnDraw(CDC* pDC)
 		int lastX = 0;
 		for (int i = plot.renderStartIndex; i != plot.tailIdx; i = ++i % plot.xy.size())
 		{
-			const int x = (int)((plot.xy[i].first - plot.xy[plot.renderStartIndex].first) * m_scaleX) - 50;
+			//const int x = (int)((plot.xy[i].first - plot.xy[plot.renderStartIndex].first) * m_scaleX) - 50;
+			const int x = (int)((plot.xy[i].first - renderStartX) * m_scaleX) - 50;
 			const int y = h - (int)((plot.xy[i].second - m_minY) * m_scaleY);
 			lastX = x;
 

@@ -5,6 +5,7 @@
 #include "MotionMonitor.h"
 #include "MotionWaveView.h"
 #include "afxdialogex.h"
+#include "MotionController.h"
 
 
 const static CString g_motionwavePlotCommand = L"plot1 = 0, 0, 0, 0, 0\r\n\
@@ -40,11 +41,14 @@ void CMotionWaveView::DoDataExchange(CDataExchange* pDX)
 	CDockablePaneChildView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TREE_FILE, m_FileTree);
 	DDX_Control(pDX, IDC_BUTTON_PLAY, m_PlayButton);
+	DDX_Control(pDX, IDC_RICHEDIT2_COMMAND, m_EditCommand);
 }
 
 
 BEGIN_ANCHOR_MAP(CMotionWaveView)
 	ANCHOR_MAP_ENTRY(IDC_TREE_FILE, ANF_LEFT | ANF_TOP | ANF_RIGHT )
+	ANCHOR_MAP_ENTRY(IDC_STATIC_GROUP, ANF_LEFT | ANF_TOP | ANF_RIGHT)
+	ANCHOR_MAP_ENTRY(IDC_RICHEDIT2_COMMAND, ANF_LEFT | ANF_TOP | ANF_RIGHT )
 	ANCHOR_MAP_ENTRY(IDC_STATIC_GRAPH, ANF_LEFT | ANF_TOP | ANF_RIGHT | ANF_BOTTOM)
 	ANCHOR_MAP_ENTRY(IDC_BUTTON_CLEAR, ANF_TOP | ANF_RIGHT)
 END_ANCHOR_MAP()
@@ -58,6 +62,8 @@ BEGIN_MESSAGE_MAP(CMotionWaveView, CDockablePaneChildView)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_FILE, &CMotionWaveView::OnSelchangedTreeFile)
 	ON_BN_CLICKED(IDC_BUTTON_PLAY, &CMotionWaveView::OnBnClickedButtonPlay)
 	ON_BN_CLICKED(IDC_BUTTON_CLEAR, &CMotionWaveView::OnBnClickedButtonClear)
+	ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CMotionWaveView::OnBnClickedButtonRefresh)
+	ON_BN_CLICKED(IDC_BUTTON_UPDATE, &CMotionWaveView::OnBnClickedButtonUpdate)
 END_MESSAGE_MAP()
 
 
@@ -74,7 +80,6 @@ BOOL CMotionWaveView::OnInitDialog()
 	m_FileTree.Update("./", extList);
 	m_FileTree.ExpandAll();
 
-
 	// PlotÃ¢ »ý¼º.
 	CRect rect;
 	GetClientRect(rect);
@@ -87,9 +92,36 @@ BOOL CMotionWaveView::OnInitDialog()
 	m_multiPlotWindows->ShowWindow(SW_SHOW);
 	m_multiPlotWindows->SetFixedWidthMode(true);
 
-
 	m_multiPlotWindows->ProcessPlotCommand(g_motionwavePlotCommand, 1);
 	m_multiPlotWindows->SetFixedWidthMode(true);
+
+
+	const CString command =
+L"#joystick\n\
+\n\
+yaw_proportion = 1\n\
+pitch_proportion = 1\n\
+roll_proportion = 1\n\
+heave_proportion = 1\n\
+\n\
+yaw_c1 = 0\n\
+yaw_c2 = 1\n\
+yaw_c3 = 0\n\
+\n\
+pitch_c1 = 0\n\
+pitch_c2 = 1\n\
+pitch_c3 = 0\n\
+\n\
+roll_c1 = 0\n\
+roll_c2 = 1\n\
+roll_c3 = 0\n\
+\n\
+heave_c1 = 0\n\
+heave_c2 = 1\n\
+heave_c3 = 0\n\
+";
+	m_EditCommand.SetWindowTextW(command);
+
 
 	return TRUE;
 }
@@ -143,8 +175,11 @@ void CMotionWaveView::Update(const float deltaSeconds)
 {
 	RET(!m_isPlay);
 
+	const float elapseT = 0.03f;
+
 	m_incTime += deltaSeconds;
-	if (m_incTime > 0.03f)
+
+	if (m_incTime > elapseT)
 	{
 		sMotionData data;
 		if (m_mwaveFile.Play(m_incTime, data))
@@ -153,12 +188,14 @@ void CMotionWaveView::Update(const float deltaSeconds)
 			m_multiPlotWindows->SetXY(1, data.pitch, 0);
 			m_multiPlotWindows->SetXY(2, data.roll, 0);
 			m_multiPlotWindows->SetXY(3, data.heave, 0);
+
+			cMotionController::Get()->m_mwavMod.Update(m_incTime, data.yaw, data.pitch, data.roll, data.heave);
 		}
 
-		m_multiPlotWindows->DrawGraph(m_incTime);
-
-		m_incTime = 0;
+		m_incTime -= elapseT;
 	}
+
+	m_multiPlotWindows->DrawGraph(deltaSeconds);
 }
 
 
@@ -175,6 +212,11 @@ void CMotionWaveView::OnBnClickedButtonPlay()
 		m_isPlay = true;
 		m_mwaveFile.StartPlay();
 		m_PlayButton.SetWindowTextW(L"Stop");
+
+		// update config
+		CString command;
+		m_EditCommand.GetWindowTextW(command);
+		cMotionController::Get()->m_mwavMod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
 	}
 }
 
@@ -182,4 +224,23 @@ void CMotionWaveView::OnBnClickedButtonPlay()
 void CMotionWaveView::OnBnClickedButtonClear()
 {
 	m_multiPlotWindows->ProcessPlotCommand(g_motionwavePlotCommand, 1);
+}
+
+
+void CMotionWaveView::OnBnClickedButtonRefresh()
+{
+	list<string> extList;
+	extList.push_back("mwav");
+	m_FileTree.Update("./", extList);
+	m_FileTree.ExpandAll();
+}
+
+
+void CMotionWaveView::OnBnClickedButtonUpdate()
+{
+	UpdateData();
+
+	CString command;
+	m_EditCommand.GetWindowTextW(command);
+	cMotionController::Get()->m_mwavMod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
 }

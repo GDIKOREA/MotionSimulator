@@ -243,7 +243,7 @@ bool cMotionWave::Play(const float deltaSeconds, sMotionData &out)
 				isNextData = true;
 			}
 
-			m_playIncTime = 0;
+			m_playIncTime -= m_samplingTime;
 		}
 	}
 

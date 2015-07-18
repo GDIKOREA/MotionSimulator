@@ -15,7 +15,6 @@ CMotionOutputView::CMotionOutputView(CWnd* pParent /*=NULL*/)
 	, m_isStartSendMotion(false)
 	, m_incTime(0)
 	, m_incSerialTime(0)
-	, m_incNoiseTime(0)
 	, m_multiPlotWindows(NULL)
 	, m_IsOnlyEmergency(FALSE)
 {
@@ -166,92 +165,24 @@ void CMotionOutputView::Update(const float deltaSeconds)
 		//Quaternion quat = cController::Get()->GetCubeFlight().GetRotation();
 		m_incTime += deltaSeconds;
 		m_incSerialTime += deltaSeconds;
-		m_incNoiseTime += deltaSeconds;
 
-		if (m_incTime > 0.1f)
+		const int out_yaw = 256;
+		const int out_sway = 256;
+		const int out_surge = 256;
+		const int out_switch = 0;
+		const int out_pitch = (int)cMotionController::Get()->m_pitch;
+		const int out_roll = (int)cMotionController::Get()->m_roll;
+		const int out_heave = (int)cMotionController::Get()->m_heave;
+
+		if (m_incTime > 0.02f)
 		{
-			float roll, pitch, yaw;
-			cMotionController::Get()->GetUDPMotion(yaw, pitch, roll);
-
-			float roll_scale, pitch_scale, yaw_scale;
-			cMotionController::Get()->GetScale(yaw_scale, pitch_scale, roll_scale);
-
-			float roll_scale2, pitch_scale2, yaw_scale2;
-			cMotionController::Get()->GetScale2(yaw_scale2, pitch_scale2, roll_scale2);
-
-//			CString str;
-// 			str.Format(L"roll=%f, pitch=%f, yaw=%f\n", roll, pitch, yaw);
-// 			AppendToLogAndScroll(&m_Log, str, RGB(200, 200, 200));
-			//m_multiPlotWindows->SetString(common::format("%f;%f;%f;", yaw, pitch, roll).c_str(), 0);
-
-			const int MAX_NOISE = 0;
-			const float ct1 = 20.f;
-			const float st1 = 20.f;
-			const float amp1 = MAX_NOISE;
-			const float amp2 = MAX_NOISE;
-			const float noise1 = cos(m_incNoiseTime * ct1) * amp1;
-			const float noise2 = sin(m_incNoiseTime * st1) * amp2;
-
-			int out_pitch = 256;
-			int out_roll = 256;
-			if (1)
-			{ // Dirt3
- 				out_pitch = (int)(( (pitch*pitch*pitch_scale2 + pitch*pitch_scale) * 255.f) + 255);
- 				out_roll = (int)( ( (roll*roll*roll_scale2 + roll*roll_scale) *  255.f) + 255);
-			}
-			else
-			{
-				out_pitch = (int)RAD2ANGLE(pitch) + 360;
-				out_roll = (int)RAD2ANGLE(roll) + 360;
-				out_pitch = out_pitch % 360;
-				out_roll = out_roll % 360;
-			}
-
-			int out_yaw = 256;
-			const int out_sway = 256;
-			const int out_surge = 256;
-			const int out_heave = 512;
-			const int out_switch = 0;
-
-			if (out_pitch > (512 - MAX_NOISE))
-				out_pitch = (512 - MAX_NOISE);
-			if (out_pitch < MAX_NOISE)
-				out_pitch = MAX_NOISE;
-
-			if (out_roll > (512 - MAX_NOISE))
-				out_roll = (512 - MAX_NOISE);
-			if (out_roll < MAX_NOISE)
-				out_roll = MAX_NOISE;
-
-			if (out_yaw > (512 - MAX_NOISE))
-				out_yaw = (512 - MAX_NOISE);
-			if (out_yaw < MAX_NOISE)
-				out_yaw = MAX_NOISE;
-
-
-			out_pitch += (int)noise1;
-			out_roll += (int)noise2;
-
-
-			if (out_pitch > 512)
-				out_pitch = 512;
-			if (out_pitch < 0)
-				out_pitch = 0;
-
-			if (out_roll > 512)
-				out_roll = 512;
-			if (out_roll < 0)
-				out_roll = 0;
-
-			if (out_yaw > 512)
-				out_yaw = 512;
-			if (out_yaw < 0)
-				out_yaw = 0;
-
 			m_multiPlotWindows->SetString(common::format("%d;%d;%d;", out_yaw, out_pitch, out_roll).c_str(), 0);
-
 			m_multiPlotWindows->DrawGraph(m_incTime);
+			m_incTime = 0;
+		}
 
+		if (m_incSerialTime > 0.1f)
+		{
 			if (m_isStartSendMotion && !m_IsOnlyEmergency)
 			{
 				const string out = common::format(
@@ -264,7 +195,7 @@ void CMotionOutputView::Update(const float deltaSeconds)
 				cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
 			}
 
-			m_incTime = 0;
+			m_incSerialTime = 0;
 		}
 	}
 }
@@ -346,8 +277,8 @@ void CMotionOutputView::SendMotionControllSwitchMessage(const int state)
 	if (!m_isStartSendMotion)
 		return;
 
-	float roll, pitch, yaw;
-	cMotionController::Get()->GetUDPMotion(yaw, pitch, roll);
+	float roll, pitch, yaw, heave;
+	cMotionController::Get()->m_udpMod.GetFinal(yaw, pitch, roll, heave);
 
 	const int out_pitch = 256;// (int)(pitch * 255) + 255;
 	const int out_roll = 256;
@@ -365,7 +296,7 @@ void CMotionOutputView::SendMotionControllSwitchMessage(const int state)
 	
 	cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
 
-	m_incTime = 0;
+	m_incSerialTime = 0;
 }
 
 

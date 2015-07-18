@@ -165,6 +165,11 @@ void CMixingView::Update(const float deltaSeconds)
 		float yaw, pitch, roll, heave;
 		Mixing(deltaSeconds, yaw, pitch, roll, heave);
 
+		cMotionController::Get()->m_yaw = yaw;
+		cMotionController::Get()->m_pitch = pitch;
+		cMotionController::Get()->m_roll = roll;
+		cMotionController::Get()->m_heave = heave;
+
 		m_multiPlotWindows->SetXY(0, yaw, 0);
 		m_multiPlotWindows->SetXY(1, pitch, 0);
 		m_multiPlotWindows->SetXY(2, roll, 0);
@@ -176,6 +181,7 @@ void CMixingView::Update(const float deltaSeconds)
 }
 
 
+// 입력값을 믹싱해서 리턴한다.
 void CMixingView::Mixing(const float deltaSeconds, 
 	OUT float &yaw, OUT float &pitch, OUT float &roll, OUT float &heave)
 {
@@ -188,21 +194,93 @@ void CMixingView::Mixing(const float deltaSeconds,
 	{
 		if (m_config.m_input1_enable)
 		{
+			float joyYaw, joyPitch, joyRoll, joyHeave;
+			cMotionController::Get()->m_joystickMod.GetFinal(joyYaw, joyPitch, joyRoll, joyHeave);
+
 			if (m_config.m_rate1_all == 0)
 			{
-				yaw += cMotionController::Get()->m_joystickYaw * m_config.m_rate1_yaw;
-				pitch += cMotionController::Get()->m_joystickPitch * m_config.m_rate1_pitch;
-				roll += cMotionController::Get()->m_joystickRoll * m_config.m_rate1_roll;
-				heave += cMotionController::Get()->m_joystickHeave * m_config.m_rate1_heave;
+				yaw += joyYaw * m_config.m_rate1_yaw;
+				pitch += joyPitch * m_config.m_rate1_pitch;
+				roll += joyRoll * m_config.m_rate1_roll;
+				heave += joyHeave * m_config.m_rate1_heave;
 			}
 			else
 			{
-				yaw += cMotionController::Get()->m_joystickYaw * m_config.m_rate1_all;
-				pitch += cMotionController::Get()->m_joystickPitch * m_config.m_rate1_all;
-				roll += cMotionController::Get()->m_joystickRoll * m_config.m_rate1_all;
-				heave += cMotionController::Get()->m_joystickHeave * m_config.m_rate1_all;
+				yaw += joyYaw * m_config.m_rate1_all;
+				pitch += joyPitch * m_config.m_rate1_all;
+				roll += joyRoll * m_config.m_rate1_all;
+				heave += joyHeave * m_config.m_rate1_all;
 			}
 		}
 	}
+
+	if (m_config.m_inputType | INPUT_UDP)
+	{
+		if (m_config.m_input2_enable)
+		{
+			float udpYaw, udpPitch, udpRoll, udpHeave;
+			cMotionController::Get()->m_udpMod.GetFinal(udpYaw, udpPitch, udpRoll, udpHeave);
+
+			if (m_config.m_rate2_all == 0)
+			{
+				yaw += udpYaw * m_config.m_rate2_yaw;
+				pitch += udpPitch * m_config.m_rate2_pitch;
+				roll += udpRoll * m_config.m_rate2_roll;
+				heave += udpHeave * m_config.m_rate2_heave;
+			}
+			else
+			{
+				yaw += udpYaw * m_config.m_rate2_all;
+				pitch += udpPitch * m_config.m_rate2_all;
+				roll += udpRoll * m_config.m_rate2_all;
+				heave += udpHeave * m_config.m_rate2_all;
+			}
+		}
+	}
+
+	if (m_config.m_inputType | INPUT_MOTIONWAVE)
+	{
+		if (m_config.m_input3_enable)
+		{
+			float mwavYaw, mwavPitch, mwavRoll, mwavHeave;
+			cMotionController::Get()->m_mwavMod.GetFinal(mwavYaw, mwavPitch, mwavRoll, mwavHeave);
+
+			if (m_config.m_rate3_all == 0)
+			{
+				yaw += mwavYaw * m_config.m_rate3_yaw;
+				pitch += mwavPitch * m_config.m_rate3_pitch;
+				roll += mwavRoll * m_config.m_rate3_roll;
+				heave += mwavHeave * m_config.m_rate3_heave;
+			}
+			else
+			{
+				yaw += mwavYaw * m_config.m_rate3_all;
+				pitch += mwavPitch * m_config.m_rate3_all;
+				roll += mwavRoll * m_config.m_rate3_all;
+				heave += mwavHeave * m_config.m_rate3_all;
+			}
+		}
+	}
+
+
+	if (pitch > 512)
+		pitch = 512;
+	if (pitch < 0)
+		pitch = 0;
+
+	if (roll > 512)
+		roll = 512;
+	if (roll < 0)
+		roll = 0;
+
+	if (yaw > 512)
+		yaw = 512;
+	if (yaw < 0)
+		yaw = 0;
+
+	if (heave > 512)
+		heave = 512;
+	if (heave < 0)
+		heave = 0;
 
 }

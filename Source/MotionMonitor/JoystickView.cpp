@@ -43,22 +43,6 @@ CJoystickView::CJoystickView(CWnd* pParent /*=NULL*/)
 	, m_isMotionOutputStart(false)
 	, m_isRecord(false)
 	, m_incTime(0)
-	, m_EditYawOffset(L"0")
-	, m_EditPitchOffset(L"0")
-	, m_EditRollOffset(L"0")
-	, m_EditYawScale(L"0")
-	, m_EditPitchScale(L"0")
-	, m_EditRollScale(L"0")
-	, m_EditHeaveOffset(L"0")
-	, m_EditHeaveScale(L"0")
-	, m_YawOffset(0)
-	, m_PitchOffset(0)
-	, m_RollOffset(0)
-	, m_HeaveOffset(0)
-	, m_YawScale(1)
-	, m_PitchScale(1)
-	, m_RollScale(1)
-	, m_HeaveScale(1)
 {
 }
 
@@ -71,45 +55,14 @@ void CJoystickView::DoDataExchange(CDataExchange* pDX)
 	CDockablePaneChildView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BUTTON_START, m_StartButton);
 	DDX_Control(pDX, IDC_BUTTON_MOTION_OUTPUT_START, m_MotionOutputStartButton);
-
-	DDX_Control(pDX, IDC_SLIDER_YAW_OFFSET, m_SliderYawOffset);
-	DDX_Control(pDX, IDC_SLIDER_PITCH_OFFSET, m_SliderPitchOffset);
-	DDX_Control(pDX, IDC_SLIDER_ROLL_OFFSET, m_SliderRollOffset);
-	DDX_Control(pDX, IDC_SLIDER_YAW, m_SliderYawScale);
-	DDX_Control(pDX, IDC_SLIDER_PITCH, m_SliderPitchScale);
-	DDX_Control(pDX, IDC_SLIDER_ROLL, m_SliderRollScale);
-	DDX_Text(pDX, IDC_EDIT_YAW_OFFSET, m_EditYawOffset);
-	DDX_Text(pDX, IDC_EDIT_PITCH_OFFSET, m_EditPitchOffset);
-	DDX_Text(pDX, IDC_EDIT_ROLL_OFFSET, m_EditRollOffset);
-	DDX_Text(pDX, IDC_EDIT_YAW, m_EditYawScale);
-	DDX_Text(pDX, IDC_EDIT_PITCH, m_EditPitchScale);
-	DDX_Text(pDX, IDC_EDIT_ROLL, m_EditRollScale);
-	DDX_Control(pDX, IDC_SLIDER_HEAVE_OFFSET, m_SliderHeaveOffset);
-	DDX_Text(pDX, IDC_EDIT_HEAVE_OFFSET, m_EditHeaveOffset);
-	DDX_Control(pDX, IDC_SLIDER_HEAVE, m_SliderHeaveScale);
-	DDX_Text(pDX, IDC_EDIT_HEAVE, m_EditHeaveScale);
 	DDX_Control(pDX, IDC_BUTTON_RECORD, m_RecordButton);
+	DDX_Control(pDX, IDC_RICHEDIT2_COMMAND, m_EditCommand);
 }
 
 
 BEGIN_ANCHOR_MAP(CJoystickView)
  	ANCHOR_MAP_ENTRY(IDC_STATIC_GRAPH, ANF_LEFT | ANF_TOP | ANF_RIGHT | ANF_BOTTOM)
-	ANCHOR_MAP_ENTRY(IDC_SLIDER_YAW_OFFSET, ANF_LEFT | ANF_TOP | ANF_RIGHT )
-	ANCHOR_MAP_ENTRY(IDC_SLIDER_PITCH_OFFSET, ANF_LEFT | ANF_TOP | ANF_RIGHT)
-	ANCHOR_MAP_ENTRY(IDC_SLIDER_ROLL_OFFSET, ANF_LEFT | ANF_TOP | ANF_RIGHT)
-	ANCHOR_MAP_ENTRY(IDC_SLIDER_HEAVE_OFFSET, ANF_LEFT | ANF_TOP | ANF_RIGHT)
-	ANCHOR_MAP_ENTRY(IDC_SLIDER_YAW, ANF_LEFT | ANF_TOP | ANF_RIGHT)
-	ANCHOR_MAP_ENTRY(IDC_SLIDER_PITCH, ANF_LEFT | ANF_TOP | ANF_RIGHT)
-	ANCHOR_MAP_ENTRY(IDC_SLIDER_ROLL, ANF_LEFT | ANF_TOP | ANF_RIGHT)
-	ANCHOR_MAP_ENTRY(IDC_SLIDER_HEAVE, ANF_LEFT | ANF_TOP | ANF_RIGHT)
-	ANCHOR_MAP_ENTRY(IDC_EDIT_YAW_OFFSET, ANF_TOP | ANF_RIGHT )
-	ANCHOR_MAP_ENTRY(IDC_EDIT_PITCH_OFFSET, ANF_TOP | ANF_RIGHT)
-	ANCHOR_MAP_ENTRY(IDC_EDIT_ROLL_OFFSET, ANF_TOP | ANF_RIGHT)
-	ANCHOR_MAP_ENTRY(IDC_EDIT_HEAVE_OFFSET, ANF_TOP | ANF_RIGHT)
-	ANCHOR_MAP_ENTRY(IDC_EDIT_YAW, ANF_TOP | ANF_RIGHT)
-	ANCHOR_MAP_ENTRY(IDC_EDIT_PITCH, ANF_TOP | ANF_RIGHT)
-	ANCHOR_MAP_ENTRY(IDC_EDIT_ROLL, ANF_TOP | ANF_RIGHT)
-	ANCHOR_MAP_ENTRY(IDC_EDIT_HEAVE, ANF_TOP | ANF_RIGHT)
+	ANCHOR_MAP_ENTRY(IDC_RICHEDIT2_COMMAND, ANF_LEFT | ANF_TOP | ANF_RIGHT )
 
 	ANCHOR_MAP_ENTRY(IDC_BUTTON_RECORD, ANF_TOP | ANF_RIGHT)
 END_ANCHOR_MAP()
@@ -122,22 +75,6 @@ BEGIN_MESSAGE_MAP(CJoystickView, CDockablePaneChildView)
 	ON_BN_CLICKED(IDC_BUTTON_START, &CJoystickView::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_BUTTON_MOTION_OUTPUT_START, &CJoystickView::OnBnClickedButtonMotionOutputStart)
 	ON_BN_CLICKED(IDC_BUTTON_RECORD, &CJoystickView::OnBnClickedButtonRecord)
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_YAW_OFFSET, &CJoystickView::OnNMCustomdrawSliderYawOffset)
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_PITCH_OFFSET, &CJoystickView::OnNMCustomdrawSliderPitchOffset)
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_ROLL_OFFSET, &CJoystickView::OnNMCustomdrawSliderRollOffset)
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_YAW, &CJoystickView::OnNMCustomdrawSliderYaw)
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_PITCH, &CJoystickView::OnNMCustomdrawSliderPitch)
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_ROLL, &CJoystickView::OnNMCustomdrawSliderRoll)
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_HEAVE_OFFSET, &CJoystickView::OnNMCustomdrawSliderHeaveOffset)
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_HEAVE, &CJoystickView::OnNMCustomdrawSliderHeave)
-	ON_EN_CHANGE(IDC_EDIT_YAW_OFFSET, &CJoystickView::OnEnChangeEditYawOffset)
-	ON_EN_CHANGE(IDC_EDIT_PITCH_OFFSET, &CJoystickView::OnEnChangeEditPitchOffset)
-	ON_EN_CHANGE(IDC_EDIT_ROLL_OFFSET, &CJoystickView::OnEnChangeEditRollOffset)
-	ON_EN_CHANGE(IDC_EDIT_HEAVE_OFFSET, &CJoystickView::OnEnChangeEditHeaveOffset)
-	ON_EN_CHANGE(IDC_EDIT_YAW, &CJoystickView::OnEnChangeEditYaw)
-	ON_EN_CHANGE(IDC_EDIT_PITCH, &CJoystickView::OnEnChangeEditPitch)
-	ON_EN_CHANGE(IDC_EDIT_ROLL, &CJoystickView::OnEnChangeEditRoll)
-	ON_EN_CHANGE(IDC_EDIT_HEAVE, &CJoystickView::OnEnChangeEditHeave)
 END_MESSAGE_MAP()
 
 
@@ -162,26 +99,33 @@ BOOL CJoystickView::OnInitDialog()
 	m_multiPlotWindows->SetFixedWidthMode(true);
 
 
-	m_SliderYawOffset.SetRange(-512, 512, TRUE);
-	m_SliderYawOffset.SetPos(0);
-	m_SliderPitchOffset.SetRange(-512, 512, TRUE);
-	m_SliderPitchOffset.SetPos(0);
-	m_SliderRollOffset.SetRange(-512, 512, TRUE);
-	m_SliderRollOffset.SetPos(0);
-	m_SliderHeaveOffset.SetRange(-128, 128, TRUE);
-	m_SliderHeaveOffset.SetPos(0);
-
-	m_SliderYawScale.SetRange(-3000, 3000, TRUE);
-	m_SliderYawScale.SetPos(1000);
-	m_SliderPitchScale.SetRange(-3000, 3000, TRUE);
-	m_SliderPitchScale.SetPos(1000);
-	m_SliderRollScale.SetRange(-3000, 3000, TRUE);
-	m_SliderRollScale.SetPos(1000);
-	m_SliderHeaveScale.SetRange(-3000, 3000, TRUE);
-	m_SliderHeaveScale.SetPos(1000);
+	const CString command =
+L"#joystick\n\
+\n\
+yaw_proportion = 1\n\
+pitch_proportion = 1\n\
+roll_proportion = 1\n\
+heave_proportion = 1\n\
+\n\
+yaw_c1 = 0\n\
+yaw_c2 = 1\n\
+yaw_c3 = 0\n\
+\n\
+pitch_c1 = 0\n\
+pitch_c2 = 1\n\
+pitch_c3 = 0\n\
+\n\
+roll_c1 = 0\n\
+roll_c2 = 1\n\
+roll_c3 = 0\n\
+\n\
+heave_c1 = 0\n\
+heave_c2 = 1\n\
+heave_c3 = 0\n\
+";
+	m_EditCommand.SetWindowTextW(command);
 
 	UpdateData(FALSE);
-
 
 	return TRUE;
 }
@@ -222,6 +166,8 @@ void CJoystickView::OnBnClickedButtonStart()
 {
 	RET(!m_multiPlotWindows);
 
+	UpdateData();
+
 	if (m_isStart)
 	{
 		m_isStart = false;
@@ -230,12 +176,16 @@ void CJoystickView::OnBnClickedButtonStart()
 	else
 	{
 		m_isStart = true;
-		m_multiPlotWindows->ProcessPlotCommand(g_joystickPlotCommand, 2);
+		m_multiPlotWindows->ProcessPlotCommand(g_joystickPlotCommand, 3);
 		m_multiPlotWindows->SetFixedWidthMode(true);
 
 		InitJoyStick();
 
 		m_StartButton.SetWindowTextW(L"Stop");
+
+		CString command;
+		m_EditCommand.GetWindowTextW(command);
+		cMotionController::Get()->m_joystickMod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
 	}
 
 }
@@ -249,43 +199,51 @@ void CJoystickView::Update(const float deltaSeconds)
 		m_incTime += deltaSeconds;
 
 		// 조이스틱 축 계산
-		const float yaw = (m_AxisRz + m_YawOffset) * m_YawScale;
-		const float pitch = (m_AxisY + m_PitchOffset) * m_PitchScale;
-		const float roll = (m_AxisX + m_RollOffset) * m_RollScale;
-		const float heave = (m_AxisH + m_HeaveOffset) * m_HeaveScale;
+		cMotionController::Get()->m_joystickMod.Update(deltaSeconds, (float)m_AxisRz, (float)m_AxisY, (float)m_AxisX, (float)m_AxisH);
 
-		cMotionController::Get()->m_joystickYaw = yaw;
-		cMotionController::Get()->m_joystickPitch = pitch;
-		cMotionController::Get()->m_joystickRoll = roll;
-		cMotionController::Get()->m_joystickHeave = heave;
+		float yaw, pitch, roll, heave;
+		cMotionController::Get()->m_joystickMod.GetFinal(yaw, pitch, roll, heave);
 
-		if (m_isRecord)
+		float origYaw, origPitch, origRoll, origHeave;
+		cMotionController::Get()->m_joystickMod.GetOriginal(origYaw, origPitch, origRoll, origHeave);
+
+		const float elapsT = 0.033f;
+		if (m_incTime > elapsT)
 		{
-			sMotionData data;
-			data.yaw = yaw;
-			data.pitch = pitch;
-			data.roll = roll;
-			data.heave = heave;
-
-			sMotionData out;
-			if (m_recordMWave.Record(deltaSeconds, data, &out))
+			if (m_isRecord)
 			{
-				m_multiPlotWindows->SetXY(0, out.yaw, 1);
-				m_multiPlotWindows->SetXY(1, out.pitch, 1);
-				m_multiPlotWindows->SetXY(2, out.roll, 1);
-				m_multiPlotWindows->SetXY(3, out.heave, 1);
+				sMotionData data;
+				data.yaw = yaw;
+				data.pitch = pitch;
+				data.roll = roll;
+				data.heave = heave;
+
+				sMotionData out;
+				if (m_recordMWave.Record(m_incTime, data, &out))
+				{
+					m_recordData = out;
+					m_multiPlotWindows->SetXY(0, out.yaw, 2);
+					m_multiPlotWindows->SetXY(1, out.pitch, 2);
+					m_multiPlotWindows->SetXY(2, out.roll, 2);
+					m_multiPlotWindows->SetXY(3, out.heave, 2);
+				}
 			}
-		}
 
-		if (m_incTime > 0.033f)
-		{
-			m_multiPlotWindows->SetXY(0, yaw, 0);
-			m_multiPlotWindows->SetXY(1, pitch, 0);
-			m_multiPlotWindows->SetXY(2, roll, 0);
-			m_multiPlotWindows->SetXY(3, heave, 0);
-			m_multiPlotWindows->DrawGraph(m_incTime);
+			// original
+			m_multiPlotWindows->SetXY(0, origYaw, 0);
+			m_multiPlotWindows->SetXY(1, origPitch, 0);
+			m_multiPlotWindows->SetXY(2, origRoll, 0);
+			m_multiPlotWindows->SetXY(3, origHeave, 0);
 
-			m_incTime = 0;
+			// modulation
+			m_multiPlotWindows->SetXY(0, yaw, 1);
+			m_multiPlotWindows->SetXY(1, pitch, 1);
+			m_multiPlotWindows->SetXY(2, roll, 1);
+			m_multiPlotWindows->SetXY(3, heave, 1);
+
+			m_multiPlotWindows->DrawGraph(elapsT);
+
+			m_incTime -= elapsT;
 		}
 	}
 }
@@ -450,6 +408,8 @@ Error:
 
 void CJoystickView::OnBnClickedButtonMotionOutputStart()
 {
+	UpdateData();
+
 	if (m_isMotionOutputStart)
 	{
 		m_isMotionOutputStart = false;
@@ -465,219 +425,38 @@ void CJoystickView::OnBnClickedButtonMotionOutputStart()
 
 void CJoystickView::OnBnClickedButtonRecord()
 {
+	RET(!m_isStart);
+
+	UpdateData();
+
 	if (m_isRecord)
 	{
 		m_isRecord = false;
 		m_recordMWave.Stop();
-		m_recordMWave.Write("motionwave.mwav");
+
+		CString Filter = L"MotionWave File(*.mwav)|*.mwav";
+		CFileDialog dlg(
+			FALSE,
+			L"mwav",
+			L"motionwave.mwav",
+			OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+			Filter,
+			this);
+		if (IDOK == dlg.DoModal())
+		{
+			CString fileName = dlg.GetFileName();
+			m_recordMWave.Write(wstr2str((LPCTSTR)fileName));
+		}
+
 		m_RecordButton.SetWindowTextW(L"Record");
 	}
 	else
 	{
 		m_isRecord = true;
-		m_multiPlotWindows->ProcessPlotCommand(g_joystickPlotCommand, 2);
+		m_multiPlotWindows->ProcessPlotCommand(g_joystickPlotCommand, 3);
 
 		m_recordMWave.StartRecord();
 		m_RecordButton.SetWindowTextW(L"Record Stop");
 	}
 }
 
-
-void CJoystickView::OnNMCustomdrawSliderYawOffset(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
-	
-	if (CSliderCtrl *slider = dynamic_cast<CSliderCtrl*>(GetDlgItem(pNMHDR->idFrom)))
-	{
-		const int pos = slider->GetPos();
-		m_EditYawOffset.Format(L"%d", pos);
-		m_YawOffset = (float)pos;
-		UpdateData(FALSE);
-	}
-
-	*pResult = 0;
-}
-
-
-void CJoystickView::OnNMCustomdrawSliderPitchOffset(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
-
-	if (CSliderCtrl *slider = dynamic_cast<CSliderCtrl*>(GetDlgItem(pNMHDR->idFrom)))
-	{
-		const int pos = slider->GetPos();
-		m_EditPitchOffset.Format(L"%d", pos);
-		m_PitchOffset = (float)pos;
-		UpdateData(FALSE);
-	}
-
-	*pResult = 0;
-}
-
-
-void CJoystickView::OnNMCustomdrawSliderRollOffset(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
-	
-	if (CSliderCtrl *slider = dynamic_cast<CSliderCtrl*>(GetDlgItem(pNMHDR->idFrom)))
-	{
-		const int pos = slider->GetPos();
-		m_EditRollOffset.Format(L"%d", pos);
-		m_RollOffset = (float)pos;
-		UpdateData(FALSE);
-	}
-
-	*pResult = 0;
-}
-
-
-void CJoystickView::OnNMCustomdrawSliderHeaveOffset(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
-
-	if (CSliderCtrl *slider = dynamic_cast<CSliderCtrl*>(GetDlgItem(pNMHDR->idFrom)))
-	{
-		const int pos = slider->GetPos();
-		m_EditHeaveOffset.Format(L"%d", pos);
-		m_HeaveOffset = (float)pos;
-		UpdateData(FALSE);
-	}
-
-	*pResult = 0;
-}
-
-
-void CJoystickView::OnNMCustomdrawSliderYaw(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
-	
-	if (CSliderCtrl *slider = dynamic_cast<CSliderCtrl*>(GetDlgItem(pNMHDR->idFrom)))
-	{
-		const float pos = (float)slider->GetPos() * 0.001f;
-		m_EditYawScale.Format(L"%f", pos);
-		m_YawScale= pos;
-		UpdateData(FALSE);
-	}
-
-	*pResult = 0;
-}
-
-
-void CJoystickView::OnNMCustomdrawSliderPitch(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
-
-	if (CSliderCtrl *slider = dynamic_cast<CSliderCtrl*>(GetDlgItem(pNMHDR->idFrom)))
-	{
-		const float pos = (float)slider->GetPos() * 0.001f;
-		m_EditPitchScale.Format(L"%f", pos);
-		m_PitchScale = pos;
-		UpdateData(FALSE);
-	}
-
-	*pResult = 0;
-}
-
-
-void CJoystickView::OnNMCustomdrawSliderRoll(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
-
-	if (CSliderCtrl *slider = dynamic_cast<CSliderCtrl*>(GetDlgItem(pNMHDR->idFrom)))
-	{
-		const float pos = (float)slider->GetPos() * 0.001f;
-		m_EditRollScale.Format(L"%f", pos);
-		m_RollScale = pos;
-		UpdateData(FALSE);
-	}
-
-	*pResult = 0;
-}
-
-
-void CJoystickView::OnNMCustomdrawSliderHeave(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
-	
-	if (CSliderCtrl *slider = dynamic_cast<CSliderCtrl*>(GetDlgItem(pNMHDR->idFrom)))
-	{
-		const float pos = (float)slider->GetPos() * 0.001f;
-		m_EditHeaveScale.Format(L"%f", pos);
-		m_HeaveScale = pos;
-		UpdateData(FALSE);
-	}
-
-	*pResult = 0;
-}
-
-
-void CJoystickView::OnEnChangeEditYawOffset()
-{
-	UpdateData();
-	const float pos = (float)_wtof((LPCTSTR)m_EditYawOffset);
-	m_SliderYawOffset.SetPos((int)pos);
-	m_YawOffset = pos;
-}
-
-
-void CJoystickView::OnEnChangeEditPitchOffset()
-{
-	UpdateData();
-	const float pos = (float)_wtof((LPCTSTR)m_EditPitchOffset);
-	m_SliderPitchOffset.SetPos((int)pos);
-	m_PitchOffset = pos;
-}
-
-
-void CJoystickView::OnEnChangeEditRollOffset()
-{
-	UpdateData();
-	const float pos = (float)_wtof((LPCTSTR)m_EditRollOffset);
-	m_SliderRollOffset.SetPos((int)pos);
-	m_RollOffset = pos;
-}
-
-
-void CJoystickView::OnEnChangeEditHeaveOffset()
-{
-	UpdateData();
-	const float pos = (float)_wtof((LPCTSTR)m_EditHeaveOffset);
-	m_SliderHeaveOffset.SetPos((int)pos);
-	m_HeaveOffset = pos;
-}
-
-
-void CJoystickView::OnEnChangeEditYaw()
-{
-	UpdateData();
-	const float pos = (float)_wtof((LPCTSTR)m_EditYawScale);
-	m_SliderYawScale.SetPos((int)(pos*1000.f));
-	m_YawScale = pos;
-}
-
-
-void CJoystickView::OnEnChangeEditPitch()
-{
-	UpdateData();
-	const float pos = (float)_wtof((LPCTSTR)m_EditPitchScale);
-	m_SliderPitchScale.SetPos((int)(pos*1000.f));
-	m_PitchScale = pos;
-}
-
-
-void CJoystickView::OnEnChangeEditRoll()
-{
-	UpdateData();
-	const float pos = (float)_wtof((LPCTSTR)m_EditRollScale);
-	m_SliderRollScale.SetPos((int)(pos*1000.f));
-	m_RollScale = pos;
-}
-
-
-void CJoystickView::OnEnChangeEditHeave()
-{
-	UpdateData();
-	const float pos = (float)_wtof((LPCTSTR)m_EditHeaveScale);
-	m_SliderHeaveScale.SetPos((int)(pos*1000.f));
-	m_HeaveScale = pos;
-}

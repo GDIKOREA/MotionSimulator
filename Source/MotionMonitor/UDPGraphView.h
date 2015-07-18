@@ -31,6 +31,7 @@ protected:
 	bool m_isPause;
 	CMultiPlotWindow *m_multiPlotWindows;
 	string m_xmlFilePath;
+	float m_incTime;
 
 
 	DECLARE_ANCHOR_MAP();

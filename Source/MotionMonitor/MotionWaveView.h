@@ -40,4 +40,7 @@ public:
 	afx_msg void OnBnClickedButtonPlay();
 	CButton m_PlayButton;
 	afx_msg void OnBnClickedButtonClear();
+	afx_msg void OnBnClickedButtonRefresh();
+	CRichEditCtrl m_EditCommand;
+	afx_msg void OnBnClickedButtonUpdate();
 };
