@@ -56,9 +56,10 @@ public:
 	afx_msg void OnBnClickedButtonStart();
 	virtual BOOL OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult);
 	CButton m_StartButton;
-	afx_msg void OnBnClickedButtonMotionOutputStart();
-	CButton m_MotionOutputStartButton;
 	afx_msg void OnBnClickedButtonRecord();
 	CButton m_RecordButton;
 	CRichEditCtrl m_EditCommand;
+	afx_msg void OnBnClickedButtonUpdate();
+	BOOL m_CheckFixedMode;
+	afx_msg void OnBnClickedCheckFixedmode();
 };

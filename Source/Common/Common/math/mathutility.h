@@ -42,4 +42,43 @@ namespace common
 	}
 
 
+	// 보간.
+	inline void lerp(OUT Vector3 &out, const Vector3 &a, const Vector3 &b, float t)
+	{
+		out.x = a.x + (b.x - a.x) * t;
+		out.y = a.y + (b.y - a.y) * t;
+		out.z = a.z + (b.z - a.z) * t;
+	}
+	inline void lerp(OUT Vector2 &out, const Vector2 &a, const Vector2 &b, float t)
+	{
+		out.x = a.x + (b.x - a.x) * t;
+		out.y = a.y + (b.y - a.y) * t;
+	}
+
+
+	// 베지어 곡선을 리턴한다.
+	// point[ 0 ~ 3]
+	// t : 0 ~ 1
+	inline void bezier(OUT Vector3 &out, const vector<Vector3> &points, const float t)
+	{
+		Vector3 ab, bc, cd, abbc, bccd;
+		common::lerp(ab, points[0], points[1], t);
+		common::lerp(bc, points[1], points[2], t);
+		common::lerp(cd, points[2], points[3], t);
+		common::lerp(abbc, ab, bc, t);
+		common::lerp(bccd, bc, cd, t);
+		common::lerp(out, abbc, bccd, t);
+	}
+	inline void bezier(OUT Vector2 &out, const vector<Vector2> &points, const float t)
+	{
+		Vector2 ab, bc, cd, abbc, bccd;
+		common::lerp(ab, points[0], points[1], t);
+		common::lerp(bc, points[1], points[2], t);
+		common::lerp(cd, points[2], points[3], t);
+		common::lerp(abbc, ab, bc, t);
+		common::lerp(bccd, bc, cd, t);
+		common::lerp(out, abbc, bccd, t);
+	}
+
+
 }

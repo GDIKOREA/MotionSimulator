@@ -1635,5 +1635,5 @@ float importer::ReadFloat(std::ifstream &fin)
 		return FLT_MIN;
 	}
 
-	return atof(value.c_str());
+	return (float)atof(value.c_str());
 }

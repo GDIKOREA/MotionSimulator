@@ -119,6 +119,7 @@
     <ClInclude Include="..\Common\UIComponent\enumser.h" />
     <ClInclude Include="..\Common\UIComponent\FileTreeCtrl.h" />
     <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h" />
+    <ClInclude Include="..\Common\UIComponent\overhauser.hpp" />
     <ClInclude Include="..\Common\UIComponent\PlotWindow.h" />
     <ClInclude Include="..\Common\UIComponent\Serial.h" />
     <ClInclude Include="..\Common\UIComponent\SerialCommunication.h" />
@@ -166,6 +167,7 @@
     <ClCompile Include="..\Common\UIComponent\enumser.cpp" />
     <ClCompile Include="..\Common\UIComponent\FileTreeCtrl.cpp" />
     <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp" />
+    <ClCompile Include="..\Common\UIComponent\overhauser.cpp" />
     <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp" />
     <ClCompile Include="..\Common\UIComponent\Serial.cpp" />
     <ClCompile Include="..\Common\UIComponent\SerialCommunication.cpp" />

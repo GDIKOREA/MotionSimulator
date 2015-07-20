@@ -171,6 +171,9 @@
     <ClInclude Include="motionwavemodulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\overhauser.hpp">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -292,6 +295,9 @@
     </ClCompile>
     <ClCompile Include="motionwavemodulator.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\overhauser.cpp">
+      <Filter>UIComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

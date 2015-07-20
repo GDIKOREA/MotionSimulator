@@ -38,6 +38,7 @@ protected:
 		DWORD flags;
 		string scanString;
 		string name;
+		CPlotWindow::MODE mode;
 	};
 	vector<SPlotInfo> m_PlotInfos;
 

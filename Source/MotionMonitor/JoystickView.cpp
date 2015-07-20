@@ -23,6 +23,7 @@
 const static CString g_joystickPlotCommand = L"plot1 = 0, 0, 0, 0, 0\r\n\
 string1 = %f;\r\n\
 name1 = Yaw\r\n\
+mode1 = bezier\r\n\
 plot2 = 0, 0, 0, 0, 0\r\n\
 string2 = %*f; %f;\r\n\
 name2 = Pitch\r\n\
@@ -43,6 +44,7 @@ CJoystickView::CJoystickView(CWnd* pParent /*=NULL*/)
 	, m_isMotionOutputStart(false)
 	, m_isRecord(false)
 	, m_incTime(0)
+	, m_CheckFixedMode(TRUE)
 {
 }
 
@@ -54,9 +56,9 @@ void CJoystickView::DoDataExchange(CDataExchange* pDX)
 {
 	CDockablePaneChildView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BUTTON_START, m_StartButton);
-	DDX_Control(pDX, IDC_BUTTON_MOTION_OUTPUT_START, m_MotionOutputStartButton);
 	DDX_Control(pDX, IDC_BUTTON_RECORD, m_RecordButton);
 	DDX_Control(pDX, IDC_RICHEDIT2_COMMAND, m_EditCommand);
+	DDX_Check(pDX, IDC_CHECK_FIXEDMODE, m_CheckFixedMode);
 }
 
 
@@ -73,8 +75,9 @@ BEGIN_MESSAGE_MAP(CJoystickView, CDockablePaneChildView)
 	ON_BN_CLICKED(IDCANCEL, &CJoystickView::OnBnClickedCancel)
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_BUTTON_START, &CJoystickView::OnBnClickedButtonStart)
-	ON_BN_CLICKED(IDC_BUTTON_MOTION_OUTPUT_START, &CJoystickView::OnBnClickedButtonMotionOutputStart)
 	ON_BN_CLICKED(IDC_BUTTON_RECORD, &CJoystickView::OnBnClickedButtonRecord)
+	ON_BN_CLICKED(IDC_BUTTON_UPDATE, &CJoystickView::OnBnClickedButtonUpdate)
+	ON_BN_CLICKED(IDC_CHECK_FIXEDMODE, &CJoystickView::OnBnClickedCheckFixedmode)
 END_MESSAGE_MAP()
 
 
@@ -96,7 +99,7 @@ BOOL CJoystickView::OnInitDialog()
 
 	m_multiPlotWindows->SetScrollSizes(MM_TEXT, CSize(rect.Width() - 30, 100));
 	m_multiPlotWindows->ShowWindow(SW_SHOW);
-	m_multiPlotWindows->SetFixedWidthMode(true);
+	m_multiPlotWindows->SetFixedWidthMode(m_CheckFixedMode? true:false);
 
 
 	const CString command =
@@ -176,8 +179,8 @@ void CJoystickView::OnBnClickedButtonStart()
 	else
 	{
 		m_isStart = true;
-		m_multiPlotWindows->ProcessPlotCommand(g_joystickPlotCommand, 3);
-		m_multiPlotWindows->SetFixedWidthMode(true);
+		m_multiPlotWindows->ProcessPlotCommand(g_joystickPlotCommand, 2);
+		m_multiPlotWindows->SetFixedWidthMode(m_CheckFixedMode ? true : false);
 
 		InitJoyStick();
 
@@ -222,10 +225,10 @@ void CJoystickView::Update(const float deltaSeconds)
 				if (m_recordMWave.Record(m_incTime, data, &out))
 				{
 					m_recordData = out;
-					m_multiPlotWindows->SetXY(0, out.yaw, 2);
-					m_multiPlotWindows->SetXY(1, out.pitch, 2);
-					m_multiPlotWindows->SetXY(2, out.roll, 2);
-					m_multiPlotWindows->SetXY(3, out.heave, 2);
+// 					m_multiPlotWindows->SetXY(0, out.yaw, 2);
+// 					m_multiPlotWindows->SetXY(1, out.pitch, 2);
+// 					m_multiPlotWindows->SetXY(2, out.roll, 2);
+// 					m_multiPlotWindows->SetXY(3, out.heave, 2);
 				}
 			}
 
@@ -406,23 +409,6 @@ Error:
 }
 
 
-void CJoystickView::OnBnClickedButtonMotionOutputStart()
-{
-	UpdateData();
-
-	if (m_isMotionOutputStart)
-	{
-		m_isMotionOutputStart = false;
-		m_MotionOutputStartButton.SetWindowTextW(L"Motion Output Start");
-	}
-	else
-	{
-		m_isMotionOutputStart = true;
-		m_MotionOutputStartButton.SetWindowTextW(L"Stop");
-	}	
-}
-
-
 void CJoystickView::OnBnClickedButtonRecord()
 {
 	RET(!m_isStart);
@@ -453,10 +439,27 @@ void CJoystickView::OnBnClickedButtonRecord()
 	else
 	{
 		m_isRecord = true;
-		m_multiPlotWindows->ProcessPlotCommand(g_joystickPlotCommand, 3);
+		m_multiPlotWindows->ProcessPlotCommand(g_joystickPlotCommand, 2);
 
 		m_recordMWave.StartRecord();
 		m_RecordButton.SetWindowTextW(L"Record Stop");
 	}
 }
 
+
+// Motion Wave Modulator 를 업데이트한다.
+void CJoystickView::OnBnClickedButtonUpdate()
+{
+	UpdateData();
+
+	CString command;
+	m_EditCommand.GetWindowTextW(command);
+	cMotionController::Get()->m_joystickMod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
+}
+
+
+void CJoystickView::OnBnClickedCheckFixedmode()
+{
+	UpdateData();
+	m_multiPlotWindows->SetFixedWidthMode(m_CheckFixedMode ? true : false);
+}
