@@ -18,15 +18,16 @@ public:
 #endif
 #endif
 
-	enum MODE { NORMAL, BEZIER, };
+	enum MODE { NORMAL, SPLINE, };
 
 	bool SetPlot(const float x_range, const float y_range,
 		const float x_visble_range, const float y_visible_range, const DWORD flags,
-		const int plotCount=1, const string &name="", const MODE &mode=NORMAL);
+		const int plotCount = 1, const string &name = "", const MODE &mode=NORMAL, const int lineWeight = 1);
 
-	void SetPlotXY(const float x, const float y, const int plotIndex=0);
+	void SetPlotXY(const float x, const float y, const int plotIndex = 0);
+	void SetPlotY(const float y, const int plotIndex=0);
 	void SetMode(const MODE &mode);
-	void DrawPlot(const float deltaSeconds);
+	void DrawPlot(const float deltaSeconds, const bool autoSet=true);
 	void SetFixedWidthMode(const bool isFixedWidth);
 
 
@@ -60,22 +61,21 @@ protected:
 		int tailIdx = 0;
 		int renderStartIndex = 0;
 
-		// bezier
-		vector<Vector2> bezierTemp; // 입력으로 들어온 값을 저장한다. bezier곡선 연산이 적용된 값은 xy에 저장된다.
-		int bzHeadIdx = 0;
-		int bzTailIdx = 0;
+		// spline
+		vector<Vector2> splineTemp; // 입력으로 들어온 값을 저장한다. spline곡선 연산이 적용된 값은 xy에 저장된다.
+		int spHeadIdx = 0;
+		int spTailIdx = 0;
 	};
 
 	vector<sPlotData> m_plots;
 
 	bool m_isFixedPlot = false;
 	CBrush m_blackBrush;
-	CPen m_plotPen;
 	CPen m_plotPens[4];
 	CPen m_gridPen1; // line width 1
 	CPen m_gridPen2; // line width 2
 
-	float m_bezierIncTime;
+	float m_splineIncTime;
 	float m_oldTime;
 
 

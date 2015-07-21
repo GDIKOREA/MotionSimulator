@@ -3,6 +3,8 @@
 //
 #pragma once
 
+#include "spline.h"
+
 
 class cMotionWaveModulator : public common::cConfig
 {
@@ -29,6 +31,12 @@ public:
 	float m_roll[2];
 	float m_heave[2];
 
+	// Spline계산을 위해 4포인트의 값을 저장한다.
+	cSpline m_yawSpline;
+	cSpline m_pitchSpline;
+	cSpline m_rollSpline;
+	cSpline m_heaveSpline;
+
 	float m_originalYaw;
 	float m_originalPitch;
 	float m_originalRoll;
@@ -38,6 +46,11 @@ public:
 	float m_pitchProportion;
 	float m_rollProportion;
 	float m_heaveProportion;
+
+	bool m_isYawSplineEnable;
+	bool m_isPitchSplineEnable;
+	bool m_isRollSplineEnable;
+	bool m_isHeaveSplineEnable;
 
 
 	// (m_yawC1 * m_yaw[0]* m_yaw[0]) + (m_yawC2 * m_yaw[0]) + m_yawC3
@@ -57,5 +70,15 @@ public:
 	float m_heaveC2;
 	float m_heaveC3;
 
+	int m_yawSplinePlotSamplingRate;
+	int m_yawSplineInterpolationRate;
+	int m_pitchSplinePlotSamplingRate;
+	int m_pitchSplineInterpolationRate;
+	int m_rollSplinePlotSamplingRate;
+	int m_rollSplineInterpolationRate;
+	int m_heaveSplinePlotSamplingRate;
+	int m_heaveSplineInterpolationRate;
+
 	float m_incTime;
+	float m_totalIncTime;
 };

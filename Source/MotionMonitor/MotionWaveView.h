@@ -43,4 +43,5 @@ public:
 	afx_msg void OnBnClickedButtonRefresh();
 	CRichEditCtrl m_EditCommand;
 	afx_msg void OnBnClickedButtonUpdate();
+	CTreeCtrl m_FileInfoTree;
 };

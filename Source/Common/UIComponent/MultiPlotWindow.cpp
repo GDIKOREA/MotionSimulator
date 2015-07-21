@@ -44,20 +44,29 @@ void CMultiPlotWindow::SetString(const char *str, const int plotIndex)
 
 	for each (auto &plot in m_plotWindows)
 	{
-		float x=0, y;
+		float y;
 		const int ret = sscanf_s(str, plot.scanString.c_str(), &y);
 		if (ret >= 1)
-			plot.wnd->SetPlotXY(x, y, plotIndex);
+			plot.wnd->SetPlotY(y, plotIndex);
 	}
 }
 
 
-void CMultiPlotWindow::SetXY(const int plotIndex, const float y, const int graphIndex)
+void CMultiPlotWindow::SetXY(const int plotIndex, const float x, const float y, const int graphIndex)
 {
 	if ((int)m_plotWindows.size() <= plotIndex)
 		return;
 
-	m_plotWindows[plotIndex].wnd->SetPlotXY(0, y, graphIndex);
+	m_plotWindows[plotIndex].wnd->SetPlotXY(x, y, graphIndex);
+}
+
+
+void CMultiPlotWindow::SetY(const int plotIndex, const float y, const int graphIndex)
+{
+	if ((int)m_plotWindows.size() <= plotIndex)
+		return;
+
+	m_plotWindows[plotIndex].wnd->SetPlotY(y, graphIndex);
 }
 
 
@@ -65,11 +74,12 @@ void CMultiPlotWindow::SetXY(const int plotIndex, const float y, const int graph
 // 스트링 분석에 문제가 생기면 false를 리턴하고 종료된다.
 bool CMultiPlotWindow::ParsePlotInfo(const int plotIndex, const wstring &str, SPlotInfo &out)
 {
-	CString plotStr, scanStr, nameStr, modeStr;
+	CString plotStr, scanStr, nameStr, modeStr, lineWeightStr;
 	plotStr.Format(L"plot%d =", plotIndex + 1);
 	scanStr.Format(L"string%d =", plotIndex + 1);
 	nameStr.Format(L"name%d =", plotIndex + 1);
 	modeStr.Format(L"mode%d =", plotIndex + 1);
+	lineWeightStr.Format(L"lineweight%d =", plotIndex + 1);
 
 	// plot graph parameter
 	wstring plotParameters = ParseKeyValue(str, plotStr.GetBuffer());
@@ -89,6 +99,11 @@ bool CMultiPlotWindow::ParsePlotInfo(const int plotIndex, const wstring &str, SP
 	wstring modeParameters = ParseKeyValue(str, modeStr.GetBuffer());
 	common::trimw(modeParameters);
 
+	// line weight
+	wstring lineWeightParameters = ParseKeyValue(str, lineWeightStr.GetBuffer());
+	common::trimw(lineWeightParameters);
+
+
 	vector<wstring> plotParams;
 	common::wtokenizer(plotParameters, L",", L"", plotParams);
 	if (plotParams.size() < 5)
@@ -102,7 +117,8 @@ bool CMultiPlotWindow::ParsePlotInfo(const int plotIndex, const wstring &str, SP
 
 	out.scanString = common::wstr2str(scanParameters);
 	out.name = common::wstr2str(nameParameters);
-	out.mode = (modeParameters == L"bezier") ? CPlotWindow::BEZIER : CPlotWindow::NORMAL;
+	out.mode = (modeParameters == L"spline") ? CPlotWindow::SPLINE : CPlotWindow::NORMAL;
+	out.lineWeight = _wtoi(lineWeightParameters.c_str());
 
 	return true;
 }
@@ -136,11 +152,6 @@ void CMultiPlotWindow::CalcGraphWindowSize()
 
 	CRect cr;
 	GetClientRect(cr);
-// 	CRect editCr;
-// 	m_CommandEditor.GetWindowRect(editCr);
-// 	CRect btnR;
-// 	m_UpdateButton.GetClientRect(btnR);
-
 
 	// 화면에 보여지는 plot 개수를 구한다.
 	int plotWindowCount = 0;
@@ -215,7 +226,7 @@ void CMultiPlotWindow::ProcessPlotCommand(const CString &str, const int plotCoun
 		wnd->SetPlot(
 			plotInfos[i].xRange, plotInfos[i].yRange,
 			plotInfos[i].xVisibleRange, plotInfos[i].yVisibleRange, plotInfos[i].flags,
-			plotCount, plotInfos[i].name, plotInfos[i].mode);
+			plotCount, plotInfos[i].name, plotInfos[i].mode, plotInfos[i].lineWeight);
 
 		// 그래프 파싱 스트링 설정.
 		m_plotWindows[i].scanString = plotInfos[i].scanString;
@@ -237,11 +248,11 @@ void CMultiPlotWindow::ProcessPlotCommand(const CString &str, const int plotCoun
 
 // 매프레임마다 호출되어야 한다.
 // 그래프를 갱신한다.
-void CMultiPlotWindow::DrawGraph(const float deltaSeconds)
+void CMultiPlotWindow::DrawGraph(const float deltaSeconds, const bool autoSet) // autoSet = true
 {
 	for each(auto &plot in m_plotWindows)
 	{
-		plot.wnd->DrawPlot(deltaSeconds);
+		plot.wnd->DrawPlot(deltaSeconds, autoSet);
 	}
 }
 

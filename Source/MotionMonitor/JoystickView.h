@@ -30,6 +30,7 @@ protected:
 	bool m_isStart;
 	bool m_isMotionOutputStart;
 	bool m_isRecord;
+	float m_recordIncTime;
 	cMotionWave m_recordMWave;
 	sMotionData m_recordData;
 

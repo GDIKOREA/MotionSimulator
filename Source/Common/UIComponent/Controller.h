@@ -25,6 +25,8 @@ public:
 	void CloseSerial();
 	void Update(const float deltaSeconds);
 
+	float GetGlobalSeconds() const;
+
 	cCubeFlight& GetCubeFlight();
 	cSerialCommunication& GetSerialComm();
 	cUDPCommunication& GetUDPComm();
@@ -34,9 +36,11 @@ protected:
 	cCubeFlight *m_cubeFlight;
 	cSerialCommunication *m_serialComm;
 	cUDPCommunication *m_udpComm;
+	float m_globalSeconds;
 };
 
 
 inline cCubeFlight& cController::GetCubeFlight() { return *m_cubeFlight;  }
 inline cSerialCommunication& cController::GetSerialComm() { return *m_serialComm;  }
 inline cUDPCommunication& cController::GetUDPComm() { return *m_udpComm; }
+inline float cController::GetGlobalSeconds() const { return m_globalSeconds; }

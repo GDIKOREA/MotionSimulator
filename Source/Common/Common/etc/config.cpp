@@ -101,20 +101,32 @@ void cConfig::ParseStr(const string &str)
 }
 
 
-bool cConfig::GetBool(const string &key)
+bool cConfig::GetBool(const string &key, const bool defaultValue)
 {
+	auto it = m_options.find(key);
+	if (m_options.end() == it)
+		return defaultValue;
+
 	return (atoi(m_options[key].c_str()) > 0) ? true : false;
 }
 
 
-float cConfig::GetFloat(const string &key)
+float cConfig::GetFloat(const string &key, const float defaultValue)
 {
+	auto it = m_options.find(key);
+	if (m_options.end() == it)
+		return defaultValue;
+
 	return (float)atof(m_options[key].c_str());
 }
 
 
-int cConfig::GetInt(const string &key)
+int cConfig::GetInt(const string &key, const int defaultValue)
 {
+	auto it = m_options.find(key);
+	if (m_options.end() == it)
+		return defaultValue;
+
 	return atoi(m_options[key].c_str());
 }
 

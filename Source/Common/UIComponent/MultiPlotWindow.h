@@ -13,8 +13,9 @@ public:
 
 
 	void SetString(const char *str, const int plotIndex=0);
-	void SetXY(const int plotIndex, const float y, const int graphIndex);
-	void DrawGraph(const float deltaSeconds);
+	void SetXY(const int plotIndex, const float x, const float y, const int graphIndex);
+	void SetY(const int plotIndex, const float y, const int graphIndex);
+	void DrawGraph(const float deltaSeconds, const bool autoSet=true);
 	void ProcessPlotCommand(const CString &str, const int plotCount = 1);
 	void SetFixedWidthMode(const bool isFixedWidth);
 
@@ -39,6 +40,7 @@ protected:
 		string scanString;
 		string name;
 		CPlotWindow::MODE mode;
+		int lineWeight;
 	};
 	vector<SPlotInfo> m_PlotInfos;
 

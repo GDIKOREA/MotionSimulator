@@ -21,7 +21,6 @@ struct sMotionData
 };
 
 
-
 class cMotionWave
 {
 public:
@@ -41,7 +40,7 @@ public:
 	void StopPlay();
 
 
-protected:
+public:
 	int m_samplingRate; // 20 Hz
 	float m_samplingTime; // 샘플링 시간 간격 { 1 / m_samplingRate }
 	bool m_isRecord;

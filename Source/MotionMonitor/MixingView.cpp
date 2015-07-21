@@ -170,10 +170,10 @@ void CMixingView::Update(const float deltaSeconds)
 		cMotionController::Get()->m_roll = roll;
 		cMotionController::Get()->m_heave = heave;
 
-		m_multiPlotWindows->SetXY(0, yaw, 0);
-		m_multiPlotWindows->SetXY(1, pitch, 0);
-		m_multiPlotWindows->SetXY(2, roll, 0);
-		m_multiPlotWindows->SetXY(3, heave, 0);
+		m_multiPlotWindows->SetY(0, yaw, 0);
+		m_multiPlotWindows->SetY(1, pitch, 0);
+		m_multiPlotWindows->SetY(2, roll, 0);
+		m_multiPlotWindows->SetY(3, heave, 0);
 		m_multiPlotWindows->DrawGraph(m_incTime);
 
 		m_incTime = 0;

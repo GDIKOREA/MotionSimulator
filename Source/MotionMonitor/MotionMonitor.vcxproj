@@ -148,6 +148,7 @@
     <ClInclude Include="SerialEditorPane.h" />
     <ClInclude Include="SerialEditorView.h" />
     <ClInclude Include="SerialGraphForm.h" />
+    <ClInclude Include="spline.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UDPEditorView.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="SerialEditorPane.cpp" />
     <ClCompile Include="SerialEditorView.cpp" />
     <ClCompile Include="SerialGraphForm.cpp" />
+    <ClCompile Include="spline.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

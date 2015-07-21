@@ -22,9 +22,9 @@ namespace common
 		virtual void InitDefault() {}
 		virtual void UpdateParseData() {}
 
-		bool GetBool(const string &key);
-		float GetFloat(const string &key);
-		int GetInt(const string &key);
+		bool GetBool(const string &key, const bool defaultValue=false);
+		float GetFloat(const string &key, const float defaultValue = 0);
+		int GetInt(const string &key, const int defaultValue = 0);
 
 
 	public:

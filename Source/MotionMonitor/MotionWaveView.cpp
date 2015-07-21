@@ -42,12 +42,14 @@ void CMotionWaveView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_TREE_FILE, m_FileTree);
 	DDX_Control(pDX, IDC_BUTTON_PLAY, m_PlayButton);
 	DDX_Control(pDX, IDC_RICHEDIT2_COMMAND, m_EditCommand);
+	DDX_Control(pDX, IDC_TREE_FILEINFO, m_FileInfoTree);
 }
 
 
 BEGIN_ANCHOR_MAP(CMotionWaveView)
 	ANCHOR_MAP_ENTRY(IDC_TREE_FILE, ANF_LEFT | ANF_TOP | ANF_RIGHT )
 	ANCHOR_MAP_ENTRY(IDC_STATIC_GROUP, ANF_LEFT | ANF_TOP | ANF_RIGHT)
+	ANCHOR_MAP_ENTRY(IDC_TREE_FILEINFO, ANF_LEFT | ANF_TOP | ANF_RIGHT)
 	ANCHOR_MAP_ENTRY(IDC_RICHEDIT2_COMMAND, ANF_LEFT | ANF_TOP | ANF_RIGHT )
 	ANCHOR_MAP_ENTRY(IDC_STATIC_GRAPH, ANF_LEFT | ANF_TOP | ANF_RIGHT | ANF_BOTTOM)
 	ANCHOR_MAP_ENTRY(IDC_BUTTON_CLEAR, ANF_TOP | ANF_RIGHT)
@@ -164,7 +166,24 @@ void CMotionWaveView::OnSelchangedTreeFile(NMHDR *pNMHDR, LRESULT *pResult)
 	if (common::GetFileExt(fileName).empty() || (fileName == "./media") || (fileName == "."))
 		return;
 
-	if (!m_mwaveFile.Read(fileName))
+	if (m_mwaveFile.Read(fileName))
+	{
+		// 파일 정보 업데이트
+		m_FileInfoTree.DeleteAllItems();
+
+		CString name;
+		name.Format(L"Name = %s", str2wstr(fileName).c_str());
+		m_FileInfoTree.InsertItem(name);
+
+		CString samplingRate;
+		samplingRate.Format(L"Sampling Rate = %d Hz", m_mwaveFile.m_samplingRate);
+		m_FileInfoTree.InsertItem(samplingRate);
+
+		CString samplingCount;
+		samplingCount.Format(L"Sampling Count = %d", m_mwaveFile.m_wave.size());
+		m_FileInfoTree.InsertItem(samplingCount);
+	}
+	else
 	{
 		AfxMessageBox(L"MotionWave 파일이 아닙니다.");
 	}
@@ -175,7 +194,7 @@ void CMotionWaveView::Update(const float deltaSeconds)
 {
 	RET(!m_isPlay);
 
-	const float elapseT = 0.03f;
+	const float elapseT = 0.02f;
 
 	m_incTime += deltaSeconds;
 
@@ -184,18 +203,18 @@ void CMotionWaveView::Update(const float deltaSeconds)
 		sMotionData data;
 		if (m_mwaveFile.Play(m_incTime, data))
 		{
-			m_multiPlotWindows->SetXY(0, data.yaw, 0);
-			m_multiPlotWindows->SetXY(1, data.pitch, 0);
-			m_multiPlotWindows->SetXY(2, data.roll, 0);
-			m_multiPlotWindows->SetXY(3, data.heave, 0);
+			m_multiPlotWindows->SetY(0, data.yaw, 0);
+			m_multiPlotWindows->SetY(1, data.pitch, 0);
+			m_multiPlotWindows->SetY(2, data.roll, 0);
+			m_multiPlotWindows->SetY(3, data.heave, 0);
 
 			cMotionController::Get()->m_mwavMod.Update(m_incTime, data.yaw, data.pitch, data.roll, data.heave);
 		}
 
-		m_incTime -= elapseT;
+		m_incTime = 0;// elapseT;
 	}
 
-	m_multiPlotWindows->DrawGraph(deltaSeconds);
+	m_multiPlotWindows->DrawGraph(deltaSeconds, false);
 }
 
 

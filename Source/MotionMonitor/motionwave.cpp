@@ -192,7 +192,8 @@ bool cMotionWave::Record(const float deltaSeconds, const sMotionData &data, sMot
 			if (out)
 				*out = m_lastData;
 
-			m_recordIncTime -= m_samplingTime;
+			//m_recordIncTime -= m_samplingTime;
+			m_recordIncTime = 0;
 			m_storeCount = 0;
 			m_lastData.clear();
 			isWrite = true;
@@ -243,7 +244,8 @@ bool cMotionWave::Play(const float deltaSeconds, sMotionData &out)
 				isNextData = true;
 			}
 
-			m_playIncTime -= m_samplingTime;
+			//m_playIncTime -= m_samplingTime;
+			m_playIncTime = 0;
 		}
 	}
 

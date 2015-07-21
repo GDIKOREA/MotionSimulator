@@ -5,27 +5,25 @@
 #include "PlotWindow.h"
 
 
+COLORREF g_penColors[] = {
+	RGB(255, 255, 0),
+	RGB(0, 255, 0),
+	RGB(0, 255, 255),
+	RGB(255, 255, 255),
+};
+
+
+
 // CPlotWindow
 CPlotWindow::CPlotWindow() :
 	m_mode(NORMAL)
-	, m_bezierIncTime(0)
+	, m_splineIncTime(0)
 	, m_oldTime(0)
 {
 	m_blackBrush.CreateSolidBrush(RGB(0, 0, 0));
-	m_plotPen.CreatePen(0, 1, RGB(255, 255, 0));
 	m_gridPen1.CreatePen(0, 1, RGB(100, 100, 100));
 	m_gridPen2.CreatePen(0, 2, RGB(100,100,100));
 
-	COLORREF colors[] = {
-		RGB(255, 255, 0),
-		RGB(0, 255, 0),
-		RGB(0, 255, 255),
-		RGB(255, 255, 255),
-	};
-	for (int i = 0; i < 4; ++i)
-	{
-		m_plotPens[i].CreatePen(0, 1, colors[i]);
-	}
 }
 
 CPlotWindow::~CPlotWindow()
@@ -193,7 +191,7 @@ void CPlotWindow::OnDraw(CDC* pDC)
 
 
 // Plot을 Frame per Seconds에 맞춰 출력하게 한다.
-void CPlotWindow::DrawPlot(const float deltaSeconds)
+void CPlotWindow::DrawPlot(const float deltaSeconds, const bool autoSet) //autoSet=true
 {
 	const float elapseTime = 0.03f; // 1초에 30프레임일 때, 시간 간격
 
@@ -201,7 +199,7 @@ void CPlotWindow::DrawPlot(const float deltaSeconds)
 	// 일정시간 이상 그래프가 업데이트가 되지 않았다면,
 	// 가장 최근 값으로, 그래프 값을 추가한다.
 	const float curT = timeGetTime() * 0.001f;
-	if ((curT - m_updateTime) > elapseTime) // 30프레임주기로 그래프를 업데이트 한다.
+	if (autoSet && (curT - m_updateTime) > elapseTime) // 30프레임주기로 그래프를 업데이트 한다.
 	{
 		// 가장 최근 값을 저장한다.
 		SetPlotXY(curT, GetTailValue().y);
@@ -236,7 +234,7 @@ void CPlotWindow::Dump(CDumpContext& dc) const
 // CPlotWindow message handlers
 bool CPlotWindow::SetPlot(const float x_range, const float y_range,
 	const float x_visble_range, const float y_visible_range, const DWORD flags,
-	const int plotCount, const string &name, const MODE &mode)  // plotCount=1, name="", mode=NORMAL
+	const int plotCount, const string &name, const MODE &mode, const int lineWeight)  // plotCount=1, name="", mode=NORMAL, lineWeight=1
 {
 	m_xRange = x_range;
 	m_yRange = y_range;
@@ -254,9 +252,9 @@ bool CPlotWindow::SetPlot(const float x_range, const float y_range,
 		m_plots[i].tailIdx = 0;
 		m_plots[i].renderStartIndex = 0;
 
-		m_plots[i].bezierTemp.resize(2048, Vector2(0.f, 0.f));
-		m_plots[i].bzHeadIdx = 0;
-		m_plots[i].bzTailIdx = 0;
+		m_plots[i].splineTemp.resize(2048, Vector2(0.f, 0.f));
+		m_plots[i].spHeadIdx = 0;
+		m_plots[i].spTailIdx = 0;
 	}
 
 	m_maxX = -FLT_MAX;
@@ -267,54 +265,60 @@ bool CPlotWindow::SetPlot(const float x_range, const float y_range,
 	m_startTime = 0;
 	m_updateTime = 0;
 
+	for (int i = 0; i < 4; ++i)
+	{
+		m_plotPens[i].DeleteObject();
+		m_plotPens[i].CreatePen(0, lineWeight, g_penColors[i]);
+	}
+
+
 	return true;
 }
 
 
 // 그래프 정보 추가.
-void CPlotWindow::SetPlotXY(const float x, const float y, const int plotIndex)
+void CPlotWindow::SetPlotY(const float y, const int plotIndex)
 {
 	// X축은 시간축으로 한다. 
 	const float t = timeGetTime() * 0.001f;
 	const float deltaSeconds = (t - m_oldTime);
 	m_oldTime = t;
-	m_bezierIncTime += deltaSeconds;
+	m_splineIncTime += deltaSeconds;
 
 	sPlotData &plot = m_plots[plotIndex];
 
-	if ((BEZIER == m_mode) && (plotIndex == 1))
+	if ((SPLINE == m_mode) && (plotIndex == 1))
 	{
-		if (m_bezierIncTime < 0.1f)
+		if (m_splineIncTime < 0.1f)
 			return;
 		
-		m_bezierIncTime = 0;
-
+		m_splineIncTime = 0;
 
 		// 현재 값 저장
-		const int size = plot.bezierTemp.size();
+		const int size = plot.splineTemp.size();
 
 		// Ring형 배열 구조, 추가
-		plot.bezierTemp[plot.bzTailIdx] = Vector2(t, y);
-		plot.bzTailIdx = ++plot.bzTailIdx % size;
-		if (plot.bzHeadIdx == plot.bzTailIdx)
-			plot.bzHeadIdx = ++plot.bzHeadIdx % size;
+		plot.splineTemp[plot.spTailIdx] = Vector2(t, y);
+		plot.spTailIdx = ++plot.spTailIdx % size;
+		if (plot.spHeadIdx == plot.spTailIdx)
+			plot.spHeadIdx = ++plot.spHeadIdx % size;
 
 		const int indexGap = 1;
 
 		// 가장 최근에 저장된 3개의 포인트를 찾는다.
-		// Vector2(x,y)를 포함한 총 4개의 포인트로 bezier 곡선을 만든다.
-		// 현재 포인트와 그 전 포인트의 중간을 bezier곡선 알고리즘을 통해 계산한 후, 저장한다.
-		const int idx4 = (plot.bzTailIdx - 1 + size) % size;
-		const int idx3 = (plot.bzTailIdx - (indexGap*1 + 1) + size) % size;
-		const int idx2 = (plot.bzTailIdx - (indexGap*2 + 1) + size) % size;
-		const int idx1 = (plot.bzTailIdx - (indexGap*3 + 1) + size) % size;
-		const int length = (plot.bzTailIdx - plot.bzHeadIdx + size) % size;
-		if (length > (indexGap*3 + 1)) // 4개 이상 저장 되었을 때부터, bezier연산을 시작한다.
+		// Vector2(x,y)를 포함한 총 4개의 포인트로 spline 곡선을 만든다.
+		// 현재 포인트와 그 전 포인트의 중간을 spline 곡선 알고리즘을 통해 계산한 후, 저장한다.
+		const int idx4 = (plot.spTailIdx - 1 + size) % size;
+		const int idx3 = (plot.spTailIdx - (indexGap*1 + 1) + size) % size;
+		const int idx2 = (plot.spTailIdx - (indexGap*2 + 1) + size) % size;
+		const int idx1 = (plot.spTailIdx - (indexGap*3 + 1) + size) % size;
+		const int length = (plot.spTailIdx - plot.spHeadIdx + size) % size;
+		if (length > (indexGap*3 + 1)) // 4개 이상 저장 되었을 때부터, spline연산을 시작한다.
 		{
-			const Vector2 p1 = plot.bezierTemp[idx1];
-			const Vector2 p2 = plot.bezierTemp[idx2];
-			const Vector2 p3 = plot.bezierTemp[idx3];
-			const Vector2 p4 = plot.bezierTemp[idx4];
+			const Vector2 p1 = plot.splineTemp[idx1];
+			const Vector2 p2 = plot.splineTemp[idx2];
+			const Vector2 p3 = plot.splineTemp[idx3];
+			const Vector2 p4 = plot.splineTemp[idx4];
 
 			float t = 0.0f;
 			while (t < 1.f)
@@ -326,39 +330,54 @@ void CPlotWindow::SetPlotXY(const float x, const float y, const int plotIndex)
 					(D3DXVECTOR2*)&p3,
 					(D3DXVECTOR2*)&p4, t);
 
-				// insert bezier curve b3
-				plot.xy[plot.tailIdx] = p;
-				plot.tailIdx = ++plot.tailIdx % plot.xy.size();
-				if (plot.headIdx == plot.tailIdx)
-					plot.headIdx = ++plot.headIdx % plot.xy.size();
+				// insert spline curve b3
+				SetPlotXY(p.x, p.y, plotIndex);
+// 				plot.xy[plot.tailIdx] = p;
+// 				plot.tailIdx = ++plot.tailIdx % plot.xy.size();
+// 				if (plot.headIdx == plot.tailIdx)
+// 					plot.headIdx = ++plot.headIdx % plot.xy.size();
 
 				t += .1f;
 			}
 		}
 		else
 		{
-			plot.xy[plot.tailIdx] = Vector2(t, y);
-			plot.tailIdx = ++plot.tailIdx % plot.xy.size();
-			if (plot.headIdx == plot.tailIdx)
-				plot.headIdx = ++plot.headIdx % plot.xy.size();
+			SetPlotXY(t, y, plotIndex);
+// 			plot.xy[plot.tailIdx] = Vector2(t, y);
+// 			plot.tailIdx = ++plot.tailIdx % plot.xy.size();
+// 			if (plot.headIdx == plot.tailIdx)
+// 				plot.headIdx = ++plot.headIdx % plot.xy.size();
 		}
 
 	}
 	else
 	{
 		// Ring형 배열 구조, 추가
-		plot.xy[plot.tailIdx] = Vector2(t, y);
-		plot.tailIdx = ++plot.tailIdx % plot.xy.size();
-		if (plot.headIdx == plot.tailIdx)
-			plot.headIdx = ++plot.headIdx % plot.xy.size();
-
+		SetPlotXY(t, y, plotIndex);
+// 		plot.xy[plot.tailIdx] = Vector2(t, y);
+// 		plot.tailIdx = ++plot.tailIdx % plot.xy.size();
+// 		if (plot.headIdx == plot.tailIdx)
+// 			plot.headIdx = ++plot.headIdx % plot.xy.size();
 	}
+
+}
+
+
+void CPlotWindow::SetPlotXY(const float x, const float y, const int plotIndex) //plotIndex=0
+{
+	sPlotData &plot = m_plots[plotIndex];
+	// Ring형 배열 구조, 추가
+	plot.xy[plot.tailIdx] = Vector2(x, y);
+	plot.tailIdx = ++plot.tailIdx % plot.xy.size();
+	if (plot.headIdx == plot.tailIdx)
+		plot.headIdx = ++plot.headIdx % plot.xy.size();
 
 	m_maxX = max(x, m_maxX);
 	m_minX = min(x, m_minX);
 	m_maxY = max(y, m_maxY);
 	m_minY = min(y, m_minY);
 
+	const float t = timeGetTime() * 0.001f;
 	m_updateTime = t; // 가장 최근 값이 바뀐 시간을 저장한다.
 
 	if (m_startTime == 0) // 처음 그래프가 그려질 때, 초기화 된다.

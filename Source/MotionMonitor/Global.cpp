@@ -83,3 +83,4 @@ int GetNumVisibleLines(CRichEditCtrl* pCtrl)
 
 	return (nLastLine - nFirstLine);
 }
+

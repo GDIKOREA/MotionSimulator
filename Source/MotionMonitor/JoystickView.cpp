@@ -23,16 +23,24 @@
 const static CString g_joystickPlotCommand = L"plot1 = 0, 0, 0, 0, 0\r\n\
 string1 = %f;\r\n\
 name1 = Yaw\r\n\
-mode1 = bezier\r\n\
+lineweight1 = 2\r\n\
+\r\n\
 plot2 = 0, 0, 0, 0, 0\r\n\
 string2 = %*f; %f;\r\n\
 name2 = Pitch\r\n\
+lineweight2 = 2\r\n\
+\r\n\
 plot3 = 0, 0, 0, 0, 0\r\n\
 string3 = %*f; %*f; %f;\r\n\
 name3 = Roll\r\n\
+lineweight3 = 2\r\n\
+\r\n\
 plot4 = 0, 0, 0, 0, 0\r\n\
 string4 = %*f; %*f; %f; \r\n\
-name4 = Heave\r\n";
+lineweight4 = 2\r\n\
+name4 = Heave\r\n\
+\r\n\
+";
 
 
 // CJoystickView dialog
@@ -44,6 +52,7 @@ CJoystickView::CJoystickView(CWnd* pParent /*=NULL*/)
 	, m_isMotionOutputStart(false)
 	, m_isRecord(false)
 	, m_incTime(0)
+	, m_recordIncTime(0)
 	, m_CheckFixedMode(TRUE)
 {
 }
@@ -110,6 +119,11 @@ pitch_proportion = 1\n\
 roll_proportion = 1\n\
 heave_proportion = 1\n\
 \n\
+yaw_spline_enable = 1\n\
+pitch_spline_enable = 1\n\
+roll_spline_enable = 1\n\
+heave_spline_enable = 1\n\
+\n\
 yaw_c1 = 0\n\
 yaw_c2 = 1\n\
 yaw_c3 = 0\n\
@@ -125,6 +139,18 @@ roll_c3 = 0\n\
 heave_c1 = 0\n\
 heave_c2 = 1\n\
 heave_c3 = 0\n\
+\n\
+yaw_spline_plot_sampling_rate = 10\n\
+yaw_spline_interpolation_rate = 10\n\
+\n\
+pitch_spline_plot_sampling_rate = 10\n\
+pitch_spline_interpolation_rate = 10\n\
+\n\
+roll_spline_plot_sampling_rate = 10\n\
+roll_spline_interpolation_rate = 10\n\
+\n\
+heave_spline_plot_sampling_rate = 10\n\
+heave_spline_interpolation_rate = 10\n\
 ";
 	m_EditCommand.SetWindowTextW(command);
 
@@ -179,7 +205,7 @@ void CJoystickView::OnBnClickedButtonStart()
 	else
 	{
 		m_isStart = true;
-		m_multiPlotWindows->ProcessPlotCommand(g_joystickPlotCommand, 2);
+		m_multiPlotWindows->ProcessPlotCommand(g_joystickPlotCommand, 3);
 		m_multiPlotWindows->SetFixedWidthMode(m_CheckFixedMode ? true : false);
 
 		InitJoyStick();
@@ -201,6 +227,8 @@ void CJoystickView::Update(const float deltaSeconds)
 	{
 		m_incTime += deltaSeconds;
 
+		const float t = cMotionController::Get()->m_joystickMod.m_totalIncTime;
+
 		// 조이스틱 축 계산
 		cMotionController::Get()->m_joystickMod.Update(deltaSeconds, (float)m_AxisRz, (float)m_AxisY, (float)m_AxisX, (float)m_AxisH);
 
@@ -210,43 +238,106 @@ void CJoystickView::Update(const float deltaSeconds)
 		float origYaw, origPitch, origRoll, origHeave;
 		cMotionController::Get()->m_joystickMod.GetOriginal(origYaw, origPitch, origRoll, origHeave);
 
+
 		const float elapsT = 0.033f;
 		if (m_incTime > elapsT)
 		{
-			if (m_isRecord)
-			{
-				sMotionData data;
-				data.yaw = yaw;
-				data.pitch = pitch;
-				data.roll = roll;
-				data.heave = heave;
+			// original
+			m_multiPlotWindows->SetXY(0, t, origYaw, 0);
+			m_multiPlotWindows->SetXY(1, t, origPitch, 0);
+			m_multiPlotWindows->SetXY(2, t, origRoll, 0);
+			m_multiPlotWindows->SetXY(3, t, origHeave, 0);
 
-				sMotionData out;
-				if (m_recordMWave.Record(m_incTime, data, &out))
+// 			if (m_isRecord)
+// 			{
+// 				sMotionData out;
+// 				sMotionData data;
+// 				data.yaw = origYaw;
+// 				data.pitch = origPitch;
+// 				data.roll = origRoll;
+// 				data.heave = origHeave;
+// 
+// 				if (m_recordMWave.Record(m_incTime, data, &out))
+// 				{
+// 					m_recordData = out;
+// 					m_multiPlotWindows->SetXY(0, t, out.yaw, 2);
+// 					m_multiPlotWindows->SetXY(1, t, out.pitch, 2);
+// 					m_multiPlotWindows->SetXY(2, t, out.roll, 2);
+// 					m_multiPlotWindows->SetXY(3, t, out.heave, 2);
+// 				}
+// 			}
+
+			// modulation
+			vector<Vector2> yawSpline, pitchSpline, rollSpline, heaveSpline;
+			yawSpline.reserve(4);
+			pitchSpline.reserve(4);
+			rollSpline.reserve(4);
+			heaveSpline.reserve(4);
+			if (cMotionController::Get()->m_joystickMod.m_yawSpline.GetInterpolations(0, 1.f, yawSpline))
+			{
+				for each(auto &pos in yawSpline)
 				{
-					m_recordData = out;
-// 					m_multiPlotWindows->SetXY(0, out.yaw, 2);
-// 					m_multiPlotWindows->SetXY(1, out.pitch, 2);
-// 					m_multiPlotWindows->SetXY(2, out.roll, 2);
-// 					m_multiPlotWindows->SetXY(3, out.heave, 2);
+					m_multiPlotWindows->SetXY(0, pos.x, pos.y, 1);
+				}
+			}
+			if (cMotionController::Get()->m_joystickMod.m_pitchSpline.GetInterpolations(0, 1.f, pitchSpline))
+			{
+				for each(auto &pos in pitchSpline)
+				{
+					m_multiPlotWindows->SetXY(1, pos.x, pos.y, 1);
+				}
+			}
+			if (cMotionController::Get()->m_joystickMod.m_rollSpline.GetInterpolations(0, 1.f, rollSpline))
+			{
+				for each(auto &pos in rollSpline)
+				{
+					m_multiPlotWindows->SetXY(2, pos.x, pos.y, 1);
+				}
+			}
+			if (cMotionController::Get()->m_joystickMod.m_heaveSpline.GetInterpolations(0, 1.f, heaveSpline))
+			{
+				for each(auto &pos in heaveSpline)
+				{
+					m_multiPlotWindows->SetXY(3, pos.x, pos.y, 1);
 				}
 			}
 
-			// original
-			m_multiPlotWindows->SetXY(0, origYaw, 0);
-			m_multiPlotWindows->SetXY(1, origPitch, 0);
-			m_multiPlotWindows->SetXY(2, origRoll, 0);
-			m_multiPlotWindows->SetXY(3, origHeave, 0);
 
-			// modulation
-			m_multiPlotWindows->SetXY(0, yaw, 1);
-			m_multiPlotWindows->SetXY(1, pitch, 1);
-			m_multiPlotWindows->SetXY(2, roll, 1);
-			m_multiPlotWindows->SetXY(3, heave, 1);
+			if (m_isRecord)
+			{
+				m_recordIncTime += m_incTime;
+
+				if (!yawSpline.empty())
+				{
+					const float recordDeltaT = m_recordIncTime / (float)yawSpline.size();
+
+					for (u_int i = 0; i < yawSpline.size(); ++i)
+					{
+						sMotionData data;
+						data.yaw = yawSpline[i].y;
+						data.pitch = pitchSpline[i].y;
+						data.roll = rollSpline[i].y;
+						data.heave = heaveSpline[i].y;
+
+						sMotionData out;
+						if (m_recordMWave.Record(recordDeltaT, data, &out))
+						{
+							m_recordData = out;
+							m_multiPlotWindows->SetXY(0, yawSpline[i].x, out.yaw, 2);
+							m_multiPlotWindows->SetXY(1, pitchSpline[i].x, out.pitch, 2);
+							m_multiPlotWindows->SetXY(2, rollSpline[i].x, out.roll, 2);
+							m_multiPlotWindows->SetXY(3, heaveSpline[i].x, out.heave, 2);
+						}
+					}
+
+					m_recordIncTime = 0;
+				}
+			}
 
 			m_multiPlotWindows->DrawGraph(elapsT);
 
-			m_incTime -= elapsT;
+			//m_incTime -= elapsT;
+			m_incTime = 0;
 		}
 	}
 }
@@ -439,7 +530,7 @@ void CJoystickView::OnBnClickedButtonRecord()
 	else
 	{
 		m_isRecord = true;
-		m_multiPlotWindows->ProcessPlotCommand(g_joystickPlotCommand, 2);
+		m_multiPlotWindows->ProcessPlotCommand(g_joystickPlotCommand, 3);
 
 		m_recordMWave.StartRecord();
 		m_RecordButton.SetWindowTextW(L"Record Stop");

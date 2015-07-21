@@ -6,7 +6,8 @@
 #include "UDPCommunication.h"
 
 
-cController::cController()
+cController::cController() :
+	m_globalSeconds(0)
 {
 	m_cubeFlight = new cCubeFlight();
 	m_serialComm = new cSerialCommunication();
@@ -51,6 +52,8 @@ void cController::Update(const float deltaSeconds)
 {
 	RET(!m_serialComm);
 	RET(!m_udpComm);
+
+	m_globalSeconds += deltaSeconds;
 
 	m_serialComm->ProcessSerialCommunicatoin(deltaSeconds);	
 
