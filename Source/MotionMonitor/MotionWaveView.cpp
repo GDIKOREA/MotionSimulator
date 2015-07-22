@@ -94,17 +94,19 @@ BOOL CMotionWaveView::OnInitDialog()
 	m_multiPlotWindows->ShowWindow(SW_SHOW);
 	m_multiPlotWindows->SetFixedWidthMode(true);
 
-	m_multiPlotWindows->ProcessPlotCommand(g_motionwavePlotCommand, 1);
+	m_multiPlotWindows->ProcessPlotCommand(g_motionwavePlotCommand, 2);
 	m_multiPlotWindows->SetFixedWidthMode(true);
 
 
 	const CString command =
-L"#joystick\n\
+L"# motion wave\n\
 \n\
 yaw_proportion = 1\n\
 pitch_proportion = 1\n\
 roll_proportion = 1\n\
 heave_proportion = 1\n\
+\n\
+spline_enable = 1\n\
 \n\
 yaw_c1 = 0\n\
 yaw_c2 = 1\n\
@@ -121,9 +123,12 @@ roll_c3 = 0\n\
 heave_c1 = 0\n\
 heave_c2 = 1\n\
 heave_c3 = 0\n\
+\n\
+spline_plot_sampling_rate = 10\n\
+spline_interpolation_rate = 10\n\
+\n\
 ";
 	m_EditCommand.SetWindowTextW(command);
-
 
 	return TRUE;
 }
@@ -203,12 +208,38 @@ void CMotionWaveView::Update(const float deltaSeconds)
 		sMotionData data;
 		if (m_mwaveFile.Play(m_incTime, data))
 		{
-			m_multiPlotWindows->SetY(0, data.yaw, 0);
-			m_multiPlotWindows->SetY(1, data.pitch, 0);
-			m_multiPlotWindows->SetY(2, data.roll, 0);
-			m_multiPlotWindows->SetY(3, data.heave, 0);
-
 			cMotionController::Get()->m_mwavMod.Update(m_incTime, data.yaw, data.pitch, data.roll, data.heave);
+
+			// 계산 된 값을 가져온다.
+			float yaw, pitch, roll, heave;
+			cMotionController::Get()->m_mwavMod.GetFinal(yaw, pitch, roll, heave);
+
+			const float t = cMotionController::Get()->m_mwavMod.m_totalIncTime;
+
+			//----------------------------------------------------------------------------------------------
+			// modulation 계산 된 값 출력
+			m_multiPlotWindows->SetXY(0, t, yaw, 0);
+			m_multiPlotWindows->SetXY(1, t, pitch, 0);
+			m_multiPlotWindows->SetXY(2, t, roll, 0);
+			m_multiPlotWindows->SetXY(3, t, heave, 0);
+
+
+			//----------------------------------------------------------------------------------------------
+			// modulation Spline
+			vector<Vector2> yawSpline, pitchSpline, rollSpline, heaveSpline;
+			if (cMotionController::Get()->m_mwavMod.GetSplineInterpolations(0, 1.f, yawSpline,
+				pitchSpline, rollSpline, heaveSpline))
+			{
+				for (u_int i = 0; i < yawSpline.size(); ++i)
+				{
+					m_multiPlotWindows->SetXY(0, yawSpline[i].x, yawSpline[i].y, 1);
+					m_multiPlotWindows->SetXY(1, pitchSpline[i].x, pitchSpline[i].y, 1);
+					m_multiPlotWindows->SetXY(2, rollSpline[i].x, rollSpline[i].y, 1);
+					m_multiPlotWindows->SetXY(3, heaveSpline[i].x, heaveSpline[i].y, 1);
+				}
+			}
+			//----------------------------------------------------------------------------------------------
+
 		}
 
 		m_incTime = 0;// elapseT;
@@ -242,7 +273,7 @@ void CMotionWaveView::OnBnClickedButtonPlay()
 
 void CMotionWaveView::OnBnClickedButtonClear()
 {
-	m_multiPlotWindows->ProcessPlotCommand(g_motionwavePlotCommand, 1);
+	m_multiPlotWindows->ProcessPlotCommand(g_motionwavePlotCommand, 2);
 }
 
 

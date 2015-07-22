@@ -22,6 +22,7 @@ protected:
 
 	bool InitJoyStick();
 	void ParseRawInput(PRAWINPUT pRawInput);
+	void StopJoyStickUpdate();
 
 
 protected:

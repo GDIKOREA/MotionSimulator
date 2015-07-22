@@ -11,10 +11,7 @@ cMotionWaveModulator::cMotionWaveModulator()
 	, m_originalRoll(0)
 	, m_originalHeave(0)
 
-	, m_isYawSplineEnable(false)
-	, m_isPitchSplineEnable(false)
-	, m_isRollSplineEnable(false)
-	, m_isHeaveSplineEnable(false)
+	, m_isSplineEnable(false)
 
 	, m_yawProportion(1)
 	, m_pitchProportion(1)
@@ -37,14 +34,8 @@ cMotionWaveModulator::cMotionWaveModulator()
 	, m_heaveC2(0)
 	, m_heaveC3(0)
 
-	, m_yawSplinePlotSamplingRate(10)
-	, m_yawSplineInterpolationRate(10)
-	, m_pitchSplinePlotSamplingRate(10)
-	, m_pitchSplineInterpolationRate(10)
-	, m_rollSplinePlotSamplingRate(10)
-	, m_rollSplineInterpolationRate(10)
-	, m_heaveSplinePlotSamplingRate(10)
-	, m_heaveSplineInterpolationRate(10)
+	, m_splinePlotSamplingRate(10)
+	, m_splineInterpolationRate(10)
 {
 	ZeroMemory(m_yaw, sizeof(m_yaw));
 	ZeroMemory(m_pitch, sizeof(m_pitch));
@@ -147,10 +138,7 @@ void cMotionWaveModulator::InitDefault()
     m_originalRoll = 0;
     m_originalHeave = 0;
 
-	m_isYawSplineEnable = false;
-	m_isPitchSplineEnable = false;
-	m_isRollSplineEnable = false;
-	m_isHeaveSplineEnable = false;
+	m_isSplineEnable = false;
 
     m_yawProportion = 0;
     m_pitchProportion = 0;
@@ -160,27 +148,21 @@ void cMotionWaveModulator::InitDefault()
 	m_yawC1 = 0;
 	m_yawC2 = 0;
 	m_yawC3 = 0;
-	m_yawSplinePlotSamplingRate = 10;
-	m_yawSplineInterpolationRate = 10;
 
 	m_pitchC1 = 0;
 	m_pitchC2 = 255;
 	m_pitchC3 = 255;
-	m_pitchSplinePlotSamplingRate = 10;
-	m_pitchSplineInterpolationRate = 10;
 
 	m_rollC1 = 0;
 	m_rollC2 = 255;
 	m_rollC3 = 255;
-	m_rollSplinePlotSamplingRate = 10;
-	m_rollSplineInterpolationRate = 10;
 
 	m_heaveC1 = 0;
 	m_heaveC2 = 0;
 	m_heaveC3 = 0;
-	m_heaveSplinePlotSamplingRate = 10;
-	m_heaveSplineInterpolationRate = 10;
 
+	m_splinePlotSamplingRate = 10;
+	m_splineInterpolationRate = 10;
 }
 
 
@@ -193,10 +175,7 @@ void cMotionWaveModulator::UpdateParseData()
 	m_rollProportion = GetFloat("roll_proportion");
 	m_heaveProportion = GetFloat("heave_proportion");
 
-	m_isYawSplineEnable = GetBool("yaw_spline_enable");
-	m_isPitchSplineEnable = GetBool("pitch_spline_enable");
-	m_isRollSplineEnable = GetBool("roll_spline_enable");
-	m_isHeaveSplineEnable = GetBool("heave_spline_enable");
+	m_isSplineEnable = GetBool("spline_enable");
 
 	m_yawC1 = GetFloat("yaw_c1");
 	m_yawC2 = GetFloat("yaw_c2");
@@ -214,18 +193,29 @@ void cMotionWaveModulator::UpdateParseData()
 	m_heaveC2 = GetFloat("heave_c2");
 	m_heaveC3 = GetFloat("heave_c3");
 
-	m_yawSplinePlotSamplingRate = GetInt("yaw_spline_plot_sampling_rate", 10);
-	m_yawSplineInterpolationRate = GetInt("yaw_spline_interpolation_rate", 10);
-	m_pitchSplinePlotSamplingRate = GetInt("pitch_spline_plot_sampling_rate", 10);
-	m_pitchSplineInterpolationRate = GetInt("pitch_spline_interpolation_rate", 10);
-	m_rollSplinePlotSamplingRate = GetInt("roll_spline_plot_sampling_rate", 10);
-	m_rollSplineInterpolationRate = GetInt("roll_spline_interpolation_rate", 10);
-	m_heaveSplinePlotSamplingRate = GetInt("heave_spline_plot_sampling_rate", 10);
-	m_heaveSplineInterpolationRate = GetInt("heave_spline_interpolation_rate", 10);
+	m_splinePlotSamplingRate = GetInt("spline_plot_sampling_rate", 10);
+	m_splineInterpolationRate = GetInt("spline_interpolation_rate", 10);
+
+	m_yawSpline.Init(m_isSplineEnable, m_splinePlotSamplingRate, m_splineInterpolationRate);
+	m_pitchSpline.Init(m_isSplineEnable, m_splinePlotSamplingRate, m_splineInterpolationRate);
+	m_rollSpline.Init(m_isSplineEnable, m_splinePlotSamplingRate, m_splineInterpolationRate);
+	m_heaveSpline.Init(m_isSplineEnable, m_splinePlotSamplingRate, m_splineInterpolationRate);
+}
 
 
-	m_yawSpline.Init(m_isYawSplineEnable, m_yawSplinePlotSamplingRate, m_yawSplineInterpolationRate);
-	m_pitchSpline.Init(m_isPitchSplineEnable, m_pitchSplinePlotSamplingRate, m_pitchSplineInterpolationRate);
-	m_rollSpline.Init(m_isRollSplineEnable, m_rollSplinePlotSamplingRate, m_rollSplineInterpolationRate);
-	m_heaveSpline.Init(m_isHeaveSplineEnable, m_heaveSplinePlotSamplingRate, m_heaveSplineInterpolationRate);
+// 스플라인 곡선 리턴
+bool cMotionWaveModulator::GetSplineInterpolations(const float s, const float t, vector<Vector2> &yawOut, vector
+	<Vector2> &pitchOut, vector<Vector2> &rollOut, vector<Vector2> &heaveOut)
+{
+	yawOut.reserve(4);
+	pitchOut.reserve(4);
+	rollOut.reserve(4);
+	heaveOut.reserve(4);
+
+	const bool ret1 = m_yawSpline.GetInterpolations(s, t, yawOut);
+	const bool ret2 = m_pitchSpline.GetInterpolations(s, t, pitchOut);
+	const bool ret3 = m_rollSpline.GetInterpolations(s, t, rollOut);
+	const bool ret4 = m_heaveSpline.GetInterpolations(s, t, heaveOut);
+
+	return ret1 && ret2 && ret3 && ret4;
 }

@@ -19,6 +19,8 @@ public:
 	void Update(const float deltaSeconds, const float yaw, const float pitch, const float roll, const float heave);
 	void GetFinal(OUT float &yaw, OUT float &pitch, OUT float &roll, OUT float &heave);
 	void GetOriginal(OUT float &yaw, OUT float &pitch, OUT float &roll, OUT float &heave);
+	bool GetSplineInterpolations(const float s, const float t, vector<Vector2> &yawOut, vector<Vector2> &pitchOut,
+		vector<Vector2> &rollOut, vector<Vector2> &heaveOut);
 
 	virtual void InitDefault() override;
 	virtual void UpdateParseData() override;
@@ -47,10 +49,7 @@ public:
 	float m_rollProportion;
 	float m_heaveProportion;
 
-	bool m_isYawSplineEnable;
-	bool m_isPitchSplineEnable;
-	bool m_isRollSplineEnable;
-	bool m_isHeaveSplineEnable;
+	bool m_isSplineEnable;
 
 
 	// (m_yawC1 * m_yaw[0]* m_yaw[0]) + (m_yawC2 * m_yaw[0]) + m_yawC3
@@ -70,14 +69,8 @@ public:
 	float m_heaveC2;
 	float m_heaveC3;
 
-	int m_yawSplinePlotSamplingRate;
-	int m_yawSplineInterpolationRate;
-	int m_pitchSplinePlotSamplingRate;
-	int m_pitchSplineInterpolationRate;
-	int m_rollSplinePlotSamplingRate;
-	int m_rollSplineInterpolationRate;
-	int m_heaveSplinePlotSamplingRate;
-	int m_heaveSplineInterpolationRate;
+	int m_splinePlotSamplingRate;
+	int m_splineInterpolationRate;
 
 	float m_incTime;
 	float m_totalIncTime;
