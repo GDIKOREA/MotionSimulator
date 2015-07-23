@@ -12,7 +12,7 @@ namespace common
 		cConfig();
 		virtual ~cConfig();
 
-		void Init(const string &fileName);
+		bool Init(const string &fileName);
 		bool Save(const string &fileName);
 		void ParseStr(const string &str);
 

@@ -18,6 +18,9 @@ struct sMotionData
 	void clear();
 	sMotionData& operator+=(const sMotionData &rhs);
 	sMotionData& operator/=(const int n);
+	sMotionData operator*(const float s);
+	sMotionData operator+(const sMotionData &s);
+
 };
 
 
@@ -30,6 +33,10 @@ public:
 	void Init(const int reserveSamplingCount);
 	bool Read(const string &fileName);
 	bool Write(const string &fileName);
+	void Make(const int samplingRate, const int samplingCount, const sMotionData &data);
+	void MakeSpline(const int samplingRate, const int interpolationRate);
+	bool Insert(const cMotionWave &src, const int insertIndex, const int size=-1);
+	bool Remove(const int removeIndex, const int size);
 
 	void StartRecord();
 	void Stop();
@@ -38,6 +45,8 @@ public:
 	void StartPlay();
 	bool Play(const float deltaSeconds, sMotionData &out);
 	void StopPlay();
+
+	cMotionWave& operator=(const cMotionWave &rhs);
 
 
 public:

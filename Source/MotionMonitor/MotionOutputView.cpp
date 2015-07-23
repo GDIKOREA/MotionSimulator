@@ -177,7 +177,7 @@ void CMotionOutputView::Update(const float deltaSeconds)
 		if (m_incTime > 0.02f)
 		{
 			m_multiPlotWindows->SetString(common::format("%d;%d;%d;", out_yaw, out_pitch, out_roll).c_str(), 0);
-			m_multiPlotWindows->DrawGraph(m_incTime);
+			m_multiPlotWindows->DrawGraph(m_incTime, false);
 			m_incTime = 0;
 		}
 

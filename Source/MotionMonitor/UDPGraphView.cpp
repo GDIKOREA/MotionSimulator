@@ -18,6 +18,8 @@ struct sMotionPacket
 	float directX, directY, directZ; // 자동차 방향 벡터
 	float pitch, yaw, roll; // 자동차 상태 radian
 	float speed; // 자동차 속도
+	int gamestate;
+	int stage;
 };
 
 
@@ -26,7 +28,6 @@ CUDPGraphView::CUDPGraphView(CWnd* pParent /*=NULL*/)
 	: CDockablePaneChildView(CUDPGraphView::IDD, pParent)
 	, m_ServerPort(20777)
 	, m_multiPlotWindows(NULL)
-//	, m_isServerBind(false)
 	, m_incTime(0)
 	, m_isPause(false)
 {
@@ -311,6 +312,8 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 		ss << pitch << ";";
 		ss << roll << ";";
 		ss << 0 << ";";
+		ss << packet->gamestate << ";";
+		ss << packet->stage << ";";
 
 		m_PacketString = common::str2wstr(ss.str()).c_str();
 

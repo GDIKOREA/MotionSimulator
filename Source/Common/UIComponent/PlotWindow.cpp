@@ -4,8 +4,6 @@
 #include "stdafx.h"
 #include "PlotWindow.h"
 
-
-
 COLORREF g_penColors[] = {
 	RGB(255, 255, 0),
 	RGB(0, 255, 0),
@@ -19,6 +17,7 @@ CPlotWindow::CPlotWindow() :
 	m_mode(NORMAL)
 	, m_splineIncTime(0)
 	, m_oldTime(0)
+	, m_bmpSize(0,0)
 {
 	m_blackBrush.CreateSolidBrush(RGB(0, 0, 0));
 	m_gridPen1.CreatePen(0, 1, RGB(100, 100, 100));
@@ -55,19 +54,46 @@ void CPlotWindow::OnDraw(CDC* pDC)
 	CRect cr;
 	GetClientRect(cr);
 
+
+	CDC memDC;
+	CBitmap *pOldBitmap;
+	memDC.CreateCompatibleDC(pDC);
+	if ((m_bmpSize.cx != cr.Width()) || (m_bmpSize.cy != cr.Height()))
+	{
+		m_Bitmap.DeleteObject();
+		m_Bitmap.CreateCompatibleBitmap(pDC, cr.Width(), cr.Height());
+		m_bmpSize = CSize(cr.Width(), cr.Height());
+	}
+
+	pOldBitmap = memDC.SelectObject(&m_Bitmap);
+	//memDC.PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS); // 흰색으로 초기화
+	// 메모리 DC에 그리기
+	//DrawImage(&memDC);
+	// 메모리 DC를 화면 DC에 고속 복사
+	//pDC->BitBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
+
+// 	memDC.SelectObject(pOldBitmap);
+// 	memDC.DeleteDC();
+// 	bitmap.DeleteObject(
+
+
+
+
+
+
 	// background black
-	pDC->SelectObject(m_blackBrush);
-	pDC->Rectangle(cr);
+	memDC.SelectObject(m_blackBrush);
+	memDC.Rectangle(cr);
 
 	// draw x,y axis grid
-	pDC->SelectObject(m_gridPen2); // center line width 2
-	pDC->MoveTo(CPoint(0, cr.Height() / 2));
-	pDC->LineTo(CPoint(cr.Width(), cr.Height() / 2));
-	pDC->SelectObject(m_gridPen1); 
-	pDC->MoveTo(CPoint(0, cr.Height() / 4 ));
-	pDC->LineTo(CPoint(cr.Width(), cr.Height() / 4));
-	pDC->MoveTo(CPoint(0, cr.Height()* 3 / 4));
-	pDC->LineTo(CPoint(cr.Width(), cr.Height()*3 / 4));
+	memDC.SelectObject(m_gridPen2); // center line width 2
+	memDC.MoveTo(CPoint(0, cr.Height() / 2));
+	memDC.LineTo(CPoint(cr.Width(), cr.Height() / 2));
+	memDC.SelectObject(m_gridPen1); 
+	memDC.MoveTo(CPoint(0, cr.Height() / 4 ));
+	memDC.LineTo(CPoint(cr.Width(), cr.Height() / 4));
+	memDC.MoveTo(CPoint(0, cr.Height()* 3 / 4));
+	memDC.LineTo(CPoint(cr.Width(), cr.Height()*3 / 4));
 
 
 	// draw time line grid
@@ -99,8 +125,8 @@ void CPlotWindow::OnDraw(CDC* pDC)
 	const int timeLineCount = cr.Width() / oneSecondsWidth;
 	for (int i = 1; i <= timeLineCount + 1; ++i)
 	{
-		pDC->MoveTo(CPoint((i * oneSecondsWidth) - offsetX, 0));
-		pDC->LineTo(CPoint((i * oneSecondsWidth) - offsetX, cr.Height()));
+		memDC.MoveTo(CPoint((i * oneSecondsWidth) - offsetX, 0));
+		memDC.LineTo(CPoint((i * oneSecondsWidth) - offsetX, cr.Height()));
 	}
 
 	m_scaleY = (float)cr.Height() / (m_maxY - m_minY);
@@ -126,7 +152,7 @@ void CPlotWindow::OnDraw(CDC* pDC)
 		}
 
 		// draw graph
-		pDC->SelectObject(m_plotPens[ i]);
+		memDC.SelectObject(m_plotPens[ i]);
 		const int h = cr.Height();
 		int lastX = 0;
 		for (int i = plot.renderStartIndex; i != plot.tailIdx; i = ++i % plot.xy.size())
@@ -137,15 +163,15 @@ void CPlotWindow::OnDraw(CDC* pDC)
 			lastX = x;
 
 			if (i == plot.renderStartIndex)
-				pDC->MoveTo(CPoint(x, y));
+				memDC.MoveTo(CPoint(x, y));
 			else
-				pDC->LineTo(CPoint(x, y));
+				memDC.LineTo(CPoint(x, y));
 		}
 
 
 		// 정보 출력. 최대, 최소, 중간 값, 현재 값.
-		pDC->SetBkMode(TRANSPARENT);
-		pDC->SetTextColor(RGB(220, 220, 220));
+		memDC.SetBkMode(TRANSPARENT);
+		memDC.SetTextColor(RGB(220, 220, 220));
 
 		// 가장 마지막 위치에 현재 값을 출력한다.
 		if (plot.headIdx != plot.tailIdx)
@@ -160,7 +186,7 @@ void CPlotWindow::OnDraw(CDC* pDC)
 
 			CString strLastVal;
 			strLastVal.Format(L"%f", plot.xy[(plot.tailIdx - 1) % plot.xy.size()].y);
-			pDC->TextOutW(lastX - 10, y, strLastVal);
+			memDC.TextOutW(lastX - 10, y, strLastVal);
 		}
 	}
 
@@ -169,10 +195,15 @@ void CPlotWindow::OnDraw(CDC* pDC)
 	strMaxY.Format(L"%f", m_maxY);
 	strMinY.Format(L"%f", m_minY);
 	strCenterY.Format(L"%f", (m_maxY + m_minY) / 2.f);
-	pDC->TextOutW(5, 0, strMaxY); // maximum y
-	pDC->TextOutW(5, cr.Height() - 20, strMinY); // minimum y
-	pDC->TextOutW(5, cr.Height() / 2 - 20, strCenterY); // center y
-	pDC->TextOutW(cr.Width()/2, 0, m_name); // plot name
+	memDC.TextOutW(5, 0, strMaxY); // maximum y
+	memDC.TextOutW(5, cr.Height() - 20, strMinY); // minimum y
+	memDC.TextOutW(5, cr.Height() / 2 - 20, strCenterY); // center y
+	memDC.TextOutW(cr.Width()/2, 0, m_name); // plot name
+
+
+	pDC->BitBlt(0, 0, cr.Width(), cr.Height(), &memDC, 0, 0, SRCCOPY);
+	memDC.SelectObject(pOldBitmap);
+	memDC.DeleteDC();
 }
 
 
@@ -245,8 +276,18 @@ bool CPlotWindow::SetPlot(const float x_range, const float y_range,
 
 	m_maxX = -FLT_MAX;
 	m_minX = FLT_MAX;
-	m_maxY = -FLT_MAX;
-	m_minY = FLT_MAX;
+
+	if (0 == m_yRange)
+	{
+		m_maxY = -FLT_MAX;
+		m_minY = FLT_MAX;
+	}
+	else
+	{
+		m_maxY = m_yRange/2;
+		m_minY = -m_yRange/2;
+	}
+
 	m_scaleY = 1.f;
 	m_startTime = 0;
 	m_updateTime = 0;

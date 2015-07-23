@@ -35,6 +35,7 @@ void cSpline::Init(const bool enable, const int samplingRate, const int interpol
 }
 
 
+// 샘플링 시간을 감안해서 값을 저장한다.
 bool cSpline::AddPoint(const float deltaSeconds, const Vector2 &pos)
 {
 	RETV(!m_enable, false);
@@ -63,6 +64,27 @@ bool cSpline::AddPoint(const float deltaSeconds, const Vector2 &pos)
 	}
 
 	return retValue;
+}
+
+
+// 샘플링 간격에 상관없이 저장한다.
+void cSpline::AddPoint(const Vector2 &pos)
+{
+	RET(!m_enable);
+
+	if (m_storeCount < 4)
+	{
+		m_vec[m_storeCount++] = pos;
+	}
+	else
+	{
+		// 처음 정보를 지우고, 왼쪽으로 시프트 한다.
+		std::rotate(m_vec.begin(), m_vec.begin() + 1, m_vec.end());
+		m_vec[3] = pos;
+
+		// Spline 곡선을 계산할 수 있을 때 true를 리턴한다.
+		m_isReadEnable = true;
+	}
 }
 
 

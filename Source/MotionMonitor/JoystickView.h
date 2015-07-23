@@ -64,4 +64,5 @@ public:
 	afx_msg void OnBnClickedButtonUpdate();
 	BOOL m_CheckFixedMode;
 	afx_msg void OnBnClickedCheckFixedmode();
+	afx_msg void OnDestroy();
 };

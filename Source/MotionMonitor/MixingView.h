@@ -36,4 +36,5 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedButtonUpdate();
 	CRichEditCtrl m_EditCommand;
+	afx_msg void OnDestroy();
 };

@@ -48,6 +48,7 @@ BEGIN_MESSAGE_MAP(CMixingView, CDockablePaneChildView)
 	ON_BN_CLICKED(IDOK, &CMixingView::OnBnClickedOk)
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_BUTTON_UPDATE, &CMixingView::OnBnClickedButtonUpdate)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -89,7 +90,19 @@ mixing_rate3_yaw = 0\n\
 mixing_rate3_pitch = 0\n\
 mixing_rate3_roll = 0\n\
 mixing_rate3_heave = 0\n";
-	m_EditCommand.SetWindowTextW(command);
+
+	CString cmdStr;
+	std::ifstream cfgfile("mixing_config.cfg");
+	if (cfgfile.is_open())
+	{
+		std::string str((std::istreambuf_iterator<char>(cfgfile)), std::istreambuf_iterator<char>());
+		cmdStr = str2wstr(str).c_str();
+	}
+	else
+	{
+		cmdStr = command;
+	}
+	m_EditCommand.SetWindowTextW(cmdStr);
 
 
 	// Plot창 생성.
@@ -158,9 +171,10 @@ void CMixingView::Update(const float deltaSeconds)
 {
 	RET(!m_isStart);
 
+	const float elapseT = 0.02f;
 	m_incTime += deltaSeconds;
 
-	if (m_incTime > 0.01f)
+	if (m_incTime > elapseT)
 	{
 		float yaw, pitch, roll, heave;
 		Mixing(deltaSeconds, yaw, pitch, roll, heave);
@@ -174,9 +188,11 @@ void CMixingView::Update(const float deltaSeconds)
 		m_multiPlotWindows->SetY(1, pitch, 0);
 		m_multiPlotWindows->SetY(2, roll, 0);
 		m_multiPlotWindows->SetY(3, heave, 0);
-		m_multiPlotWindows->DrawGraph(m_incTime);
+		m_multiPlotWindows->DrawGraph(m_incTime, false);
 
-		m_incTime = 0;
+		m_incTime -= elapseT;
+		if (m_incTime > elapseT)
+			m_incTime = 0;
 	}
 }
 
@@ -283,4 +299,22 @@ void CMixingView::Mixing(const float deltaSeconds,
 	if (heave < 0)
 		heave = 0;
 
+}
+
+
+void CMixingView::OnDestroy()
+{
+	UpdateData();
+
+	// 환경파일 저장
+	std::ofstream cfgfile("mixing_config.cfg");
+	if (cfgfile.is_open())
+	{
+		CString command;
+		m_EditCommand.GetWindowTextW(command);
+		string str = wstr2str((LPCTSTR)command);
+		cfgfile << str;
+	}
+
+	CDockablePaneChildView::OnDestroy();
 }

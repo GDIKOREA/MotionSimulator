@@ -3,7 +3,6 @@
 //
 #pragma once
 
-#include "motionwavemodulator.h"
 
 
 class cMotionController : public common::cSingleton<cMotionController>

@@ -36,6 +36,12 @@ cMotionWaveModulator::cMotionWaveModulator()
 
 	, m_splinePlotSamplingRate(10)
 	, m_splineInterpolationRate(10)
+
+	, m_motionviewSplineSamplingRate(2)
+	, m_motionviewSplineInterpolationRate(2)
+	, m_motionviewTimeScaling(1)
+	, m_motionviewStartDelay(0)
+
 {
 	ZeroMemory(m_yaw, sizeof(m_yaw));
 	ZeroMemory(m_pitch, sizeof(m_pitch));
@@ -163,6 +169,11 @@ void cMotionWaveModulator::InitDefault()
 
 	m_splinePlotSamplingRate = 10;
 	m_splineInterpolationRate = 10;
+
+	m_motionviewSplineSamplingRate = 2;
+	m_motionviewSplineInterpolationRate = 2;
+	m_motionviewTimeScaling = 1;
+	m_motionviewStartDelay = 0;
 }
 
 
@@ -195,6 +206,11 @@ void cMotionWaveModulator::UpdateParseData()
 
 	m_splinePlotSamplingRate = GetInt("spline_plot_sampling_rate", 10);
 	m_splineInterpolationRate = GetInt("spline_interpolation_rate", 10);
+
+	m_motionviewSplineSamplingRate = GetInt("motionview_spline_sampling_rate", 2);
+	m_motionviewSplineInterpolationRate = GetInt("motionview_spline_interpolation_rate", 2);
+	m_motionviewTimeScaling = GetFloat("motionview_time_scaling", 1);
+	m_motionviewStartDelay = GetInt("motionview_start_delay", 0);
 
 	m_yawSpline.Init(m_isSplineEnable, m_splinePlotSamplingRate, m_splineInterpolationRate);
 	m_pitchSpline.Init(m_isSplineEnable, m_splinePlotSamplingRate, m_splineInterpolationRate);

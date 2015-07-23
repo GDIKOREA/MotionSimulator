@@ -8,16 +8,17 @@
 #include "MotionController.h"
 
 
-const static CString g_motionwavePlotCommand = L"plot1 = 0, 0, 0, 0, 0\r\n\
+const static CString g_motionwavePlotCommand = L"\r\n\
+plot1 = 0, 512, 0, 0, 0\r\n\
 string1 = %f;\r\n\
 name1 = Yaw\r\n\
-plot2 = 0, 0, 0, 0, 0\r\n\
+plot2 = 0, 512, 0, 0, 0\r\n\
 string2 = %*f; %f;\r\n\
 name2 = Pitch\r\n\
-plot3 = 0, 0, 0, 0, 0\r\n\
+plot3 = 0, 512, 0, 0, 0\r\n\
 string3 = %*f; %*f; %f;\r\n\
 name3 = Roll\r\n\
-plot4 = 0, 0, 0, 0, 0\r\n\
+plot4 = 0, 256, 0, 0, 0\r\n\
 string4 = %*f; %*f; %f; \r\n\
 name4 = Heave\r\n";
 
@@ -66,6 +67,7 @@ BEGIN_MESSAGE_MAP(CMotionWaveView, CDockablePaneChildView)
 	ON_BN_CLICKED(IDC_BUTTON_CLEAR, &CMotionWaveView::OnBnClickedButtonClear)
 	ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CMotionWaveView::OnBnClickedButtonRefresh)
 	ON_BN_CLICKED(IDC_BUTTON_UPDATE, &CMotionWaveView::OnBnClickedButtonUpdate)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -124,11 +126,29 @@ heave_c1 = 0\n\
 heave_c2 = 1\n\
 heave_c3 = 0\n\
 \n\
-spline_plot_sampling_rate = 10\n\
-spline_interpolation_rate = 10\n\
+#spline_plot_sampling_rate = 10\n\
+#spline_interpolation_rate = 10\n\
+\n\
+motionview_spline_sampling_rate = 2\n\
+motionview_spline_interpolation_rate = 2\n\
+motionview_time_scaling = 1\n\
+motionview_start_delay = 20\n\
 \n\
 ";
-	m_EditCommand.SetWindowTextW(command);
+
+	CString cmdStr;
+	std::ifstream cfgfile("motionwave_config.cfg");
+	if (cfgfile.is_open())
+	{
+		std::string str((std::istreambuf_iterator<char>(cfgfile)), std::istreambuf_iterator<char>());
+		cmdStr = str2wstr(str).c_str();
+	}
+	else
+	{
+		cmdStr = command;
+	}
+
+	m_EditCommand.SetWindowTextW(cmdStr);
 
 	return TRUE;
 }
@@ -171,22 +191,10 @@ void CMotionWaveView::OnSelchangedTreeFile(NMHDR *pNMHDR, LRESULT *pResult)
 	if (common::GetFileExt(fileName).empty() || (fileName == "./media") || (fileName == "."))
 		return;
 
-	if (m_mwaveFile.Read(fileName))
+	if (m_mwave.Read(fileName))
 	{
-		// 파일 정보 업데이트
-		m_FileInfoTree.DeleteAllItems();
-
-		CString name;
-		name.Format(L"Name = %s", str2wstr(fileName).c_str());
-		m_FileInfoTree.InsertItem(name);
-
-		CString samplingRate;
-		samplingRate.Format(L"Sampling Rate = %d Hz", m_mwaveFile.m_samplingRate);
-		m_FileInfoTree.InsertItem(samplingRate);
-
-		CString samplingCount;
-		samplingCount.Format(L"Sampling Count = %d", m_mwaveFile.m_wave.size());
-		m_FileInfoTree.InsertItem(samplingCount);
+		UpdateMotionWaveFile();
+		UpdateMotionWaveFileInfo(fileName, m_mwave);
 	}
 	else
 	{
@@ -201,20 +209,38 @@ void CMotionWaveView::Update(const float deltaSeconds)
 
 	const float elapseT = 0.02f;
 
-	m_incTime += deltaSeconds;
+	m_incTime += (deltaSeconds * cMotionController::Get()->m_mwavMod.m_motionviewTimeScaling);
 
 	if (m_incTime > elapseT)
 	{
+		float t = cMotionController::Get()->m_mwavMod.m_totalIncTime;
+
 		sMotionData data;
-		if (m_mwaveFile.Play(m_incTime, data))
+		if (m_mwaveSpline.Play(m_incTime, data))
 		{
 			cMotionController::Get()->m_mwavMod.Update(m_incTime, data.yaw, data.pitch, data.roll, data.heave);
+
+			t = cMotionController::Get()->m_mwavMod.m_totalIncTime;
 
 			// 계산 된 값을 가져온다.
 			float yaw, pitch, roll, heave;
 			cMotionController::Get()->m_mwavMod.GetFinal(yaw, pitch, roll, heave);
 
-			const float t = cMotionController::Get()->m_mwavMod.m_totalIncTime;
+			//----------------------------------------------------------------------------------------------
+			// modulation 계산 된 값 출력
+			m_multiPlotWindows->SetXY(0, t, yaw, 1);
+			m_multiPlotWindows->SetXY(1, t, pitch, 1);
+			m_multiPlotWindows->SetXY(2, t, roll, 1);
+			m_multiPlotWindows->SetXY(3, t, heave, 1);
+		}
+
+		if (m_mwave.Play(m_incTime, data))
+		{
+			m_mod.Update(m_incTime, data.yaw, data.pitch, data.roll, data.heave);
+
+			// 계산 된 값을 가져온다.
+			float yaw, pitch, roll, heave;
+			m_mod.GetFinal(yaw, pitch, roll, heave);
 
 			//----------------------------------------------------------------------------------------------
 			// modulation 계산 된 값 출력
@@ -222,27 +248,11 @@ void CMotionWaveView::Update(const float deltaSeconds)
 			m_multiPlotWindows->SetXY(1, t, pitch, 0);
 			m_multiPlotWindows->SetXY(2, t, roll, 0);
 			m_multiPlotWindows->SetXY(3, t, heave, 0);
-
-
-			//----------------------------------------------------------------------------------------------
-			// modulation Spline
-			vector<Vector2> yawSpline, pitchSpline, rollSpline, heaveSpline;
-			if (cMotionController::Get()->m_mwavMod.GetSplineInterpolations(0, 1.f, yawSpline,
-				pitchSpline, rollSpline, heaveSpline))
-			{
-				for (u_int i = 0; i < yawSpline.size(); ++i)
-				{
-					m_multiPlotWindows->SetXY(0, yawSpline[i].x, yawSpline[i].y, 1);
-					m_multiPlotWindows->SetXY(1, pitchSpline[i].x, pitchSpline[i].y, 1);
-					m_multiPlotWindows->SetXY(2, rollSpline[i].x, rollSpline[i].y, 1);
-					m_multiPlotWindows->SetXY(3, heaveSpline[i].x, heaveSpline[i].y, 1);
-				}
-			}
-			//----------------------------------------------------------------------------------------------
-
 		}
 
-		m_incTime = 0;// elapseT;
+  		m_incTime -= elapseT;
+  		if (m_incTime > elapseT)
+			m_incTime = 0;
 	}
 
 	m_multiPlotWindows->DrawGraph(deltaSeconds, false);
@@ -254,19 +264,23 @@ void CMotionWaveView::OnBnClickedButtonPlay()
 	if (m_isPlay)
 	{
 		m_isPlay = false;
-		m_mwaveFile.StopPlay();
+		m_mwave.StopPlay();
+		m_mwaveSpline.StopPlay();
 		m_PlayButton.SetWindowTextW(L"Play");
 	}
 	else
 	{
-		m_isPlay = true;
-		m_mwaveFile.StartPlay();
-		m_PlayButton.SetWindowTextW(L"Stop");
-
 		// update config
 		CString command;
 		m_EditCommand.GetWindowTextW(command);
 		cMotionController::Get()->m_mwavMod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
+		m_mod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
+		UpdateMotionWaveFile();
+
+		m_isPlay = true;
+		m_mwave.StartPlay();
+		m_mwaveSpline.StartPlay();
+		m_PlayButton.SetWindowTextW(L"Stop");
 	}
 }
 
@@ -293,4 +307,71 @@ void CMotionWaveView::OnBnClickedButtonUpdate()
 	CString command;
 	m_EditCommand.GetWindowTextW(command);
 	cMotionController::Get()->m_mwavMod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
+	m_mod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
+
+	UpdateMotionWaveFile();
+}
+
+
+// 선택된 모션 웨이브 파일을 업데이트 한다.
+void CMotionWaveView::UpdateMotionWaveFile()
+{
+	const int samplingRate = cMotionController::Get()->m_mwavMod.m_motionviewSplineSamplingRate;
+	const int interpolationRate = cMotionController::Get()->m_mwavMod.m_motionviewSplineInterpolationRate;
+	const int startDelayTime = cMotionController::Get()->m_mwavMod.m_motionviewStartDelay;
+	m_mwaveSpline = m_mwave;
+
+	sMotionData data = { 0, 0, 0, 0 };
+	cMotionWave mwave;
+	mwave.Make(20, startDelayTime, data);
+	m_mwaveSpline.Insert(mwave, 0);
+	m_mwaveSpline.MakeSpline(samplingRate, interpolationRate);
+}
+
+
+void CMotionWaveView::UpdateMotionWaveFileInfo(const string &fileName, const cMotionWave &mwav)
+{
+	// 파일 정보 업데이트
+	m_FileInfoTree.DeleteAllItems();
+
+	{
+		CString name;
+		name.Format(L"Name = %s", str2wstr(fileName).c_str());
+		m_FileInfoTree.InsertItem(name);
+	}
+
+	{
+		CString samplingRate;
+		samplingRate.Format(L"Sampling Rate = %d Hz", mwav.m_samplingRate);
+		m_FileInfoTree.InsertItem(samplingRate);
+	}
+
+	{
+		CString samplingCount;
+		samplingCount.Format(L"Sampling Count = %d", mwav.m_wave.size());
+		m_FileInfoTree.InsertItem(samplingCount);
+	}
+
+	{
+		m_FileInfoTree.InsertItem(
+			common::formatw("PlayTime = %.1f seconds", ((float)mwav.m_wave.size() / (float)mwav.m_samplingRate)).c_str());
+	}
+}
+
+
+void CMotionWaveView::OnDestroy()
+{
+	UpdateData();
+
+	// 환경파일 저장
+ 	std::ofstream cfgfile("motionwave_config.cfg");
+	if (cfgfile.is_open())
+	{
+		CString command;
+		m_EditCommand.GetWindowTextW(command);
+		string str = wstr2str((LPCTSTR)command);
+		cfgfile << str;
+	}
+
+	CDockablePaneChildView::OnDestroy();
 }

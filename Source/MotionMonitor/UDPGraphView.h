@@ -26,8 +26,6 @@ protected:
 
 
 protected:
-// 	SOCKET m_socket;
-// 	bool m_isServerBind;
 	bool m_isPause;
 	CMultiPlotWindow *m_multiPlotWindows;
 	string m_xmlFilePath;

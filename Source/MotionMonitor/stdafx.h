@@ -91,3 +91,5 @@ enum VIEW_TYPE {
 
 #include "Global.h"
 #include "motionwave.h"
+#include "motionwavemodulator.h"
+#include "spline.h"

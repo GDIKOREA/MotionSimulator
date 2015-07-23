@@ -12,10 +12,6 @@ public:
 	cMotionWaveModulator();
 	virtual ~cMotionWaveModulator();
 
-
-	bool ReadConfig(const string &fileName);
-	bool ReadConfigStr(const string &str);
-
 	void Update(const float deltaSeconds, const float yaw, const float pitch, const float roll, const float heave);
 	void GetFinal(OUT float &yaw, OUT float &pitch, OUT float &roll, OUT float &heave);
 	void GetOriginal(OUT float &yaw, OUT float &pitch, OUT float &roll, OUT float &heave);
@@ -28,6 +24,7 @@ public:
 
 public:
 	// 최종 계산 결과 값은 마지막 인덱스에 저장된다.
+	// 0:PID, 1:Scaling
 	float m_yaw[2];
 	float m_pitch[2];
 	float m_roll[2];
@@ -71,6 +68,11 @@ public:
 
 	int m_splinePlotSamplingRate;
 	int m_splineInterpolationRate;
+
+	int m_motionviewSplineSamplingRate;
+	int m_motionviewSplineInterpolationRate;
+	float m_motionviewTimeScaling;
+	int m_motionviewStartDelay;
 
 	float m_incTime;
 	float m_totalIncTime;

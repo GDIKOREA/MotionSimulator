@@ -14,10 +14,14 @@ cConfig::~cConfig()
 }
 
 
-void cConfig::Init(const string &fileName)
+bool cConfig::Init(const string &fileName)
 {
 	if (!Parse(fileName))
+	{
 		InitDefault();
+		return false;
+	}
+	return true;
 }
 
 

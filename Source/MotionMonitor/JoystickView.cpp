@@ -20,22 +20,23 @@
 #define SAFE_FREE(p)	{ if(p) { HeapFree(hHeap, 0, p); (p) = NULL; } }
 
 
-const static CString g_joystickPlotCommand = L"plot1 = 0, 0, 0, 0, 0\r\n\
+const static CString g_joystickPlotCommand = L"\r\n\
+plot1 = 0, 256, 0, 0, 0\r\n\
 string1 = %f;\r\n\
 name1 = Yaw\r\n\
 lineweight1 = 2\r\n\
 \r\n\
-plot2 = 0, 0, 0, 0, 0\r\n\
+plot2 = 0, 512, 0, 0, 0\r\n\
 string2 = %*f; %f;\r\n\
 name2 = Pitch\r\n\
 lineweight2 = 2\r\n\
 \r\n\
-plot3 = 0, 0, 0, 0, 0\r\n\
+plot3 = 0, 512, 0, 0, 0\r\n\
 string3 = %*f; %*f; %f;\r\n\
 name3 = Roll\r\n\
 lineweight3 = 2\r\n\
 \r\n\
-plot4 = 0, 0, 0, 0, 0\r\n\
+plot4 = 0, 256, 0, 0, 0\r\n\
 string4 = %*f; %*f; %f; \r\n\
 lineweight4 = 2\r\n\
 name4 = Heave\r\n\
@@ -87,6 +88,7 @@ BEGIN_MESSAGE_MAP(CJoystickView, CDockablePaneChildView)
 	ON_BN_CLICKED(IDC_BUTTON_RECORD, &CJoystickView::OnBnClickedButtonRecord)
 	ON_BN_CLICKED(IDC_BUTTON_UPDATE, &CJoystickView::OnBnClickedButtonUpdate)
 	ON_BN_CLICKED(IDC_CHECK_FIXEDMODE, &CJoystickView::OnBnClickedCheckFixedmode)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -141,7 +143,20 @@ spline_plot_sampling_rate = 10\n\
 spline_interpolation_rate = 10\n\
 \n\
 ";
-	m_EditCommand.SetWindowTextW(command);
+
+	CString cmdStr;
+	std::ifstream cfgfile("joystick_config.cfg");
+	if (cfgfile.is_open())
+	{
+		std::string str((std::istreambuf_iterator<char>(cfgfile)), std::istreambuf_iterator<char>());
+		cmdStr = str2wstr(str).c_str();
+	}
+	else
+	{
+		cmdStr = command;
+	}
+	m_EditCommand.SetWindowTextW(cmdStr);
+
 
 	UpdateData(FALSE);
 
@@ -505,4 +520,22 @@ void CJoystickView::OnBnClickedCheckFixedmode()
 {
 	UpdateData();
 	m_multiPlotWindows->SetFixedWidthMode(m_CheckFixedMode ? true : false);
+}
+
+
+void CJoystickView::OnDestroy()
+{
+	UpdateData();
+
+	// 환경파일 저장
+	std::ofstream cfgfile("joystick_config.cfg");
+	if (cfgfile.is_open())
+	{
+		CString command;
+		m_EditCommand.GetWindowTextW(command);
+		string str = wstr2str((LPCTSTR)command);
+		cfgfile << str;
+	}
+
+	CDockablePaneChildView::OnDestroy();	
 }

@@ -19,13 +19,17 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	void UpdateMotionWaveFileInfo(const string &fileName, const cMotionWave &mwav);
+	void UpdateMotionWaveFile();
 
 
 protected:
 	bool m_isPlay;
 	CMultiPlotWindow *m_multiPlotWindows;
 	float m_incTime;
-	cMotionWave m_mwaveFile;
+	cMotionWave m_mwave;
+	cMotionWave m_mwaveSpline;
+	cMotionWaveModulator m_mod; // debugging
 
 
 	DECLARE_ANCHOR_MAP();
@@ -44,4 +48,5 @@ public:
 	CRichEditCtrl m_EditCommand;
 	afx_msg void OnBnClickedButtonUpdate();
 	CTreeCtrl m_FileInfoTree;
+	afx_msg void OnDestroy();
 };

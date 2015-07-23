@@ -74,6 +74,8 @@ protected:
 	CPen m_plotPens[4];
 	CPen m_gridPen1; // line width 1
 	CPen m_gridPen2; // line width 2
+	CBitmap m_Bitmap; // double buffering
+	CSize m_bmpSize;
 
 	float m_splineIncTime;
 	float m_oldTime;

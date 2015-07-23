@@ -34,6 +34,27 @@ sMotionData& sMotionData::operator /= (const int n)
 	heave /= n;
 	return *this;
 }
+
+sMotionData sMotionData::operator*(const float s)
+{
+	sMotionData data;
+	data.yaw = yaw * s;
+	data.pitch = pitch * s;
+	data.roll = roll * s;
+	data.heave = heave * s;
+	return data;
+}
+
+sMotionData sMotionData::operator+(const sMotionData &rhs)
+{
+	sMotionData data;
+	data.yaw = yaw + rhs.yaw;
+	data.pitch = pitch + rhs.pitch;
+	data.roll = roll + rhs.roll;
+	data.heave = heave + rhs.heave;
+	return data;
+}
+
 //-------------------------------------------------------------------------------------------
 
 
@@ -233,19 +254,27 @@ bool cMotionWave::Play(const float deltaSeconds, sMotionData &out)
 		m_playTime += deltaSeconds;
 		m_playIncTime += deltaSeconds;
 
+		float s = m_playIncTime / m_samplingTime;
+		s = min(s, 1); // saturation
+
+		if (m_playIndex < (int)m_wave.size())
+		{
+			out = (m_wave[m_playIndex] * s) + (m_wave[m_playIndex - 1] * (1 - s));
+			isNextData = true;
+		}
+
 		// 샘플링 시간이 넘으면 다음 정보를 리턴한다.
 		if (m_playIncTime >= m_samplingTime)
 		{
 			if (m_playIndex < (int)m_wave.size())
 			{
-				out = m_wave[m_playIndex];
 				++m_playIndex;
-
 				isNextData = true;
 			}
 
-			//m_playIncTime -= m_samplingTime;
-			m_playIncTime = 0;
+			m_playIncTime -= m_samplingTime;
+			if (m_playIncTime > m_samplingTime)
+				m_playIncTime = 0;
 		}
 	}
 
@@ -256,4 +285,166 @@ bool cMotionWave::Play(const float deltaSeconds, sMotionData &out)
 void cMotionWave::StopPlay()
 {
 	m_isPlay = false;
+}
+
+
+// 모션 웨이브를 생성한다.
+void cMotionWave::Make(const int samplingRate, const int samplingCount, const sMotionData &data)
+{
+	m_samplingRate = samplingRate;
+	m_samplingTime = 1.f / (float)samplingRate;
+	m_storeCount = samplingCount;
+
+	m_wave.clear();
+	m_wave.reserve(samplingCount);
+	for (int i = 0; i < samplingCount; ++i)
+	{
+		m_wave.push_back(data);
+	}
+}
+
+
+// 스플라인 곡선으로 만든다.
+// samplingRate 크기당 하나의 샘플링 구간으로 간주한다.
+// 각 샘플링 구간당 interpolationRate 크기만큼 샘플링이 추가된다.
+void cMotionWave::MakeSpline(const int samplingRate, const int interpolationRate)
+{
+	const int MAX_AXIS = 4;
+
+	cSpline spline[MAX_AXIS]; // yaw, pitch, roll, heave
+	for (int i = 0; i < MAX_AXIS; ++i)
+		spline[i].Init(true, samplingRate, interpolationRate);
+
+	// 임시 저장할 메모리를 생성한다.
+	vector<sMotionData> splineWave;
+	const int resSize = (m_wave.size() / samplingRate) * interpolationRate;
+	splineWave.reserve(resSize);
+
+	// 스플라인 곡선을 계산하고 결과를 splineWave에 저장한다.
+	for (u_int i = 0; i < m_wave.size(); i += samplingRate)
+	{
+		const float t = m_samplingTime * i;
+
+		const Vector2 yaw(t, m_wave[i].yaw);
+		const Vector2 pitch(t, m_wave[i].pitch);
+		const Vector2 roll(t, m_wave[i].roll);
+		const Vector2 heave(t, m_wave[i].heave);
+		spline[0].AddPoint(yaw);
+		spline[1].AddPoint(pitch);
+		spline[2].AddPoint(roll);
+		spline[3].AddPoint(heave);
+
+		bool ret = true;
+		vector<Vector2> out[MAX_AXIS];
+		for (int k = 0; k < MAX_AXIS; ++k)
+			ret = spline[k].GetInterpolations(0, 1, out[k]) && ret;
+
+		if (ret)
+		{
+			for (u_int m = 0; m < out[0].size(); ++m)
+			{
+				sMotionData data;
+				data.yaw = out[0][m].y;
+				data.pitch = out[1][m].y;
+				data.roll = out[2][m].y;
+				data.heave = out[3][m].y;
+				splineWave.push_back(data);
+			}
+		}
+		else
+		{
+			// 스플라인 곡선 계산시 첫번째,두번째 샘플링 값은 계산하지 못하는 문제가 있어,
+			// 원본 정보를 그대로 저장하는 것으로 이 문제를 해결했다.
+			if (spline[0].GetStoreCount() <= 2)
+			{
+				sMotionData data;
+				data.yaw = m_wave[i].yaw;
+				data.pitch = m_wave[i].pitch;
+				data.roll = m_wave[i].roll;
+				data.heave = m_wave[i].heave;
+
+				for (int m = 0; m < interpolationRate; ++m)
+				{
+					splineWave.push_back(data);
+				}
+			}
+
+		}
+	}
+
+	// 스플라인 곡선 계산이 모두 끝났다면, 정보를 업데이트 한다.
+	m_wave = splineWave;
+	m_samplingRate /= samplingRate;
+	m_samplingRate *= interpolationRate;
+	m_samplingTime = 1.f / (float)m_samplingRate;
+}
+
+
+// assign 연산자
+cMotionWave& cMotionWave::operator = (const cMotionWave &rhs)
+{
+	if (this != &rhs)
+	{
+		m_samplingRate = rhs.m_samplingRate;
+		m_samplingTime = rhs.m_samplingTime;
+
+		m_isRecord = false;
+		m_wave = rhs.m_wave;
+
+		m_recordTime = 0; // 저장을 시작한 시간이후 부터 경과된 시간을 나타낸다. (Second 단위)
+		m_recordIncTime = 0; // m_samplingTime 보다 클 때, 정보를 저장한다.
+		m_lastData.clear();
+		m_storeCount = 0;
+
+		// Play
+		m_playTime = 0;
+		m_playIncTime = 0;
+		m_isPlay = false;
+		m_playIndex = 0;
+	}
+	return *this;
+}
+
+
+// 모션웨이브를 insertIndex 위치에 size만큼 삽입한다.
+bool cMotionWave::Insert(const cMotionWave &src, const int insertIndex, const int size) // size=-1
+{
+	const int copySize = (size == -1) ? src.m_wave.size() : size;
+	if ((int)src.m_wave.size() < copySize)
+		return false;
+
+	for (int i = 0; i < copySize; ++i)
+		m_wave.push_back(sMotionData()); // 임시정보를 추가한다.
+
+	// size 만큼, 오른쪽으로 시프트한다.
+	//std::rotate(m_wave.begin() + insertIndex + copySize, m_wave.begin() + insertIndex, m_wave.end());
+	memmove(&m_wave[insertIndex + copySize], &m_wave[insertIndex], sizeof(m_wave[0]) * copySize);
+
+	// insertIndex 위치부터 하나씩 복사한다.
+	for (int i = 0; i < copySize; ++i)
+	{
+		// 예외 처리
+		if ((int)m_wave.size() <= i + insertIndex)
+			break;
+		if ((int)src.m_wave.size() <= i)
+			break;
+
+		m_wave[i + insertIndex] = src.m_wave[i];
+	}
+
+	return true;
+}
+
+
+// removeIndex위치의 모션웨이브 정보를 size만큼 제거한다.
+bool cMotionWave::Remove(const int removeIndex, const int size)
+{
+	// size 만큼, 왼쪽으로 시프트한다.
+	std::rotate(m_wave.begin() + removeIndex, m_wave.begin() + removeIndex + size, m_wave.end());
+
+	// 시프트한 만큼, 제거한다.
+	for (int i = 0; i < size; ++i)
+		m_wave.pop_back();
+
+	return true;
 }
