@@ -74,12 +74,12 @@ void CMultiPlotWindow::SetY(const int plotIndex, const float y, const int graphI
 // 스트링 분석에 문제가 생기면 false를 리턴하고 종료된다.
 bool CMultiPlotWindow::ParsePlotInfo(const int plotIndex, const wstring &str, SPlotInfo &out)
 {
-	CString plotStr, scanStr, nameStr, modeStr, lineWeightStr;
+	CString plotStr, scanStr, nameStr, modeStr, lineWidthStr;
 	plotStr.Format(L"plot%d =", plotIndex + 1);
 	scanStr.Format(L"string%d =", plotIndex + 1);
 	nameStr.Format(L"name%d =", plotIndex + 1);
 	modeStr.Format(L"mode%d =", plotIndex + 1);
-	lineWeightStr.Format(L"lineweight%d =", plotIndex + 1);
+	lineWidthStr.Format(L"linewidth%d =", plotIndex + 1);
 
 	// plot graph parameter
 	wstring plotParameters = ParseKeyValue(str, plotStr.GetBuffer());
@@ -99,9 +99,9 @@ bool CMultiPlotWindow::ParsePlotInfo(const int plotIndex, const wstring &str, SP
 	wstring modeParameters = ParseKeyValue(str, modeStr.GetBuffer());
 	common::trimw(modeParameters);
 
-	// line weight
-	wstring lineWeightParameters = ParseKeyValue(str, lineWeightStr.GetBuffer());
-	common::trimw(lineWeightParameters);
+	// line width
+	wstring lineWidthParameters = ParseKeyValue(str, lineWidthStr.GetBuffer());
+	common::trimw(lineWidthParameters);
 
 
 	vector<wstring> plotParams;
@@ -118,7 +118,7 @@ bool CMultiPlotWindow::ParsePlotInfo(const int plotIndex, const wstring &str, SP
 	out.scanString = common::wstr2str(scanParameters);
 	out.name = common::wstr2str(nameParameters);
 	out.mode = (modeParameters == L"spline") ? CPlotWindow::SPLINE : CPlotWindow::NORMAL;
-	out.lineWeight = _wtoi(lineWeightParameters.c_str());
+	out.lineWidth = _wtoi(lineWidthParameters.c_str());
 
 	return true;
 }
@@ -226,7 +226,7 @@ void CMultiPlotWindow::ProcessPlotCommand(const CString &str, const int plotCoun
 		wnd->SetPlot(
 			plotInfos[i].xRange, plotInfos[i].yRange,
 			plotInfos[i].xVisibleRange, plotInfos[i].yVisibleRange, plotInfos[i].flags,
-			plotCount, plotInfos[i].name, plotInfos[i].mode, plotInfos[i].lineWeight);
+			plotCount, plotInfos[i].name, plotInfos[i].mode, plotInfos[i].lineWidth);
 
 		// 그래프 파싱 스트링 설정.
 		m_plotWindows[i].scanString = plotInfos[i].scanString;

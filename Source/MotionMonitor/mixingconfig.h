@@ -33,6 +33,11 @@ public:
 	float m_rate1_pitch;
 	float m_rate1_roll;
 	float m_rate1_heave;
+	float m_rate1_center_yaw;
+	float m_rate1_center_pitch;
+	float m_rate1_center_roll;
+	float m_rate1_center_heave;
+
 
 	bool m_input2_enable;
 	float m_rate2_all;
@@ -40,6 +45,10 @@ public:
 	float m_rate2_pitch;
 	float m_rate2_roll;
 	float m_rate2_heave;
+	float m_rate2_center_yaw;
+	float m_rate2_center_pitch;
+	float m_rate2_center_roll;
+	float m_rate2_center_heave;
 
 	bool m_input3_enable;
 	float m_rate3_all;
@@ -47,6 +56,14 @@ public:
 	float m_rate3_pitch;
 	float m_rate3_roll;
 	float m_rate3_heave;
+	float m_rate3_center_yaw;
+	float m_rate3_center_pitch;
+	float m_rate3_center_roll;
+	float m_rate3_center_heave;
 
+	float m_bias_yaw;
+	float m_bias_pitch;
+	float m_bias_roll;
+	float m_bias_heave;
 };
 

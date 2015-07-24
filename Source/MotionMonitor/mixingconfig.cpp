@@ -5,7 +5,23 @@
 
 const string g_minxingConfigFileName = "mixing_conf.cfg";
 
-cMixingConfig::cMixingConfig()
+cMixingConfig::cMixingConfig():
+	m_bias_yaw(0)
+, m_bias_pitch(0)
+, m_bias_roll(0)
+, m_bias_heave(0)
+,m_rate1_center_yaw(0)
+,m_rate1_center_pitch(0)
+,m_rate1_center_roll(0)
+,m_rate1_center_heave(0)
+,m_rate2_center_yaw(0)
+,m_rate2_center_pitch(0)
+,m_rate2_center_roll(0)
+,m_rate2_center_heave(0)
+,m_rate3_center_yaw(0)
+,m_rate3_center_pitch(0)
+,m_rate3_center_roll(0)
+,m_rate3_center_heave(0)
 {
 
 }
@@ -40,10 +56,29 @@ void cMixingConfig::InitDefault()
 	m_rate3_pitch = 1;
 	m_rate3_roll = 1;
 	m_rate3_heave = 1;
+
+	m_bias_yaw = 0;
+	m_bias_pitch = 0;
+	m_bias_roll = 0;
+	m_bias_heave = 0;
+
+	m_rate1_center_yaw= 0;
+	m_rate1_center_pitch= 0;
+	m_rate1_center_roll= 0;
+	m_rate1_center_heave= 0;
+	m_rate2_center_yaw= 0;
+	m_rate2_center_pitch= 0;
+	m_rate2_center_roll= 0;
+	m_rate2_center_heave= 0;
+	m_rate3_center_yaw= 0;
+	m_rate3_center_pitch= 0;
+	m_rate3_center_roll= 0;
+	m_rate3_center_heave= 0;
+
 }
 
 
-void cMixingConfig::UpdateParseData() 
+void cMixingConfig::UpdateParseData()
 {
 	m_inputType = 0;
 
@@ -52,7 +87,7 @@ void cMixingConfig::UpdateParseData()
 	{
 		vector<string> toks;
 		common::tokenizer(input, "+", "", toks);
-		
+
 		for each (auto &str in toks)
 		{
 			if (str == "joystick")
@@ -90,5 +125,25 @@ void cMixingConfig::UpdateParseData()
 	m_rate3_pitch = GetFloat("mixing_rate3_pitch");
 	m_rate3_roll = GetFloat("mixing_rate3_roll");
 	m_rate3_heave = GetFloat("mixing_rate3_heave");
-}
 
+	m_bias_yaw = GetFloat("mixing_bias_yaw", 0);
+	m_bias_pitch = GetFloat("mixing_bias_pitch", 0);
+	m_bias_roll = GetFloat("mixing_bias_roll", 0);
+	m_bias_heave = GetFloat("mixing_bias_heave", 0);
+
+	m_rate1_center_yaw = GetFloat("mixing_rate1_center_yaw", 0);
+	m_rate1_center_pitch = GetFloat("mixing_rate1_center_pitch", 0);
+	m_rate1_center_roll = GetFloat("mixing_rate1_center_roll", 0);
+	m_rate1_center_heave = GetFloat("mixing_rate1_center_heave", 0);
+
+	m_rate2_center_yaw = GetFloat("mixing_rate2_center_yaw", 0);
+	m_rate2_center_pitch = GetFloat("mixing_rate2_center_pitch", 0);
+	m_rate2_center_roll = GetFloat("mixing_rate2_center_roll", 0);
+	m_rate2_center_heave = GetFloat("mixing_rate2_center_heave", 0);
+
+	m_rate3_center_yaw = GetFloat("mixing_rate3_center_yaw", 0);
+	m_rate3_center_pitch = GetFloat("mixing_rate3_center_pitch", 0);
+	m_rate3_center_roll = GetFloat("mixing_rate3_center_roll", 0);
+	m_rate3_center_heave = GetFloat("mixing_rate3_center_heave", 0);
+
+}

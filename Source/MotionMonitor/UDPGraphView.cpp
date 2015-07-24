@@ -206,7 +206,7 @@ plot = x-range, y-range, x-visible-range, y-visible-range, option \n\
 	- y-visible - range : 0 - auto \n\
 	- option : \n\
 	 	- x, y scroll \n\
-	 	- line weight\n\
+	 	- line width\n\
 \n\
 string = sscanf 의 인자로 들어갈 파싱 포맷\n\
 \n\

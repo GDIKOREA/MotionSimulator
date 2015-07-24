@@ -9,18 +9,24 @@
 #include "MotionController.h"
 
 
-const static CString g_mixingviewPlotCommand = L"plot1 = 0, 0, 0, 0, 0\r\n\
+const static CString g_mixingviewPlotCommand = L"\r\n\
+plot1 = 0, 0, 0, 0, 0\r\n\
 string1 = %f;\r\n\
 name1 = Yaw\r\n\
+linewidth1 = 2\r\n\
 plot2 = 0, 0, 0, 0, 0\r\n\
 string2 = %*f; %f;\r\n\
 name2 = Pitch\r\n\
+linewidth2 = 2\r\n\
 plot3 = 0, 0, 0, 0, 0\r\n\
 string3 = %*f; %*f; %f;\r\n\
 name3 = Roll\r\n\
+linewidth3 = 2\r\n\
 plot4 = 0, 0, 0, 0, 0\r\n\
 string4 = %*f; %*f; %f; \r\n\
-name4 = Heave\r\n";
+name4 = Heave\r\n\
+linewidth4 = 2\r\n\
+";
 
 
 // CMixingView dialog
@@ -89,7 +95,14 @@ mixing_rate3_all = 0\n\
 mixing_rate3_yaw = 0\n\
 mixing_rate3_pitch = 0\n\
 mixing_rate3_roll = 0\n\
-mixing_rate3_heave = 0\n";
+mixing_rate3_heave = 0\n\
+\n\
+mixing_bias_yaw = 0\n\
+mixing_bias_pitch = 0\n\
+mixing_bias_roll = 0\n\
+mixing_bias_heave = 0\n\
+\n\
+";
 
 	CString cmdStr;
 	std::ifstream cfgfile("mixing_config.cfg");
@@ -103,6 +116,9 @@ mixing_rate3_heave = 0\n";
 		cmdStr = command;
 	}
 	m_EditCommand.SetWindowTextW(cmdStr);
+
+	m_config.ParseStr(wstr2str((LPCTSTR)cmdStr));
+
 
 
 	// Plot창 생성.
@@ -196,6 +212,11 @@ void CMixingView::Update(const float deltaSeconds)
 	}
 }
 
+float calcRate(const float src, const float center, const float rate)
+{
+	return (src - center) * rate + center;
+}
+
 
 // 입력값을 믹싱해서 리턴한다.
 void CMixingView::Mixing(const float deltaSeconds, 
@@ -215,17 +236,17 @@ void CMixingView::Mixing(const float deltaSeconds,
 
 			if (m_config.m_rate1_all == 0)
 			{
-				yaw += joyYaw * m_config.m_rate1_yaw;
-				pitch += joyPitch * m_config.m_rate1_pitch;
-				roll += joyRoll * m_config.m_rate1_roll;
-				heave += joyHeave * m_config.m_rate1_heave;
+				yaw += calcRate(joyYaw, m_config.m_rate1_center_yaw, m_config.m_rate1_yaw);
+				pitch += calcRate(joyPitch, m_config.m_rate1_center_pitch, m_config.m_rate1_pitch);
+				roll += calcRate(joyRoll, m_config.m_rate1_center_roll, m_config.m_rate1_roll);
+				heave += calcRate(joyHeave, m_config.m_rate1_center_heave, m_config.m_rate1_heave);
 			}
 			else
 			{
-				yaw += joyYaw * m_config.m_rate1_all;
-				pitch += joyPitch * m_config.m_rate1_all;
-				roll += joyRoll * m_config.m_rate1_all;
-				heave += joyHeave * m_config.m_rate1_all;
+				yaw += calcRate(joyYaw, m_config.m_rate1_center_yaw, m_config.m_rate1_all);
+				pitch += calcRate(joyPitch, m_config.m_rate1_center_pitch, m_config.m_rate1_all);
+				roll += calcRate(joyRoll, m_config.m_rate1_center_roll, m_config.m_rate1_all);
+				heave += calcRate(joyHeave, m_config.m_rate1_center_heave, m_config.m_rate1_all);
 			}
 		}
 	}
@@ -239,17 +260,17 @@ void CMixingView::Mixing(const float deltaSeconds,
 
 			if (m_config.m_rate2_all == 0)
 			{
-				yaw += udpYaw * m_config.m_rate2_yaw;
-				pitch += udpPitch * m_config.m_rate2_pitch;
-				roll += udpRoll * m_config.m_rate2_roll;
-				heave += udpHeave * m_config.m_rate2_heave;
+				yaw += calcRate(udpYaw, m_config.m_rate2_center_yaw, m_config.m_rate2_yaw);
+				pitch += calcRate(udpPitch, m_config.m_rate2_center_pitch, m_config.m_rate2_pitch);
+				roll += calcRate(udpRoll, m_config.m_rate2_center_roll, m_config.m_rate2_roll);
+				heave += calcRate(udpHeave, m_config.m_rate2_center_heave, m_config.m_rate2_heave);
 			}
 			else
 			{
-				yaw += udpYaw * m_config.m_rate2_all;
-				pitch += udpPitch * m_config.m_rate2_all;
-				roll += udpRoll * m_config.m_rate2_all;
-				heave += udpHeave * m_config.m_rate2_all;
+				yaw += calcRate(udpYaw, m_config.m_rate2_center_yaw, m_config.m_rate2_all);
+				pitch += calcRate(udpPitch, m_config.m_rate2_center_pitch, m_config.m_rate2_all);
+				roll += calcRate(udpRoll, m_config.m_rate2_center_roll, m_config.m_rate2_all);
+				heave += calcRate(udpHeave, m_config.m_rate2_center_heave, m_config.m_rate2_all);
 			}
 		}
 	}
@@ -263,20 +284,25 @@ void CMixingView::Mixing(const float deltaSeconds,
 
 			if (m_config.m_rate3_all == 0)
 			{
-				yaw += mwavYaw * m_config.m_rate3_yaw;
-				pitch += mwavPitch * m_config.m_rate3_pitch;
-				roll += mwavRoll * m_config.m_rate3_roll;
-				heave += mwavHeave * m_config.m_rate3_heave;
+				yaw += calcRate(mwavYaw, m_config.m_rate3_center_yaw, m_config.m_rate3_yaw);
+				pitch += calcRate(mwavPitch, m_config.m_rate3_center_pitch, m_config.m_rate3_pitch);
+				roll += calcRate(mwavRoll, m_config.m_rate3_center_roll, m_config.m_rate3_roll);
+				heave += calcRate(mwavHeave, m_config.m_rate3_center_heave, m_config.m_rate3_heave);
 			}
 			else
 			{
-				yaw += mwavYaw * m_config.m_rate3_all;
-				pitch += mwavPitch * m_config.m_rate3_all;
-				roll += mwavRoll * m_config.m_rate3_all;
-				heave += mwavHeave * m_config.m_rate3_all;
+				yaw += calcRate(mwavYaw, m_config.m_rate3_center_yaw, m_config.m_rate3_all);
+				pitch += calcRate(mwavPitch, m_config.m_rate3_center_pitch, m_config.m_rate3_all);
+				roll += calcRate(mwavRoll, m_config.m_rate3_center_roll, m_config.m_rate3_all);
+				heave += calcRate(mwavHeave, m_config.m_rate3_center_heave, m_config.m_rate3_all);
 			}
 		}
 	}
+
+	yaw += m_config.m_bias_yaw;
+	pitch += m_config.m_bias_pitch;
+	roll += m_config.m_bias_roll;
+	heave += m_config.m_bias_heave;
 
 
 	if (pitch > 512)

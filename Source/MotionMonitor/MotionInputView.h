@@ -1,5 +1,6 @@
 #pragma once
 #include "afxwin.h"
+#include "afxcmn.h"
 
 
 // CMotionInputView dialog
@@ -23,6 +24,7 @@ protected:
 	float m_incTime;
 
 
+	DECLARE_ANCHOR_MAP();
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedOk();
@@ -31,4 +33,6 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	CButton m_UpdateButton;
+	CRichEditCtrl m_EditCommand;
+	afx_msg void OnDestroy();
 };

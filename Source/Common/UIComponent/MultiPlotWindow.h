@@ -40,7 +40,7 @@ protected:
 		string scanString;
 		string name;
 		CPlotWindow::MODE mode;
-		int lineWeight;
+		int lineWidth;
 	};
 	vector<SPlotInfo> m_PlotInfos;
 

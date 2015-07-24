@@ -259,9 +259,9 @@ BOOL CMainFrame::CreateDockingWindows()
 	// Create motion input view
 	{
 		m_motionInputView = new CDockablePaneBase();
-		if (!m_motionInputView->Create(L"Motion Input View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_MOTION_INPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+		if (!m_motionInputView->Create(L"UDP Input View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_MOTION_INPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
 		{
-			TRACE0("Failed to create Motion Input View window\n");
+			TRACE0("Failed to create UDP Input View window\n");
 			return FALSE; // failed to create
 		}
 

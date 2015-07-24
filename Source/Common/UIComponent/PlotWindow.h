@@ -22,7 +22,7 @@ public:
 
 	bool SetPlot(const float x_range, const float y_range,
 		const float x_visble_range, const float y_visible_range, const DWORD flags,
-		const int plotCount = 1, const string &name = "", const MODE &mode=NORMAL, const int lineWeight = 1);
+		const int plotCount = 1, const string &name = "", const MODE &mode=NORMAL, const int lineWidth = 1);
 
 	void SetPlotXY(const float x, const float y, const int plotIndex = 0);
 	void SetPlotY(const float y, const int plotIndex=0);

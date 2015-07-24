@@ -12,15 +12,20 @@ const static CString g_motionwavePlotCommand = L"\r\n\
 plot1 = 0, 512, 0, 0, 0\r\n\
 string1 = %f;\r\n\
 name1 = Yaw\r\n\
+linewidth1 = 2\r\n\
 plot2 = 0, 512, 0, 0, 0\r\n\
 string2 = %*f; %f;\r\n\
 name2 = Pitch\r\n\
+linewidth2 = 2\r\n\
 plot3 = 0, 512, 0, 0, 0\r\n\
 string3 = %*f; %*f; %f;\r\n\
 name3 = Roll\r\n\
+linewidth3 = 2\r\n\
 plot4 = 0, 256, 0, 0, 0\r\n\
 string4 = %*f; %*f; %f; \r\n\
-name4 = Heave\r\n";
+name4 = Heave\r\n\
+linewidth4 = 2\r\n\
+";
 
 
 // CMotionWaveView dialog
@@ -321,7 +326,7 @@ void CMotionWaveView::UpdateMotionWaveFile()
 	const int startDelayTime = cMotionController::Get()->m_mwavMod.m_motionviewStartDelay;
 	m_mwaveSpline = m_mwave;
 
-	sMotionData data = { 0, 0, 0, 0 };
+	sMotionData data = { 255, 255, 255, 512 };
 	cMotionWave mwave;
 	mwave.Make(20, startDelayTime, data);
 	m_mwaveSpline.Insert(mwave, 0);

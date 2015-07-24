@@ -24,21 +24,21 @@ const static CString g_joystickPlotCommand = L"\r\n\
 plot1 = 0, 256, 0, 0, 0\r\n\
 string1 = %f;\r\n\
 name1 = Yaw\r\n\
-lineweight1 = 2\r\n\
+linewidth1 = 2\r\n\
 \r\n\
 plot2 = 0, 512, 0, 0, 0\r\n\
 string2 = %*f; %f;\r\n\
 name2 = Pitch\r\n\
-lineweight2 = 2\r\n\
+linewidth2 = 2\r\n\
 \r\n\
 plot3 = 0, 512, 0, 0, 0\r\n\
 string3 = %*f; %*f; %f;\r\n\
 name3 = Roll\r\n\
-lineweight3 = 2\r\n\
+linewidth3 = 2\r\n\
 \r\n\
 plot4 = 0, 256, 0, 0, 0\r\n\
 string4 = %*f; %*f; %f; \r\n\
-lineweight4 = 2\r\n\
+linewidth4 = 2\r\n\
 name4 = Heave\r\n\
 \r\n\
 ";

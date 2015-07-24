@@ -418,7 +418,8 @@ bool cMotionWave::Insert(const cMotionWave &src, const int insertIndex, const in
 
 	// size 만큼, 오른쪽으로 시프트한다.
 	//std::rotate(m_wave.begin() + insertIndex + copySize, m_wave.begin() + insertIndex, m_wave.end());
-	memmove(&m_wave[insertIndex + copySize], &m_wave[insertIndex], sizeof(m_wave[0]) * copySize);
+	if (copySize > 1)
+		memmove(&m_wave[insertIndex + copySize], &m_wave[insertIndex], sizeof(m_wave[0]) * copySize);
 
 	// insertIndex 위치부터 하나씩 복사한다.
 	for (int i = 0; i < copySize; ++i)

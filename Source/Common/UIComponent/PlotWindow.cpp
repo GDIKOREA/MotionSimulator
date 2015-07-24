@@ -251,7 +251,7 @@ void CPlotWindow::Dump(CDumpContext& dc) const
 // CPlotWindow message handlers
 bool CPlotWindow::SetPlot(const float x_range, const float y_range,
 	const float x_visble_range, const float y_visible_range, const DWORD flags,
-	const int plotCount, const string &name, const MODE &mode, const int lineWeight)  // plotCount=1, name="", mode=NORMAL, lineWeight=1
+	const int plotCount, const string &name, const MODE &mode, const int lineWidth)  // plotCount=1, name="", mode=NORMAL, lineWidth=1
 {
 	m_xRange = x_range;
 	m_yRange = y_range;
@@ -295,7 +295,7 @@ bool CPlotWindow::SetPlot(const float x_range, const float y_range,
 	for (int i = 0; i < 4; ++i)
 	{
 		m_plotPens[i].DeleteObject();
-		m_plotPens[i].CreatePen(0, lineWeight, g_penColors[i]);
+		m_plotPens[i].CreatePen(0, lineWidth, g_penColors[i]);
 	}
 
 

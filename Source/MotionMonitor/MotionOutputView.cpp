@@ -126,15 +126,20 @@ void CMotionOutputView::OnBnClickedButtonConnect()
 	else
 	{
 		{
-			CString plotCommand = L"plot1 = 0, 0, 0, 0, 0\r\n\
+			CString plotCommand = L"\r\n\
+plot1 = 0, 0, 0, 0, 0\r\n\
 string1 = %f;\r\n\
 name1 = Yaw\r\n\
+linewidth1 = 2\r\n\
 plot2 = 0, 0, 0, 0, 0\r\n\
 string2 = %*f; %f;\r\n\
 name2 = Pitch\r\n\
+linewidth2 = 2\r\n\
 plot3 = 0, 0, 0, 0, 0\r\n\
 string3 = %*f; %*f; %f;\r\n\
-name3 = Roll\r\n";
+name3 = Roll\r\n\
+linewidth3 = 2\r\n\
+";
 			m_multiPlotWindows->ProcessPlotCommand(plotCommand, 2);
 			m_multiPlotWindows->SetFixedWidthMode(true);
 		}
