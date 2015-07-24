@@ -171,10 +171,11 @@ void CMotionOutputView::Update(const float deltaSeconds)
 		m_incTime += deltaSeconds;
 		m_incSerialTime += deltaSeconds;
 
-		const int out_yaw = 256;
+		//const int out_yaw = 256;
 		const int out_sway = 256;
 		const int out_surge = 256;
 		const int out_switch = 0;
+		const int out_yaw = (int)cMotionController::Get()->m_yaw;
 		const int out_pitch = (int)cMotionController::Get()->m_pitch;
 		const int out_roll = (int)cMotionController::Get()->m_roll;
 		const int out_heave = (int)cMotionController::Get()->m_heave;

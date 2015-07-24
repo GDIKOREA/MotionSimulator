@@ -253,7 +253,7 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 	std::stringstream ss;
 	vector<float> values(4);
 
-	if (0) // Dirt3 Motion
+	if (1) // Dirt3 Motion
 	{
 		// 패킷의 특정 값만 float으로 변환해서 가져온다.
 		// 프로토콜에 대한 문서는 https://github.com/GDIKOREA/MotionSimulator/wiki/Dirt3-Motion-Data-Capture 를 참조하자.
@@ -275,7 +275,7 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 
 		const float roll = values[2];
 		const float pitch = values[1];
-		const float yaw = 0;// -values[0];
+		const float yaw = -values[0];
 
 		cController::Get()->GetCubeFlight().SetEulerAngle(roll, yaw, pitch);
 
@@ -285,7 +285,7 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 		if (m_multiPlotWindows)
 			m_multiPlotWindows->SetString(ss.str().c_str());
 
-		cMotionController::Get()->m_udpMod.Update(m_incTime, 0, pitch, roll, 0);
+		cMotionController::Get()->m_udpMod.Update(m_incTime, yaw, pitch, roll, 0);
 		m_incTime = 0;
 	}
 	else
