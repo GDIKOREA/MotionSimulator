@@ -55,6 +55,12 @@ CJoystickView::CJoystickView(CWnd* pParent /*=NULL*/)
 	, m_incTime(0)
 	, m_recordIncTime(0)
 	, m_CheckFixedMode(TRUE)
+	, m_AxisX(0)
+	, m_AxisY(0)
+	, m_AxisZ(0)
+	, m_AxisRz(0)
+	, m_AxisH(0)
+	, m_Hat(0)
 {
 }
 
@@ -263,17 +269,27 @@ void CJoystickView::Update(const float deltaSeconds)
 
 			//----------------------------------------------------------------------------------------------
 			// modulation Spline
-			vector<Vector2> yawSpline, pitchSpline, rollSpline, heaveSpline;
-			if (cMotionController::Get()->m_joystickMod.GetSplineInterpolations(0, 1.f, yawSpline, 
-				pitchSpline, rollSpline, heaveSpline))
+			if (cMotionController::Get()->m_joystickMod.m_isSplineEnable)
 			{
-				for (u_int i = 0; i < yawSpline.size(); ++i)
+				vector<Vector2> yawSpline, pitchSpline, rollSpline, heaveSpline;
+				if (cMotionController::Get()->m_joystickMod.GetSplineInterpolations(0, 1.f, yawSpline, 
+					pitchSpline, rollSpline, heaveSpline))
 				{
-					m_multiPlotWindows->SetXY(0, yawSpline[i].x, yawSpline[i].y, 1);
-					m_multiPlotWindows->SetXY(1, pitchSpline[i].x, pitchSpline[i].y, 1);
-					m_multiPlotWindows->SetXY(2, rollSpline[i].x, rollSpline[i].y, 1);
-					m_multiPlotWindows->SetXY(3, heaveSpline[i].x, heaveSpline[i].y, 1);
+					for (u_int i = 0; i < yawSpline.size(); ++i)
+					{
+						m_multiPlotWindows->SetXY(0, yawSpline[i].x, yawSpline[i].y, 1);
+						m_multiPlotWindows->SetXY(1, pitchSpline[i].x, pitchSpline[i].y, 1);
+						m_multiPlotWindows->SetXY(2, rollSpline[i].x, rollSpline[i].y, 1);
+						m_multiPlotWindows->SetXY(3, heaveSpline[i].x, heaveSpline[i].y, 1);
+					}
 				}
+			}
+			else
+			{
+				m_multiPlotWindows->SetXY(0, t, yaw, 1);
+				m_multiPlotWindows->SetXY(1, t, pitch, 1);
+				m_multiPlotWindows->SetXY(2, t, roll, 1);
+				m_multiPlotWindows->SetXY(3, t, heave, 1);
 			}
 			//----------------------------------------------------------------------------------------------
 
