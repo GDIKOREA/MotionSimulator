@@ -74,6 +74,28 @@ public:
 	float m_motionviewTimeScaling;
 	int m_motionviewStartDelay;
 
+	bool m_yawRecoverEnable;
+	float m_yawRecoverTarget;
+	float m_yawRecoverProportion;
+	float m_yawMaxDifferent;
+	float m_yawLimit;
+	float m_yawX2Propertion;
+	float m_yawX2Limit;
+
+	bool m_heaveRecoverEnable;
+	float m_heaveRecoverTarget;
+	float m_heaveRecoverProportion;
+	float m_heaveMaxDifferent;
+	float m_heaveLimit;
+
+	float m_pitchMaxDifferenceEnable;
+	float m_pitchMaxDifferenceLimit;
+	float m_pitchMaxDifferenceProportion;
+
+	float m_rollMaxDifferenceEnable;
+	float m_rollMaxDifferenceLimit;
+	float m_rollMaxDifferenceProportion;
+
 	float m_incTime;
 	float m_totalIncTime;
 };

@@ -276,6 +276,7 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 		const float roll = values[2];
 		const float pitch = values[1];
 		const float yaw = -values[0];
+		const float heave = values[3];
 
 		cController::Get()->GetCubeFlight().SetEulerAngle(roll, yaw, pitch);
 
@@ -285,7 +286,7 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 		if (m_multiPlotWindows)
 			m_multiPlotWindows->SetString(ss.str().c_str());
 
-		cMotionController::Get()->m_udpMod.Update(m_incTime, yaw, pitch, roll, 0);
+		cMotionController::Get()->m_udpMod.Update(m_incTime, yaw, pitch, roll, heave);
 		m_incTime = 0;
 	}
 	else

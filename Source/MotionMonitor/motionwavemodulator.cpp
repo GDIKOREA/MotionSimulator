@@ -42,6 +42,28 @@ cMotionWaveModulator::cMotionWaveModulator()
 	, m_motionviewTimeScaling(1)
 	, m_motionviewStartDelay(0)
 
+	, m_yawRecoverEnable(false)
+	, m_yawRecoverTarget(256)
+    , m_yawRecoverProportion(0.1f)
+    , m_yawMaxDifferent(300)
+	, m_yawLimit(3.1415f)
+	, m_yawX2Propertion(0.1f)
+	, m_yawX2Limit(1)
+
+	, m_heaveRecoverEnable(false)
+    , m_heaveRecoverTarget(256)
+    , m_heaveRecoverProportion(0.1f)
+    , m_heaveMaxDifferent(300)
+	, m_heaveLimit(3.1415f)
+
+	, m_pitchMaxDifferenceEnable(false)
+	, m_pitchMaxDifferenceLimit(1)
+	, m_pitchMaxDifferenceProportion(0.5)
+
+	, m_rollMaxDifferenceEnable(false)
+	, m_rollMaxDifferenceLimit(1)
+	, m_rollMaxDifferenceProportion(0.5)
+
 {
 	ZeroMemory(m_yaw, sizeof(m_yaw));
 	ZeroMemory(m_pitch, sizeof(m_pitch));
@@ -66,10 +88,43 @@ void cMotionWaveModulator::Update(const float deltaSeconds,
 
 	//---------------------------------------------------------------------------------------
 	// PID
-	const float diffY = (yaw - m_yaw[0]) * m_yawProportion;
-	const float diffP = (pitch - m_pitch[0]) * m_pitchProportion;
-	const float diffR = (roll - m_roll[0]) * m_rollProportion;
-	const float diffH = (heave- m_heave[0]) * m_heaveProportion;
+	float diffY = (yaw - m_yaw[0]) * m_yawProportion;
+	float diffP = (pitch - m_pitch[0]) * m_pitchProportion;
+	float diffR = (roll - m_roll[0]) * m_rollProportion;
+	float diffH = (heave- m_heave[0]) * m_heaveProportion;
+
+	if (m_yawRecoverEnable)
+	{
+		diffY = (yaw - m_originalYaw) * m_yawProportion;
+		if (abs(yaw - m_originalYaw) > m_yawMaxDifferent)
+		{
+			diffY = (diffY > 0) ? (yaw - m_originalYaw - m_yawLimit) * m_yawProportion : 
+				(yaw - m_originalYaw + m_yawLimit) * m_yawProportion;
+		}
+		else if (abs(yaw - m_originalYaw) > m_yawX2Limit)
+		{
+			const float x2 = (yaw - m_originalYaw) * (yaw - m_originalYaw);
+			diffY *= m_yawX2Propertion;
+		}
+	}
+
+
+	if (m_pitchMaxDifferenceEnable)
+	{
+		if (abs(pitch - m_originalPitch) > m_pitchMaxDifferenceLimit)
+		{
+			diffP *= m_pitchMaxDifferenceProportion;
+		}
+	}
+
+
+	if (m_rollMaxDifferenceEnable)
+	{
+		if (abs(roll - m_originalRoll) > m_rollMaxDifferenceLimit)
+		{
+			diffR *= m_rollMaxDifferenceProportion;
+		}
+	}
 
 	m_yaw[0] += diffY;
 	m_pitch[0] += diffP;
@@ -81,7 +136,15 @@ void cMotionWaveModulator::Update(const float deltaSeconds,
 	m_originalRoll = roll;
 	m_originalHeave = heave;
 
-	
+	//---------------------------------------------------------------------------------------
+	// Yaw Recovery
+	if (m_yawRecoverEnable)
+	{
+		const float recoverYaw = (m_yawRecoverTarget - m_yaw[0]) * m_yawRecoverProportion;
+		m_yaw[0] += recoverYaw;
+	}
+
+
 	//---------------------------------------------------------------------------------------
 	// Scaling
 	m_yaw[1] =
@@ -174,6 +237,24 @@ void cMotionWaveModulator::InitDefault()
 	m_motionviewSplineInterpolationRate = 2;
 	m_motionviewTimeScaling = 1;
 	m_motionviewStartDelay = 0;
+
+	m_yawRecoverEnable = false;
+	m_yawRecoverTarget = 256;
+	m_yawRecoverProportion = 0.1f;
+	m_yawMaxDifferent = 300;
+
+	m_heaveRecoverEnable = false;
+	m_heaveRecoverTarget = 256;
+	m_heaveRecoverProportion = 0.1f;
+	m_heaveMaxDifferent = 300;
+
+	m_pitchMaxDifferenceEnable = false;
+	m_pitchMaxDifferenceLimit = 1;
+	m_pitchMaxDifferenceProportion = 0.5f;
+
+	m_rollMaxDifferenceEnable = false;
+	m_rollMaxDifferenceLimit = 1;
+	m_rollMaxDifferenceProportion = 0.5f;
 }
 
 
@@ -216,6 +297,33 @@ void cMotionWaveModulator::UpdateParseData()
 	m_pitchSpline.Init(m_isSplineEnable, m_splinePlotSamplingRate, m_splineInterpolationRate);
 	m_rollSpline.Init(m_isSplineEnable, m_splinePlotSamplingRate, m_splineInterpolationRate);
 	m_heaveSpline.Init(m_isSplineEnable, m_splinePlotSamplingRate, m_splineInterpolationRate);
+
+	m_yawRecoverEnable = GetBool("yaw_recover_enable", false);
+	m_yawRecoverTarget = GetFloat("yaw_recover_target");
+	m_yawRecoverProportion = GetFloat("yaw_recover_proportion");
+	m_yawMaxDifferent = GetFloat("yaw_max_different");
+	m_yawLimit = GetFloat("yaw_limit");
+	m_yawX2Propertion = GetFloat("yaw_x2_proportion", 0.1f);
+	m_yawX2Limit = GetFloat("yaw_x2_limit", 1.f);
+
+	m_heaveRecoverEnable = GetBool("heave_recover_enable", false);
+	m_heaveRecoverTarget = GetFloat("heave_recover_target");
+	m_heaveRecoverProportion = GetFloat("heave_recover_proportion");
+	m_heaveMaxDifferent = GetFloat("yaw_x2_proportion");
+	m_heaveLimit = GetFloat("heave_limit");
+
+	m_pitchMaxDifferenceEnable = GetBool("pitch_max_difference_enable", false);
+	m_pitchMaxDifferenceLimit = GetFloat("pitch_max_difference_limit", 1);
+	m_pitchMaxDifferenceProportion = GetFloat("pitch_max_difference_proportion", 0.2f);
+
+	m_rollMaxDifferenceEnable = GetBool("roll_max_difference_enable", false);
+	m_rollMaxDifferenceLimit = GetFloat("roll_max_difference_limit", 1);
+	m_rollMaxDifferenceProportion = GetFloat("roll_max_difference_proportion", 0.2f);
+
+	m_rollMaxDifferenceEnable = false;
+	m_rollMaxDifferenceLimit = 1;
+	m_rollMaxDifferenceProportion = 0.5f;
+
 }
 
 

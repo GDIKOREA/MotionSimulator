@@ -139,6 +139,10 @@ plot3 = 0, 0, 0, 0, 0\r\n\
 string3 = %*f; %*f; %f;\r\n\
 name3 = Roll\r\n\
 linewidth3 = 2\r\n\
+plot4 = 0, 0, 0, 0, 0\r\n\
+string4 = %*f; %*f; %*f; %f;\r\n\
+name4 = Heave\r\n\
+linewidth4 = 2\r\n\
 ";
 			m_multiPlotWindows->ProcessPlotCommand(plotCommand, 2);
 			m_multiPlotWindows->SetFixedWidthMode(true);
@@ -182,7 +186,7 @@ void CMotionOutputView::Update(const float deltaSeconds)
 
 		if (m_incTime > 0.02f)
 		{
-			m_multiPlotWindows->SetString(common::format("%d;%d;%d;", out_yaw, out_pitch, out_roll).c_str(), 0);
+			m_multiPlotWindows->SetString(common::format("%d;%d;%d;%d", out_yaw, out_pitch, out_roll, out_heave).c_str(), 0);
 			m_multiPlotWindows->DrawGraph(m_incTime, false);
 			m_incTime = 0;
 		}
@@ -283,8 +287,8 @@ void CMotionOutputView::SendMotionControllSwitchMessage(const int state)
 	if (!m_isStartSendMotion)
 		return;
 
-	float roll, pitch, yaw, heave;
-	cMotionController::Get()->m_udpMod.GetFinal(yaw, pitch, roll, heave);
+// 	float roll, pitch, yaw, heave;
+// 	cMotionController::Get()->m_udpMod.GetFinal(yaw, pitch, roll, heave);
 
 	const int out_pitch = 256;// (int)(pitch * 255) + 255;
 	const int out_roll = 256;
@@ -300,7 +304,11 @@ void CMotionOutputView::SendMotionControllSwitchMessage(const int state)
 
 	AppendToLogAndScroll(&m_OutputLog, common::str2wstr(out + "\n").c_str(), RGB(200, 200, 200));
 	
-	cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
+	for (int i = 0; i < 5; ++i)
+	{
+		cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
+		Sleep(50);
+	}
 
 	m_incSerialTime = 0;
 }
