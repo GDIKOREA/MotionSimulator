@@ -1,0 +1,17 @@
+{
+	"server port" : "20777",
+	"plot command" : "plot1 = 0, 0, 0, 0, 0
+string1 = %f;
+name1 = Yaw
+plot2 = 0, 0, 0, 0, 0
+string2 = %*f; %f;
+name2 = Pitch
+plot3 = 0, 0, 0, 0, 0
+string3 = %*f; %*f; %f;
+name3 = Roll
+plot4 = 0, 0, 0, 0, 0
+string4 = %*f; %*f; %*f; %f;
+name4 = Heave
+",
+	"xml file path" : ""
+}
