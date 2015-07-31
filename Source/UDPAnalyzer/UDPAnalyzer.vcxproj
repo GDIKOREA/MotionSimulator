@@ -99,6 +99,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Text Include="dev note.txt" />
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
