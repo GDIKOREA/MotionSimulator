@@ -7,6 +7,7 @@
 #include "enumser.h"
 #include <vector>
 #include <string>
+#include <afxcoll.h>
 using namespace std;
 
 // CComPortCombo

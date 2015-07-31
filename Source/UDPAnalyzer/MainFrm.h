@@ -3,8 +3,6 @@
 //
 
 #pragma once
-#include "Cube3DPane.h"
-
 
 class CMainFrame : public CFrameWndEx
 {
@@ -18,6 +16,13 @@ public:
 
 // Operations
 public:
+	list<CDockablePaneBase*> m_viewList;
+	CDockablePaneBase *m_udpView;
+	CDockablePaneBase *m_plotView;
+	CDockablePaneBase *m_mixingView;
+	CDockablePaneBase *m_outputView;
+	CDockablePaneBase *m_dxView;
+
 
 // Overrides
 public:
@@ -33,30 +38,17 @@ public:
 #endif
 
 protected:  // control bar embedded members
- 	CMFCMenuBar       m_wndMenuBar;
-	CMFCToolBarImages m_UserImages;
-
-	list<CDockablePaneBase*> m_viewList;
-	CCube3DPane *m_wndCube3DView;
-	CDockablePaneBase *m_wndSerialEditorView;
-	CDockablePaneBase *m_serialGraphView;
-	CDockablePaneBase *m_udpGraphView;
-	CDockablePaneBase *m_udpEditorView;
-	CDockablePaneBase *m_motionOutputView;
-	CDockablePaneBase *m_motionInputView;
-	CDockablePaneBase *m_motionControlView;
-	CDockablePaneBase *m_joystickView;
-	CDockablePaneBase *m_motionWaveView;
-	CDockablePaneBase *m_mixingView;
-	CDockablePaneBase *m_controlBoardView;
-
+	CMFCMenuBar       m_wndMenuBar;
 
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnViewCustomize();
 	afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
+	afx_msg void OnUpdateApplicationLook(CCmdUI* pCmdUI);
 	DECLARE_MESSAGE_MAP()
 
 	BOOL CreateDockingWindows();
-	void SetDockingWindowIcons(BOOL bHiColorIcons);
 };
+
+

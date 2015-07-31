@@ -86,7 +86,7 @@ BOOL CMotionWaveView::OnInitDialog()
 
 	list<string> extList;
 	extList.push_back("mwav");
-	m_FileTree.Update("./", extList);
+	m_FileTree.Update("../media/", extList);
 	m_FileTree.ExpandAll();
 
 	// PlotÃ¢ »ý¼º.
@@ -193,7 +193,7 @@ void CMotionWaveView::OnSelchangedTreeFile(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 
 	const string fileName = m_FileTree.GetSelectFilePath(pNMTreeView->itemNew.hItem);
-	if (common::GetFileExt(fileName).empty() || (fileName == "./media") || (fileName == "."))
+	if (common::GetFileExt(fileName).empty() || (fileName == "../media") || (fileName == ".."))
 		return;
 
 	if (m_mwave.Read(fileName))

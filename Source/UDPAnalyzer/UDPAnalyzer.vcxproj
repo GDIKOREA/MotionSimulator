@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D8B92D0C-BFDD-4D18-BC19-79CA26D8A24A}</ProjectGuid>
+    <RootNamespace>UDPAnalyzer</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)..\Bin\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Common\UIComponent\AutoHandle.h" />
+    <ClInclude Include="..\Common\UIComponent\AutoHeapAlloc.h" />
+    <ClInclude Include="..\Common\UIComponent\AutoHModule.h" />
+    <ClInclude Include="..\Common\UIComponent\BPCtrlAnchorMap.h" />
+    <ClInclude Include="..\Common\UIComponent\BufferedSerial.h" />
+    <ClInclude Include="..\Common\UIComponent\C3DView.h" />
+    <ClInclude Include="..\Common\UIComponent\ComPortCombo.h" />
+    <ClInclude Include="..\Common\UIComponent\Controller.h" />
+    <ClInclude Include="..\Common\UIComponent\CubeFlight.h" />
+    <ClInclude Include="..\Common\UIComponent\DockablePaneBase.h" />
+    <ClInclude Include="..\Common\UIComponent\DockablePaneChildView.h" />
+    <ClInclude Include="..\Common\UIComponent\EnumDevices.h" />
+    <ClInclude Include="..\Common\UIComponent\enumser.h" />
+    <ClInclude Include="..\Common\UIComponent\FileTreeCtrl.h" />
+    <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h" />
+    <ClInclude Include="..\Common\UIComponent\overhauser.hpp" />
+    <ClInclude Include="..\Common\UIComponent\PlotWindow.h" />
+    <ClInclude Include="..\Common\UIComponent\Serial.h" />
+    <ClInclude Include="..\Common\UIComponent\SerialCommunication.h" />
+    <ClInclude Include="..\Common\UIComponent\SerialObserver.h" />
+    <ClInclude Include="..\Common\UIComponent\UDPCommunication.h" />
+    <ClInclude Include="..\Common\UIComponent\UDPObserver.h" />
+    <ClInclude Include="..\Common\UIComponent\UIComponent.h" />
+    <ClInclude Include="..\Common\UIComponent\UIUtiltity.h" />
+    <ClInclude Include="..\Common\UIComponent\UpdateObserver.h" />
+    <ClInclude Include="DXView.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="mixingparser.h" />
+    <ClInclude Include="MixingView.h" />
+    <ClInclude Include="OutputView.h" />
+    <ClInclude Include="PlotView.h" />
+    <ClInclude Include="protocolparser.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="UDPAnalyzer.h" />
+    <ClInclude Include="UDPAnalyzerDoc.h" />
+    <ClInclude Include="UDPAnalyzerView.h" />
+    <ClInclude Include="UDPView.h" />
+    <ClInclude Include="ViewTree.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Common\UIComponent\BufferedSerial.cpp" />
+    <ClCompile Include="..\Common\UIComponent\C3DView.cpp" />
+    <ClCompile Include="..\Common\UIComponent\ComPortCombo.cpp" />
+    <ClCompile Include="..\Common\UIComponent\Controller.cpp" />
+    <ClCompile Include="..\Common\UIComponent\CubeFlight.cpp" />
+    <ClCompile Include="..\Common\UIComponent\DockablePaneBase.cpp" />
+    <ClCompile Include="..\Common\UIComponent\DockablePaneChildView.cpp" />
+    <ClCompile Include="..\Common\UIComponent\EnumDevices.cpp" />
+    <ClCompile Include="..\Common\UIComponent\enumser.cpp" />
+    <ClCompile Include="..\Common\UIComponent\FileTreeCtrl.cpp" />
+    <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp" />
+    <ClCompile Include="..\Common\UIComponent\overhauser.cpp" />
+    <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp" />
+    <ClCompile Include="..\Common\UIComponent\Serial.cpp" />
+    <ClCompile Include="..\Common\UIComponent\SerialCommunication.cpp" />
+    <ClCompile Include="..\Common\UIComponent\SerialObserver.cpp" />
+    <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp" />
+    <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp" />
+    <ClCompile Include="DXView.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="mixingparser.cpp" />
+    <ClCompile Include="MixingView.cpp" />
+    <ClCompile Include="OutputView.cpp" />
+    <ClCompile Include="PlotView.cpp" />
+    <ClCompile Include="protocolparser.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="UDPAnalyzer.cpp" />
+    <ClCompile Include="UDPAnalyzerDoc.cpp" />
+    <ClCompile Include="UDPAnalyzerView.cpp" />
+    <ClCompile Include="UDPView.cpp" />
+    <ClCompile Include="ViewTree.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UDPAnalyzer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\classview.bmp" />
+    <Image Include="res\classview_hc.bmp" />
+    <Image Include="res\class_view.ico" />
+    <Image Include="res\class_view_hc.ico" />
+    <Image Include="res\explorer.bmp" />
+    <Image Include="res\explorer_hc.bmp" />
+    <Image Include="res\fileview.bmp" />
+    <Image Include="res\fileview_hc.bmp" />
+    <Image Include="res\file_view.ico" />
+    <Image Include="res\file_view_hc.ico" />
+    <Image Include="res\menuimages.bmp" />
+    <Image Include="res\menuimages_hc.bmp" />
+    <Image Include="res\output_wnd.ico" />
+    <Image Include="res\output_wnd_hc.ico" />
+    <Image Include="res\properties.bmp" />
+    <Image Include="res\properties_hc.bmp" />
+    <Image Include="res\properties_wnd.ico" />
+    <Image Include="res\properties_wnd_hc.ico" />
+    <Image Include="res\sort.bmp" />
+    <Image Include="res\sort_hc.bmp" />
+    <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\Toolbar256.bmp" />
+    <Image Include="res\UDPAnalyzer.ico" />
+    <Image Include="res\UDPAnalyzerDoc.ico" />
+    <Image Include="UserImages.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\UDPAnalyzer.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\AI\AI.vcxproj">
+      <Project>{c7f9eba2-b553-483b-bc34-d25f1c718255}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common\Common.vcxproj">
+      <Project>{ef9ca22d-0c8f-42e9-ab66-98bc1a640f10}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Graphic\Graphic.vcxproj">
+      <Project>{3a91e3aa-18df-4733-9f41-ed09a61f97e3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Network\Network.vcxproj">
+      <Project>{a202aa06-f0ee-4b05-86de-da63b9f146d4}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="UDPAnalyzer.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

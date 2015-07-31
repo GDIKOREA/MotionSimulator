@@ -1,0 +1,63 @@
+개발노트
+
+------------------------------------------------------------
+window
+	- memory dumping
+		- protocol parsing command
+	- mixing
+		- pixing command
+	- multi plot window
+		- plot command
+	- output window
+		- serial
+		- udp
+		- output command
+	- physix window
+
+
+------------------------------------------------------------
+udp protocol 파싱 명령어
+	port = 20777
+
+protocol parsing
+	2, uint
+	4, float
+	4, float
+	4, float
+	4, float
+
+------------------------------------------------------------
+mixing 명령어
+	- 산술연산
+	- $var1 = $1 + $2 + $3
+
+	- assigm_stmt -> var = exp
+	- var -> id
+	- exp -> term +- term
+	- term -> factor */ factor
+	- factor -> id, number, (exp)
+
+
+
+------------------------------------------------------------
+plot 명령어
+	- multiplotwindow 명령어와 동일
+
+
+------------------------------------------------------------
+output 명령어
+	- output serial, udp
+	- udp send speed = 1000 	# 1초당 send회수
+	- serial 
+
+	- $1;$2;$4
+	- $var1;$var2;$var3
+
+------------------------------------------------------------
+physix 명령어
+	- send speed = 1000
+
+	- $out1 = #var1
+	- $out2 = #var2
+	- $out3 = #var3
+

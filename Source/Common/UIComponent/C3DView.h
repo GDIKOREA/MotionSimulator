@@ -1,11 +1,5 @@
 #pragma once
 
-//#include "foundation/PxFoundation.h"
-//#include "PxPhysicsAPI.h"
-//#include "extensions/PxExtensionsAPI.h"
-//using namespace physx;
-
-
 #define IDD_DIALOG_3D_2	123456
 
 

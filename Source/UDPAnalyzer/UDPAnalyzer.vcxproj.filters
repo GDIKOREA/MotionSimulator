@@ -1,0 +1,327 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="UIComponent">
+      <UniqueIdentifier>{7dc7ff9e-86fd-4dec-93c5-9099b39a38b4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="UDPAnalyzer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UDPAnalyzerDoc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UDPAnalyzerView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\AutoHandle.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\AutoHeapAlloc.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\AutoHModule.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\BPCtrlAnchorMap.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\BufferedSerial.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\C3DView.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\ComPortCombo.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\Controller.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\CubeFlight.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\DockablePaneBase.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\DockablePaneChildView.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\EnumDevices.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\enumser.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\FileTreeCtrl.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\overhauser.hpp">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\PlotWindow.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\Serial.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\SerialCommunication.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\SerialObserver.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\UDPCommunication.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\UDPObserver.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\UIComponent.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\UIUtiltity.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\UpdateObserver.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="UDPView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlotView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MixingView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DXView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="protocolparser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mixingparser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="UDPAnalyzer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UDPAnalyzerDoc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UDPAnalyzerView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\DockablePaneBase.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\DockablePaneChildView.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\EnumDevices.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\enumser.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\FileTreeCtrl.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\overhauser.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\Serial.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\SerialCommunication.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\SerialObserver.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\BufferedSerial.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\C3DView.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\ComPortCombo.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\Controller.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\CubeFlight.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="UDPView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlotView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MixingView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DXView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="protocolparser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mixingparser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UDPAnalyzer.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\file_view.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\file_view_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\class_view.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\class_view_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\fileview.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\fileview_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\classview.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\classview_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\explorer.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\explorer_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sort.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sort_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\menuimages.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\menuimages_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\output_wnd.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\output_wnd_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties_wnd.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties_wnd_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="UserImages.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\UDPAnalyzerDoc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\UDPAnalyzer.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar256.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\UDPAnalyzer.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>
