@@ -15,6 +15,7 @@
 #include "JoystickView.h"
 #include "MotionWaveView.h"
 #include "MixingView.h"
+#include "ControlBoard.h"
 #include "MainFrm.h"
 
 #ifdef _DEBUG
@@ -28,6 +29,9 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWndEx)
 const int  iMaxUserToolbars = 10;
 const UINT uiFirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
 const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
+
+CMotionWaveView *g_mwaveView = NULL;
+
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_WM_CREATE()
@@ -301,6 +305,8 @@ BOOL CMainFrame::CreateDockingWindows()
 		view->Create(CMotionWaveView::IDD, m_motionWaveView);
 		view->ShowWindow(SW_SHOW);
 		m_motionWaveView->SetChildView(view);
+
+		g_mwaveView = view;
 	}
 
 
@@ -318,6 +324,22 @@ BOOL CMainFrame::CreateDockingWindows()
 		view->ShowWindow(SW_SHOW);
 		m_mixingView->SetChildView(view);
 	}
+
+	// Create Controlboard view
+	{
+		m_controlBoardView = new CDockablePaneBase();
+		if (!m_controlBoardView->Create(L"Control Board", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_CONTROLBOARD, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+		{
+			TRACE0("Failed to create Controlboard window\n");
+			return FALSE; // failed to create
+		}
+
+		CControlBoard *view = new CControlBoard(m_controlBoardView);
+		view->Create(CControlBoard::IDD, m_controlBoardView);
+		view->ShowWindow(SW_SHOW);
+		m_controlBoardView->SetChildView(view);
+	}
+
 
 
 	// Create serial editor view
@@ -360,6 +382,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	m_viewList.push_back(m_joystickView);
 	m_viewList.push_back(m_motionWaveView);
 	m_viewList.push_back(m_mixingView);	
+	m_viewList.push_back(m_controlBoardView);
 	m_viewList.push_back(m_wndSerialEditorView);
 	m_viewList.push_back(m_serialGraphView);
 
@@ -394,6 +417,7 @@ void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
 	m_joystickView->SetIcon(hClassViewIcon, FALSE);
 	m_motionWaveView->SetIcon(hClassViewIcon, FALSE);
 	m_mixingView->SetIcon(hClassViewIcon, FALSE);
+	m_controlBoardView->SetIcon(hClassViewIcon, FALSE);
 }
 
 // CMainFrame diagnostics

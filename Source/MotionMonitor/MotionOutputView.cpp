@@ -14,6 +14,7 @@ CMotionOutputView::CMotionOutputView(CWnd* pParent /*=NULL*/)
 : CDockablePaneChildView(CMotionOutputView::IDD, pParent)
 	, m_isStartSendMotion(false)
 	, m_incTime(0)
+	, m_totalIncTime(0)
 	, m_incSerialTime(0)
 	, m_multiPlotWindows(NULL)
 	, m_IsOnlyEmergency(FALSE)
@@ -174,6 +175,7 @@ void CMotionOutputView::Update(const float deltaSeconds)
 		//Quaternion quat = cController::Get()->GetCubeFlight().GetRotation();
 		m_incTime += deltaSeconds;
 		m_incSerialTime += deltaSeconds;
+		m_totalIncTime += deltaSeconds;
 
 		//const int out_yaw = 256;
 		const int out_sway = 256;
@@ -184,14 +186,14 @@ void CMotionOutputView::Update(const float deltaSeconds)
 		const int out_roll = (int)cMotionController::Get()->m_roll;
 		const int out_heave = (int)cMotionController::Get()->m_heave;
 
-		if (m_incTime > 0.02f)
+		if (m_incTime > 0.033f)
 		{
-			m_multiPlotWindows->SetString(common::format("%d;%d;%d;%d", out_yaw, out_pitch, out_roll, out_heave).c_str(), 0);
+			m_multiPlotWindows->SetString(m_totalIncTime, common::format("%d;%d;%d;%d", out_yaw, out_pitch, out_roll, out_heave).c_str(), 0);
 			m_multiPlotWindows->DrawGraph(m_incTime, false);
 			m_incTime = 0;
 		}
 
-		if (m_incSerialTime > 0.1f)
+		if (m_incSerialTime > 0.07f)
 		{
 			if (m_isStartSendMotion && !m_IsOnlyEmergency)
 			{
@@ -203,6 +205,8 @@ void CMotionOutputView::Update(const float deltaSeconds)
 
 				// 시리얼 포트로 모션 시뮬레이터 장비에 모션 정보를 전송한다.
 				cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
+
+				m_multiPlotWindows->SetString(m_totalIncTime, common::format("%d;%d;%d;%d", out_yaw, out_pitch, out_roll, out_heave).c_str(), 1);
 			}
 
 			m_incSerialTime = 0;

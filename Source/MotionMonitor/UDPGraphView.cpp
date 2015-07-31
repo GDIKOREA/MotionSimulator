@@ -10,17 +10,8 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/foreach.hpp>
 #include "MotionController.h"
+#include "MachineGunController.h"
 
-#define M_PPI 3.14159265358979323846f
-
-struct sMotionPacket
-{
-	float directX, directY, directZ; // 자동차 방향 벡터
-	float pitch, yaw, roll; // 자동차 상태 radian
-	float speed; // 자동차 속도
-	int gamestate;
-	int stage;
-};
 
 
 // CUDPGraphView dialog
@@ -253,7 +244,7 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 	std::stringstream ss;
 	vector<float> values(4);
 
-	if (1) // Dirt3 Motion
+	if (GAME_TYPE::DIRT3 == g_gameType) // Dirt3 Motion
 	{
 		// 패킷의 특정 값만 float으로 변환해서 가져온다.
 		// 프로토콜에 대한 문서는 https://github.com/GDIKOREA/MotionSimulator/wiki/Dirt3-Motion-Data-Capture 를 참조하자.
@@ -290,7 +281,7 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 		m_incTime = 0;
 	}
 	else
-	{
+	{ // MachineGun
 		if (bufferLen < sizeof(sMotionPacket))
 			return;
 
@@ -314,7 +305,7 @@ void CUDPGraphView::UpdateUDP(const char *buffer, const int bufferLen)
 		ss << roll << ";";
 		ss << 0 << ";";
 		ss << packet->gamestate << ";";
-		ss << packet->stage << ";";
+		ss << packet->mission << ";";
 
 		m_PacketString = common::str2wstr(ss.str()).c_str();
 

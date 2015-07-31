@@ -224,6 +224,26 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
 END
 
+IDD_DIALOG_CONTROL DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "Dirt3",IDC_RADIO_DIRT3,"Button",BS_AUTORADIOBUTTON | WS_GROUP,7,7,31,10
+    CONTROL         "Machine Gun",IDC_RADIO_MG,"Button",BS_AUTORADIOBUTTON,49,7,57,10
+    LTEXT           "GameState",IDC_STATIC,7,52,36,8
+    LTEXT           "GameState",IDC_STATIC_GAMESTATE,53,52,36,8
+    LTEXT           "GameTime",IDC_STATIC,7,63,34,8
+    LTEXT           "GameTime",IDC_STATIC_GAMETIME,53,63,34,8
+    LTEXT           "GameStage",IDC_STATIC,7,74,38,8
+    LTEXT           "GameStage",IDC_STATIC_GAMESTAGE,53,74,38,8
+    CONTROL         "Motion Simulation",IDC_CHECK_MOTION_SIMULATION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,24,71,10
+    PUSHBUTTON      "Emergency Stop",IDC_BUTTON_EMERGENCY,111,22,68,14
+    LTEXT           "UDP Update ",IDC_STATIC,7,84,42,8
+    LTEXT           "UDP Update Time",IDC_STATIC_UDPUPDATE_TIME,53,84,56,8
+    LTEXT           "State",IDC_STATIC,7,95,18,8
+    LTEXT           "inner State",IDC_STATIC_INSTATE,53,95,36,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -322,6 +342,14 @@ BEGIN
     END
 
     IDD_DIALOG_3D, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 169
+    END
+
+    IDD_DIALOG_CONTROL, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 302

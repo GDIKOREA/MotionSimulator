@@ -256,7 +256,8 @@ void CJoystickView::Update(const float deltaSeconds)
 		cMotionController::Get()->m_joystickMod.GetOriginal(origYaw, origPitch, origRoll, origHeave);
 
 
-		const float elapsT = 0.033f;
+		//const float elapsT = 0.033f;
+		const float elapsT = 0.01f;
 		if (m_incTime > elapsT)
 		{
 			//----------------------------------------------------------------------------------------------

@@ -15,12 +15,15 @@ public:
 	enum { IDD = IDD_DIALOG_MWAVE };
 
 	virtual void Update(const float deltaSeconds) override;
+	
+	bool LoadandPlayMotionWave(const string &fileName);
 
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	void UpdateMotionWaveFileInfo(const string &fileName, const cMotionWave &mwav);
 	void UpdateMotionWaveFile();
+	void PlayMWave();
 
 
 protected:

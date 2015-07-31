@@ -3,6 +3,9 @@
 #include "Global.h"
 
 
+GAME_TYPE::TYPE g_gameType = GAME_TYPE::MACHINEGUN;
+
+
 
 // http://www.codeproject.com/Articles/12093/Using-RichEditCtrl-to-Display-Formatted-Logs
 int AppendToLogAndScroll(CRichEditCtrl* pCtrl, CString str, COLORREF color)

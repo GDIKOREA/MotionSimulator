@@ -177,6 +177,12 @@
     <ClInclude Include="spline.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="ControlBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MachineGunController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -304,6 +310,12 @@
     </ClCompile>
     <ClCompile Include="spline.cpp">
       <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ControlBoard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MachineGunController.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

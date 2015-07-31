@@ -23,6 +23,7 @@ protected:
 
 	CMultiPlotWindow *m_multiPlotWindows;
 	float m_incTime;
+	float m_totalIncTime;
 	cMixingConfig m_config;
 	bool m_isStart;
 

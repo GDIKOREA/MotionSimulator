@@ -52,6 +52,21 @@ void CMultiPlotWindow::SetString(const char *str, const int plotIndex)
 }
 
 
+void CMultiPlotWindow::SetString(const float t, const char *str, const int plotIndex) // plotIndex=0
+{
+	if (m_plotWindows.empty())
+		return;
+
+	for each (auto &plot in m_plotWindows)
+	{
+		float y;
+		const int ret = sscanf_s(str, plot.scanString.c_str(), &y);
+		if (ret >= 1)
+			plot.wnd->SetPlotXY(t, y, plotIndex);
+	}
+}
+
+
 void CMultiPlotWindow::SetXY(const int plotIndex, const float x, const float y, const int graphIndex)
 {
 	if ((int)m_plotWindows.size() <= plotIndex)

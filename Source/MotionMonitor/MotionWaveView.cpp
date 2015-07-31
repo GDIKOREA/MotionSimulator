@@ -275,17 +275,7 @@ void CMotionWaveView::OnBnClickedButtonPlay()
 	}
 	else
 	{
-		// update config
-		CString command;
-		m_EditCommand.GetWindowTextW(command);
-		cMotionController::Get()->m_mwavMod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
-		m_mod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
-		UpdateMotionWaveFile();
-
-		m_isPlay = true;
-		m_mwave.StartPlay();
-		m_mwaveSpline.StartPlay();
-		m_PlayButton.SetWindowTextW(L"Stop");
+		PlayMWave();
 	}
 }
 
@@ -379,4 +369,39 @@ void CMotionWaveView::OnDestroy()
 	}
 
 	CDockablePaneChildView::OnDestroy();
+}
+
+
+// 모션웨이브 파일 로딩.
+bool CMotionWaveView::LoadandPlayMotionWave(const string &fileName)
+{
+	m_mwave.StopPlay();
+	m_mwaveSpline.StopPlay();
+
+	if (m_mwave.Read(fileName))
+	{
+		UpdateMotionWaveFile();
+		UpdateMotionWaveFileInfo(fileName, m_mwave);
+	}
+
+	PlayMWave();
+
+	return true;
+}
+
+
+// 모션웨이브를 플레이한다.
+void CMotionWaveView::PlayMWave()
+{
+	// update config
+	CString command;
+	m_EditCommand.GetWindowTextW(command);
+	cMotionController::Get()->m_mwavMod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
+	m_mod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
+	UpdateMotionWaveFile();
+
+	m_isPlay = true;
+	m_mwave.StartPlay();
+	m_mwaveSpline.StartPlay();
+	m_PlayButton.SetWindowTextW(L"Stop");
 }

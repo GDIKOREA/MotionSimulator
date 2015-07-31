@@ -84,9 +84,23 @@ enum VIEW_TYPE {
 	ID_VIEW_JOYSTICK,
 	ID_VIEW_MOTIONWAVE,
 	ID_VIEW_MIXING,
+	ID_VIEW_CONTROLBOARD,
 };
 
 #define CENUMERATESERIAL_USE_STL
+
+
+namespace GAME_TYPE {
+	enum TYPE {
+		DIRT3,
+		MACHINEGUN,
+	};
+};
+
+extern GAME_TYPE::TYPE g_gameType;
+
+class CMotionWaveView;
+extern CMotionWaveView *g_mwaveView;
 
 
 #include "Global.h"

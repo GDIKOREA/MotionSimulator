@@ -24,6 +24,7 @@ protected:
 	CMultiPlotWindow *m_multiPlotWindows;
 	bool m_isStartSendMotion;
 	float m_incTime;
+	float m_totalIncTime;
 	float m_incSerialTime;
 
 

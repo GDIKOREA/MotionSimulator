@@ -129,9 +129,11 @@
     <ClInclude Include="..\Common\UIComponent\UIComponent.h" />
     <ClInclude Include="..\Common\UIComponent\UIUtiltity.h" />
     <ClInclude Include="..\Common\UIComponent\UpdateObserver.h" />
+    <ClInclude Include="ControlBoard.h" />
     <ClInclude Include="Cube3DPane.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="JoystickView.h" />
+    <ClInclude Include="MachineGunController.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="mixingconfig.h" />
     <ClInclude Include="MixingView.h" />
@@ -175,9 +177,11 @@
     <ClCompile Include="..\Common\UIComponent\SerialObserver.cpp" />
     <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp" />
     <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp" />
+    <ClCompile Include="ControlBoard.cpp" />
     <ClCompile Include="Cube3DPane.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="JoystickView.cpp" />
+    <ClCompile Include="MachineGunController.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="mixingconfig.cpp" />
     <ClCompile Include="MixingView.cpp" />

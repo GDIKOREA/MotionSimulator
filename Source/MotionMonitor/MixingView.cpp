@@ -34,6 +34,7 @@ CMixingView::CMixingView(CWnd* pParent /*=NULL*/)
 	: CDockablePaneChildView(CMixingView::IDD, pParent)
 	, m_multiPlotWindows(NULL)
 	, m_incTime(0)
+	, m_totalIncTime(0)
 	, m_isStart(false)
 {
 }
@@ -180,6 +181,8 @@ void CMixingView::OnBnClickedButtonUpdate()
 	m_multiPlotWindows->SetFixedWidthMode(true);
 
 	m_isStart = true;
+
+	m_incTime = 0;
 }
 
 
@@ -187,8 +190,9 @@ void CMixingView::Update(const float deltaSeconds)
 {
 	RET(!m_isStart);
 
-	const float elapseT = 0.02f;
+	const float elapseT = 0.033f;
 	m_incTime += deltaSeconds;
+	m_totalIncTime += deltaSeconds;
 
 	if (m_incTime > elapseT)
 	{
@@ -200,11 +204,19 @@ void CMixingView::Update(const float deltaSeconds)
 		cMotionController::Get()->m_roll = roll;
 		cMotionController::Get()->m_heave = heave;
 
-		m_multiPlotWindows->SetY(0, yaw, 0);
-		m_multiPlotWindows->SetY(1, pitch, 0);
-		m_multiPlotWindows->SetY(2, roll, 0);
-		m_multiPlotWindows->SetY(3, heave, 0);
+		m_multiPlotWindows->SetXY(0, m_totalIncTime, yaw, 0);
+		m_multiPlotWindows->SetXY(1, m_totalIncTime, pitch, 0);
+		m_multiPlotWindows->SetXY(2, m_totalIncTime, roll, 0);
+		m_multiPlotWindows->SetXY(3, m_totalIncTime, heave, 0);
 		m_multiPlotWindows->DrawGraph(m_incTime, false);
+
+
+		// render 3D Model
+		const float yawRadian = (yaw - 256.f) / 512.f;
+		const float pitchRadian = -(pitch - 256.f) / 512.f;
+		const float rollRadian = -(roll - 256.f) / 512.f;
+		cController::Get()->GetCubeFlight().SetEulerAngle(rollRadian, pitchRadian, yawRadian);
+
 
 		m_incTime -= elapseT;
 		if (m_incTime > elapseT)

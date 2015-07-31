@@ -96,6 +96,7 @@
 #define IDD_DIALOG_JOYSTICK             323
 #define IDD_DIALOG_MWAVE                324
 #define IDD_DIALOG_MIXING               326
+#define IDD_DIALOG_CONTROL              328
 #define IDC_CHECK_FIXEDMODE             1000
 #define IDC_EDIT_COMMAND                1001
 #define IDC_BUTTON_HELP                 1002
@@ -185,16 +186,23 @@
 #define IDC_BUTTON_REFRESH              1066
 #define IDC_STATIC_GROUP                1067
 #define IDC_TREE_FILEINFO               1071
-#define IDC_RICHEDIT21                  1072
-#define IDC_BUTTON1                     1073
+#define IDC_RADIO_DIRT3                 1074
+#define IDC_RADIO_MG                    1075
+#define IDC_STATIC_GAMESTATE            1077
+#define IDC_STATIC_GAMETIME             1078
+#define IDC_STATIC_GAMESTAGE            1079
+#define IDC_CHECK_MOTION_SIMULATION     1080
+#define IDC_STATIC_UDPUPDATE_TIME       1081
+#define IDC_STATIC_UDPUPDATE_TIME2      1082
+#define IDC_STATIC_INSTATE              1082
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        328
+#define _APS_NEXT_RESOURCE_VALUE        329
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1074
+#define _APS_NEXT_CONTROL_VALUE         1084
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
