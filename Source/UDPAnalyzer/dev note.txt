@@ -14,7 +14,6 @@ window
 		- output command
 	- physix window
 
-
 ------------------------------------------------------------
 udp protocol 파싱 명령어
 	port = 20777
@@ -31,18 +30,16 @@ mixing 명령어
 	- 산술연산
 	- $var1 = $1 + $2 + $3
 
-	- assigm_stmt -> var = exp
-	- var -> id
-	- exp -> term +- term
+	- assign_stmt -> id = exp
+	- expr -> term +- term
 	- term -> factor */ factor
-	- factor -> id, number, (exp)
-
-
+	- factor -> id, number, (expr)
 
 ------------------------------------------------------------
 plot 명령어
 	- multiplotwindow 명령어와 동일
-
+	- plot input 명령어
+		- $1;$1;$1
 
 ------------------------------------------------------------
 output 명령어

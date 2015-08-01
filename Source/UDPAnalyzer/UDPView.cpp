@@ -136,6 +136,8 @@ void CUDPView::OnSize(UINT nType, int cx, int cy)
 
 void CUDPView::OnBnClickedButtonUpdate()
 {
+	UpdateData();
+
 	CString text;
 	m_ProtocolEditor.GetWindowTextW(text);
 	m_protocolParser.ParseStr(wstr2str((LPCTSTR)text));

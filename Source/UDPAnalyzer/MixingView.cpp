@@ -10,6 +10,7 @@
 // CMixingView dialog
 CMixingView::CMixingView(CWnd* pParent /*=NULL*/)
 : CDockablePaneChildView(CMixingView::IDD, pParent)
+, m_incTime(0)
 {
 
 }
@@ -56,21 +57,21 @@ BOOL CMixingView::OnInitDialog()
 
 void CMixingView::OnBnClickedOk()
 {
-	// TODO: Add your control notification handler code here
-	//CDockablePaneChildView::OnOK();
 }
 
 
 void CMixingView::OnBnClickedCancel()
 {
-	// TODO: Add your control notification handler code here
-	//CDockablePaneChildView::OnCancel();
 }
 
 
 void CMixingView::OnBnClickedButtonUpdate()
 {
-	// TODO: Add your control notification handler code here
+	UpdateData();
+
+	CString text;
+	m_CommandEditor.GetWindowTextW(text);
+	m_parser.ParseStr(wstr2str((LPCTSTR)text));
 }
 
 
@@ -84,3 +85,13 @@ void CMixingView::OnSize(UINT nType, int cx, int cy)
 }
 
 
+void CMixingView::Update(const float deltaSeconds)
+{
+	m_incTime += deltaSeconds;
+
+	if (m_incTime > 0.033f)
+	{
+		m_interpreter.Excute(m_parser.m_stmt);
+		m_incTime = 0;
+	}
+}

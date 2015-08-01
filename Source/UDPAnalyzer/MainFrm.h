@@ -49,6 +49,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	BOOL CreateDockingWindows();
+public:
+	afx_msg void OnDestroy();
 };
 
 

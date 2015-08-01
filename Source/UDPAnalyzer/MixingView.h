@@ -1,5 +1,7 @@
 #pragma once
 
+#include "mixingparser.h"
+#include "interpreter.h"
 
 // CMixingView dialog
 
@@ -11,6 +13,15 @@ public:
 
 // Dialog Data
 	enum { IDD = IDD_DIALOG_MIXING };
+
+	virtual void Update(const float deltaSeconds) override;
+
+
+protected:
+	cMixingParser m_parser;
+	script::cMixingInterpreter m_interpreter;
+	float m_incTime;
+
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
