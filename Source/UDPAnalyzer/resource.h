@@ -96,7 +96,23 @@
 #define IDC_EDIT_COMMAND                1004
 #define IDC_STATIC_PLOT                 1007
 #define IDC_EDIT_PLOTINPUT              1008
-#define IDC_EDIT2                       1009
+#define IDC_EDIT_PLOTINPUT_OUT          1009
+#define IDC_RADIO_SERIAL                1010
+#define IDC_RADIO_UDP                   1011
+#define IDC_COMBO_COM                   1012
+#define IDC_COMBO_BAUDRATE              1013
+#define IDC_IPADDRESS_IP                1014
+#define IDC_RADIO_NONE                  1015
+#define IDC_BUTTON_CONNECT              1016
+#define IDC_STATIC_SENDDATA             1018
+#define IDC_EDIT_ROLL                   1019
+#define IDC_EDIT_PITCH                  1020
+#define IDC_EDIT_YAW                    1021
+#define IDC_BUTTON_3DUPDATE             1022
+#define IDC_EDIT_SENDCOMMAND            1023
+#define IDC_EDIT_PLOT_COMMAND           1024
+#define IDC_BUTTON_PLOT_UPDATE          1025
+#define IDC_BUTTON_UPDATE_SENDFORMAT    1026
 
 // Next default values for new objects
 // 
@@ -104,7 +120,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        315
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1010
+#define _APS_NEXT_CONTROL_VALUE         1025
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

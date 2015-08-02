@@ -4,20 +4,19 @@
 #pragma once
 
 #include "script.h"
+#include "mathscript.h"
 
 
-namespace script
+namespace mathscript
 {
 
-	class cMixingInterpreter
+	class cMathInterpreter
 	{
 	public:
-		cMixingInterpreter();
-		virtual ~cMixingInterpreter();
+		cMathInterpreter();
+		virtual ~cMathInterpreter();
 
 		float Excute(const sStatement *p);
-
-		map<string, float> m_symbols;
 
 
 	protected:

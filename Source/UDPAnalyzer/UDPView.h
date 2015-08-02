@@ -1,22 +1,8 @@
 #pragma once
 #include "afxwin.h"
 #include "protocolparser.h"
+#include "script.h"
 
-
-struct sFieldData
-{
-	union 
-	{
-		bool bVal;
-		int iVal;
-		u_int uVal;
-		float fVal;
-		double dVal;
-		char buff[8];
-	};
-
-	FEILD_TYPE::TYPE type;
-};
 
 
 // CUDPView dialog
@@ -34,7 +20,6 @@ public:
 
 protected:
 	cProtocolParser m_protocolParser;
-	vector<sFieldData> m_fieldsData;
 
 
 protected:
@@ -52,4 +37,5 @@ public:
 	virtual BOOL OnInitDialog();
 	CEdit m_ProtocolEditor;
 	afx_msg void OnBnClickedButtonUpdate();
+	afx_msg void OnDestroy();
 };

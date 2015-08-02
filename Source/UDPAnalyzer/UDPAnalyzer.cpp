@@ -58,6 +58,24 @@ BOOL CUDPAnalyzerApp::InitInstance()
 
 	CWinAppEx::InitInstance();
 
+	HRESULT hr = CoInitialize(NULL);
+	if (FAILED(hr))
+	{
+		_tprintf(_T("Failed to initialize COM, Error:%x\n"), hr);
+		return false;
+	}
+
+	//Initialize COM security (Required by CEnumerateSerial::UsingWMI)
+	hr = CoInitializeSecurity(NULL, -1, NULL, NULL, RPC_C_AUTHN_LEVEL_DEFAULT, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE, NULL);
+	if (FAILED(hr))
+	{
+		_tprintf(_T("Failed to initialize COM security, Error:%x\n"), hr);
+		CoUninitialize();
+		return false;
+	}
+
+
+
 	if (!AfxOleInit())
 	{
 		AfxMessageBox(IDP_OLE_INIT_FAILED);
@@ -104,6 +122,10 @@ BOOL CUDPAnalyzerApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 	m_pMainWnd->SetWindowTextW(L"UDP Analyzer");
+
+	//Close down COM
+	CoUninitialize();
+
 	return TRUE;
 }
 

@@ -1,20 +1,12 @@
 #pragma once
 
+#include "script.h"
 
-namespace FEILD_TYPE
-{
-	enum TYPE {
-		T_INT = 1,
-		T_UINT,
-		T_FLOAT,
-		T_BOOL,
-	};
-};
 
 struct sUDPField
 {
 	int bytes;
-	FEILD_TYPE::TYPE type;
+	script::FEILD_TYPE::TYPE type;
 };
 
 

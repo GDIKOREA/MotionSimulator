@@ -144,6 +144,9 @@
     <ProjectReference Include="..\Common\Common\Common.vcxproj">
       <Project>{ef9ca22d-0c8f-42e9-ab66-98bc1a640f10}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Common\Graphic\Graphic.vcxproj">
+      <Project>{3a91e3aa-18df-4733-9f41-ed09a61f97e3}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Network\Network.vcxproj">
       <Project>{a202aa06-f0ee-4b05-86de-da63b9f146d4}</Project>
     </ProjectReference>

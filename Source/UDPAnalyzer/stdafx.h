@@ -71,3 +71,7 @@ enum VIEW_TYPE
 	ID_VIEW_OUTPUT,
 	ID_VIEW_DX,
 };
+
+#include "mathparser.h"
+#include "mathinterpreter.h"
+#include "plotinputparser.h"

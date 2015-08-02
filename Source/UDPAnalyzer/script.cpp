@@ -2,44 +2,46 @@
 #include "stdafx.h"
 #include "script.h"
 
-using namespace script;
 
-
-void script::rm_statement(sStatement *p)
+namespace script
 {
-	RET(!p);
-	rm_assignstmt(p->assign);
-	rm_statement(p->next);
-	delete p;
+	const char *g_numStr = "1234567890.";
+	const int g_numLen = 11;
+	const char *g_strStr = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_";
+	const int g_strLen = 54;
+	const char *g_strStr2 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_1234567890";
+	const int g_strLen2 = 64;
+
+	map<string, sFieldData> g_symbols;
 }
 
-void script::rm_assignstmt(sAssignStmt *p)
+
+void script::ClearSymbols()
 {
-	RET(!p);
-	rm_expr(p->expr);
-	delete p;
+	g_symbols.clear();
 }
 
-void script::rm_factor(sFactor *p)
+
+bool script::compare(string &src, char c)
 {
-	RET(!p);
-	rm_expr(p->expr);
-	delete p;
+	if (src.empty())
+		return false;
+	return src[0] == c;
 }
 
-void script::rm_term(sTerm *p)
-{
-	RET(!p);
-	rm_factor(p->factor1);
-	rm_factor(p->factor2);
-	delete p;
-}
 
-void script::rm_expr(sExpr *p)
+bool script::check(string &src, char c)
 {
-	RET(!p);
-	rm_term(p->term1);
-	rm_expr(p->expr);
-	delete p;
-}
+	if (src.empty())
+		return false;
+	if (src[0] == c)
+	{
+		rotatepopvector(src, 0);
+	}
+	else
+	{
+		return false;
+	}
 
+	return true;
+}

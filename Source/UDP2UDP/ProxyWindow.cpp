@@ -107,7 +107,16 @@ void CProxyWindow::OnBnClickedButtonStart()
 	}
 	else
 	{
-		const string ip = GetSendIP();		if (!m_udpReceiveServer.Init(0, m_RcvPort))		{			GetParent()->PostMessageW(WM_UDP2UDP_START_FAIL, 0, (LPARAM)GetSafeHwnd());			::AfxMessageBox(L"서버 바인드 에러 !!");			return;		}		if (!m_udpSendClient.Init(ip, m_SndPort))
+		const string ip = GetSendIP();
+
+		if (!m_udpReceiveServer.Init(0, m_RcvPort))
+		{
+			GetParent()->PostMessageW(WM_UDP2UDP_START_FAIL, 0, (LPARAM)GetSafeHwnd());
+			::AfxMessageBox(L"서버 바인드 에러 !!");
+			return;
+		}
+
+		if (!m_udpSendClient.Init(ip, m_SndPort))
 		{
 			GetParent()->PostMessageW(WM_UDP2UDP_START_FAIL, 0, (LPARAM)GetSafeHwnd());
 			::AfxMessageBox(L"클라이언트 접속 에러 !!");
@@ -152,11 +161,13 @@ void CProxyWindow::Init(const int rcvPort, const string &sendIP, const int sendP
 string CProxyWindow::GetSendIP()
 {
 	DWORD address;
-	m_SndIP.GetAddress(address);	std::stringstream ss;
+	m_SndIP.GetAddress(address);
+	std::stringstream ss;
 	ss << ((address & 0xff000000) >> 24) << "."
 		<< ((address & 0x00ff0000) >> 16) << "."
 		<< ((address & 0x0000ff00) >> 8) << "."
-		<< (address & 0x000000ff);	const string ip = ss.str();
+		<< (address & 0x000000ff);
+	const string ip = ss.str();
 	return ip;
 }
 

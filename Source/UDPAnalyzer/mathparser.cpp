@@ -1,26 +1,18 @@
 
 #include "stdafx.h"
-#include "mixingparser.h"
+#include "mathparser.h"
+#include "script.h"
 
+using namespace mathscript;
 using namespace script;
 
-namespace script
-{
-	const static char *g_numStr = "1234567890.";
-	const static int g_numLen = 11;
-	const static char *g_strStr = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_";
-	const static int g_strLen = 54;
-	const static char *g_strStr2 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_1234567890";
-	const static int g_strLen2 = 64;
-}
 
-
-cMixingParser::cMixingParser() : 
+cMathParser::cMathParser() : 
 m_stmt(NULL)
 {
 }
 
-cMixingParser::~cMixingParser()
+cMathParser::~cMathParser()
 {
 	if (m_stmt)
 	{
@@ -31,7 +23,7 @@ cMixingParser::~cMixingParser()
 
 
 // read script file
-bool cMixingParser::Read(const string &fileName)
+bool cMathParser::Read(const string &fileName)
 {
 	using namespace std;
 	ifstream ifs(fileName);
@@ -48,7 +40,7 @@ bool cMixingParser::Read(const string &fileName)
 
 
 // parse script
-bool cMixingParser::ParseStr(const string &source)
+bool cMathParser::ParseStr(const string &source)
 {
 	string src = source;
 
@@ -60,7 +52,7 @@ bool cMixingParser::ParseStr(const string &source)
 
 
 //statement -> {assign_stmt}
-sStatement* cMixingParser::statement(string &src)
+sStatement* cMathParser::statement(string &src)
 {
 	trim(src);
 
@@ -69,20 +61,26 @@ sStatement* cMixingParser::statement(string &src)
 
 	sStatement *stmt = new sStatement({});
 	stmt->assign = assign_stmt(src);
+	if (!stmt->assign)
+		stmt->expr = expression(src);
+
 	stmt->next = statement(src);
 	return stmt;
 }
 
 
 // assign_stmt -> id = exp
-sAssignStmt* cMixingParser::assign_stmt(string &src)
+sAssignStmt* cMathParser::assign_stmt(string &src)
 {
 	trim(src);
 
 	sAssignStmt *assign = new sAssignStmt({});
 	const int idx = src.find_first_of('=');
 	if (idx == string::npos)
-		return assign;
+	{
+		delete assign;
+		return NULL;
+	}
 
 	assign->id = id(src);
 	trim(src);
@@ -94,7 +92,7 @@ sAssignStmt* cMixingParser::assign_stmt(string &src)
 
 
 //- exp -> term +- expr | term
-sExpr* cMixingParser::expression(string &src)
+sExpr* cMathParser::expression(string &src)
 {
 	trim(src);
 
@@ -119,7 +117,7 @@ sExpr* cMixingParser::expression(string &src)
 
 
 //term -> factor */ factor | factor
-sTerm* cMixingParser::term(string &src)
+sTerm* cMathParser::term(string &src)
 {
 	trim(src);
 
@@ -143,7 +141,7 @@ sTerm* cMixingParser::term(string &src)
 
 
 //factor -> id, number, (exp)
-sFactor* cMixingParser::factor(string &src)
+sFactor* cMathParser::factor(string &src)
 {
 	trim(src);
 
@@ -180,7 +178,8 @@ sFactor* cMixingParser::factor(string &src)
 }
 
 
-string cMixingParser::id(string &src)
+// lex -> alphabet + {alphabet or number}
+string cMathParser::id(string &src)
 {
 	trim(src);	
 
@@ -226,12 +225,22 @@ string cMixingParser::id(string &src)
 	return str;
 }
 
-
-float cMixingParser::number(string &src)
+// lex -> [+,-] {number or .}
+float cMathParser::number(string &src)
 {
 	trim(src);
 
 	string str;
+	if (src[0] == '+')
+	{
+		check(src, '+');
+	}
+	else if (src[0] == '-')
+	{
+		check(src, '-');
+		str += '-';
+	}
+
 	while (!src.empty())
 	{
 		bool findtok = false;
@@ -255,27 +264,3 @@ float cMixingParser::number(string &src)
 	return n;
 }
 
-
-bool cMixingParser::compare(string &src, char c)
-{
-	if (src.empty())
-		return false;
-	return src[0] == c;
-}
-
-
-bool cMixingParser::check(string &src, char c)
-{
-	if (src.empty())
-		return false;
-	if (src[0] == c)
-	{
-		rotatepopvector(src, 0);
-	}
-	else
-	{
-		return false;
-	}
-
-	return true;
-}

@@ -21,9 +21,10 @@ protected:
 	float m_incTime;
 	bool m_isStart;
 
+	cPlotInputParser m_parser;
+
 
 protected:
-	
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_ANCHOR_MAP();
@@ -35,5 +36,7 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	virtual BOOL OnInitDialog();
 	CEdit m_PlotInputCommandEditor;
+	CEdit m_PlotInputOut;
 	CEdit m_PlotCommandEditor;
+	afx_msg void OnDestroy();
 };

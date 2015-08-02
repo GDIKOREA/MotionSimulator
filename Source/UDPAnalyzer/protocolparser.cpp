@@ -32,6 +32,8 @@ bool cProtocolParser::Read(const string &fileName)
 // 문자열을 읽어서 파싱한다.
 bool cProtocolParser::ParseStr(const string &source)
 {
+	using namespace script;
+
 	std::map<string, FEILD_TYPE::TYPE> typeMap;
 	typeMap["int"] = FEILD_TYPE::T_INT;
 	typeMap["uint"] = FEILD_TYPE::T_UINT;

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "mixingparser.h"
-#include "interpreter.h"
 
 // CMixingView dialog
 
@@ -18,8 +16,8 @@ public:
 
 
 protected:
-	cMixingParser m_parser;
-	script::cMixingInterpreter m_interpreter;
+	cMathParser m_parser;
+	mathscript::cMathInterpreter m_interpreter;
 	float m_incTime;
 
 
@@ -35,4 +33,5 @@ public:
 	afx_msg void OnBnClickedButtonUpdate();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	virtual BOOL OnInitDialog();
+	afx_msg void OnDestroy();
 };

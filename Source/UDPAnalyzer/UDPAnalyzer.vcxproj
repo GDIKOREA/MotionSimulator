@@ -130,13 +130,16 @@
     <ClInclude Include="..\Common\UIComponent\UpdateObserver.h" />
     <ClInclude Include="DXView.h" />
     <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="interpreter.h" />
-    <ClInclude Include="mixingparser.h" />
+    <ClInclude Include="mathinterpreter.h" />
+    <ClInclude Include="mathparser.h" />
     <ClInclude Include="MixingView.h" />
     <ClInclude Include="OutputView.h" />
+    <ClInclude Include="plotinputparser.h" />
+    <ClInclude Include="plotinputscript.h" />
     <ClInclude Include="PlotView.h" />
     <ClInclude Include="protocolparser.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="mathscript.h" />
     <ClInclude Include="script.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -167,12 +170,15 @@
     <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp" />
     <ClCompile Include="DXView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="interpreter.cpp" />
-    <ClCompile Include="mixingparser.cpp" />
+    <ClCompile Include="mathinterpreter.cpp" />
+    <ClCompile Include="mathparser.cpp" />
     <ClCompile Include="MixingView.cpp" />
     <ClCompile Include="OutputView.cpp" />
+    <ClCompile Include="plotinputparser.cpp" />
+    <ClCompile Include="plotinputscript.cpp" />
     <ClCompile Include="PlotView.cpp" />
     <ClCompile Include="protocolparser.cpp" />
+    <ClCompile Include="mathscript.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

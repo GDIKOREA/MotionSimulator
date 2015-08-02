@@ -5,6 +5,7 @@
 #include "UDPAnalyzer.h"
 #include "UDPView.h"
 #include "afxdialogex.h"
+#include "script.h"
 
 
 // CUDPView dialog
@@ -39,6 +40,7 @@ BEGIN_MESSAGE_MAP(CUDPView, CDockablePaneChildView)
 	ON_BN_CLICKED(IDC_BUTTON_START, &CUDPView::OnBnClickedButtonStart)
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_BUTTON_UPDATE, &CUDPView::OnBnClickedButtonUpdate)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -49,13 +51,26 @@ BOOL CUDPView::OnInitDialog()
 
 	InitAnchors();
 
-	CString cmd =
-		L"2, uint #test\r\n"
+
+	CString command =
+L"2, uint #test\r\n"
 L"4, float\r\n"
 L"4, float\r\n"
 L"4, float\r\n"
 L"4, float\r\n";
-	m_ProtocolEditor.SetWindowTextW(cmd);
+
+	CString cmdStr;
+	std::ifstream cfgfile("udpanalyzer_udp.cfg");
+	if (cfgfile.is_open())
+	{
+		std::string str((std::istreambuf_iterator<char>(cfgfile)), std::istreambuf_iterator<char>());
+		cmdStr = str2wstr(str).c_str();
+	}
+	else
+	{
+		cmdStr = command;
+	}
+	m_ProtocolEditor.SetWindowTextW(cmdStr);
 
 	return TRUE;
 }
@@ -105,20 +120,25 @@ void CUDPView::OnBnClickedButtonStart()
 void CUDPView::UpdateUDP(const char *buffer, const int bufferLen)
 {
 	RET(m_protocolParser.m_fields.empty());
-	RET(m_fieldsData.empty());
 
 	if (m_protocolParser.m_fieldsByteSize > bufferLen)
 		return;
 
 	int i = 0;
 	int index = 0;
+	const char *pmem = buffer;
 	for each (auto &field in m_protocolParser.m_fields)
 	{
-		ZeroMemory(m_fieldsData[i].buff, sizeof(m_fieldsData[i]));
-		memcpy(m_fieldsData[i].buff, buffer, field.bytes);
-		m_fieldsData[i].type = field.type;
+		script::sFieldData data;
+		ZeroMemory(data.buff, sizeof(data));
+		memcpy(data.buff, pmem, field.bytes);
+		data.type = field.type;
+
+		const string id = format("$%d", i + 1);
+		script::g_symbols[id] = data;
 		
 		index += field.bytes;
+		pmem += field.bytes;
 		++i;
 	}
 }
@@ -142,9 +162,23 @@ void CUDPView::OnBnClickedButtonUpdate()
 	m_ProtocolEditor.GetWindowTextW(text);
 	m_protocolParser.ParseStr(wstr2str((LPCTSTR)text));
 
-	if (!m_protocolParser.m_fields.empty())
+	script::ClearSymbols();
+}
+
+
+void CUDPView::OnDestroy()
+{
+	UpdateData();
+
+	// 환경파일 저장
+	std::ofstream cfgfile("udpanalyzer_udp.cfg");
+	if (cfgfile.is_open())
 	{
-		m_fieldsData.clear();
-		m_fieldsData.resize(m_protocolParser.m_fields.size());
+		CString command;
+		m_ProtocolEditor.GetWindowTextW(command);
+		string str = wstr2str((LPCTSTR)command);
+		cfgfile << str;
 	}
+
+	CDockablePaneChildView::OnDestroy();	
 }

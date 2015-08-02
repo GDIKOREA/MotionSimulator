@@ -23,37 +23,6 @@ cUDPNetGraphConfig g_config;
 
 
 
-//------------------------------------------------------------------------
-// 멀티바이트 문자를 유니코드로 변환
-//------------------------------------------------------------------------
-std::wstring str2wstr(const std::string &str)
-{
-	int len;
-	int slength = (int)str.length() + 1;
-	len = ::MultiByteToWideChar(CP_ACP, 0, str.c_str(), slength, 0, 0);
-	wchar_t* buf = new wchar_t[len];
-	::MultiByteToWideChar(CP_ACP, 0, str.c_str(), slength, buf, len);
-	std::wstring r(buf);
-	delete[] buf;
-	return r;
-}
-
-//------------------------------------------------------------------------
-// 유니코드를 멀티바이트 문자로 변환
-//------------------------------------------------------------------------
-std::string wstr2str(const std::wstring &wstr)
-{
-	const int slength = (int)wstr.length() + 1;
-	const int len = ::WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), slength, 0, 0, NULL, FALSE);
-	char* buf = new char[len];
-	::WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), slength, buf, len, NULL, FALSE);
-	std::string r(buf);
-	delete[] buf;
-	return r;
-}
-
-
-
 
 // CUDPNetGraphDlg dialog
 
@@ -435,7 +404,10 @@ bool CUDPNetGraphDlg::StartClient()
 			<< ((address & 0x0000ff00) >> 8) << "."
 			<< (address & 0x000000ff);
 		const string ip = ss.str();
- 		if (m_udpClient.Init(ip, m_Port))		{			AppendToLogAndScroll(L"클라이언트 실행 성공\n", RGB(255, 255, 255));
+
+ 		if (m_udpClient.Init(ip, m_Port))
+		{
+			AppendToLogAndScroll(L"클라이언트 실행 성공\n", RGB(255, 255, 255));
 			m_ServerStartButton.SetWindowTextW(L"Client Stop");
 		}
 		else

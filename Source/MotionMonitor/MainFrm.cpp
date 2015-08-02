@@ -36,6 +36,7 @@ CMotionWaveView *g_mwaveView = NULL;
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_WM_CREATE()
 	ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &CMainFrame::OnToolbarCreateNew)
+	ON_COMMAND(ID_VIEW_VIEWINITIALIZE, &CMainFrame::OnViewViewinitialize)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -66,9 +67,27 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-//	GetDockingManager()->DisableRestoreDockState();
-//	CDockingManager::SetDockingMode(DT_IMMEDIATE);
 
+	// View 가 화면에 나오지 않을 때, 리셋시키기 위한 환경파일을 검사한다. 
+	using namespace std;
+	ifstream ifs("view.cfg");
+	if (ifs.is_open())
+	{
+		int n;
+		ifs >> n;
+		if (n > 0)
+		{
+			GetDockingManager()->DisableRestoreDockState();
+			CDockingManager::SetDockingMode(DT_IMMEDIATE);
+
+			ifs.close();
+
+			// 복구
+			ofstream ofs("view.cfg");
+			if (ofs.is_open())
+				ofs << 0 << endl;
+		}
+	}
 
 	BOOL bNameValid;
 
@@ -493,3 +512,12 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 	return TRUE;
 }
 
+
+void CMainFrame::OnViewViewinitialize()
+{
+	using namespace std;
+	ofstream ofs("view.cfg");
+	if (!ofs.is_open())
+		return;
+	ofs << 1 << endl;
+}

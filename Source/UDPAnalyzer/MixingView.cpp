@@ -34,6 +34,7 @@ BEGIN_MESSAGE_MAP(CMixingView, CDockablePaneChildView)
 	ON_BN_CLICKED(IDCANCEL, &CMixingView::OnBnClickedCancel)
 	ON_BN_CLICKED(IDC_BUTTON_UPDATE, &CMixingView::OnBnClickedButtonUpdate)
 	ON_WM_SIZE()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -45,11 +46,24 @@ BOOL CMixingView::OnInitDialog()
 
 	InitAnchors();
 
-	CString cmd =
+	CString command =
 		L"$var1 = $1 + $2 + $3\r\n"
 		L"$var2 = $1 + $2 + $3\r\n"
 		L"$var3 = $1 + $2 + $3\r\n";
-	m_CommandEditor.SetWindowTextW(cmd);
+
+	CString cmdStr;
+	std::ifstream cfgfile("udpanalyzer_mixing.cfg");
+	if (cfgfile.is_open())
+	{
+		std::string str((std::istreambuf_iterator<char>(cfgfile)), std::istreambuf_iterator<char>());
+		cmdStr = str2wstr(str).c_str();
+	}
+	else
+	{
+		cmdStr = command;
+	}
+	m_CommandEditor.SetWindowTextW(cmdStr);
+
 
 	return TRUE;
 }
@@ -72,6 +86,8 @@ void CMixingView::OnBnClickedButtonUpdate()
 	CString text;
 	m_CommandEditor.GetWindowTextW(text);
 	m_parser.ParseStr(wstr2str((LPCTSTR)text));
+
+	script::ClearSymbols();
 }
 
 
@@ -94,4 +110,22 @@ void CMixingView::Update(const float deltaSeconds)
 		m_interpreter.Excute(m_parser.m_stmt);
 		m_incTime = 0;
 	}
+}
+
+
+void CMixingView::OnDestroy()
+{
+	UpdateData();
+
+	// 환경파일 저장
+	std::ofstream cfgfile("udpanalyzer_mixing.cfg");
+	if (cfgfile.is_open())
+	{
+		CString command;
+		m_CommandEditor.GetWindowTextW(command);
+		string str = wstr2str((LPCTSTR)command);
+		cfgfile << str;
+	}
+
+	CDockablePaneChildView::OnDestroy();
 }

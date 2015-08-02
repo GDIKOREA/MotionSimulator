@@ -119,7 +119,7 @@ void CGraphWindow::SetGraphValue(const string &str)
 void CGraphWindow::SetGraphValue2(float v)
 {
 	if (m_multiPlotWindows)
-		m_multiPlotWindows->SetXY(0, v, 0);
+		m_multiPlotWindows->SetY(0, v, 0);
 }
 
 void CGraphWindow::OnSize(UINT nType, int cx, int cy)

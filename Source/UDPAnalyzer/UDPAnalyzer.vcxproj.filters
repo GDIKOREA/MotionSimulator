@@ -139,13 +139,22 @@
     <ClInclude Include="protocolparser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mixingparser.h">
+    <ClInclude Include="plotinputparser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="plotinputscript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="script.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="interpreter.h">
+    <ClInclude Include="mathparser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mathinterpreter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mathscript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -240,13 +249,22 @@
     <ClCompile Include="protocolparser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mixingparser.cpp">
+    <ClCompile Include="plotinputparser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="plotinputscript.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="script.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="interpreter.cpp">
+    <ClCompile Include="mathparser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mathinterpreter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mathscript.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

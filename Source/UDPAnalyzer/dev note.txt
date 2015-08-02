@@ -40,6 +40,7 @@ plot 명령어
 	- multiplotwindow 명령어와 동일
 	- plot input 명령어
 		- $1;$1;$1
+		- BNF -> {[symbol] + [string]}
 
 ------------------------------------------------------------
 output 명령어

@@ -195,13 +195,14 @@
 #define IDC_STATIC_UDPUPDATE_TIME       1081
 #define IDC_STATIC_UDPUPDATE_TIME2      1082
 #define IDC_STATIC_INSTATE              1082
+#define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        329
-#define _APS_NEXT_COMMAND_VALUE         32771
+#define _APS_NEXT_COMMAND_VALUE         32772
 #define _APS_NEXT_CONTROL_VALUE         1084
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
