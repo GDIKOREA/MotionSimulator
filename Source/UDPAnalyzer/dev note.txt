@@ -51,6 +51,30 @@ output 명령어
 	- $1;$2;$4
 	- $var1;$var2;$var3
 
+	- save data
+		- com, baudrate
+		- ip, port
+		- send type
+		- send format
+		- roll, pitch, yaw
+		- plot command
+
+{
+	"COM" : "COM1",
+	"BAUDRATE" : 9600,
+	"IP" : "127.0.0.1",
+	"PORT" : 8888,
+	"SENDTYPE" : 1,
+	"SENDFORMAT" : "$1;$2;$3;",
+	"ROLLCMD" : "$roll",
+	"PITCHCMD" : "$pitch",
+	"YAWCMD" : "$yaw",
+	"PLOTCMD" : "aaa"
+}
+
+ 
+
+
 ------------------------------------------------------------
 physix 명령어
 	- send speed = 1000

@@ -113,6 +113,7 @@
 #define IDC_EDIT_PLOT_COMMAND           1024
 #define IDC_BUTTON_PLOT_UPDATE          1025
 #define IDC_BUTTON_UPDATE_SENDFORMAT    1026
+#define IDC_STATIC_3DGROUP              1027
 
 // Next default values for new objects
 // 
@@ -120,7 +121,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        315
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1025
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

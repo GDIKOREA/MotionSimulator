@@ -43,7 +43,7 @@ void CPlotWindow::OnInitialUpdate()
 	CScrollView::OnInitialUpdate();
 
 	CSize sizeTotal;
-	sizeTotal.cx = sizeTotal.cy = 100;
+	sizeTotal.cx = sizeTotal.cy = 10;
 	SetScrollSizes(MM_TEXT, sizeTotal);
 }
 

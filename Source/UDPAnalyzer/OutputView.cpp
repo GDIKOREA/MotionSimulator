@@ -1,16 +1,16 @@
-// OutputView.cpp : implementation file
+OutputView.cpp : implementation file
 //
 
 #include "stdafx.h"
 #include "UDPAnalyzer.h"
 #include "OutputView.h"
 #include "afxdialogex.h"
+#include "outputviewoption.h"
 
 
 // COutputView dialog
 COutputView::COutputView(CWnd* pParent /*=NULL*/)
 	: CDockablePaneChildView(COutputView::IDD, pParent)
-	, m_UDPPort(8888)
 	, m_RollCommand(_T(""))
 	, m_PitchCommand(_T(""))
 	, m_YawCommand(_T(""))
@@ -32,7 +32,6 @@ COutputView::~COutputView()
 void COutputView::DoDataExchange(CDataExchange* pDX)
 {
 	CDockablePaneChildView::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_PORT, m_UDPPort);
 	DDX_Control(pDX, IDC_IPADDRESS_IP, m_UDPIP);
 	DDX_Control(pDX, IDC_COMBO_COM, m_ComPort);
 	DDX_Control(pDX, IDC_COMBO_BAUDRATE, m_BaudRateCombobox);
@@ -44,12 +43,21 @@ void COutputView::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_SENDCOMMAND, m_SendFormat);
 	DDX_Control(pDX, IDC_STATIC_SENDDATA, m_SendString);
 	DDX_Control(pDX, IDC_BUTTON_CONNECT, m_ConnectButton);
+	DDX_Control(pDX, IDC_EDIT_PORT, m_EditUDPPort);
 }
 
 
 BEGIN_ANCHOR_MAP(COutputView)
 	ANCHOR_MAP_ENTRY(IDC_STATIC_PLOT, ANF_LEFT | ANF_RIGHT | ANF_TOP | ANF_BOTTOM)
 	ANCHOR_MAP_ENTRY(IDC_EDIT_PLOT_COMMAND, ANF_LEFT | ANF_RIGHT | ANF_TOP)
+	ANCHOR_MAP_ENTRY(IDC_BUTTON_UPDATE_SENDFORMAT, ANF_RIGHT | ANF_TOP)
+	ANCHOR_MAP_ENTRY(IDC_EDIT_SENDCOMMAND, ANF_LEFT | ANF_RIGHT | ANF_TOP)
+	ANCHOR_MAP_ENTRY(IDC_STATIC_SENDDATA, ANF_LEFT | ANF_RIGHT | ANF_TOP)
+	ANCHOR_MAP_ENTRY(IDC_STATIC_3DGROUP, ANF_LEFT | ANF_RIGHT | ANF_TOP)	
+	ANCHOR_MAP_ENTRY(IDC_EDIT_ROLL, ANF_LEFT | ANF_RIGHT | ANF_TOP)
+	ANCHOR_MAP_ENTRY(IDC_EDIT_PITCH, ANF_LEFT | ANF_RIGHT | ANF_TOP)
+	ANCHOR_MAP_ENTRY(IDC_EDIT_YAW, ANF_LEFT | ANF_RIGHT | ANF_TOP)
+	ANCHOR_MAP_ENTRY(IDC_BUTTON_3DUPDATE, ANF_RIGHT | ANF_TOP)
 END_ANCHOR_MAP()
 
 BEGIN_MESSAGE_MAP(COutputView, CDockablePaneChildView)
@@ -63,6 +71,7 @@ BEGIN_MESSAGE_MAP(COutputView, CDockablePaneChildView)
 	ON_BN_CLICKED(IDC_BUTTON_PLOT_UPDATE, &COutputView::OnBnClickedButtonPlotUpdate)
 	ON_BN_CLICKED(IDC_BUTTON_UPDATE_SENDFORMAT, &COutputView::OnBnClickedButtonUpdateSendformat)
 	ON_BN_CLICKED(IDC_RADIO_NONE, &COutputView::OnBnClickedRadioNone)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -83,13 +92,43 @@ BOOL COutputView::OnInitDialog()
 	}
 	m_BaudRateCombobox.SetCurSel(0);
 
-
 	m_UDPIP.SetAddress(127, 0, 0, 1);
+	m_EditUDPPort.SetWindowTextW(L"8888");
 
 	m_SendFormat = L"$yaw;$pitch;$roll;";
 	m_RollCommand = L"$8 - 1.55";
 	m_PitchCommand = L"$7";
 	m_YawCommand = L"$6";
+
+
+	//---------------------------------------------------------------------------------------
+	// read option file
+	cOutputViewOption option;
+	option.Read("udpanalyzer_outputview.cfg");
+
+	vector<string> ipnums;
+	tokenizer(option.m_ip, ".", "", ipnums);
+	if (ipnums.size() >= 4)
+	{
+		m_UDPIP.SetAddress(atoi(ipnums[0].c_str()),
+			atoi(ipnums[1].c_str()),
+			atoi(ipnums[2].c_str()),
+			atoi(ipnums[3].c_str()));
+	}
+	else
+	{
+		m_UDPIP.SetAddress(127, 0, 0, 1);
+	}
+
+	m_EditUDPPort.SetWindowTextW(formatw("%d", option.m_port).c_str());
+	m_ComPort.InitList(option.m_com);
+	m_BaudRateCombobox.SetCurSel(option.m_baudRate);
+	m_SendType = option.m_sendType;
+	m_SendFormat = str2wstr(option.m_sendFormat).c_str();
+	m_RollCommand = str2wstr(option.m_rollCmd).c_str();
+	m_PitchCommand = str2wstr(option.m_pitchCmd).c_str();
+	m_YawCommand = str2wstr(option.m_yawCmd).c_str();
+
 
 	// Plot창 생성.
 	CRect rect;
@@ -97,12 +136,13 @@ BOOL COutputView::OnInitDialog()
 
 	m_multiPlotWindows = new CMultiPlotWindow();
 	BOOL result = m_multiPlotWindows->Create(NULL, NULL, WS_VISIBLE | WS_CHILD,
-		CRect(0, 0, rect.Width(), 400), this, AFX_IDW_PANE_FIRST);
+		CRect(0, 0, 100, 100), this, AFX_IDW_PANE_FIRST);
 
-	m_multiPlotWindows->SetScrollSizes(MM_TEXT, CSize(rect.Width() - 30, 100));
+	m_multiPlotWindows->SetScrollSizes(MM_TEXT, CSize(10, 10));
 	m_multiPlotWindows->ShowWindow(SW_SHOW);
 
 	
+
 	CString command =
 		L"plot1 = 0, 0, 0, 0, 0\r\n"
 		L"string1 = %f;\r\n"
@@ -116,13 +156,33 @@ BOOL COutputView::OnInitDialog()
 		L"plot4 = 0, 0, 0, 0, 0\r\n"
 		L"string4 = %*f; %*f; %*f; %f;\r\n"
 		L"name4 = Heave\r\n";
-	m_PlotCommand.SetWindowTextW(command);
+
+	CString plotCmd;
+	if (option.m_plotCmd.empty())
+	{
+		plotCmd = command;
+	}
+	else
+	{
+		plotCmd = str2wstr(option.m_plotCmd).c_str();
+	}
+
+	m_PlotCommand.SetWindowTextW(plotCmd);
+
 	
 	m_rollParser.ParseStr(wstr2str((LPCTSTR)m_RollCommand));
 	m_pitchParser.ParseStr(wstr2str((LPCTSTR)m_PitchCommand));
 	m_yawParser.ParseStr(wstr2str((LPCTSTR)m_YawCommand));
 
 	m_sendFormatParser.ParseStr(wstr2str((LPCTSTR)m_SendFormat));
+
+	// default type is none
+	m_UDPIP.EnableWindow(FALSE);
+	m_EditUDPPort.EnableWindow(FALSE);
+	m_ComPort.EnableWindow(FALSE);
+	m_BaudRateCombobox.EnableWindow(FALSE);
+
+
 
 	UpdateData(FALSE);
 	return TRUE;
@@ -219,19 +279,34 @@ void COutputView::Update(const float deltaSeconds)
 
 void COutputView::OnBnClickedRadioSerial()
 {
-	UpdateData();	
+	UpdateData();
+
+	m_UDPIP.EnableWindow(FALSE);
+	m_EditUDPPort.EnableWindow(FALSE);
+	m_ComPort.EnableWindow(TRUE);
+	m_BaudRateCombobox.EnableWindow(TRUE);
 }
 
 
 void COutputView::OnBnClickedRadioUdp()
 {
 	UpdateData();	
+
+	m_UDPIP.EnableWindow(TRUE);
+	m_EditUDPPort.EnableWindow(TRUE);
+	m_ComPort.EnableWindow(FALSE);
+	m_BaudRateCombobox.EnableWindow(FALSE);
 }
 
 
 void COutputView::OnBnClickedRadioNone()
 {
 	UpdateData();
+
+	m_UDPIP.EnableWindow(FALSE);
+	m_EditUDPPort.EnableWindow(FALSE);
+	m_ComPort.EnableWindow(FALSE);
+	m_BaudRateCombobox.EnableWindow(FALSE);
 }
 
 
@@ -274,7 +349,10 @@ void COutputView::OnBnClickedButtonConnect()
 		{
 			const string ip = GetSendIP();
 
-			if (!m_udpSendClient.Init(ip, m_UDPPort))
+			CString udpPortStr;
+			m_EditUDPPort.GetWindowTextW(udpPortStr);
+			const int udpPort = _wtoi((LPCTSTR)udpPortStr);
+			if (!m_udpSendClient.Init(ip, udpPort))
 			{
  				::AfxMessageBox(L"클라이언트 접속 에러 !!");
 				return;
@@ -334,4 +412,35 @@ void COutputView::OnBnClickedButtonUpdateSendformat()
 {
 	UpdateData();
 	m_sendFormatParser.ParseStr(wstr2str((LPCTSTR)m_SendFormat));
+}
+
+
+void COutputView::OnDestroy()
+{
+	UpdateData();
+
+	// write option file
+	cOutputViewOption option;
+
+	option.m_ip = GetSendIP();
+	
+	CString udpPort;
+	m_EditUDPPort.GetWindowTextW(udpPort);
+	option.m_port = _wtoi(udpPort);
+
+	option.m_com = m_ComPort.GetPortNum();
+	option.m_baudRate = m_BaudRateCombobox.GetCurSel();
+	option.m_sendType = m_SendType;
+	option.m_sendFormat = wstr2str((LPCTSTR)m_SendFormat);
+	option.m_rollCmd = wstr2str((LPCTSTR)m_RollCommand);
+	option.m_pitchCmd = wstr2str((LPCTSTR)m_PitchCommand);
+	option.m_yawCmd = wstr2str((LPCTSTR)m_YawCommand);
+
+	CString plotCmd;
+	m_PlotCommand.GetWindowTextW(plotCmd);
+	option.m_plotCmd = wstr2str((LPCTSTR)plotCmd);
+
+	option.Write("udpanalyzer_outputview.cfg");
+
+	CDockablePaneChildView::OnDestroy();
 }

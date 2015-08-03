@@ -24,7 +24,7 @@ void CMultiPlotWindow::OnInitialUpdate()
 	CScrollView::OnInitialUpdate();
 
 	CSize sizeTotal;
-	sizeTotal.cx = sizeTotal.cy = 100;
+	sizeTotal.cx = sizeTotal.cy = 10;
 	SetScrollSizes(MM_TEXT, sizeTotal);
 }
 
@@ -281,7 +281,7 @@ CPlotWindow* CMultiPlotWindow::CreatePlotWindow(const int plotIndex)
 	BOOL result = plot->Create(NULL, NULL, AFX_WS_DEFAULT_VIEW | WS_CHILD,
 		CRect(0, 0, rect.Width(), 100), this, AFX_IDW_PANE_FIRST);
 
-	plot->SetScrollSizes(MM_TEXT, CSize(rect.Width() - 30, 100));
+	plot->SetScrollSizes(MM_TEXT, CSize(10, 10));
 	plot->ShowWindow(SW_SHOW);
 
 	plot->SetPlot(0, 0, 0, 0, 0);

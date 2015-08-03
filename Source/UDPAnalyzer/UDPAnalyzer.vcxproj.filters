@@ -157,6 +157,9 @@
     <ClInclude Include="mathscript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="outputviewoption.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UDPAnalyzer.cpp">
@@ -265,6 +268,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mathscript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="outputviewoption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

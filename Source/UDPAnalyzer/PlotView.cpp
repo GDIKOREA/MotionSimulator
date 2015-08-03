@@ -111,7 +111,7 @@ BOOL CPlotView::OnInitDialog()
 
 	m_multiPlotWindows = new CMultiPlotWindow();
 	BOOL result = m_multiPlotWindows->Create(NULL, NULL, WS_VISIBLE | WS_CHILD,
-		CRect(0, 0, rect.Width(), 400), this, AFX_IDW_PANE_FIRST);
+		CRect(0, 0, 20, 40), this, AFX_IDW_PANE_FIRST);
 
 	m_multiPlotWindows->SetScrollSizes(MM_TEXT, CSize(rect.Width() - 30, 100));
 	m_multiPlotWindows->ShowWindow(SW_SHOW);
