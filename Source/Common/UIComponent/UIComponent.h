@@ -19,4 +19,5 @@ using std::pair;
 #include "UDPCommunication.h"
 #include "FileTreeCtrl.h"
 #include "overhauser.hpp"
+#include "MemDumpWindow.h"
 #include "UIUtiltity.h"

@@ -98,7 +98,7 @@ float cMathInterpreter::factor(const sFactor *p)
 	case FACTOR_TYPE::ID:
 		switch (g_symbols[p->id].type)
 		{
-		case FEILD_TYPE::T_BOOL: val = (float)(script::g_symbols[p->id].bVal? 0 : 1); break;
+		case FEILD_TYPE::T_BOOL: val = (float)(script::g_symbols[p->id].bVal? 1 : 0); break;
 		case FEILD_TYPE::T_UINT: val = (float)script::g_symbols[p->id].uVal; break;
 		case FEILD_TYPE::T_INT: val = (float)script::g_symbols[p->id].iVal; break;
 		case FEILD_TYPE::T_FLOAT: val = script::g_symbols[p->id].fVal; break;

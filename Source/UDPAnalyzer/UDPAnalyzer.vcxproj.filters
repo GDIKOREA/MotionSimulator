@@ -160,6 +160,9 @@
     <ClInclude Include="outputviewoption.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\MemDumpWindow.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UDPAnalyzer.cpp">
@@ -272,6 +275,9 @@
     </ClCompile>
     <ClCompile Include="outputviewoption.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\MemDumpWindow.cpp">
+      <Filter>UIComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -81,7 +81,7 @@ BOOL COutputView::OnInitDialog()
 
 	InitAnchors();
 
-	m_ComPort.InitList();
+	//m_ComPort.InitList();
 
 	const int baudRate[] = { 9600, 14400, 19200, 38400, 56000, 57600, 115200 };
 	for (int i = 0; i < ARRAYSIZE(baudRate); ++i)
@@ -181,8 +181,17 @@ BOOL COutputView::OnInitDialog()
 	m_EditUDPPort.EnableWindow(FALSE);
 	m_ComPort.EnableWindow(FALSE);
 	m_BaudRateCombobox.EnableWindow(FALSE);
-
-
+	switch (m_SendType)
+	{
+	case 0:
+		m_ComPort.EnableWindow(TRUE);
+		m_BaudRateCombobox.EnableWindow(TRUE);
+		break;
+	case 1:
+		m_UDPIP.EnableWindow(TRUE);
+		m_EditUDPPort.EnableWindow(TRUE);
+		break;
+	}
 
 	UpdateData(FALSE);
 	return TRUE;

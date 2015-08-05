@@ -12,8 +12,9 @@
 CUDPView::CUDPView(CWnd* pParent /*=NULL*/)
 	: CDockablePaneChildView(CUDPView::IDD, pParent)
 	, m_Port(0)
+	, m_IsDump(TRUE)
+	, m_IsASCII(FALSE)
 {
-
 }
 
 CUDPView::~CUDPView()
@@ -26,11 +27,14 @@ void CUDPView::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_PORT, m_Port);
 	DDX_Control(pDX, IDC_BUTTON_START, m_StartButton);
 	DDX_Control(pDX, IDC_EDIT_PROTOCOL, m_ProtocolEditor);
+	DDX_Check(pDX, IDC_CHECK_DUMP, m_IsDump);
+	DDX_Check(pDX, IDC_CHECK_ASCII, m_IsASCII);
 }
 
 
 BEGIN_ANCHOR_MAP(CUDPView)
 	ANCHOR_MAP_ENTRY(IDC_EDIT_PROTOCOL, ANF_LEFT | ANF_RIGHT | ANF_TOP )
+	ANCHOR_MAP_ENTRY(IDC_STATIC_DUMP, ANF_LEFT | ANF_RIGHT | ANF_TOP | ANF_BOTTOM)
 END_ANCHOR_MAP()
 
 
@@ -41,6 +45,8 @@ BEGIN_MESSAGE_MAP(CUDPView, CDockablePaneChildView)
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_BUTTON_UPDATE, &CUDPView::OnBnClickedButtonUpdate)
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_CHECK_DUMP, &CUDPView::OnBnClickedCheckDump)
+	ON_BN_CLICKED(IDC_CHECK_ASCII, &CUDPView::OnBnClickedCheckAscii)
 END_MESSAGE_MAP()
 
 
@@ -71,6 +77,17 @@ L"4, float\r\n";
 		cmdStr = command;
 	}
 	m_ProtocolEditor.SetWindowTextW(cmdStr);
+
+
+	CRect rect;
+	GetClientRect(rect);
+
+	m_dumpWindow = new cMemDumpWindow();
+	BOOL result = m_dumpWindow->Create(NULL, NULL, WS_VISIBLE | WS_CHILD,
+		CRect(0, 0, 20, 40), this, AFX_IDW_PANE_FIRST);
+	m_dumpWindow->SetScrollSizes(MM_TEXT, CSize(rect.Width() - 30, 100));
+	m_dumpWindow->ShowWindow(SW_SHOW);
+
 
 	return TRUE;
 }
@@ -134,13 +151,19 @@ void CUDPView::UpdateUDP(const char *buffer, const int bufferLen)
 		memcpy(data.buff, pmem, field.bytes);
 		data.type = field.type;
 
-		const string id = format("$%d", i + 1);
+		const string id = format("$%d", i + 1); // $1 ,$2, $3 ~
+		const string oldId = format("@%d", i + 1); // @1, @2, @3 ~
+
+		script::g_symbols[oldId] = script::g_symbols[id]; // 전 데이타를 저장한다. 
 		script::g_symbols[id] = data;
 		
 		index += field.bytes;
 		pmem += field.bytes;
 		++i;
 	}
+
+	if (m_IsDump && m_dumpWindow)
+		m_dumpWindow->UpdateDump(buffer, bufferLen);
 }
 
 
@@ -151,6 +174,14 @@ void CUDPView::OnSize(UINT nType, int cx, int cy)
 	CRect rcWnd;
 	GetWindowRect(&rcWnd);
 	HandleAnchors(&rcWnd);
+
+	if (m_dumpWindow && m_dumpWindow->GetSafeHwnd())
+	{
+		CRect pwr;
+		GetDlgItem(IDC_STATIC_DUMP)->GetWindowRect(pwr);
+		ScreenToClient(pwr);
+		m_dumpWindow->MoveWindow(pwr);
+	}
 }
 
 
@@ -181,4 +212,17 @@ void CUDPView::OnDestroy()
 	}
 
 	CDockablePaneChildView::OnDestroy();	
+}
+
+
+void CUDPView::OnBnClickedCheckDump()
+{
+	UpdateData();
+}
+
+
+void CUDPView::OnBnClickedCheckAscii()
+{
+	UpdateData();
+	m_dumpWindow->SetDisplayASCII(m_IsASCII? true : false);
 }

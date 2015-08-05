@@ -117,6 +117,7 @@
     <ClInclude Include="..\Common\UIComponent\EnumDevices.h" />
     <ClInclude Include="..\Common\UIComponent\enumser.h" />
     <ClInclude Include="..\Common\UIComponent\FileTreeCtrl.h" />
+    <ClInclude Include="..\Common\UIComponent\MemDumpWindow.h" />
     <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h" />
     <ClInclude Include="..\Common\UIComponent\overhauser.hpp" />
     <ClInclude Include="..\Common\UIComponent\PlotWindow.h" />
@@ -161,6 +162,7 @@
     <ClCompile Include="..\Common\UIComponent\EnumDevices.cpp" />
     <ClCompile Include="..\Common\UIComponent\enumser.cpp" />
     <ClCompile Include="..\Common\UIComponent\FileTreeCtrl.cpp" />
+    <ClCompile Include="..\Common\UIComponent\MemDumpWindow.cpp" />
     <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp" />
     <ClCompile Include="..\Common\UIComponent\overhauser.cpp" />
     <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp" />

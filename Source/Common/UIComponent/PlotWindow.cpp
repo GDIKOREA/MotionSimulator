@@ -200,7 +200,6 @@ void CPlotWindow::OnDraw(CDC* pDC)
 	memDC.TextOutW(5, cr.Height() / 2 - 20, strCenterY); // center y
 	memDC.TextOutW(cr.Width()/2, 0, m_name); // plot name
 
-
 	pDC->BitBlt(0, 0, cr.Width(), cr.Height(), &memDC, 0, 0, SRCCOPY);
 	memDC.SelectObject(pOldBitmap);
 	memDC.DeleteDC();

@@ -6,6 +6,8 @@
 
 
 // CUDPView dialog
+class cMemDumpWindow;
+
 class CUDPView : public CDockablePaneChildView
 {
 public:
@@ -20,6 +22,7 @@ public:
 
 protected:
 	cProtocolParser m_protocolParser;
+	cMemDumpWindow *m_dumpWindow;
 
 
 protected:
@@ -38,4 +41,8 @@ public:
 	CEdit m_ProtocolEditor;
 	afx_msg void OnBnClickedButtonUpdate();
 	afx_msg void OnDestroy();
+	afx_msg void OnBnClickedCheckDump();
+	BOOL m_IsDump;
+	BOOL m_IsASCII;
+	afx_msg void OnBnClickedCheckAscii();
 };

@@ -30,6 +30,8 @@ namespace script
 		};
 
 		FEILD_TYPE::TYPE type;
+
+		bool operator== (const sFieldData &rhs);
 	};
 
 	extern map<string, sFieldData> g_symbols;
