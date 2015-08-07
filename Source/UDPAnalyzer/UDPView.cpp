@@ -14,6 +14,7 @@ CUDPView::CUDPView(CWnd* pParent /*=NULL*/)
 	, m_Port(0)
 	, m_IsDump(TRUE)
 	, m_IsASCII(FALSE)
+	, m_dumpWindow(NULL)
 {
 }
 
@@ -87,7 +88,6 @@ L"4, float\r\n";
 		CRect(0, 0, 20, 40), this, AFX_IDW_PANE_FIRST);
 	m_dumpWindow->SetScrollSizes(MM_TEXT, CSize(rect.Width() - 30, 100));
 	m_dumpWindow->ShowWindow(SW_SHOW);
-
 
 	return TRUE;
 }
