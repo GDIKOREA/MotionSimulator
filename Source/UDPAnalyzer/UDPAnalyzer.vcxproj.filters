@@ -157,11 +157,11 @@
     <ClInclude Include="mathscript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="outputviewoption.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\UIComponent\MemDumpWindow.h">
       <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="udpanalyzeroption.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -273,11 +273,11 @@
     <ClCompile Include="mathscript.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="outputviewoption.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\UIComponent\MemDumpWindow.cpp">
       <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="udpanalyzeroption.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

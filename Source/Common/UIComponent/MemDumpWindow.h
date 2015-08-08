@@ -1,6 +1,7 @@
 #pragma once
 
 
+class cProtocolParser;
 class cMemDumpWindow : public CScrollView
 {
 public:
@@ -9,6 +10,7 @@ public:
 
 	void UpdateDump(const char *buff, const int size);
 	void SetDisplayASCII(const bool isASCII);
+	void SetDisplaySymbol(const bool isSymbol, cProtocolParser *protocol=NULL);
 
 
 protected:
@@ -20,9 +22,12 @@ protected:
 	vector<sByteData> m_dump; // 바이트 단위로 메모리를 덤프해서 저장한다.
 
 	bool m_isDisplayASCII; // true 이면 ASCII 코드 출력, 아니면 Hexa 코드 출력, default = false
+	bool m_isDisplaySymbol; // true 이면, 각 메모리당 프로토콜 심볼을 출력한다.
+	cProtocolParser *m_protocol; // reference
 	CBitmap m_Bitmap; // double buffering
 	CSize m_bmpSize;
-	CBrush m_brushes[2]; // white, red
+	CBrush m_brushes[3]; // white, red, black
+
 
 public:
 	virtual void OnDraw(CDC* pDC);      // overridden to draw this view
@@ -35,3 +40,4 @@ public:
 
 
 inline void cMemDumpWindow::SetDisplayASCII(const bool isASCII) { m_isDisplayASCII = isASCII;  }
+inline void cMemDumpWindow::SetDisplaySymbol(const bool isSymbol, cProtocolParser *protocol) { m_isDisplaySymbol = isSymbol; m_protocol = protocol; }

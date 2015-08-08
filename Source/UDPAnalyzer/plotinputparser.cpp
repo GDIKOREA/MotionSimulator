@@ -55,31 +55,37 @@ string cPlotInputParser::Execute()
 	plotinputscript::sStatement *p = m_stmt;
 	while (p)
 	{
-		auto it = g_symbols.find(p->symbol);
-		if (g_symbols.end() != it)
+		if (!p->symbol.empty())
 		{
-			switch (it->second.type)
+			auto it = g_symbols.find(p->symbol);
+			if (g_symbols.end() != it)
 			{
-			case FEILD_TYPE::T_BOOL:
-				makeStr += it->second.bVal ? "true" : "false";
-				break;
-			case FEILD_TYPE::T_INT:
-				makeStr += format("%d", it->second.iVal);
-				break;
-			case FEILD_TYPE::T_UINT:
-				makeStr += format("%u", it->second.uVal);
-				break;
-			case FEILD_TYPE::T_FLOAT:
-				makeStr += format("%f", it->second.fVal);
-				break;
-			default:
-				makeStr += "XXX";
-				break;
+				switch (it->second.type)
+				{
+				case FEILD_TYPE::T_BOOL:
+					makeStr += it->second.bVal ? "true" : "false";
+					break;
+				case FEILD_TYPE::T_INT:
+					makeStr += format("%d", it->second.iVal);
+					break;
+				case FEILD_TYPE::T_UINT:
+					makeStr += format("%u", it->second.uVal);
+					break;
+				case FEILD_TYPE::T_FLOAT:
+					makeStr += format("%f", it->second.fVal);
+					break;
+				case FEILD_TYPE::T_DOUBLE:
+					makeStr += format("%f", it->second.dVal);
+					break;
+				default:
+					makeStr += "XXX";
+					break;
+				}
 			}
-		}
-		else
-		{
-			makeStr += "XXX";
+			else
+			{
+				makeStr += "XXX";
+			}
 		}
 
 		makeStr += p->str;
@@ -116,10 +122,10 @@ string cPlotInputParser::symbol(string &src)
 	if (src.empty())
 		return "";
 
-	// 모든 심볼들은 $부터 시작한다.
-	if (src[0] != '$')
+	// 모든 심볼들은 $,@부터 시작한다.
+	if ((src[0] != '$') && (src[0] != '@'))
 		return "";
-	check(src, '$');
+	check(src, src[0]);
 
 	string sym = "$";
 
@@ -139,8 +145,8 @@ string cPlotInputParser::symbol(string &src)
 		if (!findtok)
 			break;
 
-		// 심볼하나에 $문자가 두번 들어올 수 없다.
-		if (src[0] == '$')
+		// 심볼하나에 $,@문자가 두번 들어올 수 없다.
+		if ((src[0] == '$') || (src[0] == '@'))
 			break;
 
 		sym += src[0];

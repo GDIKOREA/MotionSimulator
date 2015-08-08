@@ -15,6 +15,8 @@ public:
 	enum { IDD = IDD_DIALOG_OUTPUT };
 
 	virtual void Update(const float deltaSeconds) override;
+	void UpdateConfig();
+	void SaveConfig();
 
 
 protected:

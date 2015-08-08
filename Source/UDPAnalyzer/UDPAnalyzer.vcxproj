@@ -135,7 +135,7 @@
     <ClInclude Include="mathparser.h" />
     <ClInclude Include="MixingView.h" />
     <ClInclude Include="OutputView.h" />
-    <ClInclude Include="outputviewoption.h" />
+    <ClInclude Include="udpanalyzeroption.h" />
     <ClInclude Include="plotinputparser.h" />
     <ClInclude Include="plotinputscript.h" />
     <ClInclude Include="PlotView.h" />
@@ -177,7 +177,7 @@
     <ClCompile Include="mathparser.cpp" />
     <ClCompile Include="MixingView.cpp" />
     <ClCompile Include="OutputView.cpp" />
-    <ClCompile Include="outputviewoption.cpp" />
+    <ClCompile Include="udpanalyzeroption.cpp" />
     <ClCompile Include="plotinputparser.cpp" />
     <ClCompile Include="plotinputscript.cpp" />
     <ClCompile Include="PlotView.cpp" />

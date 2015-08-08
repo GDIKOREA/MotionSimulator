@@ -56,55 +56,7 @@ BOOL CPlotView::OnInitDialog()
 
 	InitAnchors();
 
-	{
-		CString command = 
-		L"plot1 = 0, 0, 0, 0, 0\r\n"
-		L"string1 = %f;\r\n"
-		L"name1 = Yaw\r\n"
-		L"plot2 = 0, 0, 0, 0, 0\r\n"
-		L"string2 = %*f; %f;\r\n"
-		L"name2 = Pitch\r\n"
-		L"plot3 = 0, 0, 0, 0, 0\r\n"
-		L"string3 = %*f; %*f; %f; \r\n"
-		L"name3 = Roll\r\n"
-		L"plot4 = 0, 0, 0, 0, 0\r\n"
-		L"string4 = %*f; %*f; %*f; %f;\r\n"
-		L"name4 = Heave\r\n";
-
-		CString cmdStr;
-		std::ifstream cfgfile("udpanalyzer_plot.cfg");
-		if (cfgfile.is_open())
-		{
-			std::string str((std::istreambuf_iterator<char>(cfgfile)), std::istreambuf_iterator<char>());
-			cmdStr = str2wstr(str).c_str();
-		}
-		else
-		{
-			cmdStr = command;
-		}
-		m_PlotCommandEditor.SetWindowTextW(cmdStr);
-	}
-
-
-	//-----------------------------------------------------------------------------------
-	{
-		CString outCmd =
-			L"$1;$2;$3;";
-
-		CString cmdStr;
-		std::ifstream cfgfile("udpanalyzer_plotinput.cfg");
-		if (cfgfile.is_open())
-		{
-			std::string str((std::istreambuf_iterator<char>(cfgfile)), std::istreambuf_iterator<char>());
-			cmdStr = str2wstr(str).c_str();
-		}
-		else
-		{
-			cmdStr = outCmd;
-		}
-		m_PlotInputCommandEditor.SetWindowTextW(cmdStr);
-	}
-
+	UpdateConfig();
 
 	// Plot창 생성.
 	CRect rect;
@@ -178,7 +130,6 @@ void CPlotView::Update(const float deltaSeconds)
 		const string plotInputOut = m_parser.Execute();
 		m_PlotInputOut.SetWindowTextW(str2wstr(plotInputOut).c_str());
 
-
 		m_multiPlotWindows->SetString(plotInputOut.c_str());
 		m_multiPlotWindows->DrawGraph(m_incTime);
 		m_incTime = 0;
@@ -188,29 +139,76 @@ void CPlotView::Update(const float deltaSeconds)
 
 void CPlotView::OnDestroy()
 {
+	SaveConfig();
+	CDockablePaneChildView::OnDestroy();
+}
+
+// UI에 설정된 값을 환경변수에 저장한다.
+void CPlotView::SaveConfig()
+{
 	UpdateData();
 
 	// 환경파일 저장
 	{
-		std::ofstream cfgfile("udpanalyzer_plot.cfg");
-		if (cfgfile.is_open())
-		{
-			CString command;
-			m_PlotCommandEditor.GetWindowTextW(command);
-			string str = wstr2str((LPCTSTR)command);
-			cfgfile << str;
-		}
+		CString command;
+		m_PlotCommandEditor.GetWindowTextW(command);
+		g_option.m_plotViewCmd = wstr2str((LPCTSTR)command);
 	}
 
 	{
-		std::ofstream cfgfile("udpanalyzer_plotinput.cfg");
-		if (cfgfile.is_open())
-		{
-			CString command;
-			m_PlotInputCommandEditor.GetWindowTextW(command);
-			string str = wstr2str((LPCTSTR)command);
-			cfgfile << str;
-		}
+		CString command;
+		m_PlotInputCommandEditor.GetWindowTextW(command);
+		g_option.m_plotInputCmd = wstr2str((LPCTSTR)command);
 	}
-	CDockablePaneChildView::OnDestroy();
 }
+
+
+// 전역변수 g_option 정보를 토대로, UI 를 업데이트 한다.
+void CPlotView::UpdateConfig()
+{
+	{
+		CString command =
+			L"plot1 = 0, 0, 0, 0, 0\r\n"
+			L"string1 = %f;\r\n"
+			L"name1 = Yaw\r\n"
+			L"plot2 = 0, 0, 0, 0, 0\r\n"
+			L"string2 = %*f; %f;\r\n"
+			L"name2 = Pitch\r\n"
+			L"plot3 = 0, 0, 0, 0, 0\r\n"
+			L"string3 = %*f; %*f; %f; \r\n"
+			L"name3 = Roll\r\n"
+			L"plot4 = 0, 0, 0, 0, 0\r\n"
+			L"string4 = %*f; %*f; %*f; %f;\r\n"
+			L"name4 = Heave\r\n";
+
+		CString cmdStr;
+		if (!g_option.m_plotViewCmd.empty())
+		{
+			cmdStr = str2wstr(g_option.m_plotViewCmd).c_str();
+		}
+		else
+		{
+			cmdStr = command;
+		}
+		m_PlotCommandEditor.SetWindowTextW(cmdStr);
+	}
+
+
+	//-----------------------------------------------------------------------------------
+	{
+		CString outCmd = L"$1;$2;$3;";
+		CString cmdStr;
+		if (!g_option.m_plotInputCmd.empty())
+		{
+			cmdStr = str2wstr(g_option.m_plotInputCmd).c_str();
+		}
+		else
+		{
+			cmdStr = outCmd;
+		}
+		m_PlotInputCommandEditor.SetWindowTextW(cmdStr);
+	}
+
+	UpdateData(FALSE);
+}
+

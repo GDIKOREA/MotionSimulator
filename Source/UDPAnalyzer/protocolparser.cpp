@@ -38,6 +38,7 @@ bool cProtocolParser::ParseStr(const string &source)
 	typeMap["int"] = FEILD_TYPE::T_INT;
 	typeMap["uint"] = FEILD_TYPE::T_UINT;
 	typeMap["float"] = FEILD_TYPE::T_FLOAT;
+	typeMap["double"] = FEILD_TYPE::T_DOUBLE;
 	typeMap["bool"] = FEILD_TYPE::T_BOOL;
 
 	m_fields.clear();

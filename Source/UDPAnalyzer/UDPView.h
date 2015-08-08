@@ -18,6 +18,8 @@ public:
 	enum { IDD = IDD_DIALOG_UDP };
 
 	virtual void UpdateUDP(const char *buffer, const int bufferLen) override;
+	void UpdateConfig();
+	void SaveConfig();
 
 
 protected:
@@ -45,4 +47,6 @@ public:
 	BOOL m_IsDump;
 	BOOL m_IsASCII;
 	afx_msg void OnBnClickedCheckAscii();
+	afx_msg void OnBnClickedCheckSymbol();
+	BOOL m_IsDisplaySymbol;
 };

@@ -52,24 +52,7 @@ BOOL CMixingView::OnInitDialog()
 
 	InitAnchors();
 
-	CString command =
-		L"$var1 = $1 + $2 + $3\r\n"
-		L"$var2 = $1 + $2 + $3\r\n"
-		L"$var3 = $1 + $2 + $3\r\n";
-
-	CString cmdStr;
-	std::ifstream cfgfile("udpanalyzer_mixing.cfg");
-	if (cfgfile.is_open())
-	{
-		std::string str((std::istreambuf_iterator<char>(cfgfile)), std::istreambuf_iterator<char>());
-		cmdStr = str2wstr(str).c_str();
-	}
-	else
-	{
-		cmdStr = command;
-	}
-	m_CommandEditor.SetWindowTextW(cmdStr);
-
+	UpdateConfig();
 
 	m_SymbolList.InsertColumn(0, L"Name");
 	m_SymbolList.InsertColumn(1, L"Value");
@@ -77,6 +60,29 @@ BOOL CMixingView::OnInitDialog()
 	m_SymbolList.SetColumnWidth(1, 200);
 
 	return TRUE;
+}
+
+
+// 전역변수 g_option 정보를 토대로, UI 를 업데이트 한다.
+void CMixingView::UpdateConfig()
+{
+	CString command =
+		L"$var1 = $1 + $2 + $3\r\n"
+		L"$var2 = $1 + $2 + $3\r\n"
+		L"$var3 = $1 + $2 + $3\r\n";
+
+	CString cmdStr;
+	if (!g_option.m_mixingCmd.empty())
+	{
+		cmdStr = str2wstr(g_option.m_mixingCmd).c_str();
+	}
+	else
+	{
+		cmdStr = command;
+	}
+	m_CommandEditor.SetWindowTextW(cmdStr);
+
+	UpdateData(FALSE);
 }
 
 
@@ -143,19 +149,19 @@ void CMixingView::Update(const float deltaSeconds)
 
 void CMixingView::OnDestroy()
 {
+	SaveConfig();
+	CDockablePaneChildView::OnDestroy();
+}
+
+// UI에 설정된 값을 환경변수에 저장한다.
+void CMixingView::SaveConfig()
+{
 	UpdateData();
 
 	// 환경파일 저장
-	std::ofstream cfgfile("udpanalyzer_mixing.cfg");
-	if (cfgfile.is_open())
-	{
-		CString command;
-		m_CommandEditor.GetWindowTextW(command);
-		string str = wstr2str((LPCTSTR)command);
-		cfgfile << str;
-	}
-
-	CDockablePaneChildView::OnDestroy();
+	CString command;
+	m_CommandEditor.GetWindowTextW(command);
+	g_option.m_mixingCmd = wstr2str((LPCTSTR)command);
 }
 
 
@@ -202,6 +208,7 @@ void CMixingView::UpdateSymbolList()
 		case FEILD_TYPE::T_UINT:
 		case FEILD_TYPE::T_INT: str.Format(L"%d", sym.second.iVal); break;
 		case FEILD_TYPE::T_FLOAT: str.Format(L"%f", sym.second.fVal); break;
+		case FEILD_TYPE::T_DOUBLE: str.Format(L"%f", sym.second.dVal); break;
 		default:
 			break;
 		}

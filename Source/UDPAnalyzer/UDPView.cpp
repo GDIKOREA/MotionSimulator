@@ -15,6 +15,7 @@ CUDPView::CUDPView(CWnd* pParent /*=NULL*/)
 	, m_IsDump(TRUE)
 	, m_IsASCII(FALSE)
 	, m_dumpWindow(NULL)
+	, m_IsDisplaySymbol(FALSE)
 {
 }
 
@@ -30,6 +31,7 @@ void CUDPView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_PROTOCOL, m_ProtocolEditor);
 	DDX_Check(pDX, IDC_CHECK_DUMP, m_IsDump);
 	DDX_Check(pDX, IDC_CHECK_ASCII, m_IsASCII);
+	DDX_Check(pDX, IDC_CHECK_SYMBOL, m_IsDisplaySymbol);
 }
 
 
@@ -48,6 +50,7 @@ BEGIN_MESSAGE_MAP(CUDPView, CDockablePaneChildView)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_CHECK_DUMP, &CUDPView::OnBnClickedCheckDump)
 	ON_BN_CLICKED(IDC_CHECK_ASCII, &CUDPView::OnBnClickedCheckAscii)
+	ON_BN_CLICKED(IDC_CHECK_SYMBOL, &CUDPView::OnBnClickedCheckSymbol)
 END_MESSAGE_MAP()
 
 
@@ -58,27 +61,7 @@ BOOL CUDPView::OnInitDialog()
 
 	InitAnchors();
 
-
-	CString command =
-L"2, uint #test\r\n"
-L"4, float\r\n"
-L"4, float\r\n"
-L"4, float\r\n"
-L"4, float\r\n";
-
-	CString cmdStr;
-	std::ifstream cfgfile("udpanalyzer_udp.cfg");
-	if (cfgfile.is_open())
-	{
-		std::string str((std::istreambuf_iterator<char>(cfgfile)), std::istreambuf_iterator<char>());
-		cmdStr = str2wstr(str).c_str();
-	}
-	else
-	{
-		cmdStr = command;
-	}
-	m_ProtocolEditor.SetWindowTextW(cmdStr);
-
+	UpdateConfig();
 
 	CRect rect;
 	GetClientRect(rect);
@@ -138,14 +121,14 @@ void CUDPView::UpdateUDP(const char *buffer, const int bufferLen)
 {
 	RET(m_protocolParser.m_fields.empty());
 
-	if (m_protocolParser.m_fieldsByteSize > bufferLen)
-		return;
-
 	int i = 0;
 	int index = 0;
 	const char *pmem = buffer;
 	for each (auto &field in m_protocolParser.m_fields)
 	{
+		if (index > bufferLen)
+			break;
+
 		script::sFieldData data;
 		ZeroMemory(data.buff, sizeof(data));
 		memcpy(data.buff, pmem, field.bytes);
@@ -199,19 +182,20 @@ void CUDPView::OnBnClickedButtonUpdate()
 
 void CUDPView::OnDestroy()
 {
+	SaveConfig();
+	CDockablePaneChildView::OnDestroy();	
+}
+
+// UI에 설정된 값을 환경변수에 저장한다.
+void CUDPView::SaveConfig()
+{
 	UpdateData();
 
 	// 환경파일 저장
-	std::ofstream cfgfile("udpanalyzer_udp.cfg");
-	if (cfgfile.is_open())
-	{
-		CString command;
-		m_ProtocolEditor.GetWindowTextW(command);
-		string str = wstr2str((LPCTSTR)command);
-		cfgfile << str;
-	}
-
-	CDockablePaneChildView::OnDestroy();	
+	CString command;
+	m_ProtocolEditor.GetWindowTextW(command);
+	g_option.m_udpProtocolCmd = wstr2str((LPCTSTR)command);
+	g_option.m_udpPort = m_Port;
 }
 
 
@@ -225,4 +209,40 @@ void CUDPView::OnBnClickedCheckAscii()
 {
 	UpdateData();
 	m_dumpWindow->SetDisplayASCII(m_IsASCII? true : false);
+	m_dumpWindow->InvalidateRect(NULL);
+}
+
+
+void CUDPView::UpdateConfig()
+{
+	CString command =
+		L"2, uint #test\r\n"
+		L"4, float\r\n"
+		L"4, float\r\n"
+		L"4, float\r\n"
+		L"4, float\r\n";
+
+	CString cmdStr;
+	if (!g_option.m_udpProtocolCmd.empty())
+	{
+		cmdStr = str2wstr(g_option.m_udpProtocolCmd).c_str();
+	}
+	else
+	{
+		cmdStr = command;
+	}
+	m_ProtocolEditor.SetWindowTextW(cmdStr);
+
+	m_Port = g_option.m_udpPort;
+
+	UpdateData(FALSE);
+}
+
+
+void CUDPView::OnBnClickedCheckSymbol()
+{
+	UpdateData();
+
+	m_dumpWindow->SetDisplaySymbol(m_IsDisplaySymbol? true : false, &m_protocolParser);
+	m_dumpWindow->InvalidateRect(NULL);
 }

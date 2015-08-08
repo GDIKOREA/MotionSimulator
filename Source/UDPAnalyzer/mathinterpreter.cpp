@@ -102,6 +102,7 @@ float cMathInterpreter::factor(const sFactor *p)
 		case FEILD_TYPE::T_UINT: val = (float)script::g_symbols[p->id].uVal; break;
 		case FEILD_TYPE::T_INT: val = (float)script::g_symbols[p->id].iVal; break;
 		case FEILD_TYPE::T_FLOAT: val = script::g_symbols[p->id].fVal; break;
+		case FEILD_TYPE::T_DOUBLE: val = (float)script::g_symbols[p->id].dVal; break;
 		default:
 			break;
 		}

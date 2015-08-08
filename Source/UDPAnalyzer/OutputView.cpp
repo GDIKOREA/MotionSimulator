@@ -1,11 +1,9 @@
-OutputView.cpp : implementation file
-//
 
 #include "stdafx.h"
 #include "UDPAnalyzer.h"
 #include "OutputView.h"
 #include "afxdialogex.h"
-#include "outputviewoption.h"
+#include "udpanalyzeroption.h"
 
 
 // COutputView dialog
@@ -95,40 +93,7 @@ BOOL COutputView::OnInitDialog()
 	m_UDPIP.SetAddress(127, 0, 0, 1);
 	m_EditUDPPort.SetWindowTextW(L"8888");
 
-	m_SendFormat = L"$yaw;$pitch;$roll;";
-	m_RollCommand = L"$8 - 1.55";
-	m_PitchCommand = L"$7";
-	m_YawCommand = L"$6";
-
-
-	//---------------------------------------------------------------------------------------
-	// read option file
-	cOutputViewOption option;
-	option.Read("udpanalyzer_outputview.cfg");
-
-	vector<string> ipnums;
-	tokenizer(option.m_ip, ".", "", ipnums);
-	if (ipnums.size() >= 4)
-	{
-		m_UDPIP.SetAddress(atoi(ipnums[0].c_str()),
-			atoi(ipnums[1].c_str()),
-			atoi(ipnums[2].c_str()),
-			atoi(ipnums[3].c_str()));
-	}
-	else
-	{
-		m_UDPIP.SetAddress(127, 0, 0, 1);
-	}
-
-	m_EditUDPPort.SetWindowTextW(formatw("%d", option.m_port).c_str());
-	m_ComPort.InitList(option.m_com);
-	m_BaudRateCombobox.SetCurSel(option.m_baudRate);
-	m_SendType = option.m_sendType;
-	m_SendFormat = str2wstr(option.m_sendFormat).c_str();
-	m_RollCommand = str2wstr(option.m_rollCmd).c_str();
-	m_PitchCommand = str2wstr(option.m_pitchCmd).c_str();
-	m_YawCommand = str2wstr(option.m_yawCmd).c_str();
-
+	UpdateConfig();
 
 	// Plot창 생성.
 	CRect rect;
@@ -141,40 +106,6 @@ BOOL COutputView::OnInitDialog()
 	m_multiPlotWindows->SetScrollSizes(MM_TEXT, CSize(10, 10));
 	m_multiPlotWindows->ShowWindow(SW_SHOW);
 
-	
-
-	CString command =
-		L"plot1 = 0, 0, 0, 0, 0\r\n"
-		L"string1 = %f;\r\n"
-		L"name1 = Yaw\r\n"
-		L"plot2 = 0, 0, 0, 0, 0\r\n"
-		L"string2 = %*f; %f;\r\n"
-		L"name2 = Pitch\r\n"
-		L"plot3 = 0, 0, 0, 0, 0\r\n"
-		L"string3 = %*f; %*f; %f; \r\n"
-		L"name3 = Roll\r\n"
-		L"plot4 = 0, 0, 0, 0, 0\r\n"
-		L"string4 = %*f; %*f; %*f; %f;\r\n"
-		L"name4 = Heave\r\n";
-
-	CString plotCmd;
-	if (option.m_plotCmd.empty())
-	{
-		plotCmd = command;
-	}
-	else
-	{
-		plotCmd = str2wstr(option.m_plotCmd).c_str();
-	}
-
-	m_PlotCommand.SetWindowTextW(plotCmd);
-
-	
-	m_rollParser.ParseStr(wstr2str((LPCTSTR)m_RollCommand));
-	m_pitchParser.ParseStr(wstr2str((LPCTSTR)m_PitchCommand));
-	m_yawParser.ParseStr(wstr2str((LPCTSTR)m_YawCommand));
-
-	m_sendFormatParser.ParseStr(wstr2str((LPCTSTR)m_SendFormat));
 
 	// default type is none
 	m_UDPIP.EnableWindow(FALSE);
@@ -195,6 +126,68 @@ BOOL COutputView::OnInitDialog()
 
 	UpdateData(FALSE);
 	return TRUE;
+}
+
+
+// 전역변수 g_option 정보를 토대로, UI 를 업데이트 한다.
+void COutputView::UpdateConfig()
+{
+	vector<string> ipnums;
+	tokenizer(g_option.m_ip, ".", "", ipnums);
+	if (ipnums.size() >= 4)
+	{
+		m_UDPIP.SetAddress(atoi(ipnums[0].c_str()),
+			atoi(ipnums[1].c_str()),
+			atoi(ipnums[2].c_str()),
+			atoi(ipnums[3].c_str()));
+	}
+	else
+	{
+		m_UDPIP.SetAddress(127, 0, 0, 1);
+	}
+
+	m_EditUDPPort.SetWindowTextW(formatw("%d", g_option.m_port).c_str());
+	m_ComPort.InitList(g_option.m_com);
+	m_BaudRateCombobox.SetCurSel(g_option.m_baudRate);
+	m_SendType = g_option.m_sendType;
+
+	m_SendFormat = g_option.m_sendFormat.empty() ? L"$yaw;$pitch;$roll;" : str2wstr(g_option.m_sendFormat).c_str();
+	m_RollCommand = g_option.m_rollCmd.empty() ? L"$8 - 1.55" : str2wstr(g_option.m_rollCmd).c_str();
+	m_PitchCommand = g_option.m_pitchCmd.empty() ? L"$7" : str2wstr(g_option.m_pitchCmd).c_str();
+	m_YawCommand = g_option.m_yawCmd.empty() ? L"$6" : str2wstr(g_option.m_yawCmd).c_str();
+
+	m_rollParser.ParseStr(wstr2str((LPCTSTR)m_RollCommand));
+	m_pitchParser.ParseStr(wstr2str((LPCTSTR)m_PitchCommand));
+	m_yawParser.ParseStr(wstr2str((LPCTSTR)m_YawCommand));
+	m_sendFormatParser.ParseStr(wstr2str((LPCTSTR)m_SendFormat));
+
+	CString command =
+		L"plot1 = 0, 0, 0, 0, 0\r\n"
+		L"string1 = %f;\r\n"
+		L"name1 = Yaw\r\n"
+		L"plot2 = 0, 0, 0, 0, 0\r\n"
+		L"string2 = %*f; %f;\r\n"
+		L"name2 = Pitch\r\n"
+		L"plot3 = 0, 0, 0, 0, 0\r\n"
+		L"string3 = %*f; %*f; %f; \r\n"
+		L"name3 = Roll\r\n"
+		L"plot4 = 0, 0, 0, 0, 0\r\n"
+		L"string4 = %*f; %*f; %*f; %f;\r\n"
+		L"name4 = Heave\r\n";
+
+	CString plotCmd;
+	if (g_option.m_plotCmd.empty())
+	{
+		plotCmd = command;
+	}
+	else
+	{
+		plotCmd = str2wstr(g_option.m_plotCmd).c_str();
+	}
+
+	m_PlotCommand.SetWindowTextW(plotCmd);
+
+	UpdateData(FALSE);
 }
 
 
@@ -426,30 +419,31 @@ void COutputView::OnBnClickedButtonUpdateSendformat()
 
 void COutputView::OnDestroy()
 {
+	SaveConfig();
+	CDockablePaneChildView::OnDestroy();
+}
+
+
+// UI에 설정된 값을 환경변수에 저장한다.
+void COutputView::SaveConfig()
+{
 	UpdateData();
 
-	// write option file
-	cOutputViewOption option;
+	g_option.m_ip = GetSendIP();	
 
-	option.m_ip = GetSendIP();
-	
 	CString udpPort;
 	m_EditUDPPort.GetWindowTextW(udpPort);
-	option.m_port = _wtoi(udpPort);
+	g_option.m_port = _wtoi(udpPort);
 
-	option.m_com = m_ComPort.GetPortNum();
-	option.m_baudRate = m_BaudRateCombobox.GetCurSel();
-	option.m_sendType = m_SendType;
-	option.m_sendFormat = wstr2str((LPCTSTR)m_SendFormat);
-	option.m_rollCmd = wstr2str((LPCTSTR)m_RollCommand);
-	option.m_pitchCmd = wstr2str((LPCTSTR)m_PitchCommand);
-	option.m_yawCmd = wstr2str((LPCTSTR)m_YawCommand);
+	g_option.m_com = m_ComPort.GetPortNum();
+	g_option.m_baudRate = m_BaudRateCombobox.GetCurSel();
+	g_option.m_sendType = m_SendType;
+	g_option.m_sendFormat = wstr2str((LPCTSTR)m_SendFormat);
+	g_option.m_rollCmd = wstr2str((LPCTSTR)m_RollCommand);
+	g_option.m_pitchCmd = wstr2str((LPCTSTR)m_PitchCommand);
+	g_option.m_yawCmd = wstr2str((LPCTSTR)m_YawCommand);
 
 	CString plotCmd;
 	m_PlotCommand.GetWindowTextW(plotCmd);
-	option.m_plotCmd = wstr2str((LPCTSTR)plotCmd);
-
-	option.Write("udpanalyzer_outputview.cfg");
-
-	CDockablePaneChildView::OnDestroy();
+	g_option.m_plotCmd = wstr2str((LPCTSTR)plotCmd);
 }

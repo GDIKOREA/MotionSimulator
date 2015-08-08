@@ -84,6 +84,7 @@ BEGIN
     LTEXT           "Packet Dump",IDC_STATIC,7,207,42,8
     CONTROL         "Dump",IDC_CHECK_DUMP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,59,206,34,10
     CONTROL         "ASCII",IDC_CHECK_ASCII,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,95,206,35,10
+    CONTROL         "Symbol",IDC_CHECK_SYMBOL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,132,206,39,10
 END
 
 IDD_DIALOG_PLOT DIALOGEX 0, 0, 328, 276
@@ -365,24 +366,10 @@ BEGIN
     BEGIN
         MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
         MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
-        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
-        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
-        MENUITEM SEPARATOR
-        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
-        MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW
-        MENUITEM "P&rint Setup...",             ID_FILE_PRINT_SETUP
-        MENUITEM SEPARATOR
+        MENUITEM "&Save As...",                 ID_FILE_SAVEAS
         MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
-    END
-    POPUP "&Edit"
-    BEGIN
-        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
-        MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
-        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
     END
     POPUP "&View"
     BEGIN
@@ -390,27 +377,6 @@ BEGIN
         BEGIN
             MENUITEM "<placeholder>",               ID_VIEW_TOOLBAR
         END
-        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
-        POPUP "&Application Look"
-        BEGIN
-            MENUITEM "Windows &2000",               ID_VIEW_APPLOOK_WIN_2000
-            MENUITEM "Office &XP",                  ID_VIEW_APPLOOK_OFF_XP
-            MENUITEM "&Windows XP",                 ID_VIEW_APPLOOK_WIN_XP
-            MENUITEM "Office 200&3",                ID_VIEW_APPLOOK_OFF_2003
-            MENUITEM "Visual Studio 200&5",         ID_VIEW_APPLOOK_VS_2005
-            MENUITEM "Visual Studio 200&8",         ID_VIEW_APPLOOK_VS_2008
-            POPUP "Office 200&7"
-            BEGIN
-                MENUITEM "&Blue Style",                 ID_VIEW_APPLOOK_OFF_2007_BLUE
-                MENUITEM "B&lack Style",                ID_VIEW_APPLOOK_OFF_2007_BLACK
-                MENUITEM "&Silver Style",               ID_VIEW_APPLOOK_OFF_2007_SILVER
-                MENUITEM "&Aqua Style",                 ID_VIEW_APPLOOK_OFF_2007_AQUA
-            END
-        END
-    END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "&About UDPAnalyzer...",       ID_APP_ABOUT
     END
 END
 

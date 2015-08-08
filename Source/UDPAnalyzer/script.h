@@ -13,6 +13,7 @@ namespace script
 			T_INT = 1,
 			T_UINT,
 			T_FLOAT,
+			T_DOUBLE,
 			T_BOOL,
 		};
 	};

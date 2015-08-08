@@ -14,6 +14,8 @@ public:
 	enum { IDD = IDD_DIALOG_MIXING };
 
 	virtual void Update(const float deltaSeconds) override;
+	void UpdateConfig();
+	void SaveConfig();
 
 
 protected:

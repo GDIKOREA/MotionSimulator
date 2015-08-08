@@ -75,3 +75,4 @@ enum VIEW_TYPE
 #include "mathparser.h"
 #include "mathinterpreter.h"
 #include "plotinputparser.h"
+#include "udpanalyzeroption.h"

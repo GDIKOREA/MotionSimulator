@@ -1,25 +1,28 @@
 
 #include "stdafx.h"
-#include "outputviewoption.h"
+#include "udpanalyzeroption.h"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/foreach.hpp>
 
 
+// 전역 인스턴스
+cUDPAnalyzerOption g_option;
 
-cOutputViewOption::cOutputViewOption()
+
+cUDPAnalyzerOption::cUDPAnalyzerOption()
 {
 
 }
 
-cOutputViewOption::~cOutputViewOption()
+cUDPAnalyzerOption::~cUDPAnalyzerOption()
 {
 
 }
 
 
-bool cOutputViewOption::Read(const string &fileName)
+bool cUDPAnalyzerOption::Read(const string &fileName, const bool showMsgBox ) //showMsgBox=true
 {
 
 	try
@@ -29,6 +32,7 @@ bool cOutputViewOption::Read(const string &fileName)
 		using std::string;
 		ptree props;
 		boost::property_tree::read_json(fileName, props);
+		m_fileName = fileName;
 		m_com = props.get<int>("COM", -1);
 		m_baudRate = props.get<int>("BAUDRATE", 9600);
 		m_ip = props.get<string>("IP", "127.0.0.1");
@@ -39,17 +43,24 @@ bool cOutputViewOption::Read(const string &fileName)
 		m_pitchCmd = props.get<string>("PITCHCMD", "$2");
 		m_yawCmd = props.get<string>("YAWCMD", "$3");
 		m_plotCmd = props.get<string>("PLOTCMD", "");
+
+		m_mixingCmd = props.get<string>("MIXINGCMD", "");
+		m_plotViewCmd = props.get<string>("PLOTVIEWCMD", "");
+		m_plotInputCmd = props.get<string>("PLOTINPUTCMD", "");
+		m_udpProtocolCmd = props.get<string>("UDPPROTOCOLCMD", "");
+		m_udpPort = props.get<int>("UDPPORT", 8888);
 	}
 	catch (std::exception&e)
 	{
-		::AfxMessageBox(CString(L"Error!!\n") + str2wstr(e.what()).c_str());
+		if (showMsgBox)
+			::AfxMessageBox(CString(L"Error!!\n") + str2wstr(e.what()).c_str());
 	}
 
 	return true;
 }
 
 
-bool cOutputViewOption::Write(const string &fileName)
+bool cUDPAnalyzerOption::Write(const string &fileName)
 {
 	try
 	{
@@ -67,6 +78,12 @@ bool cOutputViewOption::Write(const string &fileName)
 		props.add<string>("PITCHCMD", m_pitchCmd);
 		props.add<string>("YAWCMD", m_yawCmd);
 		props.add<string>("PLOTCMD", m_plotCmd);
+
+		props.add<string>("MIXINGCMD", m_mixingCmd);
+		props.add<string>("PLOTVIEWCMD", m_plotViewCmd);
+		props.add<string>("PLOTINPUTCMD", m_plotInputCmd);
+		props.add<string>("UDPPROTOCOLCMD", m_udpProtocolCmd);
+		props.add<int>("UDPPORT", m_udpPort);
 
 		boost::property_tree::write_json(fileName, props);
 	}

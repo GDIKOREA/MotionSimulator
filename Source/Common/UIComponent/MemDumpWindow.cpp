@@ -7,9 +7,12 @@
 cMemDumpWindow::cMemDumpWindow()
 	: m_bmpSize(0, 0)
 	, m_isDisplayASCII(false)
+	, m_isDisplaySymbol(false)
+	, m_protocol(NULL)
 {
 	m_brushes[0].CreateSolidBrush(RGB(255, 255, 255));
 	m_brushes[1].CreateSolidBrush(RGB(255, 0, 0));
+	m_brushes[2].CreateSolidBrush(RGB(0, 0, 0));
 }
 
 cMemDumpWindow::~cMemDumpWindow()
@@ -57,25 +60,70 @@ void cMemDumpWindow::OnDraw(CDC* pDC)
 	const int cellPerLine = cr.Width() / RW;
 	if (cellPerLine > 0)
 	{
-		for (u_int i = 0; i < m_dump.size(); ++i)
+		if (m_isDisplaySymbol && m_protocol)
 		{
-			int x = (i % cellPerLine) * RW;
-			int y = (i / cellPerLine) * RH;
+			auto oldObject = memDC.SelectObject(m_brushes[2]);
+			memDC.Rectangle(cr);
+			memDC.SelectObject(oldObject);
 
-			memDC.SelectObject(m_dump[i].change ? m_brushes[1] : m_brushes[0]);
-			memDC.Rectangle(CRect(x, y, x + RW, y + RH));
+			// 심볼 출력
+			int xIdx = 0;
+			int yIdx = 0;
+			int symIdx = 0;
+			for each (auto &field in m_protocol->m_fields)
+			{
+				int dispBytes = field.bytes;
+				while(dispBytes > 0)
+				{
+					if (cellPerLine <= xIdx)
+					{
+						xIdx = 0;
+						yIdx++;
+					}
 
-			memDC.SetBkColor(m_dump[i].change? RGB(255,0,0):RGB(255,255,255));
-			CString str;
-			if (m_isDisplayASCII)
-			{
-				str.Format(L"%c", (char)m_dump[i].c);
+					const int dispSize = (cellPerLine > xIdx + dispBytes) ? dispBytes : (cellPerLine - xIdx);
+
+					const int x = xIdx * RW;
+					const int y = yIdx * RH;
+					CRect r(x, y, x + (dispSize*RW), y + RH);
+					memDC.Rectangle(r);
+					memDC.SetBkColor(RGB(255, 255, 255));
+					CString str;
+					str.Format(L"$%d", symIdx+1);
+					r.OffsetRect(CPoint(0, 10));
+					memDC.DrawText(str, r, DT_CENTER);
+
+					xIdx += dispSize;
+					dispBytes -= dispSize;
+				}
+
+				++symIdx;
 			}
-			else
+
+		}
+		else
+		{
+			// 메모리 덤프 출력
+			for (u_int i = 0; i < m_dump.size(); ++i)
 			{
-				str.Format(L"%x", m_dump[i].c);
+				int x = (i % cellPerLine) * RW;
+				int y = (i / cellPerLine) * RH;
+
+				memDC.SelectObject(m_dump[i].change ? m_brushes[1] : m_brushes[0]);
+				memDC.Rectangle(CRect(x, y, x + RW, y + RH));
+
+				memDC.SetBkColor(m_dump[i].change? RGB(255,0,0):RGB(255,255,255));
+				CString str;
+				if (m_isDisplayASCII)
+				{
+					str.Format(L"%c", (char)m_dump[i].c);
+				}
+				else
+				{
+					str.Format(L"%x", m_dump[i].c);
+				}
+				memDC.TextOutW(x+5, y+10, str);
 			}
-			memDC.TextOutW(x+5, y+10, str);
 		}
 	}
 	memDC.SelectObject(oldBrush);
