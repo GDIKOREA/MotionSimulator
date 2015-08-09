@@ -16,12 +16,14 @@ public:
 	virtual void Update(const float deltaSeconds) override;
 	void UpdateConfig();
 	void SaveConfig();
+	void SetAddPlotView(const  bool add);
 
 
 protected:
 	CMultiPlotWindow *m_multiPlotWindows;
 	float m_incTime;
 	bool m_isStart;
+	bool m_addPlotView; // true 이면, 환경변수에 값을 저장하지 않는다. 환경변수는 처음에 생성된 PlotView만 저장된다.
 
 	cPlotInputParser m_parser;
 
@@ -41,4 +43,8 @@ public:
 	CEdit m_PlotInputOut;
 	CEdit m_PlotCommandEditor;
 	afx_msg void OnDestroy();
+	afx_msg void OnBnClickedButtonNewplotwindow();
 };
+
+
+inline void CPlotView::SetAddPlotView(const  bool add) { m_addPlotView = add; }

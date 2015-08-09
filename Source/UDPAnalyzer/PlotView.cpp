@@ -5,6 +5,7 @@
 #include "UDPAnalyzer.h"
 #include "PlotView.h"
 #include "afxdialogex.h"
+#include "MainFrm.h"
 
 
 // CPlotView dialog
@@ -14,6 +15,7 @@ CPlotView::CPlotView(CWnd* pParent /*=NULL*/)
 	, m_incTime(0)
 	, m_multiPlotWindows(NULL)
 	, m_isStart(false)
+	, m_addPlotView(false)
 {
 
 }
@@ -37,6 +39,7 @@ BEGIN_ANCHOR_MAP(CPlotView)
 	ANCHOR_MAP_ENTRY(IDC_EDIT_PLOTINPUT, ANF_LEFT | ANF_RIGHT | ANF_TOP)
 	ANCHOR_MAP_ENTRY(IDC_EDIT_PLOTINPUT_OUT, ANF_LEFT | ANF_RIGHT | ANF_TOP)
 	ANCHOR_MAP_ENTRY(IDC_EDIT_COMMAND, ANF_LEFT | ANF_RIGHT | ANF_TOP)
+	ANCHOR_MAP_ENTRY(IDC_BUTTON_NEWPLOTWINDOW, ANF_RIGHT | ANF_TOP)
 END_ANCHOR_MAP()
 
 
@@ -46,6 +49,7 @@ BEGIN_MESSAGE_MAP(CPlotView, CDockablePaneChildView)
 	ON_BN_CLICKED(IDC_BUTTON_UPDATE, &CPlotView::OnBnClickedButtonUpdate)
 	ON_WM_SIZE()
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_BUTTON_NEWPLOTWINDOW, &CPlotView::OnBnClickedButtonNewplotwindow)
 END_MESSAGE_MAP()
 
 
@@ -139,7 +143,9 @@ void CPlotView::Update(const float deltaSeconds)
 
 void CPlotView::OnDestroy()
 {
-	SaveConfig();
+	if (!m_addPlotView)
+		SaveConfig();
+
 	CDockablePaneChildView::OnDestroy();
 }
 
@@ -212,3 +218,13 @@ void CPlotView::UpdateConfig()
 	UpdateData(FALSE);
 }
 
+
+// 새 Plot 윈도우를 생성한다.
+void CPlotView::OnBnClickedButtonNewplotwindow()
+{
+	CMainFrame *mainFrm = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
+	if (NULL != mainFrm)
+	{
+		mainFrm->NewPlotWindow();
+	}
+}

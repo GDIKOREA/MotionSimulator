@@ -13,6 +13,29 @@
 #include "MainFrm.h"
 
 
+#define CREATE_DOCKVIEW2(Class, VAR, PANE_NAME, PANE_ID, RESOURCE_ID) \
+				{\
+		VAR = new CDockablePaneBase();\
+		if (!VAR->Create(PANE_NAME, this, CRect(0, 0, 200, 200), TRUE, PANE_ID, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))\
+												{\
+			TRACE0("Failed to create View window\n");\
+			return FALSE;\
+												}\
+		Class *view = new Class(VAR);\
+		BOOL reval = view->Create(RESOURCE_ID, VAR);\
+		view->ShowWindow(SW_SHOW);\
+		VAR->SetChildView(view);\
+		m_viewList.push_back(VAR);\
+		\
+		HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(theApp.m_bHiColorIcons? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);\
+ 		VAR->SetIcon(hClassViewIcon, FALSE);\
+				}
+#define CREATE_DOCKVIEW(Class, VAR, PANE_NAME, PANE_ID) \
+	CREATE_DOCKVIEW2(Class, VAR, PANE_NAME, PANE_ID, Class::IDD);
+
+
+
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -150,27 +173,6 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 BOOL CMainFrame::CreateDockingWindows()
 {
-#define CREATE_DOCKVIEW2(Class, VAR, PANE_NAME, PANE_ID, RESOURCE_ID) \
-	{\
-		VAR = new CDockablePaneBase();\
-		if (!VAR->Create(PANE_NAME, this, CRect(0, 0, 200, 200), TRUE, PANE_ID, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))\
-								{\
-			TRACE0("Failed to create View window\n");\
-			return FALSE;\
-								}\
-		Class *view = new Class(VAR);\
-		BOOL reval = view->Create(RESOURCE_ID, VAR);\
-		view->ShowWindow(SW_SHOW);\
-		VAR->SetChildView(view);\
-		m_viewList.push_back(VAR);\
-		\
-		HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(theApp.m_bHiColorIcons? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);\
- 		VAR->SetIcon(hClassViewIcon, FALSE);\
-	}
-#define CREATE_DOCKVIEW(Class, VAR, PANE_NAME, PANE_ID) \
-	CREATE_DOCKVIEW2(Class, VAR, PANE_NAME, PANE_ID, Class::IDD);
-
-
 	// Create serial editor view
 	CREATE_DOCKVIEW(CUDPView, m_udpView, L"UDP View", ID_VIEW_UDP);
 	CREATE_DOCKVIEW(CPlotView, m_plotView, L"Plot View", ID_VIEW_PLOT);
@@ -276,8 +278,8 @@ void CMainFrame::OnDestroy()
 		delete view;
 	}
 	m_viewList.clear();
-}
 
+}
 
 // 환경변수에 설정된 값을 UI 에 적용한다.
 void CMainFrame::UpdateViewConfig()
@@ -354,4 +356,24 @@ void CMainFrame::OnUpdateFileSaveas(CCmdUI *pCmdUI)
 void CMainFrame::OnViewInitdockingwindows()
 {
 	g_option.m_initWindows = true;
+}
+
+
+BOOL CMainFrame::NewPlotWindow()
+{
+	static int plotViewId = 50000;
+	static int plotViewIncId = 2;
+	CDockablePaneBase *plotView;
+
+	CString viewName;
+	viewName.Format(L"Plot View%d", plotViewIncId++);
+	CREATE_DOCKVIEW(CPlotView, plotView, viewName, plotViewId++);
+
+	plotView->EnableDocking(CBRS_ALIGN_ANY);
+	CDockablePane* pTabbedBar = NULL;
+	plotView->AttachToTabWnd(m_udpView, DM_SHOW, TRUE, &pTabbedBar);
+
+	((CPlotView*)plotView->GetChildView())->SetAddPlotView(true);
+
+	return TRUE;
 }

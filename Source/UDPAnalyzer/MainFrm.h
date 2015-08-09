@@ -13,15 +13,17 @@ protected: // create from serialization only
 
 // Attributes
 public:
-
-// Operations
-public:
 	list<CDockablePaneBase*> m_viewList;
 	CDockablePaneBase *m_udpView;
 	CDockablePaneBase *m_plotView;
 	CDockablePaneBase *m_mixingView;
 	CDockablePaneBase *m_outputView;
 	CDockablePaneBase *m_dxView;
+
+
+// Operations
+public:
+	BOOL NewPlotWindow();
 
 
 // Overrides
