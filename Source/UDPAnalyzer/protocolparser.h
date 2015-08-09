@@ -5,8 +5,8 @@
 
 struct sUDPField
 {
-	int bytes;
-	script::FEILD_TYPE::TYPE type;
+	int bytes; // 차지하는 메모리 바이트 크기
+	script::FEILD_TYPE::TYPE type; // 데이터 타입
 };
 
 

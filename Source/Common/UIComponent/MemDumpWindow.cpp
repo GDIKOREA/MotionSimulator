@@ -8,7 +8,8 @@ cMemDumpWindow::cMemDumpWindow()
 	: m_bmpSize(0, 0)
 	, m_isDisplayASCII(false)
 	, m_isDisplaySymbol(false)
-	, m_protocol(NULL)
+	, m_BlockW(30)
+	, m_BlockH(30)
 {
 	m_brushes[0].CreateSolidBrush(RGB(255, 255, 255));
 	m_brushes[1].CreateSolidBrush(RGB(255, 0, 0));
@@ -23,6 +24,8 @@ cMemDumpWindow::~cMemDumpWindow()
 
 BEGIN_MESSAGE_MAP(cMemDumpWindow, CScrollView)
 	ON_WM_ERASEBKGND()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
 
@@ -53,25 +56,23 @@ void cMemDumpWindow::OnDraw(CDC* pDC)
 	pOldBitmap = memDC.SelectObject(&m_Bitmap);
 
 
-	auto oldBrush = memDC.SelectObject(m_brushes[0]);
-	const int RW = 30;
-	const int RH = 30;
-	const int cellPerLine = cr.Width() / RW;
+	const auto oldBrush = memDC.SelectObject(m_brushes[0]);
+	const int cellPerLine = cr.Width() / m_BlockW;
 	if (cellPerLine > 0)
 	{
-		auto oldObject = memDC.SelectObject(m_brushes[2]);
+		const auto oldObject = memDC.SelectObject(m_brushes[2]);
 		memDC.Rectangle(cr);
 		memDC.SelectObject(oldObject);
 
-		if (m_isDisplaySymbol && m_protocol)
+		// 심볼 출력
+		if (m_isDisplaySymbol)
 		{
-			// 심볼 출력
 			int xIdx = 0;
 			int yIdx = 0;
 			int symIdx = 0;
-			for each (auto &field in m_protocol->m_fields)
+			for each (auto &sym in m_symbols)
 			{
-				int dispBytes = field.bytes;
+				int dispBytes = sym.bytes;
 				while(dispBytes > 0)
 				{
 					if (cellPerLine <= xIdx)
@@ -81,16 +82,50 @@ void cMemDumpWindow::OnDraw(CDC* pDC)
 					}
 
 					const int dispSize = (cellPerLine > xIdx + dispBytes) ? dispBytes : (cellPerLine - xIdx);
-
-					const int x = xIdx * RW;
-					const int y = yIdx * RH;
-					CRect r(x, y, x + (dispSize*RW), y + RH);
+					const int x = xIdx * m_BlockW;
+					const int y = yIdx * m_BlockH;
+					CRect r(x, y, x + (dispSize*m_BlockW), y + m_BlockH);
 					memDC.Rectangle(r);
-					memDC.SetBkColor(RGB(255, 255, 255));
-					CString str;
-					str.Format(L"$%d", symIdx+1);
-					r.OffsetRect(CPoint(0, 10));
-					memDC.DrawText(str, r, DT_CENTER);
+
+					if (sym.showMem)
+					{
+						// 메모리 덤프 출력
+						const int startX = xIdx + (yIdx * cellPerLine);
+						for (int i = startX; i < startX + dispSize; ++i)
+						{
+							if ((int)m_dump.size() <= i)
+								continue;
+
+							int x = (i % cellPerLine) * m_BlockW;
+							int y = (i / cellPerLine) * m_BlockH;
+
+							const auto oldBrush = memDC.SelectObject(m_dump[i].change ? m_brushes[1] : m_brushes[0]);
+							memDC.Rectangle(CRect(x, y, x + m_BlockW, y + m_BlockH));
+
+							memDC.SetBkColor(m_dump[i].change ? RGB(255, 0, 0) : RGB(255, 255, 255));
+							CString str;
+							if (m_isDisplayASCII)
+							{
+								str.Format(L"%c", (char)m_dump[i].c);
+							}
+							else
+							{
+								str.Format(L"%x", m_dump[i].c);
+							}
+							memDC.TextOutW(x + 5, y + 10, str);
+							memDC.SelectObject(oldBrush);
+						}
+
+
+					}
+					else
+					{
+						memDC.SetBkColor(RGB(255, 255, 255));
+						CString str;
+						str.Format(L"$%d", symIdx+1);
+						r.OffsetRect(CPoint(0, 10));
+						memDC.DrawText(str, r, DT_CENTER);
+					}
 
 					xIdx += dispSize;
 					dispBytes -= dispSize;
@@ -105,11 +140,11 @@ void cMemDumpWindow::OnDraw(CDC* pDC)
 			// 메모리 덤프 출력
 			for (u_int i = 0; i < m_dump.size(); ++i)
 			{
-				int x = (i % cellPerLine) * RW;
-				int y = (i / cellPerLine) * RH;
+				int x = (i % cellPerLine) * m_BlockW;
+				int y = (i / cellPerLine) * m_BlockH;
 
 				memDC.SelectObject(m_dump[i].change ? m_brushes[1] : m_brushes[0]);
-				memDC.Rectangle(CRect(x, y, x + RW, y + RH));
+				memDC.Rectangle(CRect(x, y, x + m_BlockW, y + m_BlockH));
 
 				memDC.SetBkColor(m_dump[i].change? RGB(255,0,0):RGB(255,255,255));
 				CString str;
@@ -159,4 +194,96 @@ void cMemDumpWindow::UpdateDump(const char *buff, const int size)
 	}
 
 	InvalidateRect(NULL);
+}
+
+
+// 화면에 심볼정보를 출력할지를 결정한다.
+void cMemDumpWindow::SetDisplaySymbol(const bool isSymbol, cProtocolParser *protocol) 
+{ 
+	m_isDisplaySymbol = isSymbol;
+
+	// 심볼 정보를 업데이트 한다.
+	if (protocol && !protocol->m_fields.empty())
+	{
+		m_symbols.clear();
+		m_symbols.reserve(protocol->m_fields.size());
+
+		for each (auto field in protocol->m_fields)
+		{
+			sSymbol sym = { field.bytes, false };
+			m_symbols.push_back(sym);
+		}
+	}
+}
+
+
+void cMemDumpWindow::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	const int symIdx = GetSelectSymbol(point);
+	if (symIdx >= 0)
+	{
+		m_symbols[symIdx].showMem = !m_symbols[symIdx].showMem;
+		InvalidateRect(NULL);
+	}
+
+	CScrollView::OnLButtonDown(nFlags, point);
+}
+
+
+void cMemDumpWindow::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	const int symIdx = GetSelectSymbol(point);
+	if (symIdx >= 0)
+	{
+		m_symbols[symIdx].showMem = !m_symbols[symIdx].showMem;
+		InvalidateRect(NULL);
+	}
+
+	CScrollView::OnLButtonDblClk(nFlags, point);
+}
+
+
+// 선택한 심볼 인덱스를 리턴한다. 없다면 -1 리턴
+int cMemDumpWindow::GetSelectSymbol(const CPoint &pt)
+{
+	RETV(!m_isDisplaySymbol, -1);
+
+	CRect cr;
+	GetClientRect(cr);
+	const int cellPerLine = cr.Width() / m_BlockW;
+	if (cellPerLine <= 0)
+		return -1;
+
+	int xIdx = 0;
+	int yIdx = 0;
+	int symIdx = 0;
+	for each (auto &sym in m_symbols)
+	{
+		int dispBytes = sym.bytes;
+		while (dispBytes > 0)
+		{
+			if (cellPerLine <= xIdx)
+			{
+				xIdx = 0;
+				yIdx++;
+			}
+
+			const int dispSize = (cellPerLine > xIdx + dispBytes) ? dispBytes : (cellPerLine - xIdx);
+			const int x = xIdx * m_BlockW;
+			const int y = yIdx * m_BlockH;
+			CRect r(x, y, x + (dispSize*m_BlockW), y + m_BlockH);
+			if (r.PtInRect(pt))
+			{
+				// Find!!
+				return symIdx;
+			}
+
+			xIdx += dispSize;
+			dispBytes -= dispSize;
+		}
+
+		++symIdx;
+	}
+
+	return -1;
 }
