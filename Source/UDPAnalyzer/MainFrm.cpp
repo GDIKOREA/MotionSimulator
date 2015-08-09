@@ -36,6 +36,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_COMMAND(ID_FILE_SAVEAS, &CMainFrame::OnFileSaveAs)
 	ON_COMMAND(ID_FILE_NEW, &CMainFrame::OnFileNew)
 	ON_UPDATE_COMMAND_UI(ID_FILE_SAVEAS, &CMainFrame::OnUpdateFileSaveas)
+	ON_COMMAND(ID_VIEW_INITDOCKINGWINDOWS, &CMainFrame::OnViewInitdockingwindows)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -55,6 +56,7 @@ CMainFrame::CMainFrame()
 
 	// 기본 설정파일을 연다.
 	g_option.Read("udpanalyzer_default.cfg", false);
+	g_option.m_fileName = "udpanalyzer_default.cfg";
 }
 
 CMainFrame::~CMainFrame()
@@ -69,6 +71,13 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
+
+	if (g_option.m_initWindows)
+	{
+		GetDockingManager()->DisableRestoreDockState();
+		CDockingManager::SetDockingMode(DT_IMMEDIATE);
+		g_option.m_initWindows = false;
+	}
 
 	BOOL bNameValid;
 
@@ -270,6 +279,32 @@ void CMainFrame::OnDestroy()
 }
 
 
+// 환경변수에 설정된 값을 UI 에 적용한다.
+void CMainFrame::UpdateViewConfig()
+{
+	((COutputView*)m_outputView->GetChildView())->UpdateConfig();
+	((CPlotView*)m_plotView->GetChildView())->UpdateConfig();
+	((CUDPView*)m_udpView->GetChildView())->UpdateConfig();
+	((CMixingView*)m_mixingView->GetChildView())->UpdateConfig();
+}
+
+
+// UI에 설정된 값을 환경변수에 저장한다.
+void CMainFrame::SaveViewConfig(const string fileName)
+{
+	RET(fileName.empty());
+
+	((COutputView*)m_outputView->GetChildView())->SaveConfig();
+	((CPlotView*)m_plotView->GetChildView())->SaveConfig();
+	((CUDPView*)m_udpView->GetChildView())->SaveConfig();
+	((CMixingView*)m_mixingView->GetChildView())->SaveConfig();
+
+	// 환경변수 파일 저장
+	g_option.m_fileName = fileName;
+	g_option.Write(fileName);
+}
+
+
 void CMainFrame::OnFileOpen()
 {
 	TCHAR szFilter[] = L"Option(*.cfg)|*.cfg| All Files(*.*)|*.*||";
@@ -277,15 +312,11 @@ void CMainFrame::OnFileOpen()
 	if (IDOK == dlg.DoModal()) 
 	{
 		// 설정해놓은 값을 먼저 저장한다.
-		if (!g_option.m_fileName.empty())
-			g_option.Write(g_option.m_fileName);
+		SaveViewConfig(g_option.m_fileName);
 
 		g_option.Read(wstr2str((LPCTSTR)dlg.GetPathName()));
 
-		((COutputView*)m_outputView->GetChildView())->UpdateConfig();
-		((CPlotView*)m_plotView->GetChildView())->UpdateConfig();
-		((CUDPView*)m_udpView->GetChildView())->UpdateConfig();
-		((CMixingView*)m_mixingView->GetChildView())->UpdateConfig();
+		UpdateViewConfig();
 	}
 }
 
@@ -297,15 +328,7 @@ void CMainFrame::OnFileSaveAs()
 	if (IDOK == dlg.DoModal())
 	{
 		// UI에 설정된 값을 환경변수에 저장한다.
-		((COutputView*)m_outputView->GetChildView())->SaveConfig();
-		((CPlotView*)m_plotView->GetChildView())->SaveConfig();
-		((CUDPView*)m_udpView->GetChildView())->SaveConfig();
-		((CMixingView*)m_mixingView->GetChildView())->SaveConfig();
-
-		// 저장한다.
-		string fileName = wstr2str((LPCTSTR)dlg.GetPathName());
-		g_option.m_fileName = fileName;
-		g_option.Write(fileName);
+		SaveViewConfig(wstr2str((LPCTSTR)dlg.GetPathName()));
 	}
 }
 
@@ -314,25 +337,21 @@ void CMainFrame::OnFileSaveAs()
 void CMainFrame::OnFileNew()
 {
 	// UI에 설정된 값을 환경변수에 저장한다.
-	((COutputView*)m_outputView->GetChildView())->SaveConfig();
-	((CPlotView*)m_plotView->GetChildView())->SaveConfig();
-	((CUDPView*)m_udpView->GetChildView())->SaveConfig();
-	((CMixingView*)m_mixingView->GetChildView())->SaveConfig();
-
-	// 설정해놓은 값을 먼저 저장한다.
-	if (!g_option.m_fileName.empty())
-		g_option.Write(g_option.m_fileName);
+	SaveViewConfig(g_option.m_fileName);
 
 	g_option.Read("udpanalyzer_default.cfg", false);
 
-	((COutputView*)m_outputView->GetChildView())->UpdateConfig();
-	((CPlotView*)m_plotView->GetChildView())->UpdateConfig();
-	((CUDPView*)m_udpView->GetChildView())->UpdateConfig();
-	((CMixingView*)m_mixingView->GetChildView())->UpdateConfig();
+	UpdateViewConfig();
 }
 
 
 void CMainFrame::OnUpdateFileSaveas(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable();
+}
+
+
+void CMainFrame::OnViewInitdockingwindows()
+{
+	g_option.m_initWindows = true;
 }

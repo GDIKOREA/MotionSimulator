@@ -11,6 +11,7 @@
 CMixingView::CMixingView(CWnd* pParent /*=NULL*/)
 	: CDockablePaneChildView(CMixingView::IDD, pParent)
 	, m_incTime(0)
+	, m_incSymbolUpdateTime(0)
 	, m_IsUpdateSymbolList(TRUE)
 	, m_symbolCount(0)
 {
@@ -82,6 +83,8 @@ void CMixingView::UpdateConfig()
 	}
 	m_CommandEditor.SetWindowTextW(cmdStr);
 
+	m_parser.ParseStr(wstr2str((LPCTSTR)cmdStr));
+
 	UpdateData(FALSE);
 }
 
@@ -137,7 +140,7 @@ void CMixingView::Update(const float deltaSeconds)
 			}
 			else
 			{
-				UpdateSymbolList();
+				UpdateSymbolList(m_incTime);
 			}
 		}
 
@@ -191,14 +194,20 @@ void CMixingView::InitSymbolList()
 }
 
 
-void CMixingView::UpdateSymbolList()
+void CMixingView::UpdateSymbolList(const float deltaSeconds)
 {
 	using namespace script;
 	
+	m_incSymbolUpdateTime += deltaSeconds;
+	const bool isAllUpdate = m_incSymbolUpdateTime > 3.f;
+	if (isAllUpdate)
+		m_incSymbolUpdateTime = 0;
+
+
 	for each (auto sym in script::g_symbols)
 	{
 		// 그 전 데이타와 다를 때만 업데이트 한다.
-		if (m_cloneSymbols[sym.first] == sym.second)
+		if (!isAllUpdate && (m_cloneSymbols[sym.first] == sym.second))
 			continue;
 
 		CString str;

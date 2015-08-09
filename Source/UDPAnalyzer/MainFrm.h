@@ -28,6 +28,9 @@ public:
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL);
+	void UpdateViewConfig();
+	void SaveViewConfig(const string fileName);
+
 
 // Implementation
 public:
@@ -55,6 +58,7 @@ public:
 	afx_msg void OnFileSaveAs();
 	afx_msg void OnFileNew();
 	afx_msg void OnUpdateFileSaveas(CCmdUI *pCmdUI);
+	afx_msg void OnViewInitdockingwindows();
 };
 
 

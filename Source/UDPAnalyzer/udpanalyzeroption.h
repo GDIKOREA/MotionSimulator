@@ -28,6 +28,8 @@ public:
 	string m_plotInputCmd;
 	string m_udpProtocolCmd;
 	int m_udpPort;
+
+	bool m_initWindows;
 };
 
 extern cUDPAnalyzerOption g_option;

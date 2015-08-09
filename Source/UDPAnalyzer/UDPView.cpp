@@ -215,7 +215,7 @@ void CUDPView::OnBnClickedCheckAscii()
 
 void CUDPView::UpdateConfig()
 {
-	CString command =
+	const CString command =
 		L"2, uint #test\r\n"
 		L"4, float\r\n"
 		L"4, float\r\n"
@@ -235,6 +235,27 @@ void CUDPView::UpdateConfig()
 
 	m_Port = g_option.m_udpPort;
 
+	m_protocolParser.ParseStr(wstr2str((LPCTSTR)cmdStr));
+
+
+	// 심볼 업데이트
+	script::ClearSymbols();
+	int i = 0;
+	for each (auto &field in m_protocolParser.m_fields)
+	{
+		script::sFieldData data;
+		ZeroMemory(data.buff, sizeof(data));
+		data.type = field.type;
+
+		const string id = format("$%d", i + 1); // $1 ,$2, $3 ~
+		const string oldId = format("@%d", i + 1); // @1, @2, @3 ~
+
+		script::g_symbols[oldId] = data;
+		script::g_symbols[id] = data;
+
+		++i;
+	}	
+	
 	UpdateData(FALSE);
 }
 

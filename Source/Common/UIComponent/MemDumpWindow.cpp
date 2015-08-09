@@ -23,7 +23,6 @@ cMemDumpWindow::~cMemDumpWindow()
 
 BEGIN_MESSAGE_MAP(cMemDumpWindow, CScrollView)
 	ON_WM_ERASEBKGND()
-	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -60,12 +59,12 @@ void cMemDumpWindow::OnDraw(CDC* pDC)
 	const int cellPerLine = cr.Width() / RW;
 	if (cellPerLine > 0)
 	{
+		auto oldObject = memDC.SelectObject(m_brushes[2]);
+		memDC.Rectangle(cr);
+		memDC.SelectObject(oldObject);
+
 		if (m_isDisplaySymbol && m_protocol)
 		{
-			auto oldObject = memDC.SelectObject(m_brushes[2]);
-			memDC.Rectangle(cr);
-			memDC.SelectObject(oldObject);
-
 			// 심볼 출력
 			int xIdx = 0;
 			int yIdx = 0;
@@ -137,13 +136,6 @@ void cMemDumpWindow::OnDraw(CDC* pDC)
 BOOL cMemDumpWindow::OnEraseBkgnd(CDC* pDC)
 {
 	return TRUE;
-}
-
-
-void cMemDumpWindow::OnSize(UINT nType, int cx, int cy)
-{
-	CScrollView::OnSize(nType, cx, cy);
-
 }
 
 

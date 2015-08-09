@@ -12,6 +12,7 @@ cUDPAnalyzerOption g_option;
 
 
 cUDPAnalyzerOption::cUDPAnalyzerOption()
+	: m_initWindows(false)
 {
 
 }
@@ -49,6 +50,8 @@ bool cUDPAnalyzerOption::Read(const string &fileName, const bool showMsgBox ) //
 		m_plotInputCmd = props.get<string>("PLOTINPUTCMD", "");
 		m_udpProtocolCmd = props.get<string>("UDPPROTOCOLCMD", "");
 		m_udpPort = props.get<int>("UDPPORT", 8888);
+
+		m_initWindows = props.get<bool>("INITWINDOWS", false);
 	}
 	catch (std::exception&e)
 	{
@@ -84,6 +87,8 @@ bool cUDPAnalyzerOption::Write(const string &fileName)
 		props.add<string>("PLOTINPUTCMD", m_plotInputCmd);
 		props.add<string>("UDPPROTOCOLCMD", m_udpProtocolCmd);
 		props.add<int>("UDPPORT", m_udpPort);
+
+		props.add<bool>("INITWINDOWS", m_initWindows);
 
 		boost::property_tree::write_json(fileName, props);
 	}

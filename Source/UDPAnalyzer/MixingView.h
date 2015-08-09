@@ -26,10 +26,11 @@ protected:
 	int m_symbolCount; // 이 값과 현재 심볼 개수와 다르다면, SymbolList를 업데이트 한다.
 	map<string, int> m_symLookup;
 	map<string, script::sFieldData> m_cloneSymbols;
+	float m_incSymbolUpdateTime;
 
 protected:
 	void InitSymbolList();
-	void UpdateSymbolList();
+	void UpdateSymbolList(const float deltaSeconds);
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_ANCHOR_MAP();
