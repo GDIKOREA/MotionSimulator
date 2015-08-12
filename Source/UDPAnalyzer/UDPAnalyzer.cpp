@@ -74,8 +74,6 @@ BOOL CUDPAnalyzerApp::InitInstance()
 		return false;
 	}
 
-
-
 	if (!AfxOleInit())
 	{
 		AfxMessageBox(IDP_OLE_INIT_FAILED);

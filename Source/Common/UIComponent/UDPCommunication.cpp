@@ -60,8 +60,9 @@ int cUDPCommunication::Update(const float deltaSeconds, OUT char *buffer, const 
 		const int result = recv(readSockets.fd_array[0], buffer, bufferLen, 0);
 		if (result == SOCKET_ERROR || result == 0) // 받은 패킷사이즈가 0이면 서버와 접속이 끊겼다는 의미다.
 		{
-			Close();
-			return 0;
+			// 중간에 소켓에러가 뜨더라도, UDP 프로토콜은 계속 데이타를 받을 수 있다.
+// 			Close();
+// 			return 0;
 		}
 
 		return result;
