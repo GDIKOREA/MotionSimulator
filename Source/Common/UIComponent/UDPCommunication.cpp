@@ -4,7 +4,6 @@
 
 
 
-
 cUDPCommunication::cUDPCommunication() :
 m_isConnect(false)
 {

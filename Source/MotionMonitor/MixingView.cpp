@@ -6,7 +6,6 @@
 #include "MixingView.h"
 #include "afxdialogex.h"
 #include "mixingconfig.h"
-#include "MotionController.h"
 
 
 const static CString g_mixingviewPlotCommand = L"\r\n\
@@ -72,7 +71,29 @@ BOOL CMixingView::OnInitDialog()
 
 	InitAnchors();
 
-	const CString command =
+	UpdateConfig();
+
+	// Plot창 생성.
+	CRect rect;
+	GetClientRect(rect);
+
+	m_multiPlotWindows = new CMultiPlotWindow();
+	BOOL result = m_multiPlotWindows->Create(NULL, NULL, WS_VISIBLE | WS_CHILD,
+		CRect(0, 0, rect.Width(), 400), this, AFX_IDW_PANE_FIRST);
+
+	m_multiPlotWindows->SetScrollSizes(MM_TEXT, CSize(rect.Width() - 30, 100));
+	m_multiPlotWindows->ShowWindow(SW_SHOW);
+	m_multiPlotWindows->SetFixedWidthMode(true);
+
+	return TRUE;
+}
+
+
+void CMixingView::UpdateConfig(bool IsSaveAndValidate) //IsSaveAndValidate=true
+{
+	if (IsSaveAndValidate)
+	{
+		const CString command =
 L"#input = udp\n\
 #input = motionwave\n\
 input = joystick+udp+motionwave\n\
@@ -105,37 +126,30 @@ mixing_bias_heave = 0\n\
 \n\
 ";
 
-	CString cmdStr;
-	std::ifstream cfgfile("mixing_config.cfg");
-	if (cfgfile.is_open())
-	{
-		std::string str((std::istreambuf_iterator<char>(cfgfile)), std::istreambuf_iterator<char>());
-		cmdStr = str2wstr(str).c_str();
+		CString cmdStr;
+		if (!cMotionController::Get()->m_config.m_mixingModCommand.empty())
+		{
+			cmdStr = str2wstr(cMotionController::Get()->m_config.m_mixingModCommand).c_str();
+		}
+		else
+		{
+			cmdStr = command;
+		}
+		m_EditCommand.SetWindowTextW(cmdStr);
+
+		m_config.ParseStr(wstr2str((LPCTSTR)cmdStr));
+
+		UpdateData(FALSE);
 	}
 	else
 	{
-		cmdStr = command;
+		UpdateData();
+
+		// 환경파일 저장
+		CString command;
+		m_EditCommand.GetWindowTextW(command);
+		cMotionController::Get()->m_config.m_mixingModCommand = wstr2str((LPCTSTR)command);
 	}
-	m_EditCommand.SetWindowTextW(cmdStr);
-
-	m_config.ParseStr(wstr2str((LPCTSTR)cmdStr));
-
-
-
-	// Plot창 생성.
-	CRect rect;
-	GetClientRect(rect);
-
-	m_multiPlotWindows = new CMultiPlotWindow();
-	BOOL result = m_multiPlotWindows->Create(NULL, NULL, WS_VISIBLE | WS_CHILD,
-		CRect(0, 0, rect.Width(), 400), this, AFX_IDW_PANE_FIRST);
-
-	m_multiPlotWindows->SetScrollSizes(MM_TEXT, CSize(rect.Width() - 30, 100));
-	m_multiPlotWindows->ShowWindow(SW_SHOW);
-	m_multiPlotWindows->SetFixedWidthMode(true);
-
-
-	return TRUE;
 }
 
 
@@ -342,17 +356,7 @@ void CMixingView::Mixing(const float deltaSeconds,
 
 void CMixingView::OnDestroy()
 {
-	UpdateData();
-
-	// 환경파일 저장
-	std::ofstream cfgfile("mixing_config.cfg");
-	if (cfgfile.is_open())
-	{
-		CString command;
-		m_EditCommand.GetWindowTextW(command);
-		string str = wstr2str((LPCTSTR)command);
-		cfgfile << str;
-	}
+	UpdateConfig(false);
 
 	CDockablePaneChildView::OnDestroy();
 }

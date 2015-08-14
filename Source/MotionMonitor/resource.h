@@ -84,9 +84,7 @@
 #define IDS_FIND_TAB                    302
 #define IDS_EXPLORER                    305
 #define IDS_EDIT_MENU                   306
-#define IDD_DIALOG_SERIAL_EDITOR        310
 #define IDD_DIALOG_3D                   311
-#define IDD_DIALOG_SERIAL_GRAPH         312
 #define IDD_DIALOG_UDP_GRAPH            315
 #define IDD_DIALOG_UDP_EDITOR           317
 #define IDD_DIALOG_MOTION_OUTPUT        318
@@ -102,16 +100,16 @@
 #define IDC_BUTTON_HELP                 1002
 #define IDC_BUTTON_UPDATE               1003
 #define IDC_STATIC1                     1004
-#define IDC_RICHEDIT_SERIAL             1005
 #define IDC_BUTTON_PAUSE                1005
-#define IDC_STATIC_FASTTEXT             1006
-#define IDC_RADIO_MODE                  1007
-#define IDC_RADIO_FAST                  1008
+#define IDC_BUTTON_PLOTUPDATE           1005
+#define IDC_BUTTON_PLOTPAUSE            1006
 #define IDC_EDIT1                       1008
 #define IDC_BUTTON_UDP_SERVER_BIND      1009
 #define IDC_STATIC_PACKET               1010
 #define IDC_STATIC_PACKET_COUNT         1011
 #define IDC_MFCEDITBROWSE_XMLPATH       1012
+#define IDC_STATIC_PACKET_COUNT2        1012
+#define IDC_STATIC_PLOTINPUT            1012
 #define IDC_RICHEDIT2_UDP_LOG           1013
 #define IDC_EDIT_SERVER_PORT            1014
 #define IDC_BUTTON_CLEAR                1015
@@ -195,15 +193,16 @@
 #define IDC_STATIC_UDPUPDATE_TIME       1081
 #define IDC_STATIC_UDPUPDATE_TIME2      1082
 #define IDC_STATIC_INSTATE              1082
+#define IDC_EDIT_PORT                   1084
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        329
+#define _APS_NEXT_RESOURCE_VALUE        330
 #define _APS_NEXT_COMMAND_VALUE         32772
-#define _APS_NEXT_CONTROL_VALUE         1084
+#define _APS_NEXT_CONTROL_VALUE         1085
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

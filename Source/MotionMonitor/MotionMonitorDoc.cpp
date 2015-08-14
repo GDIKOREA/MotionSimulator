@@ -10,6 +10,7 @@
 #endif
 
 #include "MotionMonitorDoc.h"
+#include "MainFrm.h"
 
 #include <propkey.h>
 
@@ -36,20 +37,6 @@ CMotionMonitorDoc::CMotionMonitorDoc()
 CMotionMonitorDoc::~CMotionMonitorDoc()
 {
 }
-
-BOOL CMotionMonitorDoc::OnNewDocument()
-{
-	if (!CDocument::OnNewDocument())
-		return FALSE;
-
-	// TODO: add reinitialization code here
-	// (SDI documents will reuse this document)
-
-	return TRUE;
-}
-
-
-
 
 // CMotionMonitorDoc serialization
 
@@ -135,3 +122,53 @@ void CMotionMonitorDoc::Dump(CDumpContext& dc) const
 
 
 // CMotionMonitorDoc commands
+BOOL CMotionMonitorDoc::OnNewDocument()
+{
+	if (!CDocument::OnNewDocument())
+		return FALSE;
+
+	if (CMainFrame *pFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+	{
+		cMotionMonitorConfig &config = cMotionController::Get()->m_config;
+		config.ReadConfigFile("motionmonitor_new.json");
+		pFrm->UpdateConfig();
+	}
+
+	return TRUE;
+}
+
+
+BOOL CMotionMonitorDoc::OnOpenDocument(LPCTSTR lpszPathName)
+{
+	if (!CDocument::OnOpenDocument(lpszPathName))
+		return FALSE;
+
+	if (CMainFrame *pFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+	{
+		cMotionMonitorConfig &config = cMotionController::Get()->m_config;
+
+		pFrm->UpdateConfig(false);
+		config.WriteConfigFile(config.m_fileName);
+
+		if (config.ReadConfigFile(wstr2str(lpszPathName)))
+			pFrm->UpdateConfig();
+	}
+
+	return TRUE;
+}
+
+
+BOOL CMotionMonitorDoc::OnSaveDocument(LPCTSTR lpszPathName)
+{
+	CDocument::OnSaveDocument(lpszPathName);
+
+	if (CMainFrame *pFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+	{
+		cMotionMonitorConfig &config = cMotionController::Get()->m_config;
+
+		pFrm->UpdateConfig(false);
+		config.WriteConfigFile(wstr2str(lpszPathName));
+	}
+
+	return TRUE;
+}

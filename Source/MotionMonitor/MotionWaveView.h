@@ -14,9 +14,11 @@ public:
 // Dialog Data
 	enum { IDD = IDD_DIALOG_MWAVE };
 
+	virtual void UpdateConfig(bool IsSaveAndValidate = true) override;
+	bool LoadandPlayMotionWave(const string &fileName);
+
 	virtual void Update(const float deltaSeconds) override;
 	
-	bool LoadandPlayMotionWave(const string &fileName);
 
 
 protected:

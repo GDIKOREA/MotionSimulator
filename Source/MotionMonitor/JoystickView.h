@@ -14,6 +14,8 @@ public:
 // Dialog Data
 	enum { IDD = IDD_DIALOG_JOYSTICK };
 
+	virtual void UpdateConfig(bool IsSaveAndValidate = true) override;
+
 	virtual void Update(const float deltaSeconds) override;
 
 

@@ -3,6 +3,7 @@
 //
 #pragma once
 
+#include "motionmonitorconfig.h"
 
 
 class cMotionController : public common::cSingleton<cMotionController>
@@ -10,6 +11,9 @@ class cMotionController : public common::cSingleton<cMotionController>
 public:
 	cMotionController();
 	virtual ~cMotionController();
+
+	bool ReadConfigFile(const string &fileName);
+	bool WriteConfigFile(const string &fileName);
 
 
 public:
@@ -28,4 +32,7 @@ public:
 
 	// MotionWave로부터 받아서 계산된 값.
 	cMotionWaveModulator m_mwavMod;
+
+
+	cMotionMonitorConfig m_config;
 };

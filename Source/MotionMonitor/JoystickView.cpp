@@ -6,7 +6,6 @@
 #include "JoystickView.h"
 #include "afxdialogex.h"
 #include <stdio.h>
-#include "MotionController.h"
 
 
 #define _USE_MATH_DEFINES
@@ -118,8 +117,19 @@ BOOL CJoystickView::OnInitDialog()
 	m_multiPlotWindows->ShowWindow(SW_SHOW);
 	m_multiPlotWindows->SetFixedWidthMode(m_CheckFixedMode? true:false);
 
+	UpdateConfig();
 
-	const CString command =
+	UpdateData(FALSE);
+
+	return TRUE;
+}
+
+
+void CJoystickView::UpdateConfig(bool IsSaveAndValidate) //IsSaveAndValidate=true
+{
+	if (IsSaveAndValidate)
+	{
+		const CString command =
 L"# joystick\n\
 \n\
 yaw_proportion = 1\n\
@@ -150,23 +160,29 @@ spline_interpolation_rate = 10\n\
 \n\
 ";
 
-	CString cmdStr;
-	std::ifstream cfgfile("joystick_config.cfg");
-	if (cfgfile.is_open())
-	{
-		std::string str((std::istreambuf_iterator<char>(cfgfile)), std::istreambuf_iterator<char>());
-		cmdStr = str2wstr(str).c_str();
+		CString cmdStr;
+		if (!cMotionController::Get()->m_config.m_joystickModCommand.empty())
+		{
+			cmdStr = str2wstr(cMotionController::Get()->m_config.m_joystickModCommand).c_str();
+		}
+		else
+		{
+			cmdStr = command;
+		}
+		m_EditCommand.SetWindowTextW(cmdStr);
+
+		UpdateData(FALSE);
 	}
 	else
 	{
-		cmdStr = command;
+		UpdateData();
+
+		// 환경파일 저장
+		CString command;
+		m_EditCommand.GetWindowTextW(command);
+		cMotionController::Get()->m_config.m_joystickModCommand = wstr2str((LPCTSTR)command);
 	}
-	m_EditCommand.SetWindowTextW(cmdStr);
 
-
-	UpdateData(FALSE);
-
-	return TRUE;
 }
 
 
@@ -542,17 +558,7 @@ void CJoystickView::OnBnClickedCheckFixedmode()
 
 void CJoystickView::OnDestroy()
 {
-	UpdateData();
-
-	// 환경파일 저장
-	std::ofstream cfgfile("joystick_config.cfg");
-	if (cfgfile.is_open())
-	{
-		CString command;
-		m_EditCommand.GetWindowTextW(command);
-		string str = wstr2str((LPCTSTR)command);
-		cfgfile << str;
-	}
+	UpdateConfig(false);
 
 	CDockablePaneChildView::OnDestroy();	
 }

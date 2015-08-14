@@ -13,11 +13,10 @@ protected: // create from serialization only
 	CMainFrame();
 	DECLARE_DYNCREATE(CMainFrame)
 
-// Attributes
-public:
 
-// Operations
 public:
+	void UpdateConfig(bool IsSaveAndValidate = true);
+
 
 // Overrides
 public:
@@ -38,13 +37,8 @@ protected:  // control bar embedded members
 
 	list<CDockablePaneBase*> m_viewList;
 	CCube3DPane *m_wndCube3DView;
-	CDockablePaneBase *m_wndSerialEditorView;
-	CDockablePaneBase *m_serialGraphView;
-	CDockablePaneBase *m_udpGraphView;
-	CDockablePaneBase *m_udpEditorView;
-	CDockablePaneBase *m_motionOutputView;
 	CDockablePaneBase *m_motionInputView;
-	CDockablePaneBase *m_motionControlView;
+	CDockablePaneBase *m_motionOutputView;
 	CDockablePaneBase *m_joystickView;
 	CDockablePaneBase *m_motionWaveView;
 	CDockablePaneBase *m_mixingView;

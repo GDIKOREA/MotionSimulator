@@ -5,7 +5,6 @@
 #include "MotionMonitor.h"
 #include "MotionOutputView.h"
 #include "afxdialogex.h"
-#include "MotionController.h"
 
 
 // CMotionOutputView dialog
@@ -57,6 +56,7 @@ BEGIN_MESSAGE_MAP(CMotionOutputView, CDockablePaneChildView)
 	ON_BN_CLICKED(IDC_BUTTON_SERVO_ON, &CMotionOutputView::OnBnClickedButtonServoOn)
 	ON_BN_CLICKED(IDC_BUTTON_SERVO_OFF, &CMotionOutputView::OnBnClickedButtonServoOff)
 	ON_BN_CLICKED(IDC_CHECK1, &CMotionOutputView::OnBnClickedCheck1)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -94,10 +94,6 @@ BOOL CMotionOutputView::OnInitDialog()
 	m_multiPlotWindows->SetScrollSizes(MM_TEXT, CSize(rect.Width() - 30, 100));
 	m_multiPlotWindows->ShowWindow(SW_SHOW);
 
-
-
-	m_COMPortComboBox.InitList();
-
 	const int baudRate[] = { 9600, 14400, 19200, 38400, 56000, 57600, 115200 };
 	for (int i = 0; i < ARRAYSIZE(baudRate); ++i)
 	{
@@ -105,12 +101,31 @@ BOOL CMotionOutputView::OnInitDialog()
 		wsprintf(brateName, L"%d", baudRate[i]);
 		m_BaudRateComboBox.InsertString(m_BaudRateComboBox.GetCount(), brateName);
 	}
-	m_BaudRateComboBox.SetCurSel(0);
+
+	UpdateConfig();
 
 	m_Log.SetBackgroundColor(FALSE, RGB(0, 0, 0));
 	m_OutputLog.SetBackgroundColor(FALSE, RGB(0, 0, 0));
 
 	return TRUE;
+}
+
+
+void CMotionOutputView::UpdateConfig(bool IsSaveAndValidate) //IsSaveAndValidate=true
+{
+	if (IsSaveAndValidate)
+	{
+		m_COMPortComboBox.InitList(cMotionController::Get()->m_config.m_motionOutputComPort);
+		m_BaudRateComboBox.SetCurSel(cMotionController::Get()->m_config.m_motionOutputBaudRate);
+		UpdateData(FALSE);
+	}
+	else
+	{
+		UpdateData();
+
+		cMotionController::Get()->m_config.m_motionOutputComPort = m_COMPortComboBox.GetPortNum();
+		cMotionController::Get()->m_config.m_motionOutputBaudRate = m_BaudRateComboBox.GetCurSel();
+	}
 }
 
 
@@ -320,5 +335,13 @@ void CMotionOutputView::SendMotionControllSwitchMessage(const int state)
 
 void CMotionOutputView::OnBnClickedCheck1()
 {
-	UpdateData();	
+	UpdateData();
+}
+
+
+void CMotionOutputView::OnDestroy()
+{
+	UpdateConfig(false);
+
+	CDockablePaneChildView::OnDestroy();	
 }

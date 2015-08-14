@@ -70,27 +70,6 @@ END
 // Dialog
 //
 
-IDD_DIALOG_SERIAL_EDITOR DIALOGEX 0, 0, 309, 176
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    CONTROL         "Normal",IDC_RADIO_MODE,"Button",BS_AUTORADIOBUTTON | WS_GROUP,7,7,38,10
-    CONTROL         "Fast",IDC_RADIO_FAST,"Button",BS_AUTORADIOBUTTON,53,7,30,10
-    LTEXT           "Serial Receive Data",IDC_STATIC_FASTTEXT,7,20,295,8
-    CONTROL         "",IDC_RICHEDIT_SERIAL,"RichEdit20W",WS_BORDER | WS_VSCROLL | WS_TABSTOP | 0x18c4,7,31,295,138
-END
-
-IDD_DIALOG_SERIAL_GRAPH DIALOGEX 0, 0, 309, 176
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    LTEXT           "Plot Command Editor",IDC_STATIC1,7,115,67,8
-    CONTROL         "Fixed Mode",IDC_CHECK_FIXEDMODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,81,115,53,10
-    EDITTEXT        IDC_EDIT_COMMAND,7,125,295,44,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
-    PUSHBUTTON      "Help",IDC_BUTTON_HELP,200,111,50,14
-    PUSHBUTTON      "Update",IDC_BUTTON_UPDATE,253,111,50,14
-END
-
 IDD_DIALOG_UDP_GRAPH DIALOGEX 0, 0, 309, 176
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -160,14 +139,29 @@ BEGIN
     LTEXT           "Command Edit",IDC_STATIC,7,7,46,8
 END
 
-IDD_DIALOG_MOTION_INPUT DIALOGEX 0, 0, 309, 268
+IDD_DIALOG_MOTION_INPUT DIALOGEX 0, 0, 309, 443
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    PUSHBUTTON      "Update",IDC_BUTTON_UPDATE,7,141,50,14
-    CONTROL         "",IDC_STATIC_GRAPH,"Static",SS_BLACKFRAME,7,173,295,88
-    CONTROL         "",IDC_RICHEDIT2_COMMAND,"RichEdit20W",WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x10c4,7,16,295,123
-    LTEXT           "Command Edit",IDC_STATIC,7,7,46,8
+    PUSHBUTTON      "Update",IDC_BUTTON_UPDATE,7,163,50,14
+    CONTROL         "",IDC_STATIC_GRAPH,"Static",SS_BLACKFRAME,7,184,295,191
+    CONTROL         "",IDC_RICHEDIT2_COMMAND,"RichEdit20W",ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,7,69,295,92
+    LTEXT           "Command Edit",IDC_STATIC,9,59,46,8
+    EDITTEXT        IDC_EDIT_PORT,84,7,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Port",IDC_STATIC,10,10,14,8
+    PUSHBUTTON      "Server Start",IDC_BUTTON_UDP_SERVER_BIND,129,7,50,14
+    LTEXT           "Packet",IDC_STATIC,9,22,21,8
+    LTEXT           "Packet",IDC_STATIC_PACKET,85,22,192,8
+    LTEXT           "Packet Rcv Count",IDC_STATIC,9,32,58,8
+    LTEXT           "Count",IDC_STATIC_PACKET_COUNT,85,32,192,8
+    LTEXT           "Plot Command Editor",IDC_STATIC1,7,382,67,8
+    CONTROL         "Fixed Mode",IDC_CHECK_FIXEDMODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,81,382,53,10
+    EDITTEXT        IDC_EDIT_COMMAND,7,392,295,44,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
+    PUSHBUTTON      "Help",IDC_BUTTON_HELP,200,378,50,14
+    PUSHBUTTON      "Update",IDC_BUTTON_PLOTUPDATE,253,378,50,14
+    PUSHBUTTON      "Pause",IDC_BUTTON_PLOTPAUSE,143,378,50,14
+    LTEXT           "Plot Input String",IDC_STATIC,9,43,53,8
+    LTEXT           "Plot Input String",IDC_STATIC_PLOTINPUT,85,43,192,8
 END
 
 IDD_DIALOG_X2GRAPH DIALOGEX 0, 0, 309, 176
@@ -253,22 +247,6 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO
 BEGIN
-    IDD_DIALOG_SERIAL_EDITOR, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 302
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 169
-    END
-
-    IDD_DIALOG_SERIAL_GRAPH, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 302
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 169
-    END
-
     IDD_DIALOG_UDP_GRAPH, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -306,7 +284,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 302
         TOPMARGIN, 7
-        BOTTOMMARGIN, 261
+        BOTTOMMARGIN, 436
     END
 
     IDD_DIALOG_X2GRAPH, DIALOG
@@ -539,44 +517,15 @@ BEGIN
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
         MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
-        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
-        MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW
-        MENUITEM "P&rint Setup...",             ID_FILE_PRINT_SETUP
-        MENUITEM SEPARATOR
         MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
-    END
-    POPUP "&Edit"
-    BEGIN
-        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
-        MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
-        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
     END
     POPUP "&View"
     BEGIN
         POPUP "&Toolbars and Docking Windows"
         BEGIN
             MENUITEM "<placeholder>",               ID_VIEW_TOOLBAR
-        END
-        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
-        POPUP "&Application Look"
-        BEGIN
-            MENUITEM "Windows &2000",               ID_VIEW_APPLOOK_WIN_2000
-            MENUITEM "Office &XP",                  ID_VIEW_APPLOOK_OFF_XP
-            MENUITEM "&Windows XP",                 ID_VIEW_APPLOOK_WIN_XP
-            MENUITEM "Office 200&3",                ID_VIEW_APPLOOK_OFF_2003
-            MENUITEM "Visual Studio 200&5",         ID_VIEW_APPLOOK_VS_2005
-            MENUITEM "Visual Studio 200&8",         ID_VIEW_APPLOOK_VS_2008
-            POPUP "Office 200&7"
-            BEGIN
-                MENUITEM "&Blue Style",                 ID_VIEW_APPLOOK_OFF_2007_BLUE
-                MENUITEM "B&lack Style",                ID_VIEW_APPLOOK_OFF_2007_BLACK
-                MENUITEM "&Silver Style",               ID_VIEW_APPLOOK_OFF_2007_SILVER
-                MENUITEM "&Aqua Style",                 ID_VIEW_APPLOOK_OFF_2007_AQUA
-            END
         END
         MENUITEM "View Initialize",             ID_VIEW_VIEWINITIALIZE
     END

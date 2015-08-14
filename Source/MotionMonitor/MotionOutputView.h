@@ -14,6 +14,8 @@ public:
 // Dialog Data
 	enum { IDD = IDD_DIALOG_MOTION_OUTPUT };
 
+	virtual void UpdateConfig(bool IsSaveAndValidate = true) override;
+
 	virtual void Update(const float deltaSeconds) override;
 
 
@@ -51,4 +53,5 @@ public:
 	afx_msg void OnBnClickedButtonServoOff();
 	BOOL m_IsOnlyEmergency;
 	afx_msg void OnBnClickedCheck1();
+	afx_msg void OnDestroy();
 };

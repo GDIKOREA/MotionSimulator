@@ -5,18 +5,14 @@
 #include "stdafx.h"
 #include "MotionMonitor.h"
 
-#include "SerialEditorView.h"
-#include "SerialGraphForm.h"
-#include "UDPGraphView.h"
-#include "UDPEditorView.h"
 #include "MotionOutputView.h"
-#include "MotionControlView.h"
-#include "MotionInputView.h"
+#include "UDPInputView.h"
 #include "JoystickView.h"
 #include "MotionWaveView.h"
 #include "MixingView.h"
 #include "ControlBoard.h"
 #include "MainFrm.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -51,7 +47,6 @@ static UINT indicators[] =
 
 CMainFrame::CMainFrame()
 {
-	// TODO: add member initialization code here
 	theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
 }
 
@@ -60,13 +55,15 @@ CMainFrame::~CMainFrame()
 	for each (auto &pane in m_viewList)
 		delete pane;
 	m_viewList.clear();
+
+	cMotionController::Get()->m_config.WriteConfigFile(cMotionController::Get()->m_config.m_fileName);
 }
+
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
-
 
 	// View 가 화면에 나오지 않을 때, 리셋시키기 위한 환경파일을 검사한다. 
 	using namespace std;
@@ -215,37 +212,6 @@ BOOL CMainFrame::CreateDockingWindows()
 		return FALSE; // failed to create
 	}
 
-	// Create udp graph view
-	{
-		m_udpGraphView = new CDockablePaneBase();
-		if (!m_udpGraphView->Create(L"UDP Graph View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_UDP_GRAPH, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
-		{
-			TRACE0("Failed to create UDP Graph View window\n");
-			return FALSE; // failed to create
-		}
-
-		CUDPGraphView *view = new CUDPGraphView(m_udpGraphView);
-		view->Create(CUDPGraphView::IDD, m_udpGraphView);
-		view->ShowWindow(SW_SHOW);
-		m_udpGraphView->SetChildView(view);
-	}
-
-
-	// Create udp graph view
-	{
-		m_udpEditorView = new CDockablePaneBase();
-		if (!m_udpEditorView->Create(L"UDP Editor View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_UDP_EDITOR, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
-		{
-			TRACE0("Failed to create UDP Editor View window\n");
-			return FALSE; // failed to create
-		}
-
-		CUDPEditorView *view = new CUDPEditorView(m_udpEditorView);
-		view->Create(CUDPEditorView::IDD, m_udpEditorView);
-		view->ShowWindow(SW_SHOW);
-		m_udpEditorView->SetChildView(view);
-	}
-
 
 	// Create motion output view
 	{
@@ -263,22 +229,6 @@ BOOL CMainFrame::CreateDockingWindows()
 	}
 
 
-	// Create motion control view
-	{
-		m_motionControlView = new CDockablePaneBase();
-		if (!m_motionControlView->Create(L"Motion Control View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_MOTION_CONTROL, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
-		{
-			TRACE0("Failed to create Motion Control View window\n");
-			return FALSE; // failed to create
-		}
-
-		CMotionControlView *view = new CMotionControlView(m_motionControlView);
-		view->Create(CMotionControlView::IDD, m_motionControlView);
-		view->ShowWindow(SW_SHOW);
-		m_motionControlView->SetChildView(view);
-	}
-
-
 	// Create motion input view
 	{
 		m_motionInputView = new CDockablePaneBase();
@@ -288,8 +238,8 @@ BOOL CMainFrame::CreateDockingWindows()
 			return FALSE; // failed to create
 		}
 
-		CMotionInputView *view = new CMotionInputView(m_motionInputView);
-		view->Create(CMotionInputView::IDD, m_motionInputView);
+		CUDPInputView *view = new CUDPInputView(m_motionInputView);
+		view->Create(CUDPInputView::IDD, m_motionInputView);
 		view->ShowWindow(SW_SHOW);
 		m_motionInputView->SetChildView(view);
 	}
@@ -360,50 +310,13 @@ BOOL CMainFrame::CreateDockingWindows()
 	}
 
 
-
-	// Create serial editor view
-	{
-		m_wndSerialEditorView = new CDockablePaneBase();
-		if (!m_wndSerialEditorView->Create(L"SerialEditorView", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_SERIAL_EDITOR, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
-		{
-			TRACE0("Failed to create SerialEditor View window\n");
-			return FALSE; // failed to create
-		}
-
-		CSerialEditorView *view = new CSerialEditorView(m_wndSerialEditorView);
-		BOOL reval = view->Create(CSerialEditorView::IDD, m_wndSerialEditorView);
-		view->ShowWindow(SW_SHOW);
-		m_wndSerialEditorView->SetChildView(view);
-	}
-
-
-	// Create serial graph view
-	{
-		m_serialGraphView = new CDockablePaneBase();
-		if (!m_serialGraphView->Create(L"SerialGraphView", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_SERIAL_GRAPH, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
-		{
-			TRACE0("Failed to create SerialGraph View window\n");
-			return FALSE; // failed to create
-		}
-
-		CSerialGraphForm *view = new CSerialGraphForm(m_serialGraphView);
-		view->Create(CSerialGraphForm::IDD, m_serialGraphView);
-		view->ShowWindow(SW_SHOW);
-		m_serialGraphView->SetChildView(view);
-	}
-
 	m_viewList.push_back(m_wndCube3DView);
-	m_viewList.push_back(m_udpGraphView);
-	m_viewList.push_back(m_udpEditorView);
 	m_viewList.push_back(m_motionOutputView);
 	m_viewList.push_back(m_motionInputView);
-	m_viewList.push_back(m_motionControlView);
 	m_viewList.push_back(m_joystickView);
 	m_viewList.push_back(m_motionWaveView);
 	m_viewList.push_back(m_mixingView);	
 	m_viewList.push_back(m_controlBoardView);
-	m_viewList.push_back(m_wndSerialEditorView);
-	m_viewList.push_back(m_serialGraphView);
 
 
 	SetDockingWindowIcons(theApp.m_bHiColorIcons);
@@ -412,27 +325,11 @@ BOOL CMainFrame::CreateDockingWindows()
 
 void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
 {
-// 	HICON hFileViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_FILE_VIEW_HC : IDI_FILE_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
-// 	m_wndFileView.SetIcon(hFileViewIcon, FALSE);
-// 
  	HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
-// 	m_wndClassView.SetIcon(hClassViewIcon, FALSE);
-// 
-// 	HICON hOutputBarIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
-// 	m_wndOutput.SetIcon(hOutputBarIcon, FALSE);
-// 
-// 	HICON hPropertiesBarIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
-// 	m_wndProperties.SetIcon(hPropertiesBarIcon, FALSE);
 
 	m_wndCube3DView->SetIcon(hClassViewIcon, FALSE);
-	//m_wndSensorView->SetIcon(hCube3DViewIcon, FALSE);
-	m_wndSerialEditorView->SetIcon(hClassViewIcon, FALSE);
-	m_serialGraphView->SetIcon(hClassViewIcon, FALSE);
-	m_udpGraphView->SetIcon(hClassViewIcon, FALSE);
-	m_udpEditorView->SetIcon(hClassViewIcon, FALSE);
 	m_motionOutputView->SetIcon(hClassViewIcon, FALSE);
 	m_motionInputView->SetIcon(hClassViewIcon, FALSE);
-	m_motionControlView->SetIcon(hClassViewIcon, FALSE);
 	m_joystickView->SetIcon(hClassViewIcon, FALSE);
 	m_motionWaveView->SetIcon(hClassViewIcon, FALSE);
 	m_mixingView->SetIcon(hClassViewIcon, FALSE);
@@ -520,4 +417,12 @@ void CMainFrame::OnViewViewinitialize()
 	if (!ofs.is_open())
 		return;
 	ofs << 1 << endl;
+}
+
+
+// 뷰 전체에 UpdateConfig() 함수를 호출한다.
+void CMainFrame::UpdateConfig(bool IsSaveAndValidate) //IsSaveAndValidate=true
+{
+	for each (auto &view in m_viewList)
+		view->GetChildView()->UpdateConfig(IsSaveAndValidate);
 }

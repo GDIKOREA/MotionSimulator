@@ -13,8 +13,10 @@ public:
 // Dialog Data
 	enum { IDD = IDD_DIALOG_MIXING };
 
-	virtual void Update(const float deltaSeconds) override;
+	virtual void UpdateConfig(bool IsSaveAndValidate = true) override;
 	void Mixing(const float deltaSeconds, OUT float &yaw, OUT float &pitch, OUT float &roll, OUT float &heave);
+
+	virtual void Update(const float deltaSeconds) override;
 
 
 protected:

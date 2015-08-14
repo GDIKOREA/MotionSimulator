@@ -18,3 +18,17 @@ cMotionController::~cMotionController()
 
 }
 
+
+bool cMotionController::ReadConfigFile(const string &fileName)
+{
+
+	return true;
+}
+
+
+bool cMotionController::WriteConfigFile(const string &fileName)
+{
+
+	return true;
+}
+

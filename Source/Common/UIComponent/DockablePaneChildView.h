@@ -17,6 +17,7 @@ public:
 	virtual void UpdateSerial(char *buffer) {}
 	virtual void Update(const float deltaSeconds) {}
 	virtual void UpdateUDP(const char *buffer, const int bufferLen) {}
+	virtual void UpdateConfig(bool IsSaveAndValidate=true) {}
 
 
 protected:

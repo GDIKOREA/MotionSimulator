@@ -5,7 +5,6 @@
 #include "MotionMonitor.h"
 #include "MotionWaveView.h"
 #include "afxdialogex.h"
-#include "MotionController.h"
 
 
 const static CString g_motionwavePlotCommand = L"\r\n\
@@ -104,8 +103,17 @@ BOOL CMotionWaveView::OnInitDialog()
 	m_multiPlotWindows->ProcessPlotCommand(g_motionwavePlotCommand, 2);
 	m_multiPlotWindows->SetFixedWidthMode(true);
 
+	UpdateConfig();
 
-	const CString command =
+	return TRUE;
+}
+
+
+void CMotionWaveView::UpdateConfig(bool IsSaveAndValidate) //IsSaveAndValidate=true
+{
+	if (IsSaveAndValidate)
+	{
+		const CString command =
 L"# motion wave\n\
 \n\
 yaw_proportion = 1\n\
@@ -141,21 +149,30 @@ motionview_start_delay = 20\n\
 \n\
 ";
 
-	CString cmdStr;
-	std::ifstream cfgfile("motionwave_config.cfg");
-	if (cfgfile.is_open())
-	{
-		std::string str((std::istreambuf_iterator<char>(cfgfile)), std::istreambuf_iterator<char>());
-		cmdStr = str2wstr(str).c_str();
+		CString cmdStr;
+		if (!cMotionController::Get()->m_config.m_mwaveModCommand.empty())
+		{
+			cmdStr = str2wstr(cMotionController::Get()->m_config.m_mwaveModCommand).c_str();
+		}
+		else
+		{
+			cmdStr = command;
+		}
+
+		m_EditCommand.SetWindowTextW(cmdStr);
+
+		UpdateData(FALSE);
 	}
 	else
 	{
-		cmdStr = command;
+		UpdateData();
+
+		// 환경파일 저장
+		CString command;
+		m_EditCommand.GetWindowTextW(command);
+		cMotionController::Get()->m_config.m_mwaveModCommand = wstr2str((LPCTSTR)command);
 	}
 
-	m_EditCommand.SetWindowTextW(cmdStr);
-
-	return TRUE;
 }
 
 
@@ -354,24 +371,6 @@ void CMotionWaveView::UpdateMotionWaveFileInfo(const string &fileName, const cMo
 }
 
 
-void CMotionWaveView::OnDestroy()
-{
-	UpdateData();
-
-	// 환경파일 저장
- 	std::ofstream cfgfile("motionwave_config.cfg");
-	if (cfgfile.is_open())
-	{
-		CString command;
-		m_EditCommand.GetWindowTextW(command);
-		string str = wstr2str((LPCTSTR)command);
-		cfgfile << str;
-	}
-
-	CDockablePaneChildView::OnDestroy();
-}
-
-
 // 모션웨이브 파일 로딩.
 bool CMotionWaveView::LoadandPlayMotionWave(const string &fileName)
 {
@@ -404,4 +403,12 @@ void CMotionWaveView::PlayMWave()
 	m_mwave.StartPlay();
 	m_mwaveSpline.StartPlay();
 	m_PlayButton.SetWindowTextW(L"Stop");
+}
+
+
+void CMotionWaveView::OnDestroy()
+{
+	UpdateConfig(false);
+
+	CDockablePaneChildView::OnDestroy();
 }

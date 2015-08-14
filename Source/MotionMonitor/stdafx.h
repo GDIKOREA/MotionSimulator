@@ -74,12 +74,7 @@ extern C3DPhysxView *g_3DPhysxView;
 enum VIEW_TYPE {
 	ID_VIEW_SENSOR = 10001,
 	ID_VIEW_CUBE3D,
-	ID_VIEW_SERIAL_EDITOR,
-	ID_VIEW_SERIAL_GRAPH,
-	ID_VIEW_UDP_GRAPH,
-	ID_VIEW_UDP_EDITOR,
 	ID_VIEW_MOTION_OUTPUT,
-	ID_VIEW_MOTION_CONTROL,
 	ID_VIEW_MOTION_INPUT,
 	ID_VIEW_JOYSTICK,
 	ID_VIEW_MOTIONWAVE,
@@ -107,3 +102,4 @@ extern CMotionWaveView *g_mwaveView;
 #include "motionwave.h"
 #include "motionwavemodulator.h"
 #include "spline.h"
+#include "MotionController.h"

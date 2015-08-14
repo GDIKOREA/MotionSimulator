@@ -45,40 +45,13 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SerialEditorPane.h">
-      <Filter>Pane</Filter>
-    </ClInclude>
-    <ClInclude Include="SerialEditorView.h">
-      <Filter>Pane</Filter>
-    </ClInclude>
     <ClInclude Include="Cube3DPane.h">
       <Filter>Pane</Filter>
-    </ClInclude>
-    <ClInclude Include="SerialGraphForm.h">
-      <Filter>Pane</Filter>
-    </ClInclude>
-    <ClInclude Include="UDPGraphView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UDPEditorView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MotionOutputView.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MotionController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Global.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MotionControlView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MotionInputView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="X2GraphDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\UIComponent\AutoHandle.h">
@@ -147,13 +120,7 @@
     <ClInclude Include="..\Common\UIComponent\UpdateObserver.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
-    <ClInclude Include="JoystickView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="motionwave.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MotionWaveView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\UIComponent\FileTreeCtrl.h">
@@ -161,9 +128,6 @@
     </ClInclude>
     <ClInclude Include="..\Common\UIComponent\UIUtiltity.h">
       <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="MixingView.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mixingconfig.h">
       <Filter>Header Files</Filter>
@@ -177,11 +141,32 @@
     <ClInclude Include="spline.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ControlBoard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MachineGunController.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ControlBoard.h">
+      <Filter>Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="MixingView.h">
+      <Filter>Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionWaveView.h">
+      <Filter>Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="X2GraphDialog.h">
+      <Filter>Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="JoystickView.h">
+      <Filter>Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionOutputView.h">
+      <Filter>Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="motionmonitorconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UDPInputView.h">
+      <Filter>Pane</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -200,40 +185,10 @@
     <ClCompile Include="MotionMonitorView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SerialEditorPane.cpp">
-      <Filter>Pane</Filter>
-    </ClCompile>
-    <ClCompile Include="SerialEditorView.cpp">
-      <Filter>Pane</Filter>
-    </ClCompile>
     <ClCompile Include="Cube3DPane.cpp">
       <Filter>Pane</Filter>
     </ClCompile>
-    <ClCompile Include="SerialGraphForm.cpp">
-      <Filter>Pane</Filter>
-    </ClCompile>
-    <ClCompile Include="UDPGraphView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UDPEditorView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MotionOutputView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MotionController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Global.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MotionControlView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MotionInputView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="X2GraphDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\UIComponent\BufferedSerial.cpp">
@@ -281,13 +236,7 @@
     <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp">
       <Filter>UIComponent</Filter>
     </ClCompile>
-    <ClCompile Include="JoystickView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="motionwave.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MotionWaveView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\UIComponent\FileTreeCtrl.cpp">
@@ -295,9 +244,6 @@
     </ClCompile>
     <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp">
       <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="MixingView.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mixingconfig.cpp">
       <Filter>Source Files</Filter>
@@ -311,11 +257,35 @@
     <ClCompile Include="spline.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="ControlBoard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MachineGunController.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Global.cpp">
+      <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="ControlBoard.cpp">
+      <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="MixingView.cpp">
+      <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="JoystickView.cpp">
+      <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionOutputView.cpp">
+      <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionWaveView.cpp">
+      <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="X2GraphDialog.cpp">
+      <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="motionmonitorconfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UDPInputView.cpp">
+      <Filter>Pane</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
