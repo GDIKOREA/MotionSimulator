@@ -89,6 +89,7 @@
 #define IDD_DIALOG_MIXING               312
 #define IDD_DIALOG_OUTPUT               313
 #define IDD_DIALOG_3D                   314
+#define IDD_DIALOG_UDP_PLAYER           315
 #define IDC_EDIT_PORT                   1000
 #define IDC_BUTTON_START                1001
 #define IDC_EDIT_PROTOCOL               1002
@@ -120,6 +121,17 @@
 #define IDC_LIST_SYMBOL                 1030
 #define IDC_CHECK_SYMBOL                1031
 #define IDC_BUTTON_NEWPLOTWINDOW        1032
+#define IDC_TREE_FILE                   1033
+#define IDC_BUTTON_FILE_REFRESH         1034
+#define IDC_BUTTON_PLAY                 1035
+#define IDC_BUTTON_STOP                 1036
+#define IDC_BUTTON_RECORD               1037
+#define IDC_SLIDER_PLAY                 1038
+#define IDC_STATIC_GROUP                1039
+#define IDC_TREE_FILEINFO               1040
+#define IDC_EDIT1                       1041
+#define IDC_EDIT_UDP_PORT               1041
+#define IDC_IPADDRESS_UDP_IP            1042
 #define ID_FILE_SAVEAS                  32771
 #define ID_VIEW_INITDOCKINGWINDOWS      32772
 
@@ -127,9 +139,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        315
+#define _APS_NEXT_RESOURCE_VALUE        316
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1033
+#define _APS_NEXT_CONTROL_VALUE         1043
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

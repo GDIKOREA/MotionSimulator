@@ -10,6 +10,7 @@
 #include "MixingView.h"
 #include "OutputView.h"
 #include "DXView.h"
+#include "UDPPlayerView.h"
 #include "MainFrm.h"
 
 
@@ -179,8 +180,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	CREATE_DOCKVIEW(CMixingView, m_mixingView, L"Mixing View", ID_VIEW_MIXING);
 	CREATE_DOCKVIEW(COutputView, m_outputView, L"Output View", ID_VIEW_OUTPUT);
 	CREATE_DOCKVIEW2(C3DView, m_dxView, L"3D View", ID_VIEW_DX, IDD_DIALOG_3D);
-
-
+	CREATE_DOCKVIEW2(CUDPPlayerView, m_udpPlayerView, L"UDP Player View", ID_VIEW_UDP_PLAYER, IDD_DIALOG_UDP_PLAYER);
 
 
 	graphic::GetMainCamera()->SetCamera(Vector3(-8.5f, 2.4f, -3.2f), Vector3(0, 0, 0), Vector3(0, 1, 0));

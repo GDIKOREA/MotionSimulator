@@ -19,6 +19,7 @@ public:
 	CDockablePaneBase *m_mixingView;
 	CDockablePaneBase *m_outputView;
 	CDockablePaneBase *m_dxView;
+	CDockablePaneBase *m_udpPlayerView;
 
 
 // Operations

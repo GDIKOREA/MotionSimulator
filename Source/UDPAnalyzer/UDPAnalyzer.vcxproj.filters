@@ -163,6 +163,12 @@
     <ClInclude Include="udpanalyzeroption.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UDPPlayerView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="udpstream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UDPAnalyzer.cpp">
@@ -277,6 +283,12 @@
       <Filter>UIComponent</Filter>
     </ClCompile>
     <ClCompile Include="udpanalyzeroption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UDPPlayerView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="udpstream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

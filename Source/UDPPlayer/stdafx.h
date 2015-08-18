@@ -5,7 +5,6 @@
 
 #pragma once
 
-
 #ifndef VC_EXTRALEAN
 #define VC_EXTRALEAN            // Exclude rarely-used stuff from Windows headers
 #endif
@@ -53,29 +52,3 @@
 #endif
 
 
-
-
-
-
-#include "../Common/Common/common.h"
-#include "../Common/Graphic/graphic.h"
-#include "../Common/UIComponent/uicomponent.h"
-#include "../Common/Network/network.h"
-#include <mmsystem.h>
-#include <fstream>
-
-
-enum VIEW_TYPE
-{
-	ID_VIEW_UDP = 10000,
-	ID_VIEW_PLOT,
-	ID_VIEW_MIXING,
-	ID_VIEW_OUTPUT,
-	ID_VIEW_DX,
-	ID_VIEW_UDP_PLAYER,
-};
-
-#include "mathparser.h"
-#include "mathinterpreter.h"
-#include "plotinputparser.h"
-#include "udpanalyzeroption.h"

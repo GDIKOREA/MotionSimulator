@@ -258,3 +258,4 @@ int C3DView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	return 0;
 }
+
