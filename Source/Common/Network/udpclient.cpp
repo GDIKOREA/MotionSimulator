@@ -17,6 +17,8 @@ cUDPClient::cUDPClient() :
 	, m_rcvBuffLen(0)
 	, m_handle(NULL)
 	, m_isReceiveData(false)
+	, m_isSendData(false)
+	, m_sleepMillis(30)
 {
 	InitializeCriticalSectionAndSpinCount(&m_sndCriticalSection, 0x00000400);
 	InitializeCriticalSectionAndSpinCount(&m_rcvCriticalSection, 0x00000400);
@@ -35,10 +37,13 @@ cUDPClient::~cUDPClient()
 
 
 // UDP 클라언트 생성, ip, port 에 접속을 시도한다.
-bool cUDPClient::Init(const string &ip, const int port)
+bool cUDPClient::Init(const string &ip, const int port, const int sleepMillis) //sleepMillis=30
 {
+	Close();
+
 	m_ip = ip;
 	m_port = port;
+	m_sleepMillis = sleepMillis;
 
 	if (network::LaunchUDPClient(ip, port, m_si_other, m_socket))
 	{
@@ -46,7 +51,10 @@ bool cUDPClient::Init(const string &ip, const int port)
 
 		m_isConnect = true;
 		m_threadLoop = true;
-		m_handle = (HANDLE)_beginthreadex(NULL, 0, UDPClientThreadFunction, this, 0, (unsigned*)&m_threadId);
+		if (!m_handle)
+		{
+			m_handle = (HANDLE)_beginthreadex(NULL, 0, UDPClientThreadFunction, this, 0, (unsigned*)&m_threadId);
+		}
 	}
 	else
 	{
@@ -64,6 +72,7 @@ void cUDPClient::SendData(const char *buff, const int buffLen)
 	EnterCriticalSection(&m_sndCriticalSection);
 	memcpy(m_sndBuffer, buff, buffLen);
 	m_sndBuffLen = buffLen;
+	m_isSendData = true;
 	LeaveCriticalSection(&m_sndCriticalSection);
 }
 
@@ -93,15 +102,12 @@ int cUDPClient::GetReceiveData(char *dst, const int maxbuffLen)
 
 
 // 접속을 끊는다.
-void cUDPClient::Close(const bool isWait) //isWait = false
+void cUDPClient::Close()
 {
-	m_threadLoop = false;
-	if (isWait)
-	{
-		::WaitForSingleObject(m_handle, INFINITE);
-	}
-	closesocket(m_socket);
 	m_isConnect = false;
+	Sleep(100);
+	closesocket(m_socket);
+	m_socket = INVALID_SOCKET;
 }
 
 
@@ -116,19 +122,34 @@ unsigned WINAPI UDPClientThreadFunction(void* arg)
 
 	while (udp->m_threadLoop)
 	{
+		if (!udp->m_isConnect || (INVALID_SOCKET == udp->m_socket))
+		{
+			Sleep(udp->m_sleepMillis);
+			continue;
+		}
+
 		const int slen = sizeof(udp->m_si_other);
 
 		// Send
+		bool isSend = false;
  		EnterCriticalSection(&udp->m_sndCriticalSection);
-		memcpy(sndBuff, udp->m_sndBuffer, udp->m_sndBuffLen);
-		recv_len = udp->m_sndBuffLen;
- 		LeaveCriticalSection(&udp->m_sndCriticalSection);
-
-		if (sendto(udp->m_socket, (char*)sndBuff,
-			recv_len, 0, (struct sockaddr*) &udp->m_si_other, slen) == SOCKET_ERROR)
+		if (udp->m_isSendData)
 		{
-			//printf("sendto() failed with error code : %d", WSAGetLastError());
-			//exit(EXIT_FAILURE);
+			memcpy(sndBuff, udp->m_sndBuffer, udp->m_sndBuffLen);
+			recv_len = udp->m_sndBuffLen;
+			udp->m_isSendData = false;
+			isSend = true;
+		}
+		LeaveCriticalSection(&udp->m_sndCriticalSection);
+
+		if (isSend)
+		{
+			if (sendto(udp->m_socket, (char*)sndBuff,
+				recv_len, 0, (struct sockaddr*) &udp->m_si_other, slen) == SOCKET_ERROR)
+			{
+				//printf("sendto() failed with error code : %d", WSAGetLastError());
+				//exit(EXIT_FAILURE);
+			}
 		}
 
 
@@ -158,7 +179,7 @@ unsigned WINAPI UDPClientThreadFunction(void* arg)
 			}
 		}
 
-		Sleep(30);
+		Sleep(udp->m_sleepMillis);
 	}
 
 	return 0;

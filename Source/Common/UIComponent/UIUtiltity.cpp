@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "UIUtiltity.h"
-
+#include <sstream>
 
 
 // 모든 트리노드를 펼친다.
@@ -85,3 +85,19 @@ void MoveChildCtrlWindow(CWnd &parent, CWnd &wndCtrl, int cx, int cy)
 		wndCtrl.MoveWindow(wr.left, wr.top, cx, wr.Height());
 	}
 }
+
+
+// 송신 클라이언트가 접속할 IP 주소를 리턴한다.
+string GetIP(CIPAddressCtrl &ipControl)
+{
+	DWORD address;
+	ipControl.GetAddress(address);
+	std::stringstream ss;
+	ss << ((address & 0xff000000) >> 24) << "."
+		<< ((address & 0x00ff0000) >> 16) << "."
+		<< ((address & 0x0000ff00) >> 8) << "."
+		<< (address & 0x000000ff);
+	const string ip = ss.str();
+	return ip;
+}
+

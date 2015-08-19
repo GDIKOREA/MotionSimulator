@@ -10,3 +10,5 @@ HTREEITEM FindTree( CTreeCtrl &treeCtrl, const wstring &text );
 
 void MoveChildCtrlWindow(CWnd &parent, CWnd &wndCtrl, int cx, int cy);
 
+std::string GetIP(CIPAddressCtrl &ipControl);
+

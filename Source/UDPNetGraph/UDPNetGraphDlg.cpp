@@ -390,7 +390,7 @@ bool CUDPNetGraphDlg::StartClient()
 
 	if (m_udpClient.IsConnect())
 	{
-		m_udpClient.Close(true);
+		m_udpClient.Close();
 		AppendToLogAndScroll(L"클라이언트 종료\n", RGB(255, 255, 255));
 		m_ServerStartButton.SetWindowTextW(L"Start");
 	}

@@ -19,12 +19,12 @@ namespace network
 		cUDPClient();
 		virtual ~cUDPClient();
 
-		enum { BUFLEN = 64, };
+		enum { BUFLEN = 512, };
 
-		bool Init(const string &ip, const int port);
+		bool Init(const string &ip, const int port, const int sleepMillis=30);
 		void SendData(const char *buff, const int buffLen);
 		int GetReceiveData(char *dst, const int maxbuffLen);
-		void Close(const bool isWait = false);
+		void Close();
 		bool IsConnect() const;
 
 
@@ -39,12 +39,14 @@ namespace network
 		char m_rcvBuffer[BUFLEN];
 		int m_rcvBuffLen;
 		bool m_isReceiveData;
+		bool m_isSendData;
 
 		HANDLE m_handle;
 		DWORD m_threadId;
 		CRITICAL_SECTION m_sndCriticalSection;
 		CRITICAL_SECTION m_rcvCriticalSection;
 		bool m_threadLoop;
+		int m_sleepMillis; // Sleep(m_sleepMillis)
 	};
 
 

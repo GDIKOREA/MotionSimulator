@@ -20,7 +20,7 @@ namespace network
 		cUDPServer();
 		virtual ~cUDPServer();
 
-		enum { BUFLEN = 64, };
+		enum { BUFLEN = 128, };
 
 		bool Init(const int id, const int port);
 		void SetRecvData(const char *buff, const int buffLen);

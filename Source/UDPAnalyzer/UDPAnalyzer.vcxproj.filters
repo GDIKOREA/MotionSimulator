@@ -169,6 +169,9 @@
     <ClInclude Include="udpstream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="udpstreamplayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UDPAnalyzer.cpp">
@@ -289,6 +292,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="udpstream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="udpstreamplayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
