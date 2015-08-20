@@ -226,10 +226,10 @@ void CMixingView::Update(const float deltaSeconds)
 
 
 		// render 3D Model
-		const float yawRadian = (yaw - 256.f) / 512.f;
-		const float pitchRadian = -(pitch - 256.f) / 512.f;
-		const float rollRadian = -(roll - 256.f) / 512.f;
-		cController::Get()->GetCubeFlight().SetEulerAngle(rollRadian, pitchRadian, yawRadian);
+// 		const float yawRadian = (yaw - 256.f) / 512.f;
+// 		const float pitchRadian = -(pitch - 256.f) / 512.f;
+// 		const float rollRadian = -(roll - 256.f) / 512.f;
+// 		cController::Get()->GetCubeFlight().SetEulerAngle(rollRadian, pitchRadian, yawRadian);
 
 
 		m_incTime -= elapseT;

@@ -12,6 +12,7 @@ CUDPInputView::CUDPInputView(CWnd* pParent /*=NULL*/)
 	: CDockablePaneChildView(CUDPInputView::IDD, pParent)
 	, m_multiPlotWindows(NULL)
 	, m_incTime(0)
+	, m_updateIncTime(0)
 	, m_ServerPort(0)
 	, m_PacketString(_T(""))
 	, m_isPause(false)
@@ -239,23 +240,22 @@ void CUDPInputView::Update(const float deltaSeconds)
 	if (!m_multiPlotWindows)
 		return;
 
-	m_incTime += deltaSeconds;
+	m_updateIncTime += deltaSeconds;
 
-	if (m_incTime > 0.033f)
+	if (m_updateIncTime > 0.020f)
 	{
 		float origRoll, origPitch, origYaw, origHeave;
 		cMotionController::Get()->m_udpMod.GetOriginal(origYaw, origPitch, origRoll, origHeave);
 		m_multiPlotWindows->SetString(common::format("%f;%f;%f;%f", origYaw, origPitch, origRoll, origHeave).c_str(), 1);
-
 
 		float roll, pitch, yaw, heave;
 		cMotionController::Get()->m_udpMod.GetFinal(yaw, pitch, roll, heave);
 		m_multiPlotWindows->SetString(common::format("%f;%f;%f;%f;", yaw, pitch, roll, heave).c_str(), 2);
 
 		if (!m_isPause)
-			m_multiPlotWindows->DrawGraph(m_incTime);
+			m_multiPlotWindows->DrawGraph(m_updateIncTime);
 
-		m_incTime = 0.f;
+		m_updateIncTime = 0.f;
 	}
 }
 

@@ -51,6 +51,9 @@ bool cUDPAnalyzerOption::Read(const string &fileName, const bool showMsgBox ) //
 		m_udpProtocolCmd = props.get<string>("UDPPROTOCOLCMD", "");
 		m_udpPort = props.get<int>("UDPPORT", 8888);
 
+		m_udpPlayerIP = props.get<string>("UDPPLAYERIP", "127.0.0.1");
+		m_udpPlayerPort = props.get<int>("UDPPLAYERPORT", 8888);
+
 		m_initWindows = props.get<bool>("INITWINDOWS", false);
 	}
 	catch (std::exception&e)
@@ -87,6 +90,8 @@ bool cUDPAnalyzerOption::Write(const string &fileName)
 		props.add<string>("PLOTINPUTCMD", m_plotInputCmd);
 		props.add<string>("UDPPROTOCOLCMD", m_udpProtocolCmd);
 		props.add<int>("UDPPORT", m_udpPort);
+		props.add<string>("UDPPLAYERIP", m_udpPlayerIP);
+		props.add<int>("UDPPLAYERPORT", m_udpPlayerPort);
 
 		props.add<bool>("INITWINDOWS", m_initWindows);
 

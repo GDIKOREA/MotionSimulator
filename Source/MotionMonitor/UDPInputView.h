@@ -26,6 +26,7 @@ protected:
 	bool m_isPause;
 	CMultiPlotWindow *m_multiPlotWindows;
 	float m_incTime;
+	float m_updateIncTime;
 
 
 	DECLARE_ANCHOR_MAP();

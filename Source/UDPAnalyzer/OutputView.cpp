@@ -429,7 +429,7 @@ void COutputView::SaveConfig()
 {
 	UpdateData();
 
-	g_option.m_ip = GetSendIP();	
+	g_option.m_ip = GetSendIP();
 
 	CString udpPort;
 	m_EditUDPPort.GetWindowTextW(udpPort);

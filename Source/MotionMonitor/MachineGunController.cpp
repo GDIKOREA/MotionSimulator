@@ -188,7 +188,7 @@ void cMachineGunController::State_Ready(const float deltaSeconds)
 void cMachineGunController::State_Load(const float deltaSeconds)
 {
 	m_changeInformationPulse = true;
-	g_mwaveView->LoadandPlayMotionWave("../media/machine gun/scene1.mwav");
+	g_mwaveView->LoadandPlayMotionWave("../media/machine gun/motion wave/scene1.mwav");
 	Delay(0.1f, MOTION_SIM_STATE::START);
 }
 

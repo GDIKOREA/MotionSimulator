@@ -145,8 +145,7 @@ BOOL CMotionMonitorApp::InitInstance()
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
 
-
-
+	
 	// Dispatch commands specified on the command line.  Will return FALSE if
 	// app was launched with /RegServer, /Register, /Unregserver or /Unregister.
 	if (!ProcessShellCommand(cmdInfo))
@@ -155,8 +154,8 @@ BOOL CMotionMonitorApp::InitInstance()
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
-	m_pMainWnd->SetWindowTextW(L"Motion Monitor");
-
+	//m_pMainWnd->SetWindowTextW(L"Motion Monitor");
+	m_pMainWnd->SetWindowTextW(L"motionmonitor_new.json");
 	//Close down COM
 	CoUninitialize();
 
@@ -202,17 +201,6 @@ BOOL CMotionMonitorApp::OnIdle(LONG lCount)
 	static int oldT = timeGetTime();
 	const int curT = timeGetTime();
 	const float deltaSeconds = (float)(curT - oldT) * 0.001f; // 1초가 경과되면 1이된다.
-
-	//if (deltaSeconds > 0.01f) // max 100 frame
-	//{
-	//	if (g_3DView)
-	//	{
-	//		//g_3DView->Update(deltaSeconds);
-	//		//g_3DView->Render();
-	//	}
-
-	//	oldT = curT;
-	//}
 
 	cController::Get()->Update(deltaSeconds);
 

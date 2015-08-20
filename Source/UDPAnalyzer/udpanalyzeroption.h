@@ -28,6 +28,8 @@ public:
 	string m_plotInputCmd;
 	string m_udpProtocolCmd;
 	int m_udpPort;
+	string m_udpPlayerIP;
+	int m_udpPlayerPort;
 
 	bool m_initWindows;
 };

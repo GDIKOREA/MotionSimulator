@@ -61,6 +61,7 @@ BEGIN_MESSAGE_MAP(CUDPPlayerView, CDockablePaneChildView)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_FILE, &CUDPPlayerView::OnSelchangedTreeFile)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_PLAY, &CUDPPlayerView::OnNMCustomdrawSliderPlay)
 	ON_BN_CLICKED(IDC_CHECK_REPEAT, &CUDPPlayerView::OnBnClickedCheckRepeat)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -80,6 +81,40 @@ BOOL CUDPPlayerView::OnInitDialog()
 	m_UDPPort.SetWindowTextW(L"8888");
 
 	return TRUE;
+}
+
+
+// 환경설정에 저장된 정보를 UI에 표시한다.
+void CUDPPlayerView::UpdateConfig()
+{
+	vector<string> ipnums;
+	tokenizer(g_option.m_udpPlayerIP, ".", "", ipnums);
+	if (ipnums.size() >= 4)
+	{
+		m_UDPIP.SetAddress(atoi(ipnums[0].c_str()),
+			atoi(ipnums[1].c_str()),
+			atoi(ipnums[2].c_str()),
+			atoi(ipnums[3].c_str()));
+	}
+	else
+	{
+		m_UDPIP.SetAddress(127, 0, 0, 1);
+	}
+
+	m_UDPPort.SetWindowTextW(formatw("%d", g_option.m_udpPlayerPort).c_str());
+}
+
+
+// UI에 표시된 정보를 환경설정에 저장한다.
+void CUDPPlayerView::SaveConfig()
+{
+	UpdateData();
+
+	g_option.m_udpPlayerIP = GetIP(m_UDPIP);
+
+	CString udpPort;
+	m_UDPPort.GetWindowTextW(udpPort);
+	g_option.m_udpPlayerPort = _wtoi(udpPort);
 }
 
 
@@ -155,7 +190,10 @@ void CUDPPlayerView::OnSelchangedTreeFile(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 
 	const string fileName = m_FileTree.GetSelectFilePath(pNMTreeView->itemNew.hItem);
-	if (common::GetFileExt(fileName).empty() || (fileName == "../media") || (fileName == ".."))
+	if (common::GetFileExt(fileName).empty() 
+		|| (fileName == "../media") 
+		|| (fileName == "..")
+		|| (fileName == "../media/udpanalyzer"))
 	{
 		m_FileInfoTree.DeleteAllItems();
 		return;
@@ -168,7 +206,7 @@ void CUDPPlayerView::OnSelchangedTreeFile(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 	else
 	{
-		AfxMessageBox(L"MotionWave 파일이 아닙니다.");
+		AfxMessageBox(L"UDP Stream 파일이 아닙니다.");
 	}
 }
 
@@ -332,6 +370,12 @@ void CUDPPlayerView::OnBnClickedCheckRepeat()
 	UpdateData();
 }
 
+
+void CUDPPlayerView::OnDestroy()
+{
+	SaveConfig();
+	CDockablePaneChildView::OnDestroy();
+}
 
 
 CUDPPlayerView::STATE CUDPPlayerView::ChangeState(const STATE nextState)
@@ -512,4 +556,3 @@ CUDPPlayerView::STATE CUDPPlayerView::ChangeState(const STATE nextState)
 
 	return m_state;
 }
-

@@ -159,6 +159,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, strCustomize, ID_VIEW_TOOLBAR);
 	CMFCToolBar::EnableQuickCustomization();
 
+	UpdateViewConfig();
+
 	return 0;
 }
 
@@ -288,6 +290,7 @@ void CMainFrame::UpdateViewConfig()
 	((CPlotView*)m_plotView->GetChildView())->UpdateConfig();
 	((CUDPView*)m_udpView->GetChildView())->UpdateConfig();
 	((CMixingView*)m_mixingView->GetChildView())->UpdateConfig();
+	((CUDPPlayerView*)m_udpPlayerView->GetChildView())->UpdateConfig();
 }
 
 
@@ -300,6 +303,7 @@ void CMainFrame::SaveViewConfig(const string fileName)
 	((CPlotView*)m_plotView->GetChildView())->SaveConfig();
 	((CUDPView*)m_udpView->GetChildView())->SaveConfig();
 	((CMixingView*)m_mixingView->GetChildView())->SaveConfig();
+	((CUDPPlayerView*)m_udpPlayerView->GetChildView())->SaveConfig();
 
 	// 환경변수 파일 저장
 	g_option.m_fileName = fileName;
@@ -316,6 +320,8 @@ void CMainFrame::OnFileOpen()
 		// 설정해놓은 값을 먼저 저장한다.
 		SaveViewConfig(g_option.m_fileName);
 
+		SetWindowTextW(dlg.GetFileName());
+
 		g_option.Read(wstr2str((LPCTSTR)dlg.GetPathName()));
 
 		UpdateViewConfig();
@@ -331,6 +337,8 @@ void CMainFrame::OnFileSaveAs()
 	{
 		// UI에 설정된 값을 환경변수에 저장한다.
 		SaveViewConfig(wstr2str((LPCTSTR)dlg.GetPathName()));
+
+		SetWindowTextW(dlg.GetFileName());
 	}
 }
 
@@ -342,6 +350,8 @@ void CMainFrame::OnFileNew()
 	SaveViewConfig(g_option.m_fileName);
 
 	g_option.Read("udpanalyzer_default.cfg", false);
+
+	SetWindowTextW(L"udpanalyzer_default.cfg");
 
 	UpdateViewConfig();
 }

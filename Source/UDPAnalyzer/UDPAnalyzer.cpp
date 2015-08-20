@@ -119,7 +119,7 @@ BOOL CUDPAnalyzerApp::InitInstance()
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
-	m_pMainWnd->SetWindowTextW(L"UDP Analyzer");
+	m_pMainWnd->SetWindowTextW(L"udpanalyzer_default.cfg");
 
 	//Close down COM
 	CoUninitialize();

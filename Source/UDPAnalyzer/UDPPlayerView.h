@@ -17,6 +17,8 @@ public:
 
 	virtual void Update(const float deltaSeconds) override;
 	virtual void UpdateUDP(const char *buffer, const int bufferLen) override;
+	void UpdateConfig();
+	void SaveConfig();
 
 
 protected:
@@ -67,4 +69,5 @@ public:
 	CStatic m_PlayPos;
 	afx_msg void OnBnClickedCheckRepeat();
 	BOOL m_IsRepeat;
+	afx_msg void OnDestroy();
 };
