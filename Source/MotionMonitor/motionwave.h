@@ -46,6 +46,9 @@ public:
 	bool Play(const float deltaSeconds, sMotionData &out);
 	void StopPlay();
 
+	int GetPlayIndex() const;
+	int GetSamplingCount() const;
+
 	cMotionWave& operator=(const cMotionWave &rhs);
 
 
@@ -67,3 +70,8 @@ public:
 	bool m_isPlay;
 	int m_playIndex;
 };
+
+
+inline int cMotionWave::GetPlayIndex() const { return m_playIndex; }
+inline int cMotionWave::GetSamplingCount() const { return m_wave.size(); }
+

@@ -54,4 +54,6 @@ public:
 	afx_msg void OnBnClickedButtonUpdate();
 	CTreeCtrl m_FileInfoTree;
 	afx_msg void OnDestroy();
+	CSliderCtrl m_PlayPosSlider;
+	CStatic m_PlayerPos;
 };

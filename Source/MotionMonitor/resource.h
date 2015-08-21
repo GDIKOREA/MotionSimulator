@@ -108,7 +108,6 @@
 #define IDC_STATIC_PACKET               1010
 #define IDC_STATIC_PACKET_COUNT         1011
 #define IDC_MFCEDITBROWSE_XMLPATH       1012
-#define IDC_STATIC_PACKET_COUNT2        1012
 #define IDC_STATIC_PLOTINPUT            1012
 #define IDC_RICHEDIT2_UDP_LOG           1013
 #define IDC_EDIT_SERVER_PORT            1014
@@ -194,6 +193,9 @@
 #define IDC_STATIC_UDPUPDATE_TIME2      1082
 #define IDC_STATIC_INSTATE              1082
 #define IDC_EDIT_PORT                   1084
+#define IDC_SLIDER_PLAYPOS              1085
+#define IDC_STATIC_GROUP2               1086
+#define IDC_STATIC_PLAYPOS              1087
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
@@ -202,7 +204,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        330
 #define _APS_NEXT_COMMAND_VALUE         32772
-#define _APS_NEXT_CONTROL_VALUE         1085
+#define _APS_NEXT_CONTROL_VALUE         1088
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

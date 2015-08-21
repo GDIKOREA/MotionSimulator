@@ -138,6 +138,8 @@ void CMotionOutputView::OnBnClickedButtonConnect()
 	{
 		cController::Get()->CloseSerial();
 		m_ConnectButton.SetWindowTextW(L"Start");
+
+		SetBackgroundColor(g_grayColor);
 	}
 	else
 	{
@@ -172,6 +174,8 @@ linewidth4 = 2\r\n\
 		if (cController::Get()->ConnectSerial(portNumber, _wtoi(baudRate)))
 		{
 			m_ConnectButton.SetWindowTextW(L"Stop");
+
+			SetBackgroundColor(g_blueColor);
 		}
 		else
 		{

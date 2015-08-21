@@ -194,6 +194,8 @@ void CMixingView::OnBnClickedButtonUpdate()
 	m_multiPlotWindows->ProcessPlotCommand(g_mixingviewPlotCommand, 2);
 	m_multiPlotWindows->SetFixedWidthMode(true);
 
+	SetBackgroundColor(g_blueColor);
+
 	m_isStart = true;
 
 	m_incTime = 0;

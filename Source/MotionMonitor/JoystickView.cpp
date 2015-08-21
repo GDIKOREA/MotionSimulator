@@ -240,6 +240,8 @@ void CJoystickView::OnBnClickedButtonStart()
 		CString command;
 		m_EditCommand.GetWindowTextW(command);
 		cMotionController::Get()->m_joystickMod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
+
+		SetBackgroundColor(g_blueColor);
 	}
 
 }
@@ -249,6 +251,8 @@ void CJoystickView::StopJoyStickUpdate()
 {
 	m_isStart = false;
 	m_StartButton.SetWindowTextW(L"JoyStick Monitor Start");
+
+	SetBackgroundColor(g_grayColor);
 }
 
 
@@ -526,6 +530,8 @@ void CJoystickView::OnBnClickedButtonRecord()
 		}
 
 		m_RecordButton.SetWindowTextW(L"Record");
+
+		SetBackgroundColor(g_grayColor);
 	}
 	else
 	{
@@ -534,6 +540,8 @@ void CJoystickView::OnBnClickedButtonRecord()
 
 		m_recordMWave.StartRecord();
 		m_RecordButton.SetWindowTextW(L"Record Stop");
+
+		SetBackgroundColor(g_redColor);
 	}
 }
 

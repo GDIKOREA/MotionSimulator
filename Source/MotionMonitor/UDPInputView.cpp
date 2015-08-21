@@ -157,9 +157,12 @@ spline_interpolation_rate = 10\n\
 		m_EditCommand.SetWindowTextW(cmdStr);
 
 
-		string plotCommand;
 		CString strPlotComandEditor;
 		if (!cMotionController::Get()->m_config.m_udpPlotCommand.empty())
+		{
+			strPlotComandEditor = str2wstr(cMotionController::Get()->m_config.m_udpPlotCommand).c_str();
+		}
+		else
 		{
 strPlotComandEditor = L"plot1 = 0, 0, 0, 0, 0\r\n\
 string1 = %f;\r\n\
@@ -173,10 +176,6 @@ name3 = Roll\r\n\
 plot4 = 0, 0, 0, 0, 0\r\n\
 string4 = %*f; %*f; %*f; %f;\r\n\
 name4 = Heave\r\n";
-		}
-		else
-		{
-			strPlotComandEditor = str2wstr(plotCommand).c_str();
 		}
 
 		m_PlotCommandEditor.SetWindowTextW(strPlotComandEditor);
@@ -227,7 +226,6 @@ void CUDPInputView::OnBnClickedButtonUpdate()
 	m_PlotCommandEditor.GetWindowText(str);
 	m_multiPlotWindows->ProcessPlotCommand(str, 3);
 
-
 	CString command;
 	m_EditCommand.GetWindowTextW(command);
 	cMotionController::Get()->m_udpMod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
@@ -240,6 +238,7 @@ void CUDPInputView::Update(const float deltaSeconds)
 	if (!m_multiPlotWindows)
 		return;
 
+	m_incTime += deltaSeconds;
 	m_updateIncTime += deltaSeconds;
 
 	if (m_updateIncTime > 0.020f)
@@ -292,7 +291,7 @@ void CUDPInputView::UpdateUDP(const char *buffer, const int bufferLen)
 			ss << v << ";";
 		}
 
-		values[2] -= 1.5f;
+		values[2] -= 1.55f;
 
 		const float roll = values[2];
 		const float pitch = values[1];
@@ -361,6 +360,8 @@ void CUDPInputView::OnBnClickedButtonUdpServerBind()
 	{
 		cController::Get()->GetUDPComm().Close();
 		m_ServerBindButton.SetWindowTextW(L"Server Start");
+
+		SetBackgroundColor(g_grayColor);
 	}
 	else
 	{
@@ -371,6 +372,8 @@ void CUDPInputView::OnBnClickedButtonUdpServerBind()
 			CString str;
 			m_PlotCommandEditor.GetWindowText(str);
 			m_multiPlotWindows->ProcessPlotCommand(str, 3);
+
+			SetBackgroundColor(g_blueColor);
 		}
 		else
 		{

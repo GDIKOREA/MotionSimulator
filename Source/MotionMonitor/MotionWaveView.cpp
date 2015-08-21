@@ -48,6 +48,8 @@ void CMotionWaveView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_PLAY, m_PlayButton);
 	DDX_Control(pDX, IDC_RICHEDIT2_COMMAND, m_EditCommand);
 	DDX_Control(pDX, IDC_TREE_FILEINFO, m_FileInfoTree);
+	DDX_Control(pDX, IDC_SLIDER_PLAYPOS, m_PlayPosSlider);
+	DDX_Control(pDX, IDC_STATIC_PLAYPOS, m_PlayerPos);
 }
 
 
@@ -57,6 +59,8 @@ BEGIN_ANCHOR_MAP(CMotionWaveView)
 	ANCHOR_MAP_ENTRY(IDC_TREE_FILEINFO, ANF_LEFT | ANF_TOP | ANF_RIGHT)
 	ANCHOR_MAP_ENTRY(IDC_RICHEDIT2_COMMAND, ANF_LEFT | ANF_TOP | ANF_RIGHT )
 	ANCHOR_MAP_ENTRY(IDC_STATIC_GRAPH, ANF_LEFT | ANF_TOP | ANF_RIGHT | ANF_BOTTOM)
+	ANCHOR_MAP_ENTRY(IDC_STATIC_GROUP2, ANF_LEFT | ANF_TOP | ANF_RIGHT )
+	ANCHOR_MAP_ENTRY(IDC_SLIDER_PLAYPOS, ANF_LEFT | ANF_TOP | ANF_RIGHT )
 	ANCHOR_MAP_ENTRY(IDC_BUTTON_CLEAR, ANF_TOP | ANF_RIGHT)
 END_ANCHOR_MAP()
 
@@ -213,10 +217,11 @@ void CMotionWaveView::OnSelchangedTreeFile(NMHDR *pNMHDR, LRESULT *pResult)
 	if (common::GetFileExt(fileName).empty() || (fileName == "../media") || (fileName == ".."))
 		return;
 
-	if (m_mwave.Read(fileName))
+	cMotionWave mwave;
+	if (mwave.Read(fileName))
 	{
 		UpdateMotionWaveFile();
-		UpdateMotionWaveFileInfo(fileName, m_mwave);
+		UpdateMotionWaveFileInfo(fileName, mwave);
 	}
 	else
 	{
@@ -270,6 +275,13 @@ void CMotionWaveView::Update(const float deltaSeconds)
 			m_multiPlotWindows->SetXY(1, t, pitch, 0);
 			m_multiPlotWindows->SetXY(2, t, roll, 0);
 			m_multiPlotWindows->SetXY(3, t, heave, 0);
+
+			// sliderbar move
+			m_PlayPosSlider.SetPos(m_mwave.GetPlayIndex());
+
+			CString playPosStr;
+			playPosStr.Format(L"%d / %d", m_mwave.GetPlayIndex(), m_mwave.GetSamplingCount());
+			m_PlayerPos.SetWindowTextW(playPosStr);
 		}
 
   		m_incTime -= elapseT;
@@ -289,9 +301,14 @@ void CMotionWaveView::OnBnClickedButtonPlay()
 		m_mwave.StopPlay();
 		m_mwaveSpline.StopPlay();
 		m_PlayButton.SetWindowTextW(L"Play");
+
+		SetBackgroundColor(g_grayColor);
 	}
 	else
 	{
+		const string fileName = m_FileTree.GetSelectFilePath(m_FileTree.GetSelectedItem());
+		m_mwave.Read(fileName);
+
 		PlayMWave();
 	}
 }
@@ -307,7 +324,7 @@ void CMotionWaveView::OnBnClickedButtonRefresh()
 {
 	list<string> extList;
 	extList.push_back("mwav");
-	m_FileTree.Update("./", extList);
+	m_FileTree.Update("../media/", extList);
 	m_FileTree.ExpandAll();
 }
 
@@ -368,6 +385,14 @@ void CMotionWaveView::UpdateMotionWaveFileInfo(const string &fileName, const cMo
 		m_FileInfoTree.InsertItem(
 			common::formatw("PlayTime = %.1f seconds", ((float)mwav.m_wave.size() / (float)mwav.m_samplingRate)).c_str());
 	}
+
+	m_PlayPosSlider.SetRange(0, mwav.GetSamplingCount());
+	m_PlayPosSlider.SetPos(0);
+
+	CString playPosStr;
+	playPosStr.Format(L"%d / %d", 0, mwav.GetSamplingCount());
+	m_PlayerPos.SetWindowTextW(playPosStr);
+
 }
 
 
@@ -403,6 +428,8 @@ void CMotionWaveView::PlayMWave()
 	m_mwave.StartPlay();
 	m_mwaveSpline.StartPlay();
 	m_PlayButton.SetWindowTextW(L"Stop");
+
+	SetBackgroundColor(g_blueColor);
 }
 
 

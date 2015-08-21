@@ -132,6 +132,7 @@ BOOL CMotionMonitorDoc::OnNewDocument()
 		cMotionMonitorConfig &config = cMotionController::Get()->m_config;
 		config.ReadConfigFile("motionmonitor_new.json");
 		pFrm->UpdateConfig();
+		pFrm->SetWindowTextW(L"motionmonitor_new.json");
 	}
 
 	return TRUE;
