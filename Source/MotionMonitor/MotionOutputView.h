@@ -15,6 +15,8 @@ public:
 	enum { IDD = IDD_DIALOG_MOTION_OUTPUT };
 
 	virtual void UpdateConfig(bool IsSaveAndValidate = true) override;
+	virtual void Start() override;
+	virtual void Stop() override;
 
 	virtual void Update(const float deltaSeconds) override;
 

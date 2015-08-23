@@ -34,7 +34,7 @@ CMixingView::CMixingView(CWnd* pParent /*=NULL*/)
 	, m_multiPlotWindows(NULL)
 	, m_incTime(0)
 	, m_totalIncTime(0)
-	, m_isStart(false)
+	, m_state(STOP)
 {
 }
 
@@ -185,26 +185,13 @@ void CMixingView::OnSize(UINT nType, int cx, int cy)
 
 void CMixingView::OnBnClickedButtonUpdate()
 {
-	UpdateData();
-
-	CString command;
-	m_EditCommand.GetWindowTextW(command);
-	m_config.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
-
-	m_multiPlotWindows->ProcessPlotCommand(g_mixingviewPlotCommand, 2);
-	m_multiPlotWindows->SetFixedWidthMode(true);
-
-	SetBackgroundColor(g_blueColor);
-
-	m_isStart = true;
-
-	m_incTime = 0;
+	Start();
 }
 
 
 void CMixingView::Update(const float deltaSeconds)
 {
-	RET(!m_isStart);
+	RET(STOP == m_state);
 
 	const float elapseT = 0.033f;
 	m_incTime += deltaSeconds;
@@ -361,4 +348,32 @@ void CMixingView::OnDestroy()
 	UpdateConfig(false);
 
 	CDockablePaneChildView::OnDestroy();
+}
+
+
+// πÕΩÃ ∞ËªÍ¿ª Ω√¿€«—¥Ÿ.
+void CMixingView::Start()
+{
+	UpdateData();
+
+	m_state = START;
+
+	CString command;
+	m_EditCommand.GetWindowTextW(command);
+	m_config.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
+
+	m_multiPlotWindows->ProcessPlotCommand(g_mixingviewPlotCommand, 2);
+	m_multiPlotWindows->SetFixedWidthMode(true);
+	m_incTime = 0;
+
+	SetBackgroundColor(g_blueColor);
+}
+
+
+// πÕΩÃ ∞ËªÍ¿ª ∏ÿ√·¥Ÿ.
+void CMixingView::Stop()
+{
+	m_state = STOP;
+
+	SetBackgroundColor(g_grayColor);
 }

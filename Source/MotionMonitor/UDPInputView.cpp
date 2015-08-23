@@ -18,6 +18,7 @@ CUDPInputView::CUDPInputView(CWnd* pParent /*=NULL*/)
 	, m_isPause(false)
 	, m_PacketRecvCount(0)
 	, m_PlotInputString(_T(""))
+	, m_state(STOP)
 {
 
 }
@@ -220,8 +221,6 @@ void CUDPInputView::OnSize(UINT nType, int cx, int cy)
 
 void CUDPInputView::OnBnClickedButtonUpdate()
 {
-	UpdateData();
-
 	CString str;
 	m_PlotCommandEditor.GetWindowText(str);
 	m_multiPlotWindows->ProcessPlotCommand(str, 3);
@@ -235,6 +234,8 @@ void CUDPInputView::OnBnClickedButtonUpdate()
 // Update
 void CUDPInputView::Update(const float deltaSeconds)
 {
+	RET(STOP==m_state);
+
 	if (!m_multiPlotWindows)
 		return;
 
@@ -261,6 +262,8 @@ void CUDPInputView::Update(const float deltaSeconds)
 
 void CUDPInputView::UpdateUDP(const char *buffer, const int bufferLen)
 {
+	RET(STOP == m_state);
+
 	m_PacketString = common::str2wstr(buffer).c_str();
 
 	if (bufferLen < 10)
@@ -358,27 +361,30 @@ void CUDPInputView::OnBnClickedButtonUdpServerBind()
 
 	if (cController::Get()->GetUDPComm().IsConnect())
 	{
-		cController::Get()->GetUDPComm().Close();
-		m_ServerBindButton.SetWindowTextW(L"Server Start");
-
-		SetBackgroundColor(g_grayColor);
+// 		cController::Get()->GetUDPComm().Close();
+// 		m_ServerBindButton.SetWindowTextW(L"Server Start");
+// 
+// 		SetBackgroundColor(g_grayColor);
+		Stop();
 	}
 	else
 	{
-		if (cController::Get()->GetUDPComm().InitServer(m_ServerPort))
-		{
-			m_ServerBindButton.SetWindowTextW(L"Server Stop");
+		Start();
 
-			CString str;
-			m_PlotCommandEditor.GetWindowText(str);
-			m_multiPlotWindows->ProcessPlotCommand(str, 3);
-
-			SetBackgroundColor(g_blueColor);
-		}
-		else
-		{
-			//m_LogList.InsertString(m_LogList.GetCount(), L"접속 실패");
-		}
+// 		if (cController::Get()->GetUDPComm().InitServer(m_ServerPort))
+// 		{
+// 			m_ServerBindButton.SetWindowTextW(L"Server Stop");
+// 
+// 			CString str;
+// 			m_PlotCommandEditor.GetWindowText(str);
+// 			m_multiPlotWindows->ProcessPlotCommand(str, 3);
+// 
+// 			SetBackgroundColor(g_blueColor);
+// 		}
+// 		else
+// 		{
+// 			//m_LogList.InsertString(m_LogList.GetCount(), L"접속 실패");
+// 		}
 	}	
 }
 
@@ -438,4 +444,50 @@ void CUDPInputView::OnDestroy()
 	UpdateConfig(false);
 
 	CDockablePaneChildView::OnDestroy();
+}
+
+
+// UDP 접속을 시작하고, 정보를 받는다.
+void CUDPInputView::Start()
+{
+	UpdateData();
+
+	m_state = START;
+
+	cController::Get()->GetUDPComm().Close();
+
+	if (cController::Get()->GetUDPComm().InitServer(m_ServerPort))
+	{
+		m_ServerBindButton.SetWindowTextW(L"Server Stop");
+
+		CString str;
+		m_PlotCommandEditor.GetWindowText(str);
+		m_multiPlotWindows->ProcessPlotCommand(str, 3);
+	}
+	else
+	{
+		//m_LogList.InsertString(m_LogList.GetCount(), L"접속 실패");
+	}
+
+	CString str;
+	m_PlotCommandEditor.GetWindowText(str);
+	m_multiPlotWindows->ProcessPlotCommand(str, 3);
+
+	CString command;
+	m_EditCommand.GetWindowTextW(command);
+	cMotionController::Get()->m_udpMod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
+
+	SetBackgroundColor(g_blueColor);
+}
+
+
+// UDP 접속을 끊고, 화면 업데이트를 종료한다.
+void CUDPInputView::Stop()
+{
+	m_state = STOP;
+
+	cController::Get()->GetUDPComm().Close();
+	m_ServerBindButton.SetWindowTextW(L"Server Start");
+
+	SetBackgroundColor(g_grayColor);
 }

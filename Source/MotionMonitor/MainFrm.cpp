@@ -231,17 +231,17 @@ BOOL CMainFrame::CreateDockingWindows()
 
 	// Create motion input view
 	{
-		m_motionInputView = new CDockablePaneBase();
-		if (!m_motionInputView->Create(L"UDP Input View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_MOTION_INPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+		m_udpInputView = new CDockablePaneBase();
+		if (!m_udpInputView->Create(L"UDP Input View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_MOTION_INPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
 		{
 			TRACE0("Failed to create UDP Input View window\n");
 			return FALSE; // failed to create
 		}
 
-		CUDPInputView *view = new CUDPInputView(m_motionInputView);
-		view->Create(CUDPInputView::IDD, m_motionInputView);
+		CUDPInputView *view = new CUDPInputView(m_udpInputView);
+		view->Create(CUDPInputView::IDD, m_udpInputView);
 		view->ShowWindow(SW_SHOW);
-		m_motionInputView->SetChildView(view);
+		m_udpInputView->SetChildView(view);
 	}
 
 
@@ -312,7 +312,7 @@ BOOL CMainFrame::CreateDockingWindows()
 
 	m_viewList.push_back(m_wndCube3DView);
 	m_viewList.push_back(m_motionOutputView);
-	m_viewList.push_back(m_motionInputView);
+	m_viewList.push_back(m_udpInputView);
 	m_viewList.push_back(m_joystickView);
 	m_viewList.push_back(m_motionWaveView);
 	m_viewList.push_back(m_mixingView);	
@@ -329,7 +329,7 @@ void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
 
 	m_wndCube3DView->SetIcon(hClassViewIcon, FALSE);
 	m_motionOutputView->SetIcon(hClassViewIcon, FALSE);
-	m_motionInputView->SetIcon(hClassViewIcon, FALSE);
+	m_udpInputView->SetIcon(hClassViewIcon, FALSE);
 	m_joystickView->SetIcon(hClassViewIcon, FALSE);
 	m_motionWaveView->SetIcon(hClassViewIcon, FALSE);
 	m_mixingView->SetIcon(hClassViewIcon, FALSE);
@@ -425,4 +425,19 @@ void CMainFrame::UpdateConfig(bool IsSaveAndValidate) //IsSaveAndValidate=true
 {
 	for each (auto &view in m_viewList)
 		view->GetChildView()->UpdateConfig(IsSaveAndValidate);
+}
+
+
+// 환경설정 파일을 읽고, 뷰를 업데이트 한다.
+void CMainFrame::LoadConfigFile(const string &fileName)
+{
+	cMotionMonitorConfig &config = cMotionController::Get()->m_config;
+
+	UpdateConfig(false);
+	config.WriteConfigFile(config.m_fileName);
+
+	if (config.ReadConfigFile(fileName))
+		UpdateConfig();
+
+	SetWindowTextW(str2wstr(GetFileName(fileName)).c_str());
 }

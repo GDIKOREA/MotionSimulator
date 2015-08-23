@@ -48,7 +48,6 @@ name4 = Heave\r\n\
 CJoystickView::CJoystickView(CWnd* pParent /*=NULL*/)
 	: CDockablePaneChildView(CJoystickView::IDD, pParent)
 	, m_multiPlotWindows(NULL)
-	, m_isStart(false)
 	, m_isMotionOutputStart(false)
 	, m_isRecord(false)
 	, m_incTime(0)
@@ -60,6 +59,7 @@ CJoystickView::CJoystickView(CWnd* pParent /*=NULL*/)
 	, m_AxisRz(0)
 	, m_AxisH(0)
 	, m_Hat(0)
+	, m_state(STOP)
 {
 }
 
@@ -223,125 +223,103 @@ void CJoystickView::OnBnClickedButtonStart()
 
 	UpdateData();
 
-	if (m_isStart)
+	if (START == m_state)
 	{
-		StopJoyStickUpdate();
+		Stop();
 	}
 	else
 	{
-		m_isStart = true;
-		m_multiPlotWindows->ProcessPlotCommand(g_joystickPlotCommand, 3);
-		m_multiPlotWindows->SetFixedWidthMode(m_CheckFixedMode ? true : false);
-
-		InitJoyStick();
-
-		m_StartButton.SetWindowTextW(L"Stop");
-
-		CString command;
-		m_EditCommand.GetWindowTextW(command);
-		cMotionController::Get()->m_joystickMod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
-
-		SetBackgroundColor(g_blueColor);
+		Start();
 	}
-
 }
 
-
-void CJoystickView::StopJoyStickUpdate()
-{
-	m_isStart = false;
-	m_StartButton.SetWindowTextW(L"JoyStick Monitor Start");
-
-	SetBackgroundColor(g_grayColor);
-}
 
 
 // 매프레임마다 호출된다.
 void CJoystickView::Update(const float deltaSeconds)
 {
-	if (m_isStart)
+	RET(START != m_state);
+
+	m_incTime += deltaSeconds;
+
+	const float t = cMotionController::Get()->m_joystickMod.m_totalIncTime;
+
+	// 조이스틱 축 계산
+	cMotionController::Get()->m_joystickMod.Update(deltaSeconds, (float)m_AxisRz, (float)m_AxisY, (float)m_AxisX, (float)m_AxisH);
+
+	// 계산 된 값을 가져온다.
+	float yaw, pitch, roll, heave;
+	cMotionController::Get()->m_joystickMod.GetFinal(yaw, pitch, roll, heave);
+
+	float origYaw, origPitch, origRoll, origHeave;
+	cMotionController::Get()->m_joystickMod.GetOriginal(origYaw, origPitch, origRoll, origHeave);
+
+
+	//const float elapsT = 0.033f;
+	const float elapsT = 0.01f;
+	if (m_incTime > elapsT)
 	{
-		m_incTime += deltaSeconds;
-
-		const float t = cMotionController::Get()->m_joystickMod.m_totalIncTime;
-
-		// 조이스틱 축 계산
-		cMotionController::Get()->m_joystickMod.Update(deltaSeconds, (float)m_AxisRz, (float)m_AxisY, (float)m_AxisX, (float)m_AxisH);
-
-		// 계산 된 값을 가져온다.
-		float yaw, pitch, roll, heave;
-		cMotionController::Get()->m_joystickMod.GetFinal(yaw, pitch, roll, heave);
-
-		float origYaw, origPitch, origRoll, origHeave;
-		cMotionController::Get()->m_joystickMod.GetOriginal(origYaw, origPitch, origRoll, origHeave);
+		//----------------------------------------------------------------------------------------------
+		// original
+		m_multiPlotWindows->SetXY(0, t, origYaw, 0);
+		m_multiPlotWindows->SetXY(1, t, origPitch, 0);
+		m_multiPlotWindows->SetXY(2, t, origRoll, 0);
+		m_multiPlotWindows->SetXY(3, t, origHeave, 0);
 
 
-		//const float elapsT = 0.033f;
-		const float elapsT = 0.01f;
-		if (m_incTime > elapsT)
+		//----------------------------------------------------------------------------------------------
+		// modulation Spline
+		if (cMotionController::Get()->m_joystickMod.m_isSplineEnable)
 		{
-			//----------------------------------------------------------------------------------------------
-			// original
-			m_multiPlotWindows->SetXY(0, t, origYaw, 0);
-			m_multiPlotWindows->SetXY(1, t, origPitch, 0);
-			m_multiPlotWindows->SetXY(2, t, origRoll, 0);
-			m_multiPlotWindows->SetXY(3, t, origHeave, 0);
-
-
-			//----------------------------------------------------------------------------------------------
-			// modulation Spline
-			if (cMotionController::Get()->m_joystickMod.m_isSplineEnable)
+			vector<Vector2> yawSpline, pitchSpline, rollSpline, heaveSpline;
+			if (cMotionController::Get()->m_joystickMod.GetSplineInterpolations(0, 1.f, yawSpline, 
+				pitchSpline, rollSpline, heaveSpline))
 			{
-				vector<Vector2> yawSpline, pitchSpline, rollSpline, heaveSpline;
-				if (cMotionController::Get()->m_joystickMod.GetSplineInterpolations(0, 1.f, yawSpline, 
-					pitchSpline, rollSpline, heaveSpline))
+				for (u_int i = 0; i < yawSpline.size(); ++i)
 				{
-					for (u_int i = 0; i < yawSpline.size(); ++i)
-					{
-						m_multiPlotWindows->SetXY(0, yawSpline[i].x, yawSpline[i].y, 1);
-						m_multiPlotWindows->SetXY(1, pitchSpline[i].x, pitchSpline[i].y, 1);
-						m_multiPlotWindows->SetXY(2, rollSpline[i].x, rollSpline[i].y, 1);
-						m_multiPlotWindows->SetXY(3, heaveSpline[i].x, heaveSpline[i].y, 1);
-					}
+					m_multiPlotWindows->SetXY(0, yawSpline[i].x, yawSpline[i].y, 1);
+					m_multiPlotWindows->SetXY(1, pitchSpline[i].x, pitchSpline[i].y, 1);
+					m_multiPlotWindows->SetXY(2, rollSpline[i].x, rollSpline[i].y, 1);
+					m_multiPlotWindows->SetXY(3, heaveSpline[i].x, heaveSpline[i].y, 1);
 				}
 			}
-			else
-			{
-				m_multiPlotWindows->SetXY(0, t, yaw, 1);
-				m_multiPlotWindows->SetXY(1, t, pitch, 1);
-				m_multiPlotWindows->SetXY(2, t, roll, 1);
-				m_multiPlotWindows->SetXY(3, t, heave, 1);
-			}
-			//----------------------------------------------------------------------------------------------
-
-
-			//----------------------------------------------------------------------------------------------
-			// modulation record
-			if (m_isRecord)
-			{
-				sMotionData out;
-				sMotionData data;
-				data.yaw = yaw;
-				data.pitch = pitch;
-				data.roll = roll;
-				data.heave = heave;
-
-				if (m_recordMWave.Record(m_incTime, data, &out))
-				{
-					m_recordData = out;
-					m_multiPlotWindows->SetXY(0, t, out.yaw, 2);
-					m_multiPlotWindows->SetXY(1, t, out.pitch, 2);
-					m_multiPlotWindows->SetXY(2, t, out.roll, 2);
-					m_multiPlotWindows->SetXY(3, t, out.heave, 2);
-				}
-			}
-
-
-			m_multiPlotWindows->DrawGraph(elapsT);
-
-			//m_incTime -= elapsT;
-			m_incTime = 0;
 		}
+		else
+		{
+			m_multiPlotWindows->SetXY(0, t, yaw, 1);
+			m_multiPlotWindows->SetXY(1, t, pitch, 1);
+			m_multiPlotWindows->SetXY(2, t, roll, 1);
+			m_multiPlotWindows->SetXY(3, t, heave, 1);
+		}
+		//----------------------------------------------------------------------------------------------
+
+
+		//----------------------------------------------------------------------------------------------
+		// modulation record
+		if (m_isRecord)
+		{
+			sMotionData out;
+			sMotionData data;
+			data.yaw = yaw;
+			data.pitch = pitch;
+			data.roll = roll;
+			data.heave = heave;
+
+			if (m_recordMWave.Record(m_incTime, data, &out))
+			{
+				m_recordData = out;
+				m_multiPlotWindows->SetXY(0, t, out.yaw, 2);
+				m_multiPlotWindows->SetXY(1, t, out.pitch, 2);
+				m_multiPlotWindows->SetXY(2, t, out.roll, 2);
+				m_multiPlotWindows->SetXY(3, t, out.heave, 2);
+			}
+		}
+
+
+		m_multiPlotWindows->DrawGraph(elapsT);
+
+		//m_incTime -= elapsT;
+		m_incTime = 0;
 	}
 }
 
@@ -371,7 +349,7 @@ BOOL CJoystickView::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT
 	{
 	case WM_INPUT:
 	{
-		RETV(!m_isStart, TRUE);
+		RETV(START != m_state, TRUE);
 
 		//
 		// Get the pointer to the raw device data, process it and update the window
@@ -505,7 +483,7 @@ Error:
 
 void CJoystickView::OnBnClickedButtonRecord()
 {
-	RET(!m_isStart);
+	RET(m_state!=START);
 
 	UpdateData();
 
@@ -513,7 +491,7 @@ void CJoystickView::OnBnClickedButtonRecord()
 	{
 		m_isRecord = false;
 		m_recordMWave.Stop();
-		StopJoyStickUpdate(); // Stop Joystick Update
+		Stop(); // Stop Joystick Update
 
 		CString Filter = L"MotionWave File(*.mwav)|*.mwav";
 		CFileDialog dlg(
@@ -569,4 +547,34 @@ void CJoystickView::OnDestroy()
 	UpdateConfig(false);
 
 	CDockablePaneChildView::OnDestroy();	
+}
+
+
+// Joystick 인식을 시작한다.
+void CJoystickView::Start()
+{
+	m_state = START;
+
+	m_multiPlotWindows->ProcessPlotCommand(g_joystickPlotCommand, 3);
+	m_multiPlotWindows->SetFixedWidthMode(m_CheckFixedMode ? true : false);
+
+	InitJoyStick();
+
+	m_StartButton.SetWindowTextW(L"Stop");
+
+	CString command;
+	m_EditCommand.GetWindowTextW(command);
+	cMotionController::Get()->m_joystickMod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
+
+	SetBackgroundColor(g_blueColor);
+}
+
+
+// Joystick 인식을 멈춘다.
+void CJoystickView::Stop()
+{
+	m_state = STOP;
+	m_StartButton.SetWindowTextW(L"JoyStick Monitor Start");
+
+	SetBackgroundColor(g_grayColor);
 }

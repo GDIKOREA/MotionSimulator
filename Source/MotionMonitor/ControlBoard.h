@@ -1,4 +1,5 @@
 #pragma once
+#include "afxwin.h"
 
 
 // CControlBoard dialog
@@ -18,6 +19,16 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	void Start();
+	void Stop();
+
+
+	enum STATE {
+		STOP,
+		START,
+	};
+
+	STATE m_state;
 
 
 	DECLARE_MESSAGE_MAP()
@@ -30,9 +41,12 @@ public:
 	CString m_GameState;
 	CString m_GameTime;
 	CString m_GameMission;
-	BOOL m_IsMotionSimulation;
-	afx_msg void OnBnClickedCheckMotionSimulation();
 	afx_msg void OnBnClickedButtonEmergency();
 	CString m_UDPUpdateTime;
 	CString m_InnerState;
+	afx_msg void OnBnClickedRadioJoystick();
+	afx_msg void OnBnClickedRadioMwave();
+	CButton m_StartButton;
+	afx_msg void OnBnClickedButtonStart();
+	CButton m_Dirt3RadioButton;
 };

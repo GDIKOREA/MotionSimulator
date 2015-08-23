@@ -52,7 +52,7 @@ public:
 	cMachineGunController();
 	virtual ~cMachineGunController();
 
-	void StartMotionSim();
+	void StartMotionSim(const string &configFileName);
 	void StopMotionSim();
 	void Update(const float deltaSeconds);
 	void UpdateUDP(const sMotionPacket &packet);
@@ -83,6 +83,7 @@ protected:
 
 public:
 	MOTION_SIM_STATE::TYPE m_state;
+	string m_configFileName;
 	bool m_isPlayGame;
 	int m_gameState;
 	int m_gameMission;

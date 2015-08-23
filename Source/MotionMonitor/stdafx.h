@@ -89,6 +89,8 @@ namespace GAME_TYPE {
 	enum TYPE {
 		DIRT3,
 		MACHINEGUN,
+		JOYSTICK,
+		MWAVE,
 	};
 };
 

@@ -32,7 +32,7 @@ CMotionWaveView::CMotionWaveView(CWnd* pParent /*=NULL*/)
 	: CDockablePaneChildView(CMotionWaveView::IDD, pParent)
 	, m_multiPlotWindows(NULL)
 	, m_incTime(0)
-	, m_isPlay(false)
+	, m_state(STOP)
 {
 
 }
@@ -50,6 +50,7 @@ void CMotionWaveView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_TREE_FILEINFO, m_FileInfoTree);
 	DDX_Control(pDX, IDC_SLIDER_PLAYPOS, m_PlayPosSlider);
 	DDX_Control(pDX, IDC_STATIC_PLAYPOS, m_PlayerPos);
+	DDX_Control(pDX, IDC_BUTTON_REFRESH, m_RefreshButton);
 }
 
 
@@ -232,7 +233,7 @@ void CMotionWaveView::OnSelchangedTreeFile(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CMotionWaveView::Update(const float deltaSeconds)
 {
-	RET(!m_isPlay);
+	RET(STOP==m_state);
 
 	const float elapseT = 0.02f;
 
@@ -295,14 +296,9 @@ void CMotionWaveView::Update(const float deltaSeconds)
 
 void CMotionWaveView::OnBnClickedButtonPlay()
 {
-	if (m_isPlay)
+	if (START==m_state)
 	{
-		m_isPlay = false;
-		m_mwave.StopPlay();
-		m_mwaveSpline.StopPlay();
-		m_PlayButton.SetWindowTextW(L"Play");
-
-		SetBackgroundColor(g_grayColor);
+		Stop();
 	}
 	else
 	{
@@ -424,11 +420,14 @@ void CMotionWaveView::PlayMWave()
 	m_mod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
 	UpdateMotionWaveFile();
 
-	m_isPlay = true;
+	m_state = START;
 	m_mwave.StartPlay();
 	m_mwaveSpline.StartPlay();
 	m_PlayButton.SetWindowTextW(L"Stop");
 
+	m_FileTree.EnableWindow(FALSE);
+	m_FileInfoTree.EnableWindow(FALSE);
+	m_RefreshButton.EnableWindow(FALSE);
 	SetBackgroundColor(g_blueColor);
 }
 
@@ -438,4 +437,26 @@ void CMotionWaveView::OnDestroy()
 	UpdateConfig(false);
 
 	CDockablePaneChildView::OnDestroy();
+}
+
+
+void CMotionWaveView::Start()
+{
+
+}
+
+
+// 플레이 중인 모션웨이브를 멈춘다.
+void CMotionWaveView::Stop()
+{
+	m_state = STOP;
+	m_mwave.StopPlay();
+	m_mwaveSpline.StopPlay();
+	m_PlayButton.SetWindowTextW(L"Play");
+
+	m_FileTree.EnableWindow(TRUE);
+	m_FileInfoTree.EnableWindow(TRUE);
+	m_RefreshButton.EnableWindow(TRUE);
+
+	SetBackgroundColor(g_grayColor);
 }

@@ -18,7 +18,8 @@ public:
 	virtual void Update(const float deltaSeconds) {}
 	virtual void UpdateUDP(const char *buffer, const int bufferLen) {}
 	virtual void UpdateConfig(bool IsSaveAndValidate=true) {}
-
+	virtual void Start() {}
+	virtual void Stop() {}
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

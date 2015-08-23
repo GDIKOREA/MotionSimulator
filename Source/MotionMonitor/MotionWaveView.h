@@ -16,6 +16,8 @@ public:
 
 	virtual void UpdateConfig(bool IsSaveAndValidate = true) override;
 	bool LoadandPlayMotionWave(const string &fileName);
+	virtual void Start() override;
+	virtual void Stop() override;
 
 	virtual void Update(const float deltaSeconds) override;
 	
@@ -29,7 +31,12 @@ protected:
 
 
 protected:
-	bool m_isPlay;
+	enum STATE {
+		STOP,
+		START,
+	};
+
+	STATE m_state;
 	CMultiPlotWindow *m_multiPlotWindows;
 	float m_incTime;
 	cMotionWave m_mwave;
@@ -56,4 +63,5 @@ public:
 	afx_msg void OnDestroy();
 	CSliderCtrl m_PlayPosSlider;
 	CStatic m_PlayerPos;
+	CButton m_RefreshButton;
 };

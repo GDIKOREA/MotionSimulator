@@ -168,6 +168,12 @@
     <ClInclude Include="UDPInputView.h">
       <Filter>Pane</Filter>
     </ClInclude>
+    <ClInclude Include="Dirt3Controller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -286,6 +292,12 @@
     </ClCompile>
     <ClCompile Include="UDPInputView.cpp">
       <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="Dirt3Controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleController.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

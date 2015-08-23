@@ -4,6 +4,7 @@
 
 #include "MotionMonitor.h"
 #include "MotionWaveView.h"
+#include "MainFrm.h"
 
 
 
@@ -125,9 +126,10 @@ bool cMachineGunController::CheckChangeState()
 
 
 // INIT -> ORIGIN
-void cMachineGunController::StartMotionSim()
+void cMachineGunController::StartMotionSim(const string &configFileName)
 {
 	m_state = MOTION_SIM_STATE::START_MOTION;
+	m_configFileName = configFileName;
 }
 
 
@@ -139,6 +141,8 @@ void cMachineGunController::StopMotionSim()
 
 
 // Init State
+// 1. 게임 환경설정 파일을 읽는다.
+// 2. 모든 뷰를 초기화 하고, Start 상태로 동작하게 한다.
 void cMachineGunController::State_Init(const float deltaSeconds)
 {
 	m_changeInformationPulse = true;
@@ -180,7 +184,7 @@ void cMachineGunController::State_StopReady(const float deltaSeconds)
 
 void cMachineGunController::State_Ready(const float deltaSeconds)
 {
-	// 아무일 없음.
+	// 아직 아무일 없음
 }
 
 

@@ -15,6 +15,8 @@ public:
 	enum { IDD = IDD_DIALOG_MOTION_INPUT };
 
 	virtual void UpdateConfig(bool IsSaveAndValidate = true) override;
+	virtual void Start() override;
+	virtual void Stop() override;
 
 	virtual void Update(const float deltaSeconds) override;
 	virtual void UpdateUDP(const char *buffer, const int bufferLen) override;
@@ -23,6 +25,12 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
+	enum STATE {
+		STOP,
+		START,
+	};
+
+	STATE m_state;
 	bool m_isPause;
 	CMultiPlotWindow *m_multiPlotWindows;
 	float m_incTime;

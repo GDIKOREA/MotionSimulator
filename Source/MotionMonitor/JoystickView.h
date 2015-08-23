@@ -15,6 +15,8 @@ public:
 	enum { IDD = IDD_DIALOG_JOYSTICK };
 
 	virtual void UpdateConfig(bool IsSaveAndValidate = true) override;
+	virtual void Start() override;
+	virtual void Stop() override;
 
 	virtual void Update(const float deltaSeconds) override;
 
@@ -24,13 +26,17 @@ protected:
 
 	bool InitJoyStick();
 	void ParseRawInput(PRAWINPUT pRawInput);
-	void StopJoyStickUpdate();
 
 
 protected:
+	enum STATE {
+		STOP,
+		START,
+	};
+
+	STATE m_state;
 	CMultiPlotWindow *m_multiPlotWindows;
 	float m_incTime;
-	bool m_isStart;
 	bool m_isMotionOutputStart;
 	bool m_isRecord;
 	float m_recordIncTime;

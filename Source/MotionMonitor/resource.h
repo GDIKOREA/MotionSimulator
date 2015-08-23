@@ -185,6 +185,7 @@
 #define IDC_TREE_FILEINFO               1071
 #define IDC_RADIO_DIRT3                 1074
 #define IDC_RADIO_MG                    1075
+#define IDC_RADIO_JOYSTICK              1076
 #define IDC_STATIC_GAMESTATE            1077
 #define IDC_STATIC_GAMETIME             1078
 #define IDC_STATIC_GAMESTAGE            1079
@@ -192,6 +193,7 @@
 #define IDC_STATIC_UDPUPDATE_TIME       1081
 #define IDC_STATIC_UDPUPDATE_TIME2      1082
 #define IDC_STATIC_INSTATE              1082
+#define IDC_RADIO_MWAVE                 1083
 #define IDC_EDIT_PORT                   1084
 #define IDC_SLIDER_PLAYPOS              1085
 #define IDC_STATIC_GROUP2               1086
@@ -204,7 +206,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        330
 #define _APS_NEXT_COMMAND_VALUE         32772
-#define _APS_NEXT_CONTROL_VALUE         1088
+#define _APS_NEXT_CONTROL_VALUE         1089
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

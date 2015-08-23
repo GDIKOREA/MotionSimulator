@@ -7,6 +7,26 @@
 #include "afxdialogex.h"
 
 
+const static CString g_outputViewPlotCommand = L"\r\n\
+plot1 = 0, 0, 0, 0, 0\r\n\
+string1 = %f;\r\n\
+name1 = Yaw\r\n\
+linewidth1 = 2\r\n\
+plot2 = 0, 0, 0, 0, 0\r\n\
+string2 = %*f; %f;\r\n\
+name2 = Pitch\r\n\
+linewidth2 = 2\r\n\
+plot3 = 0, 0, 0, 0, 0\r\n\
+string3 = %*f; %*f; %f;\r\n\
+name3 = Roll\r\n\
+linewidth3 = 2\r\n\
+plot4 = 0, 0, 0, 0, 0\r\n\
+string4 = %*f; %*f; %*f; %f;\r\n\
+name4 = Heave\r\n\
+linewidth4 = 2\r\n\
+";
+
+
 // CMotionOutputView dialog
 
 CMotionOutputView::CMotionOutputView(CWnd* pParent /*=NULL*/)
@@ -143,29 +163,8 @@ void CMotionOutputView::OnBnClickedButtonConnect()
 	}
 	else
 	{
-		{
-			CString plotCommand = L"\r\n\
-plot1 = 0, 0, 0, 0, 0\r\n\
-string1 = %f;\r\n\
-name1 = Yaw\r\n\
-linewidth1 = 2\r\n\
-plot2 = 0, 0, 0, 0, 0\r\n\
-string2 = %*f; %f;\r\n\
-name2 = Pitch\r\n\
-linewidth2 = 2\r\n\
-plot3 = 0, 0, 0, 0, 0\r\n\
-string3 = %*f; %*f; %f;\r\n\
-name3 = Roll\r\n\
-linewidth3 = 2\r\n\
-plot4 = 0, 0, 0, 0, 0\r\n\
-string4 = %*f; %*f; %*f; %f;\r\n\
-name4 = Heave\r\n\
-linewidth4 = 2\r\n\
-";
-			m_multiPlotWindows->ProcessPlotCommand(plotCommand, 2);
-			m_multiPlotWindows->SetFixedWidthMode(true);
-		}
-
+		m_multiPlotWindows->ProcessPlotCommand(g_outputViewPlotCommand, 2);
+		m_multiPlotWindows->SetFixedWidthMode(true);
 
 		const int portNumber = m_COMPortComboBox.GetPortNum();
 		CString baudRate;
@@ -179,7 +178,7 @@ linewidth4 = 2\r\n\
 		}
 		else
 		{
-
+			// error
 		}
 	}
 }
@@ -264,43 +263,32 @@ void CMotionOutputView::OnSize(UINT nType, int cx, int cy)
 		ScreenToClient(pwr);
 		m_multiPlotWindows->MoveWindow(pwr);
 	}
-
 }
 
 
 void CMotionOutputView::OnBnClickedButtonStart()
 {
-	SendMotionControllSwitchMessage(1);
+	SendMotionControllSwitchMessage(BITCON_SER::START);
 }
-
-
 void CMotionOutputView::OnBnClickedButtonStop()
 {
-	SendMotionControllSwitchMessage(2);
+	SendMotionControllSwitchMessage(BITCON_SER::STOP);
 }
-
-
 void CMotionOutputView::OnBnClickedButtonOrigin()
 {
-	SendMotionControllSwitchMessage(5);
+	SendMotionControllSwitchMessage(BITCON_SER::ORIGIN);
 }
-
-
 void CMotionOutputView::OnBnClickedButtonEmergency()
 {
-	SendMotionControllSwitchMessage(6);
+	SendMotionControllSwitchMessage(BITCON_SER::EMERGENCY);
 }
-
-
 void CMotionOutputView::OnBnClickedButtonServoOn()
 {
-	SendMotionControllSwitchMessage(7);
+	SendMotionControllSwitchMessage(BITCON_SER::SERVOON);
 }
-
-
 void CMotionOutputView::OnBnClickedButtonServoOff()
 {
-	SendMotionControllSwitchMessage(8);
+	SendMotionControllSwitchMessage(BITCON_SER::SERVOOFF);
 }
 
 
@@ -337,6 +325,7 @@ void CMotionOutputView::SendMotionControllSwitchMessage(const int state)
 }
 
 
+// Send Only Emergency Message
 void CMotionOutputView::OnBnClickedCheck1()
 {
 	UpdateData();
@@ -348,4 +337,42 @@ void CMotionOutputView::OnDestroy()
 	UpdateConfig(false);
 
 	CDockablePaneChildView::OnDestroy();	
+}
+
+
+// 모션 입력을 시리얼포트를 통해 출력으로 보낸다.
+void CMotionOutputView::Start()
+{
+	m_multiPlotWindows->ProcessPlotCommand(g_outputViewPlotCommand, 2);
+	m_multiPlotWindows->SetFixedWidthMode(true);
+
+	const int portNumber = m_COMPortComboBox.GetPortNum();
+	CString baudRate;
+	m_BaudRateComboBox.GetWindowTextW(baudRate);
+
+	cController::Get()->CloseSerial();
+	if (cController::Get()->ConnectSerial(portNumber, _wtoi(baudRate)))
+	{
+		m_ConnectButton.SetWindowTextW(L"Stop");
+
+		m_IsOnlyEmergency = FALSE;
+		m_isStartSendMotion = true;
+		m_StartSendMotionButton.SetWindowTextW(L"Stop!! ");
+
+		SetBackgroundColor(g_blueColor);
+	}
+}
+
+
+// 출력을 내보내는 것을 멈춘다.
+void CMotionOutputView::Stop()
+{
+	cController::Get()->CloseSerial();
+	m_ConnectButton.SetWindowTextW(L"Start");
+
+	m_IsOnlyEmergency = TRUE;
+	m_isStartSendMotion = false;
+	m_StartSendMotionButton.SetWindowTextW(L"Start Send Motion");
+
+	SetBackgroundColor(g_grayColor);
 }
