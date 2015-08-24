@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hardware_settings_config><cpu><threadStrategy parallelUpdateRender="false"/></cpu></hardware_settings_config>
