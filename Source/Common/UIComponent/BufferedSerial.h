@@ -21,6 +21,7 @@ public:
 	virtual ~CBufferedSerial();
 
 	bool ReadStringUntil(const char ch, OUT string &out);
+	void SetMaxWaitTime(const int milliseconds);
 	void ClearBuffer();
 
 
@@ -32,5 +33,6 @@ protected:
 	// headIndex == tailIndex 조건이 성립하면, 버퍼가 비었다는 뜻이다.
 	int m_headIndex = 0;  // 저장된 정보가 시작되는 index를 가르킨다.
 	int m_tailIndex = 0; // 정보를 쓰기 시작할 index를 가르킨다.
-	bool m_isFullBuffer = false; // 버퍼가 가득찼을 때, true가 된다. 효율적인 메모리 관리를 위해 필요함.
+	int m_maxWaitTime; // default = 500
+	int m_lastReturnTime; // m_maxWaitTime 시간이 지나도록 문자 ch가 오지 않는다면, 리턴한다.
 };

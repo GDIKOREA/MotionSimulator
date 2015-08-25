@@ -87,3 +87,27 @@ int GetNumVisibleLines(CRichEditCtrl* pCtrl)
 	return (nLastLine - nFirstLine);
 }
 
+
+
+// 모션 컨트롤러 상태 메세지를 보낸다.
+void SendMotionSimMessage(const int state)
+{
+	const int out_pitch = 256;
+	const int out_roll = 256;
+	const int out_yaw = 256;
+	const int out_sway = 256;
+	const int out_surge = 256;
+	const int out_heave = 512;
+	const int out_switch = state;
+
+	const string out = common::format(
+		"A%3d%3d%3d%3d%3d%3d%dZ", out_roll, out_pitch, out_yaw,
+		out_sway, out_surge, out_heave, out_switch);
+
+	for (int i = 0; i < 5; ++i)
+	{
+		cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
+		Sleep(50);
+	}
+}
+

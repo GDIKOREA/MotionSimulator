@@ -198,6 +198,7 @@
 #define IDC_SLIDER_PLAYPOS              1085
 #define IDC_STATIC_GROUP2               1086
 #define IDC_STATIC_PLAYPOS              1087
+#define IDC_CHECK_PLAY_MOTIONSIM        1089
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
@@ -206,7 +207,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        330
 #define _APS_NEXT_COMMAND_VALUE         32772
-#define _APS_NEXT_CONTROL_VALUE         1089
+#define _APS_NEXT_CONTROL_VALUE         1090
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

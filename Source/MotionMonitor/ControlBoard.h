@@ -49,4 +49,6 @@ public:
 	CButton m_StartButton;
 	afx_msg void OnBnClickedButtonStart();
 	CButton m_Dirt3RadioButton;
+	BOOL m_IsPlayMotionSim;
+	afx_msg void OnBnClickedCheckPlayMotionsim();
 };

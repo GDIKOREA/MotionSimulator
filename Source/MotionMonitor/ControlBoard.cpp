@@ -30,6 +30,7 @@ CControlBoard::CControlBoard(CWnd* pParent /*=NULL*/)
 	, m_UDPUpdateTime(_T(""))
 	, m_InnerState(_T(""))
 	, m_state(STOP)
+	, m_IsPlayMotionSim(FALSE)
 {
 }
 
@@ -48,6 +49,7 @@ void CControlBoard::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_INSTATE, m_InnerState);
 	DDX_Control(pDX, IDC_BUTTON_START, m_StartButton);
 	DDX_Control(pDX, IDC_RADIO_DIRT3, m_Dirt3RadioButton);
+	DDX_Check(pDX, IDC_CHECK_PLAY_MOTIONSIM, m_IsPlayMotionSim);
 }
 
 
@@ -60,6 +62,7 @@ BEGIN_MESSAGE_MAP(CControlBoard, CDockablePaneChildView)
 	ON_BN_CLICKED(IDC_RADIO_JOYSTICK, &CControlBoard::OnBnClickedRadioJoystick)
 	ON_BN_CLICKED(IDC_RADIO_MWAVE, &CControlBoard::OnBnClickedRadioMwave)
 	ON_BN_CLICKED(IDC_BUTTON_START, &CControlBoard::OnBnClickedButtonStart)
+	ON_BN_CLICKED(IDC_CHECK_PLAY_MOTIONSIM, &CControlBoard::OnBnClickedCheckPlayMotionsim)
 END_MESSAGE_MAP()
 
 
@@ -210,7 +213,7 @@ void CControlBoard::Start()
 	case GAME_TYPE::MACHINEGUN: cMachineGunController::Get()->StartMotionSim(g_configFileNames[m_GameType]); break;
 	case GAME_TYPE::JOYSTICK:
 	case GAME_TYPE::MWAVE: 
-		cSimpleController::Get()->StartMotionSim(g_configFileNames[m_GameType]);
+		cSimpleController::Get()->StartMotionSim(g_configFileNames[m_GameType], m_IsPlayMotionSim? true:false);
 		break;
 	default:
 		break;
@@ -269,3 +272,8 @@ void CControlBoard::OnBnClickedButtonStart()
 	}
 }
 
+
+void CControlBoard::OnBnClickedCheckPlayMotionsim()
+{
+	UpdateData();
+}

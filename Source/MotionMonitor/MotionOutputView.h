@@ -19,6 +19,7 @@ public:
 	virtual void Stop() override;
 
 	virtual void Update(const float deltaSeconds) override;
+	virtual void UpdateSerial(char *buffer) override;
 
 
 protected:

@@ -233,6 +233,13 @@ void CMotionOutputView::Update(const float deltaSeconds)
 }
 
 
+// 시리얼통신 정보를 받아서 처리한다.
+void CMotionOutputView::UpdateSerial(char *buffer)
+{
+	AppendToLogAndScroll(&m_Log, common::str2wstr(string(buffer) + "\n").c_str(), RGB(200, 200, 200));
+}
+
+
 void CMotionOutputView::OnBnClickedButtonStartSendMotion()
 {
 	if (m_isStartSendMotion)
@@ -376,3 +383,4 @@ void CMotionOutputView::Stop()
 
 	SetBackgroundColor(g_grayColor);
 }
+

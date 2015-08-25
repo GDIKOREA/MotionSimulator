@@ -66,10 +66,14 @@ BOOL CComPortCombo::InitList(int nDefPort /*= -1*/)
 	{
 		for (u_int i = 0; i < friendlyNames.size(); ++i)
 		{
-			const int nItem = AddString(
-				(common::formatw("COM%d ", ports[i]) + friendlyNames[i]).c_str() );
+// 			const int nItem = AddString(
+// 				(common::formatw("COM%d ", ports[i]) + friendlyNames[i]).c_str() );
+// 			SetItemData(nItem, static_cast<DWORD>(ports[i]));
 
-			SetItemData(nItem, static_cast<DWORD>(ports[i]));
+			CEnumDevInfo info;
+			info.m_nPortNum = static_cast<DWORD>(ports[i]);
+			info.m_strName = (common::formatw("COM%d ", ports[i]) + friendlyNames[i]).c_str();
+			AddItem(&info);
 		}
 	}
 

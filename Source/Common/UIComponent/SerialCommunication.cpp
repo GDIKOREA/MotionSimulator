@@ -29,6 +29,7 @@ bool cSerialCommunication::ProcessSerialCommunicatoin(const float deltaSeconds)
 {
 	RETV(!m_serial.IsOpened(), false);
 
+/*
 	char data = 0;
 	const int readLength = m_serial.ReadData(&data, 1);
 	if (readLength == 0)
@@ -45,15 +46,23 @@ bool cSerialCommunication::ProcessSerialCommunicatoin(const float deltaSeconds)
 	{
 		m_buff[m_currentBuffIndex] = NULL;
 
-		float t, roll, pitch, yaw;
-		sscanf_s(m_buff, "Radian, %f, %f, %f, %f", &t, &roll, &pitch, &yaw);
-
-		//cController::Get()->GetCubeFlight().SetEulerAngle(-roll, yaw, -pitch);
+// 		float t, roll, pitch, yaw;
+// 		sscanf_s(m_buff, "Radian, %f, %f, %f, %f", &t, &roll, &pitch, &yaw);
+//		cController::Get()->GetCubeFlight().SetEulerAngle(-roll, yaw, -pitch);
 
 		// 시리얼통신으로 넘어온 정보를 옵져버에게 알린다.
 		NotifyObserver(m_buff);
 
 		m_currentBuffIndex = 0;
+	}
+*/
+
+	string buff;
+	if (m_serial.ReadStringUntil('\n', buff))
+	{
+		// 시리얼통신으로 넘어온 정보를 옵져버에게 알린다.
+		if (!buff.empty())
+			NotifyObserver((char*)&buff[0]);
 	}
 
 	return true;

@@ -174,6 +174,9 @@
     <ClInclude Include="SimpleController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vitconmotionsim.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -297,6 +300,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SimpleController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vitconmotionsim.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

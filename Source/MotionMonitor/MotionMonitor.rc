@@ -241,6 +241,7 @@ BEGIN
     LTEXT           "State",IDC_STATIC,7,95,18,8
     LTEXT           "inner State",IDC_STATIC_INSTATE,53,95,36,8
     PUSHBUTTON      "Start",IDC_BUTTON_START,196,20,50,14
+    CONTROL         "Play Motion Simulator",IDC_CHECK_PLAY_MOTIONSIM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,24,84,10
 END
 
 

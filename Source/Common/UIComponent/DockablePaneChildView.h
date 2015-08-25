@@ -9,14 +9,15 @@
 class CDockablePaneChildView : public CDialogEx
 							 , public iUpdateObserver
 							 , public iUDPObserver
+							 , public iSerialObserver
 {
 public:
 	CDockablePaneChildView(UINT id, CWnd* pParent = NULL);   // standard constructor
 	virtual ~CDockablePaneChildView();
 
-	virtual void UpdateSerial(char *buffer) {}
-	virtual void Update(const float deltaSeconds) {}
-	virtual void UpdateUDP(const char *buffer, const int bufferLen) {}
+	virtual void UpdateSerial(char *buffer) override {}
+	virtual void Update(const float deltaSeconds) override {}
+	virtual void UpdateUDP(const char *buffer, const int bufferLen) override {}
 	virtual void UpdateConfig(bool IsSaveAndValidate=true) {}
 	virtual void Start() {}
 	virtual void Stop() {}
