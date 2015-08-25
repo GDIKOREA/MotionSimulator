@@ -10,8 +10,6 @@
 cVitconMotionSim::cVitconMotionSim() :
 	m_state(OFF)
 	, m_subState(SUBSTATE_OFF)
-// 	, m_gameState(0)
-// 	, m_gameMission(-1)
 	, m_playTime(0)
 	, m_lastUDPUpdateTime(0)
 	, m_changeInformationPulse(true)
@@ -117,7 +115,7 @@ void cVitconMotionSim::State_Start(const float deltaSeconds)
 void cVitconMotionSim::State_Origin(const float deltaSeconds)
 {
 	m_changeInformationPulse = true;
-	//g_mwaveView->LoadandPlayMotionWave("기본위치.mwav");
+	g_mwaveView->LoadandPlayMotionWave("../media/machine gun/motion wave/기본위치.mwav");
 	Delay(3, SUBSTATE_READY);
 }
 
@@ -125,7 +123,7 @@ void cVitconMotionSim::State_Origin(const float deltaSeconds)
 void cVitconMotionSim::State_OriginStop(const float deltaSeconds)
 {
 	m_changeInformationPulse = true;
-	//g_mwaveView->LoadandPlayMotionWave("기본위치.mwav");
+	g_mwaveView->LoadandPlayMotionWave("../media/machine gun/motion wave/기본위치.mwav");
 	Delay(3, SUBSTATE_STOP_READY);
 }
 
@@ -174,7 +172,7 @@ void cVitconMotionSim::State_Playing(const float deltaSeconds)
 void cVitconMotionSim::State_End(const float deltaSeconds)
 {
 	// origin motionwave
-	//g_mwaveView->LoadandPlayMotionWave("기본위치.mwav");
+	g_mwaveView->LoadandPlayMotionWave("../media/machine gun/motion wave/기본위치.mwav");
 	m_changeInformationPulse = true;
 	Delay(5, SUBSTATE_END_STOP);
 }

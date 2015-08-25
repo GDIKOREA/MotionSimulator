@@ -73,7 +73,10 @@ void cSimpleController::Update(const float deltaSeconds)
 		case cVitconMotionSim::OFF:
 			// ServoOff 상태로 바뀔 때, MotionOutputView도 같이 Stop 된다.
 			if (CMainFrame *pFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+			{
 				pFrm->m_motionOutputView->GetChildView()->Stop();
+				pFrm->m_motionWaveView->GetChildView()->Stop();
+			}
 			break;
 
 		case cVitconMotionSim::READY:

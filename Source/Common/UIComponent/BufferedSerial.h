@@ -10,6 +10,10 @@
 //
 // 이 클래스를 사용할 경우, ReadData()함수 대신, ReadStringUntil() 함수를 써야 한다.
 //
+//
+// 2015-08-25
+// 일정 시간 이상동안 ch문자가 들어오지 않으면, 버퍼를 리턴한다.
+//
 #pragma once
 #include "Serial.h"
 

@@ -159,7 +159,7 @@ void CControlBoard::Update(const float deltaSeconds)
 					break;
 				}
 
-				m_InnerState = cMachineGunController::Get()->GetInnerStateName();
+				//m_InnerState = cMachineGunController::Get()->GetInnerStateName();
 				m_GameMission.Format(L"%d", cMachineGunController::Get()->m_gameMission);
 				UpdateData(FALSE);
 			}
@@ -210,7 +210,7 @@ void CControlBoard::Start()
 	switch (g_gameType)
 	{
 	case GAME_TYPE::DIRT3: cDirt3Controller::Get()->StartMotionSim(g_configFileNames[m_GameType]); break;
-	case GAME_TYPE::MACHINEGUN: cMachineGunController::Get()->StartMotionSim(g_configFileNames[m_GameType]); break;
+	case GAME_TYPE::MACHINEGUN: cMachineGunController::Get()->StartMotionSim(g_configFileNames[m_GameType], m_IsPlayMotionSim ? true : false); break;
 	case GAME_TYPE::JOYSTICK:
 	case GAME_TYPE::MWAVE: 
 		cSimpleController::Get()->StartMotionSim(g_configFileNames[m_GameType], m_IsPlayMotionSim? true:false);
