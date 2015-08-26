@@ -33,8 +33,9 @@ protected:
 	STATE m_state;
 	bool m_isPause;
 	CMultiPlotWindow *m_multiPlotWindows;
-	float m_incTime;
+	//float m_incTime;
 	float m_updateIncTime;
+	int m_rcvPacketCount;
 
 
 	DECLARE_ANCHOR_MAP();
@@ -49,15 +50,16 @@ public:
 	CRichEditCtrl m_EditCommand;
 	afx_msg void OnDestroy();
 	afx_msg void OnBnClickedButtonUdpServerBind();
-	CButton m_ServerBindButton;
-	int m_ServerPort;
-	CString m_PacketString;
+	//CButton m_ServerBindButton;
+	//int m_ServerPort;
+	CStatic m_PacketString;
 	afx_msg void OnBnClickedButtonPlotupdate();
 	afx_msg void OnBnClickedButtonHelp();
 	afx_msg void OnBnClickedButtonPlotpause();
 	afx_msg void OnBnClickedCheckFixedmode();
 	CEdit m_PlotCommandEditor;
 	CButton m_FixedModeButton;
-	int m_PacketRecvCount;
-	CString m_PlotInputString;
+	//int m_PacketRecvCount;
+	CStatic m_PacketRecvCount;
+	CStatic m_PlotInputString;
 };

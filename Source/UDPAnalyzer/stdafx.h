@@ -79,3 +79,8 @@ enum VIEW_TYPE
 #include "mathinterpreter.h"
 #include "plotinputparser.h"
 #include "udpanalyzeroption.h"
+
+
+const static COLORREF g_blueColor = RGB(51, 153, 255);
+const static COLORREF g_grayColor = RGB(240, 240, 240);
+const static COLORREF g_redColor = RGB(255, 127, 80);

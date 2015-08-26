@@ -94,6 +94,8 @@ void CUDPView::OnBnClickedButtonStart()
 	{
 		cController::Get()->GetUDPComm().Close();
 		m_StartButton.SetWindowTextW(L"Server Start");
+
+		SetBackgroundColor(g_grayColor);
 	}
 	else
 	{
@@ -104,9 +106,8 @@ void CUDPView::OnBnClickedButtonStart()
 			CString text;
 			m_ProtocolEditor.GetWindowTextW(text);
 			m_protocolParser.ParseStr(wstr2str((LPCTSTR)text));
-// 			CString str;
-// 			m_CommandEditor.GetWindowText(str);
-// 			m_multiPlotWindows->ProcessPlotCommand(str);
+
+			SetBackgroundColor(g_blueColor);
  		}
 		else
 		{

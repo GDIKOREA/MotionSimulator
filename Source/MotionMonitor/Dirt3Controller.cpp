@@ -26,6 +26,7 @@ void cDirt3Controller::StartMotionSim(const string &configFileName)
 		pFrm->m_mixingView->GetChildView()->Start();
 		pFrm->m_motionOutputView->GetChildView()->Start();
 		pFrm->m_udpInputView->GetChildView()->Start();
+		pFrm->m_udpParseView->GetChildView()->Start();
 	}
 }
 
@@ -37,6 +38,7 @@ void cDirt3Controller::StopMotionSim()
 		// 안전을 위해 순서를 지키자.
 		pFrm->m_motionOutputView->GetChildView()->Stop();
 		pFrm->m_udpInputView->GetChildView()->Stop();
+		pFrm->m_udpParseView->GetChildView()->Stop();
 		pFrm->m_mixingView->GetChildView()->Stop();
 	}
 }

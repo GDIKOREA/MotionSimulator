@@ -19,6 +19,9 @@
     <Filter Include="UIComponent">
       <UniqueIdentifier>{2414c485-ea86-4cbf-bf61-9ebe62ed2d67}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Script">
+      <UniqueIdentifier>{97a31902-0fc5-4428-9efc-ba8b248d88b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -180,6 +183,21 @@
     <ClInclude Include="UDPParseView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="script.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="mathinterpreter.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="mathparser.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="mathscript.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="protocolparser.h">
+      <Filter>Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -310,6 +328,21 @@
     </ClCompile>
     <ClCompile Include="UDPParseView.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mathinterpreter.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="mathparser.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="mathscript.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="script.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="protocolparser.cpp">
+      <Filter>Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

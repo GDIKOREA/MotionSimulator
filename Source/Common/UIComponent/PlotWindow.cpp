@@ -218,7 +218,8 @@ void CPlotWindow::DrawPlot(const float deltaSeconds, const bool autoSet) //autoS
 	if (autoSet && (curT - m_updateTime) > elapseTime) // 30프레임주기로 그래프를 업데이트 한다.
 	{
 		// 가장 최근 값을 저장한다.
-		SetPlotXY(curT, GetTailValue().y);
+		for (u_int i = 0; i < m_plots.size(); ++i)
+			SetPlotXY(curT, GetTailValue(i).y, i);
 	}
 
 	m_incSeconds += deltaSeconds;

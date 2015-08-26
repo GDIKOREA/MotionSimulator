@@ -92,7 +92,8 @@ void cMachineGunController::StartMotionSim(const string &configFileName, const b
 	{
 		// UDP View, Mixing View, Output View Start
 		// 안전을 위해 순서를 지키자.
-		pFrm->m_udpInputView->GetChildView()->Start();
+		//pFrm->m_udpInputView->GetChildView()->Start();
+		pFrm->m_udpParseView->GetChildView()->Start();
 		pFrm->m_mixingView->GetChildView()->Start();
 		pFrm->m_motionWaveView->GetChildView()->Start();
 
@@ -111,7 +112,8 @@ void cMachineGunController::StopMotionSim()
 	if (CMainFrame *pFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
 	{
 		// 안전을 위해 순서를 지키자.
-		pFrm->m_udpInputView->GetChildView()->Stop();
+		//pFrm->m_udpInputView->GetChildView()->Stop();
+		pFrm->m_udpParseView->GetChildView()->Stop();
 		pFrm->m_mixingView->GetChildView()->Stop();
 		pFrm->m_joystickView->GetChildView()->Stop();
 		pFrm->m_motionWaveView->GetChildView()->Stop();

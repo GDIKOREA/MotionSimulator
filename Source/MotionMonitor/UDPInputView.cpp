@@ -11,13 +11,12 @@
 CUDPInputView::CUDPInputView(CWnd* pParent /*=NULL*/)
 	: CDockablePaneChildView(CUDPInputView::IDD, pParent)
 	, m_multiPlotWindows(NULL)
-	, m_incTime(0)
+//	, m_incTime(0)
 	, m_updateIncTime(0)
-	, m_ServerPort(0)
-	, m_PacketString(_T(""))
+//	, m_ServerPort(0)
 	, m_isPause(false)
-	, m_PacketRecvCount(0)
-	, m_PlotInputString(_T(""))
+	, m_rcvPacketCount(0)
+	//, m_PlotInputString(_T(""))
 	, m_state(STOP)
 {
 
@@ -32,13 +31,13 @@ void CUDPInputView::DoDataExchange(CDataExchange* pDX)
 	CDockablePaneChildView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BUTTON_UPDATE, m_UpdateButton);
 	DDX_Control(pDX, IDC_RICHEDIT2_COMMAND, m_EditCommand);
-	DDX_Control(pDX, IDC_BUTTON_UDP_SERVER_BIND, m_ServerBindButton);
-	DDX_Text(pDX, IDC_EDIT_PORT, m_ServerPort);
-	DDX_Text(pDX, IDC_STATIC_PACKET, m_PacketString);
+// 	DDX_Control(pDX, IDC_BUTTON_UDP_SERVER_BIND, m_ServerBindButton);
+// 	DDX_Text(pDX, IDC_EDIT_PORT, m_ServerPort);
+	DDX_Control(pDX, IDC_STATIC_PACKET, m_PacketString);
 	DDX_Control(pDX, IDC_EDIT_COMMAND, m_PlotCommandEditor);
 	DDX_Control(pDX, IDC_CHECK_FIXEDMODE, m_FixedModeButton);
-	DDX_Text(pDX, IDC_STATIC_PACKET_COUNT, m_PacketRecvCount);
-	DDX_Text(pDX, IDC_STATIC_PLOTINPUT, m_PlotInputString);
+	DDX_Control(pDX, IDC_STATIC_PACKET_COUNT, m_PacketRecvCount);
+	DDX_Control(pDX, IDC_STATIC_PLOTINPUT, m_PlotInputString);
 }
 
 
@@ -73,13 +72,9 @@ END_MESSAGE_MAP()
 
 void CUDPInputView::OnBnClickedOk()
 {
-	//CDockablePaneChildView::OnOK();
 }
-
-
 void CUDPInputView::OnBnClickedCancel()
 {
-	//CDockablePaneChildView::OnCancel();
 }
 
 
@@ -181,7 +176,7 @@ name4 = Heave\r\n";
 
 		m_PlotCommandEditor.SetWindowTextW(strPlotComandEditor);
 
-		m_ServerPort = cMotionController::Get()->m_config.m_udpPort;
+		//m_ServerPort = cMotionController::Get()->m_config.m_udpPort;
 
 		UpdateData(FALSE);
 	}
@@ -196,7 +191,7 @@ name4 = Heave\r\n";
 		m_PlotCommandEditor.GetWindowText(plotCommand);
 		cMotionController::Get()->m_config.m_udpModCommand = wstr2str((LPCTSTR)modCommand);
 		cMotionController::Get()->m_config.m_udpPlotCommand = wstr2str((LPCTSTR)plotCommand);
-		cMotionController::Get()->m_config.m_udpPort = m_ServerPort;
+		//cMotionController::Get()->m_config.m_udpPort = m_ServerPort;
 	}	
 }
 
@@ -239,24 +234,10 @@ void CUDPInputView::Update(const float deltaSeconds)
 	if (!m_multiPlotWindows)
 		return;
 
-	m_incTime += deltaSeconds;
 	m_updateIncTime += deltaSeconds;
 
-	if (m_updateIncTime > 0.020f)
-	{
-		float origRoll, origPitch, origYaw, origHeave;
-		cMotionController::Get()->m_udpMod.GetOriginal(origYaw, origPitch, origRoll, origHeave);
-		m_multiPlotWindows->SetString(common::format("%f;%f;%f;%f", origYaw, origPitch, origRoll, origHeave).c_str(), 1);
-
-		float roll, pitch, yaw, heave;
-		cMotionController::Get()->m_udpMod.GetFinal(yaw, pitch, roll, heave);
-		m_multiPlotWindows->SetString(common::format("%f;%f;%f;%f;", yaw, pitch, roll, heave).c_str(), 2);
-
-		if (!m_isPause)
-			m_multiPlotWindows->DrawGraph(m_updateIncTime);
-
-		m_updateIncTime = 0.f;
-	}
+	if (!m_isPause)
+		m_multiPlotWindows->DrawGraph(deltaSeconds, true);
 }
 
 
@@ -264,12 +245,14 @@ void CUDPInputView::UpdateUDP(const char *buffer, const int bufferLen)
 {
 	RET(STOP == m_state);
 
-	m_PacketString = common::str2wstr(buffer).c_str();
+	m_PacketString.SetWindowTextW(common::str2wstr(buffer).c_str());
 
 	if (bufferLen < 10)
 	{
-		++m_PacketRecvCount;
-		UpdateData(FALSE);
+		++m_rcvPacketCount;
+		CString str;
+		str.Format(L"%d", m_rcvPacketCount);
+		m_PacketRecvCount.SetWindowTextW(str);
 		return;
 	}
 
@@ -278,80 +261,103 @@ void CUDPInputView::UpdateUDP(const char *buffer, const int bufferLen)
 
 	if (GAME_TYPE::DIRT3 == g_gameType) // Dirt3 Motion
 	{
-		// 패킷의 특정 값만 float으로 변환해서 가져온다.
-		// 프로토콜에 대한 문서는 https://github.com/GDIKOREA/MotionSimulator/wiki/Dirt3-Motion-Data-Capture 를 참조하자.
-		// packet[16~19] : yaw, radian, float
-		// packet[20~23] : pitch, radian, float
-		// packet[24~27] : roll, radian, float
-		// packet[28~31] : heave, float(확실치 않음)
+// 		// 패킷의 특정 값만 float으로 변환해서 가져온다.
+// 		// 프로토콜에 대한 문서는 https://github.com/GDIKOREA/MotionSimulator/wiki/Dirt3-Motion-Data-Capture 를 참조하자.
+// 		// packet[16~19] : yaw, radian, float
+// 		// packet[20~23] : pitch, radian, float
+// 		// packet[24~27] : roll, radian, float
+// 		// packet[28~31] : heave, float(확실치 않음)
+// 
+// 		const int indices[] = { 16, 20, 24, 28 };
+// 		const int size = sizeof(indices) / sizeof(int);
+// 		for (int i = 0; i < size; ++i)
+// 		{
+// 			float v = *(float*)&buffer[indices[i]];
+// 			values[i] = v;
+// 			ss << v << ";";
+// 		}
+// 
+// 		values[2] -= 1.55f;
+// 
+// 		const float roll = values[2];
+// 		const float pitch = values[1];
+// 		const float yaw = -values[0];
+// 		const float heave = values[3];
+// 
+// 		cController::Get()->GetCubeFlight().SetEulerAngle(roll, yaw, pitch);
+// 
+// 		m_PlotInputString = common::str2wstr(ss.str()).c_str();
+// 
+// 		// 그래프 출력
+// 		if (m_multiPlotWindows)
+// 			m_multiPlotWindows->SetString(ss.str().c_str());
+// 
+// 		cMotionController::Get()->m_udpMod.Update(m_incTime, yaw, pitch, roll, heave);
+// 		m_incTime = 0;
 
-		const int indices[] = { 16, 20, 24, 28 };
-		const int size = sizeof(indices) / sizeof(int);
-		for (int i = 0; i < size; ++i)
-		{
-			float v = *(float*)&buffer[indices[i]];
-			values[i] = v;
-			ss << v << ";";
-		}
-
-		values[2] -= 1.55f;
-
-		const float roll = values[2];
-		const float pitch = values[1];
-		const float yaw = -values[0];
-		const float heave = values[3];
-
-		cController::Get()->GetCubeFlight().SetEulerAngle(roll, yaw, pitch);
-
-		m_PlotInputString = common::str2wstr(ss.str()).c_str();
-
-		// 그래프 출력
-		if (m_multiPlotWindows)
-			m_multiPlotWindows->SetString(ss.str().c_str());
-
-		cMotionController::Get()->m_udpMod.Update(m_incTime, yaw, pitch, roll, heave);
-		m_incTime = 0;
+// 		float yaw, pitch, roll, heave;
+// 		cMotionController::Get()->m_udpMod.GetOriginal(yaw, pitch, roll, heave);
+// 		m_PlotInputString = common::formatw("%f;%f;%f;%f", yaw, pitch, roll, heave).c_str();
 	}
 	else
 	{ // MachineGun
-		if (bufferLen < sizeof(sMotionPacket))
-			return;
-
-		sMotionPacket *packet = (sMotionPacket*)buffer;
-		values[0] = packet->yaw;
-		values[1] = packet->pitch;
-		values[2] = packet->roll;
-		values[3] = 0;
-
-		// 3D Model에 적용.
-		float roll = -values[2];
-		float pitch = -values[1];
-		const float yaw = 0;
-		cController::Get()->GetCubeFlight().SetEulerAngle(roll, yaw, pitch);
-		Vector3 euler = cController::Get()->GetCubeFlight().GetRotation().Euler();
-		roll = euler.x;
-		pitch = euler.z;
-
-		ss << 0 << ";";
-		ss << pitch << ";";
-		ss << roll << ";";
-		ss << 0 << ";";
-		ss << packet->gamestate << ";";
-		ss << packet->mission << ";";
-
-		m_PlotInputString = common::str2wstr(ss.str()).c_str();
-
-		// 그래프 출력
-		if (m_multiPlotWindows)
-			m_multiPlotWindows->SetString(ss.str().c_str());
-
-		cMotionController::Get()->m_udpMod.Update(m_incTime, 0, pitch, roll, 0);
-		m_incTime = 0;
+// 		if (bufferLen < sizeof(sMotionPacketV1))
+// 			return;
+// 
+// 		sMotionPacket *packet = (sMotionPacket*)buffer;
+// 		values[0] = packet->yaw;
+// 		values[1] = packet->pitch;
+// 		values[2] = packet->roll;
+// 		values[3] = 0;
+// 
+// 		// 3D Model에 적용.
+// 		float roll = -values[2];
+// 		float pitch = -values[1];
+// 		const float yaw = 0;
+// 		cController::Get()->GetCubeFlight().SetEulerAngle(roll, yaw, pitch);
+// 		Vector3 euler = cController::Get()->GetCubeFlight().GetRotation().Euler();
+// 		roll = euler.x;
+// 		pitch = euler.z;
+// 
+// 		ss << 0 << ";";
+// 		ss << pitch << ";";
+// 		ss << roll << ";";
+// 		ss << 0 << ";";
+// 		ss << packet->gamestate << ";";
+// 		ss << packet->mission << ";";
+// 
+// 		m_PlotInputString = common::str2wstr(ss.str()).c_str();
+// 
+// 		// 그래프 출력
+// 		if (m_multiPlotWindows)
+// 			m_multiPlotWindows->SetString(ss.str().c_str());
+// 
+// 		cMotionController::Get()->m_udpMod.Update(m_incTime, 0, pitch, roll, 0);
+//		m_incTime = 0;
 	}
 
+	const float t = timeGetTime()*0.001f;
 
-	++m_PacketRecvCount;
-	UpdateData(FALSE);
+	float yaw, pitch, roll, heave;
+	cMotionController::Get()->m_udpMod.GetOriginal(yaw, pitch, roll, heave);
+	string plotInputStr = common::format("%f;%f;%f;%f", yaw, pitch, roll, heave).c_str();
+	m_PlotInputString.SetWindowTextW(str2wstr(plotInputStr).c_str());
+
+	// 그래프 출력
+	m_multiPlotWindows->SetString(t, plotInputStr.c_str());
+
+	float origRoll, origPitch, origYaw, origHeave;
+	cMotionController::Get()->m_udpMod.GetOriginal(origYaw, origPitch, origRoll, origHeave);
+	m_multiPlotWindows->SetString(t, common::format("%f;%f;%f;%f", origYaw, origPitch, origRoll, origHeave).c_str(), 1);
+
+	float froll, fpitch, fyaw, fheave;
+	cMotionController::Get()->m_udpMod.GetFinal(fyaw, fpitch, froll, fheave);
+	m_multiPlotWindows->SetString(t, common::format("%f;%f;%f;%f;", fyaw, fpitch, froll, fheave).c_str(), 2);
+
+	++m_rcvPacketCount;
+	CString str;
+	str.Format(L"%d", m_rcvPacketCount);
+	m_PacketRecvCount.SetWindowTextW(str);
 }
 
 
@@ -361,30 +367,11 @@ void CUDPInputView::OnBnClickedButtonUdpServerBind()
 
 	if (cController::Get()->GetUDPComm().IsConnect())
 	{
-// 		cController::Get()->GetUDPComm().Close();
-// 		m_ServerBindButton.SetWindowTextW(L"Server Start");
-// 
-// 		SetBackgroundColor(g_grayColor);
 		Stop();
 	}
 	else
 	{
 		Start();
-
-// 		if (cController::Get()->GetUDPComm().InitServer(m_ServerPort))
-// 		{
-// 			m_ServerBindButton.SetWindowTextW(L"Server Stop");
-// 
-// 			CString str;
-// 			m_PlotCommandEditor.GetWindowText(str);
-// 			m_multiPlotWindows->ProcessPlotCommand(str, 3);
-// 
-// 			SetBackgroundColor(g_blueColor);
-// 		}
-// 		else
-// 		{
-// 			//m_LogList.InsertString(m_LogList.GetCount(), L"접속 실패");
-// 		}
 	}	
 }
 
@@ -454,20 +441,20 @@ void CUDPInputView::Start()
 
 	m_state = START;
 
-	cController::Get()->GetUDPComm().Close();
-
-	if (cController::Get()->GetUDPComm().InitServer(m_ServerPort))
-	{
-		m_ServerBindButton.SetWindowTextW(L"Server Stop");
-
-		CString str;
-		m_PlotCommandEditor.GetWindowText(str);
-		m_multiPlotWindows->ProcessPlotCommand(str, 3);
-	}
-	else
-	{
-		//m_LogList.InsertString(m_LogList.GetCount(), L"접속 실패");
-	}
+// 	cController::Get()->GetUDPComm().Close();
+// 
+// 	if (cController::Get()->GetUDPComm().InitServer(m_ServerPort))
+// 	{
+// 		m_ServerBindButton.SetWindowTextW(L"Server Stop");
+// 
+// 		CString str;
+// 		m_PlotCommandEditor.GetWindowText(str);
+// 		m_multiPlotWindows->ProcessPlotCommand(str, 3);
+// 	}
+// 	else
+// 	{
+// 		//m_LogList.InsertString(m_LogList.GetCount(), L"접속 실패");
+// 	}
 
 	CString str;
 	m_PlotCommandEditor.GetWindowText(str);
@@ -475,7 +462,7 @@ void CUDPInputView::Start()
 
 	CString command;
 	m_EditCommand.GetWindowTextW(command);
-	cMotionController::Get()->m_udpMod.ParseStr(common::wstr2str((LPCTSTR)command).c_str());
+	cMotionController::Get()->m_udpMod.ParseStr(common::wstr2str((LPCTSTR)command));
 
 	SetBackgroundColor(g_blueColor);
 }
@@ -486,8 +473,8 @@ void CUDPInputView::Stop()
 {
 	m_state = STOP;
 
-	cController::Get()->GetUDPComm().Close();
-	m_ServerBindButton.SetWindowTextW(L"Server Start");
+// 	cController::Get()->GetUDPComm().Close();
+// 	m_ServerBindButton.SetWindowTextW(L"Server Start");
 
 	SetBackgroundColor(g_grayColor);
 }

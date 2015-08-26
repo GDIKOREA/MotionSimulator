@@ -75,6 +75,14 @@ void CControlBoard::OnBnClickedCancel()
 }
 
 
+BOOL CControlBoard::OnInitDialog()
+{
+	CDockablePaneChildView::OnInitDialog();
+
+	return TRUE;
+}
+
+
 void CControlBoard::OnBnClickedRadioDirt3()
 {
 	UpdateData();
@@ -175,15 +183,13 @@ void CControlBoard::Update(const float deltaSeconds)
 	default:
 		break;
 	}
-
-
 }
 
 
 // 머신건에서 UDP 로 패킷을 전송하면, 호출된다.
 void CControlBoard::UpdateUDP(const char *buffer, const int bufferLen)
 {
-	RET(!m_state != START);
+	RET(m_state != START);
 	RET(bufferLen < 10);
 
 	if (GAME_TYPE::MACHINEGUN == g_gameType) // MachineGun Motion Simulation
@@ -197,7 +203,6 @@ void CControlBoard::UpdateUDP(const char *buffer, const int bufferLen)
  		m_UDPUpdateTime.Format(L"%.1f", cMachineGunController::Get()->m_lastUDPUpdateTime);
  		UpdateData(FALSE);
 	}
-
 }
 
 
@@ -277,3 +282,4 @@ void CControlBoard::OnBnClickedCheckPlayMotionsim()
 {
 	UpdateData();
 }
+

@@ -27,6 +27,7 @@ const UINT uiFirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
 const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
 
 CMotionWaveView *g_mwaveView = NULL;
+CUDPInputView *g_udpInputView = NULL;
 
 #define CREATE_DOCKPANE(CLASS, DOCKNAME, PANE_ID, VAR)\
 {\
@@ -209,6 +210,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	CREATE_DOCKPANE(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
 
 	g_mwaveView = (CMotionWaveView*)m_motionWaveView->GetChildView();
+	g_udpInputView = (CUDPInputView *)m_udpInputView->GetChildView();
 
 	SetDockingWindowIcons(theApp.m_bHiColorIcons);
 	return TRUE;

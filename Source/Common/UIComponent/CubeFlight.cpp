@@ -46,6 +46,6 @@ void cCubeFlight::Update(const float deltaSeconds)
 // 큐브 각도를 오일러 각으로 설정한다.
 void cCubeFlight::SetEulerAngle(const float roll, const float pitch, const float yaw)
 {
-	m_rotate.Euler2(Vector3(roll, pitch, yaw));
+	m_rotate.Euler2(Vector3(roll, yaw, pitch));
 	m_tm = m_rotate.GetMatrix();
 }

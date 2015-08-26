@@ -98,8 +98,9 @@ namespace GAME_TYPE {
 extern GAME_TYPE::TYPE g_gameType;
 
 class CMotionWaveView;
+class CUDPInputView;
 extern CMotionWaveView *g_mwaveView;
-
+extern CUDPInputView *g_udpInputView;
 
 #include "Global.h"
 #include "motionwave.h"

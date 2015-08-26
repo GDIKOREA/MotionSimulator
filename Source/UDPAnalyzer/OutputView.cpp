@@ -20,7 +20,6 @@ COutputView::COutputView(CWnd* pParent /*=NULL*/)
 	, m_incSerialTime(0)
 	, m_incUDPTime(0)
 {
-
 }
 
 COutputView::~COutputView()
@@ -366,7 +365,27 @@ void COutputView::OnBnClickedButtonConnect()
 	}
 	else
 	{
-		// Nothing~
+		m_isStart = !m_isStart;
+
+		if (m_isStart)
+			m_ConnectButton.SetWindowTextW(L"Stop");
+		else
+			m_ConnectButton.SetWindowTextW(L"Start");
+	}
+
+
+	if (m_isStart)
+	{
+		CString command;
+		m_PlotCommand.GetWindowTextW(command);
+		m_multiPlotWindows->ProcessPlotCommand(command);
+		m_multiPlotWindows->SetFixedWidthMode(true);
+
+		SetBackgroundColor(g_blueColor);
+	}
+	else
+	{
+		SetBackgroundColor(g_grayColor);
 	}
 
 }
@@ -406,6 +425,8 @@ void COutputView::OnBnClickedButtonPlotUpdate()
 	m_multiPlotWindows->SetFixedWidthMode(true);
 
 	m_isStart = true;
+
+	SetBackgroundColor(g_blueColor);
 }
 
 

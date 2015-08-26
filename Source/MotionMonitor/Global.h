@@ -1,8 +1,15 @@
-
 #pragma once
 
 
+// 프로토콜 V.1
+struct sMotionPacketV1
+{
+	float directX, directY, directZ; // 자동차 방향 벡터
+	float pitch, yaw, roll; // 자동차 상태 radian
+	float speed; // 자동차 속도
+};
 
+// 프로토콜 V.2
 struct sMotionPacket
 {
 	float directX, directY, directZ; // 자동차 방향 벡터

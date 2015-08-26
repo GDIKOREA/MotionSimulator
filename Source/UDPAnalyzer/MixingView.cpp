@@ -15,7 +15,6 @@ CMixingView::CMixingView(CWnd* pParent /*=NULL*/)
 	, m_IsUpdateSymbolList(TRUE)
 	, m_symbolCount(0)
 {
-
 }
 
 CMixingView::~CMixingView()

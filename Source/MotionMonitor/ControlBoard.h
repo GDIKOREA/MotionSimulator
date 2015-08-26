@@ -51,4 +51,5 @@ public:
 	CButton m_Dirt3RadioButton;
 	BOOL m_IsPlayMotionSim;
 	afx_msg void OnBnClickedCheckPlayMotionsim();
+	virtual BOOL OnInitDialog();
 };

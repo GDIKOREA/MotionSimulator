@@ -129,10 +129,22 @@ BOOL CMotionMonitorDoc::OnNewDocument()
 
 	if (CMainFrame *pFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
 	{
+		static bool isFirst = true;
+		string fileName;
+		if (isFirst)
+		{
+			fileName = "../media/machine gun/motionmonitor_mg.json";
+			isFirst = false;
+		}
+		else
+		{
+			fileName = "motionmonitor_new.json";
+		}
+
 		cMotionMonitorConfig &config = cMotionController::Get()->m_config;
-		config.ReadConfigFile("motionmonitor_new.json");
+		config.ReadConfigFile(fileName);
 		pFrm->UpdateConfig();
-		pFrm->SetWindowTextW(L"motionmonitor_new.json");
+		pFrm->SetWindowTextW(str2wstr(fileName).c_str());
 	}
 
 	return TRUE;

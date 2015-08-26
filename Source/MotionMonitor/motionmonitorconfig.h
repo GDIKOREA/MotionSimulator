@@ -22,5 +22,13 @@ public:
 	string m_mixingModCommand;
 	int m_motionOutputComPort;
 	int m_motionOutputBaudRate;
+
+	string m_udpProtocolCommand;
+	string m_mixingScript;
+	string m_rollCommand;
+	string m_pitchCommand;
+	string m_yawCommand;
+	string m_heaveCommand;
+	int m_udpParsePort;
 };
 

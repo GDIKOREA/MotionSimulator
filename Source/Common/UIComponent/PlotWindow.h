@@ -27,7 +27,7 @@ public:
 	void SetPlotXY(const float x, const float y, const int plotIndex = 0);
 	void SetPlotY(const float y, const int plotIndex=0);
 	void SetMode(const MODE &mode);
-	void DrawPlot(const float deltaSeconds, const bool autoSet=true);
+	void DrawPlot(const float deltaSeconds, const bool autoSet = true);
 	void SetFixedWidthMode(const bool isFixedWidth);
 
 

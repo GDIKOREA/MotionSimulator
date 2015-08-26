@@ -155,10 +155,10 @@ BOOL CMotionMonitorApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 	//m_pMainWnd->SetWindowTextW(L"Motion Monitor");
-	m_pMainWnd->SetWindowTextW(L"motionmonitor_new.json");
+	m_pMainWnd->SetWindowTextW(L"motionmonitor_mg.json");	
+
 	//Close down COM
 	CoUninitialize();
-
 
 	return TRUE;
 }
