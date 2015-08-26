@@ -1,4 +1,3 @@
-
 // MainFrm.cpp : implementation of the CMainFrame class
 //
 
@@ -10,6 +9,7 @@
 #include "JoystickView.h"
 #include "MotionWaveView.h"
 #include "MixingView.h"
+#include "UDPParseView.h"
 #include "ControlBoard.h"
 #include "MainFrm.h"
 
@@ -27,6 +27,23 @@ const UINT uiFirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
 const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
 
 CMotionWaveView *g_mwaveView = NULL;
+
+#define CREATE_DOCKPANE(CLASS, DOCKNAME, PANE_ID, VAR)\
+{\
+	VAR = new CDockablePaneBase();\
+	if (!VAR->Create(DOCKNAME, this, CRect(0, 0, 200, 200), TRUE, PANE_ID, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))\
+	{\
+		TRACE0("Failed to create pane window\n");\
+		return FALSE;\
+	}\
+	CLASS *view = new CLASS(VAR);\
+	view->Create(CLASS::IDD, VAR);\
+	view->ShowWindow(SW_SHOW);\
+	VAR->SetChildView(view);\
+	m_viewList.push_back(VAR);\
+}
+
+
 
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
@@ -99,40 +116,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// prevent the menu bar from taking the focus on activation
 	CMFCPopupMenu::SetForceMenuFocus(FALSE);
 
-// 	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
-// 		!m_wndToolBar.LoadToolBar(theApp.m_bHiColorIcons ? IDR_MAINFRAME_256 : IDR_MAINFRAME))
-// 	{
-// 		TRACE0("Failed to create toolbar\n");
-// 		return -1;      // fail to create
-// 	}
-
-// 	CString strToolBarName;
-// 	bNameValid = strToolBarName.LoadString(IDS_TOOLBAR_STANDARD);
-// 	ASSERT(bNameValid);
-// 	m_wndToolBar.SetWindowText(strToolBarName);
-
 	CString strCustomize;
 	bNameValid = strCustomize.LoadString(IDS_TOOLBAR_CUSTOMIZE);
-// 	ASSERT(bNameValid);
-// 	m_wndToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
 
-	// Allow user-defined toolbars operations:
-//	InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
-
-// 	if (!m_wndStatusBar.Create(this))
-// 	{
-// 		TRACE0("Failed to create status bar\n");
-// 		return -1;      // fail to create
-// 	}
-// 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
-
-	// TODO: Delete these five lines if you don't want the toolbar and menubar to be dockable
 	m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
-//	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndMenuBar);
-//	DockPane(&m_wndToolBar);
-
 
 	// enable Visual Studio 2005 style docking window behavior
 	CDockingManager::SetDockingMode(DT_SMART);
@@ -203,7 +192,6 @@ BOOL CMainFrame::CreateDockingWindows()
 	bNameValid = strClassView.LoadString(IDS_CLASS_VIEW);
 	ASSERT(bNameValid);
 
-
 	// Create cube3d view
 	m_wndCube3DView = new CCube3DPane();
 	if (!m_wndCube3DView->Create(L"3DView", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_CUBE3D, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
@@ -212,112 +200,15 @@ BOOL CMainFrame::CreateDockingWindows()
 		return FALSE; // failed to create
 	}
 
+	CREATE_DOCKPANE(CMotionOutputView, L"Motion Output View", ID_VIEW_MOTION_OUTPUT, m_motionOutputView);
+	CREATE_DOCKPANE(CUDPInputView, L"UDP Input View", ID_VIEW_MOTION_INPUT, m_udpInputView);
+	CREATE_DOCKPANE(CJoystickView, L"Joystick View", ID_VIEW_JOYSTICK, m_joystickView);
+	CREATE_DOCKPANE(CMotionWaveView, L"MotionWave View", ID_VIEW_MOTIONWAVE, m_motionWaveView);
+	CREATE_DOCKPANE(CMixingView, L"Mixing View", ID_VIEW_MIXING, m_mixingView);
+	CREATE_DOCKPANE(CControlBoard, L"Control Board", ID_VIEW_CONTROLBOARD, m_controlBoardView);
+	CREATE_DOCKPANE(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
 
-	// Create motion output view
-	{
-		m_motionOutputView = new CDockablePaneBase();
-		if (!m_motionOutputView->Create(L"Motion Output View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_MOTION_OUTPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
-		{
-			TRACE0("Failed to create Motion Output View window\n");
-			return FALSE; // failed to create
-		}
-
-		CMotionOutputView *view = new CMotionOutputView(m_motionOutputView);
-		view->Create(CMotionOutputView::IDD, m_motionOutputView);
-		view->ShowWindow(SW_SHOW);
-		m_motionOutputView->SetChildView(view);
-	}
-
-
-	// Create motion input view
-	{
-		m_udpInputView = new CDockablePaneBase();
-		if (!m_udpInputView->Create(L"UDP Input View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_MOTION_INPUT, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
-		{
-			TRACE0("Failed to create UDP Input View window\n");
-			return FALSE; // failed to create
-		}
-
-		CUDPInputView *view = new CUDPInputView(m_udpInputView);
-		view->Create(CUDPInputView::IDD, m_udpInputView);
-		view->ShowWindow(SW_SHOW);
-		m_udpInputView->SetChildView(view);
-	}
-
-
-	// Create Joystick view
-	{
-		m_joystickView = new CDockablePaneBase();
-		if (!m_joystickView->Create(L"Joystick View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_JOYSTICK, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
-		{
-			TRACE0("Failed to create Joystick View window\n");
-			return FALSE; // failed to create
-		}
-
-		CJoystickView *view = new CJoystickView(m_joystickView);
-		view->Create(CJoystickView::IDD, m_joystickView);
-		view->ShowWindow(SW_SHOW);
-		m_joystickView->SetChildView(view);
-	}
-
-
-	// Create MotionWave view
-	{
-		m_motionWaveView = new CDockablePaneBase();
-		if (!m_motionWaveView->Create(L"MotionWave View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_MOTIONWAVE, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
-		{
-			TRACE0("Failed to create MotionWave View window\n");
-			return FALSE; // failed to create
-		}
-
-		CMotionWaveView *view = new CMotionWaveView(m_motionWaveView);
-		view->Create(CMotionWaveView::IDD, m_motionWaveView);
-		view->ShowWindow(SW_SHOW);
-		m_motionWaveView->SetChildView(view);
-
-		g_mwaveView = view;
-	}
-
-
-	// Create Mixing view
-	{
-		m_mixingView= new CDockablePaneBase();
-		if (!m_mixingView->Create(L"Mixing View", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_MIXING, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
-		{
-			TRACE0("Failed to create Mixing View window\n");
-			return FALSE; // failed to create
-		}
-
-		CMixingView *view = new CMixingView(m_mixingView);
-		view->Create(CMixingView::IDD, m_mixingView);
-		view->ShowWindow(SW_SHOW);
-		m_mixingView->SetChildView(view);
-	}
-
-	// Create Controlboard view
-	{
-		m_controlBoardView = new CDockablePaneBase();
-		if (!m_controlBoardView->Create(L"Control Board", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_CONTROLBOARD, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
-		{
-			TRACE0("Failed to create Controlboard window\n");
-			return FALSE; // failed to create
-		}
-
-		CControlBoard *view = new CControlBoard(m_controlBoardView);
-		view->Create(CControlBoard::IDD, m_controlBoardView);
-		view->ShowWindow(SW_SHOW);
-		m_controlBoardView->SetChildView(view);
-	}
-
-
-	m_viewList.push_back(m_wndCube3DView);
-	m_viewList.push_back(m_motionOutputView);
-	m_viewList.push_back(m_udpInputView);
-	m_viewList.push_back(m_joystickView);
-	m_viewList.push_back(m_motionWaveView);
-	m_viewList.push_back(m_mixingView);	
-	m_viewList.push_back(m_controlBoardView);
-
+	g_mwaveView = (CMotionWaveView*)m_motionWaveView->GetChildView();
 
 	SetDockingWindowIcons(theApp.m_bHiColorIcons);
 	return TRUE;
@@ -334,6 +225,7 @@ void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
 	m_motionWaveView->SetIcon(hClassViewIcon, FALSE);
 	m_mixingView->SetIcon(hClassViewIcon, FALSE);
 	m_controlBoardView->SetIcon(hClassViewIcon, FALSE);
+	m_udpParseView->SetIcon(hClassViewIcon, FALSE);
 }
 
 // CMainFrame diagnostics

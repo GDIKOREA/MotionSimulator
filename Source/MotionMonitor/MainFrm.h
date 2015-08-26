@@ -40,6 +40,7 @@ public:
 	list<CDockablePaneBase*> m_viewList;
 	CCube3DPane *m_wndCube3DView;
 	CDockablePaneBase *m_udpInputView;
+	CDockablePaneBase *m_udpParseView;
 	CDockablePaneBase *m_motionOutputView;
 	CDockablePaneBase *m_joystickView;
 	CDockablePaneBase *m_motionWaveView;

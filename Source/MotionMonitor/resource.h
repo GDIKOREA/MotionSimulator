@@ -95,6 +95,7 @@
 #define IDD_DIALOG_MWAVE                324
 #define IDD_DIALOG_MIXING               326
 #define IDD_DIALOG_CONTROL              328
+#define IDD_DIALOG_UDPPARSE             330
 #define IDC_CHECK_FIXEDMODE             1000
 #define IDC_EDIT_COMMAND                1001
 #define IDC_BUTTON_HELP                 1002
@@ -199,15 +200,19 @@
 #define IDC_STATIC_GROUP2               1086
 #define IDC_STATIC_PLAYPOS              1087
 #define IDC_CHECK_PLAY_MOTIONSIM        1089
+#define IDC_BUTTON_SERVER_START         1090
+#define IDC_EDIT_PROTOCOL               1091
+#define IDC_EDIT_PROTOCOL2              1092
+#define IDC_EDIT_MIXING                 1092
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        330
+#define _APS_NEXT_RESOURCE_VALUE        331
 #define _APS_NEXT_COMMAND_VALUE         32772
-#define _APS_NEXT_CONTROL_VALUE         1090
+#define _APS_NEXT_CONTROL_VALUE         1092
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
