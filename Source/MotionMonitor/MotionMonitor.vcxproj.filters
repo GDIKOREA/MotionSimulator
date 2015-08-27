@@ -198,6 +198,15 @@
     <ClInclude Include="protocolparser.h">
       <Filter>Script</Filter>
     </ClInclude>
+    <ClInclude Include="PlotView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="plotinputparser.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="plotinputscript.h">
+      <Filter>Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -342,6 +351,15 @@
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="protocolparser.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="PlotView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="plotinputparser.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="plotinputscript.cpp">
       <Filter>Script</Filter>
     </ClCompile>
   </ItemGroup>

@@ -237,7 +237,7 @@ void CUDPInputView::Update(const float deltaSeconds)
 	m_updateIncTime += deltaSeconds;
 
 	if (!m_isPause)
-		m_multiPlotWindows->DrawGraph(deltaSeconds, true);
+		m_multiPlotWindows->DrawGraph(deltaSeconds, false);
 }
 
 
@@ -332,8 +332,8 @@ void CUDPInputView::UpdateUDP(const char *buffer, const int bufferLen)
 // 		if (m_multiPlotWindows)
 // 			m_multiPlotWindows->SetString(ss.str().c_str());
 // 
-// 		cMotionController::Get()->m_udpMod.Update(m_incTime, 0, pitch, roll, 0);
-//		m_incTime = 0;
+// 		cMotionController::Get()->m_udpMod.Update(m_incTime2, 0, pitch, roll, 0);
+//		m_incTime2 = 0;
 	}
 
 	const float t = timeGetTime()*0.001f;

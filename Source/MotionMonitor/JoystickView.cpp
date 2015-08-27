@@ -239,7 +239,7 @@ void CJoystickView::OnBnClickedButtonStart()
 void CJoystickView::Update(const float deltaSeconds)
 {
 	RET(START != m_state);
-
+	
 	m_incTime += deltaSeconds;
 
 	const float t = cMotionController::Get()->m_joystickMod.m_totalIncTime;

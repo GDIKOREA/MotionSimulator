@@ -20,7 +20,7 @@ public:
 
 
 protected:
-	graphic::cCube2 m_mesh[3];
+	graphic::cCube2 m_mesh[6];
 	Vector3 m_locate;
 	Quaternion m_rotate;
 	Matrix44 m_tm;

@@ -74,7 +74,6 @@ BOOL CUDPParseView::OnInitDialog()
 
 	InitAnchors();
 
-
 	m_SymbolList.InsertColumn(0, L"Name");
 	m_SymbolList.InsertColumn(1, L"Value");
 	m_SymbolList.SetColumnWidth(0, 50);
@@ -312,13 +311,6 @@ void CUDPParseView::Update(const float deltaSeconds)
 		Quaternion roty;
 		roty.Euler2(Vector3(0, yaw, 0));
 
-		// 1. roll * pitch * yaw
-		// 2. yaw * roll * pitch
-//		Quaternion rot;
-// 		if (0==m_CalcOrder)
-// 			rot = rotr * rotp * roty;
-// 		else
-//			rot = roty * rotr * rotp;
 
 		Quaternion rot = roty * rotr * rotp;
 		Vector3 euler = rot.Euler();
@@ -331,17 +323,16 @@ void CUDPParseView::Update(const float deltaSeconds)
 		script::sFieldData data;
 		data.fVal = chRoll;
 		data.type = script::FEILD_TYPE::T_FLOAT;
-		script::g_symbols["@roll"] = data;
+		script::g_symbols["@roll0"] = data;
 		data.fVal = chPitch;
-		script::g_symbols["@pitch"] = data;
+		script::g_symbols["@pitch0"] = data;
 		data.fVal = chYaw;
-		script::g_symbols["@yaw"] = data;
-		//
-		
+		script::g_symbols["@yaw0"] = data;
 
-		// -2pi ~ +2pi 내의 각도로 정규화한 각도값(radian) chRoll, chPitch,chYaw 값으로 정보를 업데이트한다.
+		// -pi ~ +pi 내의 각도로 정규화한 각도값(radian) chRoll, chPitch,chYaw 값으로 정보를 업데이트한다.
 		cController::Get()->GetCubeFlight().SetEulerAngle(chRoll, chPitch, chYaw);
-		cMotionController::Get()->m_udpMod.Update(m_incTime, chYaw, chPitch, chRoll, heave);
+		cMotionController::Get()->m_udpMod.Update(m_incTime, yaw, chPitch, chRoll, heave);
+
 
 		if (m_IsUpdateSymbol)
 		{

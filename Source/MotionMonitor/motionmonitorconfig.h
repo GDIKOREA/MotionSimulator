@@ -30,5 +30,8 @@ public:
 	string m_yawCommand;
 	string m_heaveCommand;
 	int m_udpParsePort;
+
+	string m_plotViewPlotCmd;
+	string m_plotViewPlotInputCmd;
 };
 

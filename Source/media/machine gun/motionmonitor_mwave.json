@@ -13,5 +13,7 @@
     "UDP_INPUT_ROLL_COMMAND": "$1",
     "UDP_INPUT_PITCH_COMMAND": "$2",
     "UDP_INPUT_YAW_COMMAND": "$3",
-    "UDP_INPUT_HEAVE_COMMAND": "$4"
+    "UDP_INPUT_HEAVE_COMMAND": "$4",
+    "PLOTVIEW_PLOT_COMMAND": "plot1 = 0, 0, 0, 0, 0\r\nstring1 = %f;\r\nname1 = Yaw\r\nlinewidth1 = 2\r\nplot2 = 0, 0, 0, 0, 0\r\nstring2 = %*f; %f;\r\nname2 = Pitch\r\nlinewidth2 = 2\r\nplot3 = 0, 0, 0, 0, 0\r\nstring3 = %*f; %*f; %f; \r\nname3 = Roll\r\nlinewidth3 = 2\r\nplot4 = 0, 0, 0, 0, 0\r\nstring4 = %*f; %*f; %*f; %f;\r\nname4 = Heave\r\nlinewidth4 = 2\r\n",
+    "PLOTVIEW_PLOTINPUT_COMMAND": "$1;$2;$3;"
 }

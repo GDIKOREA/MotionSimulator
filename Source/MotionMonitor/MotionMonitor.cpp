@@ -21,9 +21,10 @@
 BEGIN_MESSAGE_MAP(CMotionMonitorApp, CWinAppEx)
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
-	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
+	//ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 	// Standard print setup command
 	ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinAppEx::OnFilePrintSetup)
+	ON_COMMAND(ID_FILE_OPEN, &CMotionMonitorApp::OnFileOpen)
 END_MESSAGE_MAP()
 
 
@@ -208,4 +209,34 @@ BOOL CMotionMonitorApp::OnIdle(LONG lCount)
 
 	//CWinAppEx::OnIdle(lCount); 호출 안해도 됨.
 	return TRUE; // TRUE를 리턴시켜야 계속 OnIdle()이 호출된다.
+}
+
+
+void CMotionMonitorApp::OnFileOpen()
+{
+	// 파일 형식 콤보박스에 등록할 필터를 정의한다. (*.*, *.cpp, *.txt)
+	//TCHAR name_filter[] = L"All Files (*.*)|*.*|C++ Files (*.cpp)|*.cpp|Text Files (*.txt)|*.txt||";
+	TCHAR name_filter[] = L"All Files (*.*)|*.*|Config Files (*.json)|*.json|";
+
+	// TRUE -> 열기대화상자, "cpp" -> 사용자가 확장자 없이 파일명만 입력했을때 자동으로 추가될 확장자명이다.
+	// 즉, stdafx 까지만 입력하면 stdafx.cpp라고 입력한것과 동일하게 하고 싶을때 사용한다.
+	// "*.cpp" 파일이름 에디트에 출력될 기본 문자열이다. 
+	// OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT -> 파일 대화상자에 추가적으로 사용할 속성이다.
+	// name_filter -> 파일 형식 콤보박스에 등록할 필터정보를 담고있는 메모리의 주소이다.
+	CFileDialog ins_dlg(TRUE, L"json", L"*.json",
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR, name_filter, NULL);
+
+	// 파일 형식 콤보박스에 나열된 필터들 중에서 2번째 항목(*.json)을 선택한다.
+	ins_dlg.m_ofn.nFilterIndex = 1;
+
+	if (ins_dlg.DoModal() == IDOK){
+		// 선택된 파일의 경로명을 이용하여 도큐먼트 정보를 재구성한다.
+		OpenDocumentFile(ins_dlg.GetPathName());
+	}
+	else {
+		// 원래 "파일 열기" 기능에서는 파일 열기를 취소했을 때, 특별한 메시지가 나오지 않지만
+		// 재정의한 효과를 나타내기 위해서 파일 열기를 취소했을때, 취소했다는 메시지가 나오도록
+		// 재구성 했습니다.
+		//::MessageBox(NULL, L"파일 열기를 취소하였습니다.", L"알림", MB_ICONINFORMATION);
+	}
 }

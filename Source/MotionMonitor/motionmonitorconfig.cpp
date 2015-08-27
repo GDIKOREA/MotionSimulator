@@ -46,6 +46,9 @@ bool cMotionMonitorConfig::ReadConfigFile(const string &fileName)
 		m_pitchCommand = props.get<string>("UDP_INPUT_PITCH_COMMAND", "");
 		m_yawCommand = props.get<string>("UDP_INPUT_YAW_COMMAND", "");
 		m_heaveCommand = props.get<string>("UDP_INPUT_HEAVE_COMMAND", "");
+
+		m_plotViewPlotCmd = props.get<string>("PLOTVIEW_PLOT_COMMAND", "");
+		m_plotViewPlotInputCmd = props.get<string>("PLOTVIEW_PLOTINPUT_COMMAND", "");
 	}
 	catch (std::exception&e)
 	{
@@ -87,6 +90,9 @@ bool cMotionMonitorConfig::WriteConfigFile(const string &fileName)
 		props.add<string>("UDP_INPUT_PITCH_COMMAND", m_pitchCommand);
 		props.add<string>("UDP_INPUT_YAW_COMMAND", m_yawCommand);
 		props.add<string>("UDP_INPUT_HEAVE_COMMAND", m_heaveCommand);
+
+		props.add<string>("PLOTVIEW_PLOT_COMMAND", m_plotViewPlotCmd);
+		props.add<string>("PLOTVIEW_PLOTINPUT_COMMAND", m_plotViewPlotInputCmd);
 
 		boost::property_tree::write_json(fileName, props);
 	}

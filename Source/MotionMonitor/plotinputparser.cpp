@@ -165,8 +165,8 @@ string cPlotInputParser::str(string &src)
 	string ret;
 	while (!src.empty())
 	{
-	if ((src[0] == '$') || (src[0] == '@'))
-		break;
+		if ((src[0] == '$') || (src[0] == '@'))
+			break;
 
 		ret += src[0];
 		rotatepopvector(src, 0);

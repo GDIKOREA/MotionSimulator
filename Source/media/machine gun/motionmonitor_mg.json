@@ -7,11 +7,13 @@
     "MIXING_COMMAND": "#input = udp\r\n#input = motionwave\r\ninput = joystick+udp+motionwave\r\n\r\nmixing_input1_enable = 1\r\nmixing_rate1_all = 1\r\nmixing_rate1_yaw = 0\r\nmixing_rate1_pitch = 0\r\nmixing_rate1_roll = 0\r\nmixing_rate1_heave = 0\r\n\r\nmixing_input2_enable = 0\r\nmixing_rate2_all = 0\r\nmixing_rate2_yaw = 0\r\nmixing_rate2_pitch = 0\r\nmixing_rate2_roll = 0\r\nmixing_rate2_heave = 0\r\n\r\nmixing_input3_enable = 0\r\nmixing_rate3_all = 0\r\nmixing_rate3_yaw = 0\r\nmixing_rate3_pitch = 0\r\nmixing_rate3_roll = 0\r\nmixing_rate3_heave = 0\r\n\r\nmixing_bias_yaw = 0\r\nmixing_bias_pitch = 0\r\nmixing_bias_roll = 0\r\nmixing_bias_heave = 0\r\n\r\n",
     "MOTION_OUTPUT_COMPORT": "7",
     "MOTION_OUTPUT_BAUDRATE": "0",
-    "UDP_PARSE_PORT": "9988",
+    "UDP_PARSE_PORT": "9989",
     "UDP_PROTOCOL_COMMAND": "4, float # 1, directX\r\n4, float # 2, directY\r\n4, float # 3, directZ\r\n4, float # 4, pitch\r\n4, float # 5, yaw\r\n4, float # 6, roll\r\n4, float # 7, speed\r\n",
-    "MIXING_SCRIPT": "$roll = $6\r\n$pitch = -$4\r\n$yaw = $5\r\n",
+    "MIXING_SCRIPT": "$roll = -$6\r\n$pitch = -$4\r\n$yaw = $5\r\n",
     "UDP_INPUT_ROLL_COMMAND": "$roll",
     "UDP_INPUT_PITCH_COMMAND": "$pitch",
     "UDP_INPUT_YAW_COMMAND": "$yaw",
-    "UDP_INPUT_HEAVE_COMMAND": "0"
+    "UDP_INPUT_HEAVE_COMMAND": "0",
+    "PLOTVIEW_PLOT_COMMAND": "plot1 = 0, 0, 0, 0, 0\r\nstring1 = %f;\r\nname1 = Yaw\r\nlinewidth1 = 2\r\nplot2 = 0, 0, 0, 0, 0\r\nstring2 = %*f; %f;\r\nname2 = Pitch\r\nlinewidth2 = 2\r\nplot3 = 0, 0, 0, 0, 0\r\nstring3 = %*f; %*f; %f; \r\nname3 = Roll\r\nlinewidth3 = 2\r\nplot4 = 0, 0, 0, 0, 0\r\nstring4 = %*f; %*f; %*f; %f;\r\nname4 = Heave\r\nlinewidth4 = 2",
+    "PLOTVIEW_PLOTINPUT_COMMAND": "$1;$2;$3;"
 }

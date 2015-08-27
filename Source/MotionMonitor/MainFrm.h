@@ -17,6 +17,7 @@ protected: // create from serialization only
 public:
 	void UpdateConfig(bool IsSaveAndValidate = true);
 	void LoadConfigFile(const string &fileName);
+	BOOL NewPlotWindow();
 
 
 // Overrides
@@ -46,6 +47,7 @@ public:
 	CDockablePaneBase *m_motionWaveView;
 	CDockablePaneBase *m_mixingView;
 	CDockablePaneBase *m_controlBoardView;
+	CDockablePaneBase *m_plotView;
 
 
 // Generated message map functions
@@ -58,4 +60,5 @@ protected:
 	void SetDockingWindowIcons(BOOL bHiColorIcons);
 public:
 	afx_msg void OnViewViewinitialize();
+	afx_msg void OnClose();
 };

@@ -225,7 +225,8 @@ void CPlotWindow::DrawPlot(const float deltaSeconds, const bool autoSet) //autoS
 	m_incSeconds += deltaSeconds;
 	if (m_incSeconds > elapseTime) // 1초에 30프레임을 유지한다.
 	{
-		InvalidateRect(NULL);
+		if (IsWindowVisible())
+			InvalidateRect(NULL);
 		m_incSeconds = 0;
 	}
 }

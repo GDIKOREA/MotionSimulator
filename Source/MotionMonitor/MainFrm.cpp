@@ -11,6 +11,7 @@
 #include "MixingView.h"
 #include "UDPParseView.h"
 #include "ControlBoard.h"
+#include "PlotView.h"
 #include "MainFrm.h"
 
 
@@ -42,15 +43,16 @@ CUDPInputView *g_udpInputView = NULL;
 	view->ShowWindow(SW_SHOW);\
 	VAR->SetChildView(view);\
 	m_viewList.push_back(VAR);\
+	HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(theApp.m_bHiColorIcons ? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);\
+	VAR->SetIcon(hClassViewIcon, FALSE);\
 }
-
-
 
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_WM_CREATE()
 	ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &CMainFrame::OnToolbarCreateNew)
 	ON_COMMAND(ID_VIEW_VIEWINITIALIZE, &CMainFrame::OnViewViewinitialize)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -73,8 +75,13 @@ CMainFrame::~CMainFrame()
 	for each (auto &pane in m_viewList)
 		delete pane;
 	m_viewList.clear();
+}
 
+void CMainFrame::OnClose()
+{
+	UpdateConfig(false);
 	cMotionController::Get()->m_config.WriteConfigFile(cMotionController::Get()->m_config.m_fileName);
+	CFrameWndEx::OnClose();
 }
 
 
@@ -208,6 +215,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	CREATE_DOCKPANE(CMixingView, L"Mixing View", ID_VIEW_MIXING, m_mixingView);
 	CREATE_DOCKPANE(CControlBoard, L"Control Board", ID_VIEW_CONTROLBOARD, m_controlBoardView);
 	CREATE_DOCKPANE(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
+	CREATE_DOCKPANE(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
 
 	g_mwaveView = (CMotionWaveView*)m_motionWaveView->GetChildView();
 	g_udpInputView = (CUDPInputView *)m_udpInputView->GetChildView();
@@ -218,16 +226,16 @@ BOOL CMainFrame::CreateDockingWindows()
 
 void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
 {
- 	HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
-
-	m_wndCube3DView->SetIcon(hClassViewIcon, FALSE);
-	m_motionOutputView->SetIcon(hClassViewIcon, FALSE);
-	m_udpInputView->SetIcon(hClassViewIcon, FALSE);
-	m_joystickView->SetIcon(hClassViewIcon, FALSE);
-	m_motionWaveView->SetIcon(hClassViewIcon, FALSE);
-	m_mixingView->SetIcon(hClassViewIcon, FALSE);
-	m_controlBoardView->SetIcon(hClassViewIcon, FALSE);
-	m_udpParseView->SetIcon(hClassViewIcon, FALSE);
+  	HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+ 	m_wndCube3DView->SetIcon(hClassViewIcon, FALSE);
+// 	m_motionOutputView->SetIcon(hClassViewIcon, FALSE);
+// 	m_udpInputView->SetIcon(hClassViewIcon, FALSE);
+// 	m_joystickView->SetIcon(hClassViewIcon, FALSE);
+// 	m_motionWaveView->SetIcon(hClassViewIcon, FALSE);
+// 	m_mixingView->SetIcon(hClassViewIcon, FALSE);
+// 	m_controlBoardView->SetIcon(hClassViewIcon, FALSE);
+// 	m_udpParseView->SetIcon(hClassViewIcon, FALSE);
+// 	m_plotView->SetIcon(hClassViewIcon, FALSE);
 }
 
 // CMainFrame diagnostics
@@ -334,4 +342,24 @@ void CMainFrame::LoadConfigFile(const string &fileName)
 		UpdateConfig();
 
 	SetWindowTextW(str2wstr(GetFileName(fileName)).c_str());
+}
+
+
+BOOL CMainFrame::NewPlotWindow()
+{
+	static int plotViewId = 50000;
+	static int plotViewIncId = 2;
+	CDockablePaneBase *plotView;
+
+	CString viewName;
+	viewName.Format(L"Plot View%d", plotViewIncId++);
+	CREATE_DOCKPANE(CPlotView, viewName, plotViewId++, plotView);
+
+	plotView->EnableDocking(CBRS_ALIGN_ANY);
+	CDockablePane* pTabbedBar = NULL;
+	plotView->AttachToTabWnd(m_plotView, DM_SHOW, TRUE, &pTabbedBar);
+
+	((CPlotView*)plotView->GetChildView())->SetAddPlotView(true);
+
+	return TRUE;
 }

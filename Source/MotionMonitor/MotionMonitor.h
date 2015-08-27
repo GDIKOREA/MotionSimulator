@@ -35,6 +35,7 @@ public:
 
 	DECLARE_MESSAGE_MAP()
 	virtual BOOL OnIdle(LONG lCount);
+	afx_msg void OnFileOpen();
 };
 
 extern CMotionMonitorApp theApp;
