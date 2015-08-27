@@ -218,7 +218,7 @@ void CUDPInputView::OnBnClickedButtonUpdate()
 {
 	CString str;
 	m_PlotCommandEditor.GetWindowText(str);
-	m_multiPlotWindows->ProcessPlotCommand(str, 3);
+	m_multiPlotWindows->ProcessPlotCommand(str, 2);
 
 	CString command;
 	m_EditCommand.GetWindowTextW(command);
@@ -338,21 +338,22 @@ void CUDPInputView::UpdateUDP(const char *buffer, const int bufferLen)
 
 	const float t = timeGetTime()*0.001f;
 
-	float yaw, pitch, roll, heave;
-	cMotionController::Get()->m_udpMod.GetOriginal(yaw, pitch, roll, heave);
-	string plotInputStr = common::format("%f;%f;%f;%f", yaw, pitch, roll, heave).c_str();
-	m_PlotInputString.SetWindowTextW(str2wstr(plotInputStr).c_str());
+
+ 	float yaw, pitch, roll, heave;
+ 	cMotionController::Get()->m_udpMod.GetOriginal(yaw, pitch, roll, heave);
+ 	string plotInputStr = common::format("%f;%f;%f;%f", yaw, pitch, roll, heave).c_str();
+ 	m_PlotInputString.SetWindowTextW(str2wstr(plotInputStr).c_str());
 
 	// 그래프 출력
-	m_multiPlotWindows->SetString(t, plotInputStr.c_str());
+	//m_multiPlotWindows->SetString(t, plotInputStr.c_str());
 
 	float origRoll, origPitch, origYaw, origHeave;
 	cMotionController::Get()->m_udpMod.GetOriginal(origYaw, origPitch, origRoll, origHeave);
-	m_multiPlotWindows->SetString(t, common::format("%f;%f;%f;%f", origYaw, origPitch, origRoll, origHeave).c_str(), 1);
+	m_multiPlotWindows->SetString(t, common::format("%f;%f;%f;%f", origYaw, origPitch, origRoll, origHeave).c_str(), 0);
 
 	float froll, fpitch, fyaw, fheave;
 	cMotionController::Get()->m_udpMod.GetFinal(fyaw, fpitch, froll, fheave);
-	m_multiPlotWindows->SetString(t, common::format("%f;%f;%f;%f;", fyaw, fpitch, froll, fheave).c_str(), 2);
+	m_multiPlotWindows->SetString(t, common::format("%f;%f;%f;%f;", fyaw, fpitch, froll, fheave).c_str(), 1);
 
 	++m_rcvPacketCount;
 	CString str;
@@ -380,7 +381,7 @@ void CUDPInputView::OnBnClickedButtonPlotupdate()
 {
 	CString str;
 	m_PlotCommandEditor.GetWindowText(str);
-	m_multiPlotWindows->ProcessPlotCommand(str, 3);
+	m_multiPlotWindows->ProcessPlotCommand(str, 2);
 }
 
 
@@ -458,7 +459,7 @@ void CUDPInputView::Start()
 
 	CString str;
 	m_PlotCommandEditor.GetWindowText(str);
-	m_multiPlotWindows->ProcessPlotCommand(str, 3);
+	m_multiPlotWindows->ProcessPlotCommand(str, 2);
 
 	CString command;
 	m_EditCommand.GetWindowTextW(command);
