@@ -33,7 +33,6 @@ protected:
 	STATE m_state;
 	bool m_isPause;
 	CMultiPlotWindow *m_multiPlotWindows;
-	//float m_incTime;
 	float m_updateIncTime;
 	int m_rcvPacketCount;
 
@@ -50,8 +49,6 @@ public:
 	CRichEditCtrl m_EditCommand;
 	afx_msg void OnDestroy();
 	afx_msg void OnBnClickedButtonUdpServerBind();
-	//CButton m_ServerBindButton;
-	//int m_ServerPort;
 	CStatic m_PacketString;
 	afx_msg void OnBnClickedButtonPlotupdate();
 	afx_msg void OnBnClickedButtonHelp();
@@ -59,7 +56,6 @@ public:
 	afx_msg void OnBnClickedCheckFixedmode();
 	CEdit m_PlotCommandEditor;
 	CButton m_FixedModeButton;
-	//int m_PacketRecvCount;
 	CStatic m_PacketRecvCount;
 	CStatic m_PlotInputString;
 };

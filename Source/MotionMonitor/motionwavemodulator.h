@@ -46,7 +46,7 @@ public:
 		float recoverTarget;
 		float recoverProportion;
 		float maxDifference;
-		float limit;
+		float range;
 		// ax^2 + bx + c
 		float a;
 		float b;
@@ -58,3 +58,4 @@ public:
 	float m_incTime;
 	float m_totalIncTime;
 };
+
