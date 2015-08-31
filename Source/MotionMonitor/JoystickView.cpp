@@ -242,7 +242,8 @@ void CJoystickView::Update(const float deltaSeconds)
 	
 	m_incTime += deltaSeconds;
 
-	const float t = cMotionController::Get()->m_joystickMod.m_totalIncTime;
+	//const float t = cMotionController::Get()->m_joystickMod.m_totalIncTime;
+	const float t = timeGetTime() * 0.001f;
 
 	// 조이스틱 축 계산
 	cMotionController::Get()->m_joystickMod.Update(deltaSeconds, (float)m_AxisRz, (float)m_AxisY, (float)m_AxisX, (float)m_AxisH);

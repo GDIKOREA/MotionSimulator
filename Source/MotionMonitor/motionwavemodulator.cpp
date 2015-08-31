@@ -86,6 +86,14 @@ float GetDifference(const float x0, const float x1,
 	return diff;
 }
 
+// 변화값을 리턴한다.
+float GetNormalDifference(const float x0, const float x1, const float proportion)
+{
+	float diff = (x1 - x0) * proportion;
+	return diff;
+}
+
+
 
 // x에서 target으로 복귀하는 정도를 리턴한다.
 float GetRecoverValue(const float x, const float target, const float proportion)
@@ -111,9 +119,19 @@ void cMotionWaveModulator::Update(const float deltaSeconds,
 	float value[4] = { yaw, pitch, roll, heave };
 	for (int i = 0; i < axisLen; ++i)
 	{
-		const float diff = GetDifference(m_axis[i].value[0], value[i], m_axis[i].proportion, m_axis[i].range, m_axis[i].maxDifference);
-		m_axis[i].value[1] += diff;
-		m_axis[i].value[1] = climp(-MATH_PI, MATH_PI, m_axis[i].value[1]);
+		float diff = 0;
+		if (m_axis[i].maxDifferenceEnable)
+		{
+			diff = GetDifference(m_axis[i].value[0], value[i], m_axis[i].proportion, m_axis[i].range, m_axis[i].maxDifference);
+			m_axis[i].value[1] += diff;
+			m_axis[i].value[1] = climp(-MATH_PI, MATH_PI, m_axis[i].value[1]);
+		}
+		else
+		{
+			diff = GetNormalDifference(m_axis[i].value[1], value[i], m_axis[i].proportion);
+			m_axis[i].value[1] += diff;
+		}
+
 		m_axis[i].value[0] = value[i];
 	}
 

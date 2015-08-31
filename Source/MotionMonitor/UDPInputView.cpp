@@ -16,7 +16,6 @@ CUDPInputView::CUDPInputView(CWnd* pParent /*=NULL*/)
 	, m_rcvPacketCount(0)
 	, m_state(STOP)
 {
-
 }
 
 CUDPInputView::~CUDPInputView()
