@@ -97,6 +97,7 @@
 #define IDD_DIALOG_CONTROL              328
 #define IDD_DIALOG_UDPPARSE             330
 #define IDD_DIALOG_PLOT                 331
+#define IDD_DIALOG_LAUNCHER             332
 #define IDC_CHECK_FIXEDMODE             1000
 #define IDC_EDIT_COMMAND                1001
 #define IDC_BUTTON_HELP                 1002
@@ -209,18 +210,25 @@
 #define IDC_LIST_SYMBOL                 1093
 #define IDC_CHECK_UPDATE_SYMBOL         1094
 #define IDC_EDIT_PLOTINPUT              1098
-#define IDC_EDIT2                       1099
 #define IDC_EDIT_PLOTCMD                1099
 #define IDC_STATIC_PLOT                 1101
+#define IDC_BUTTON_GAMESTART            1102
+#define IDC_COMBO_DIFFICULT             1103
+#define IDC_BUTTON_PLAYER1              1105
+#define IDC_BUTTON_PLAYER2              1106
+#define IDC_SLIDER_CAM_SENS             1107
+#define IDC_EDIT_CAM_SENS               1108
+#define IDC_BUTTON_CAM_ADJUSTMENT_P1    1109
+#define IDC_BUTTON_CAM_ADJUSTMENT_P2    1110
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        332
+#define _APS_NEXT_RESOURCE_VALUE        333
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1102
+#define _APS_NEXT_CONTROL_VALUE         1109
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

@@ -207,6 +207,9 @@
     <ClInclude Include="plotinputscript.h">
       <Filter>Script</Filter>
     </ClInclude>
+    <ClInclude Include="LauncherView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -361,6 +364,9 @@
     </ClCompile>
     <ClCompile Include="plotinputscript.cpp">
       <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="LauncherView.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

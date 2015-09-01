@@ -18,6 +18,7 @@ public:
 	void UpdateConfig(bool IsSaveAndValidate = true);
 	void LoadConfigFile(const string &fileName);
 	BOOL NewPlotWindow();
+	void CheckMode();
 
 
 // Overrides
@@ -48,6 +49,7 @@ public:
 	CDockablePaneBase *m_mixingView;
 	CDockablePaneBase *m_controlBoardView;
 	CDockablePaneBase *m_plotView;
+	CDockablePaneBase *m_launcherView;
 
 
 // Generated message map functions

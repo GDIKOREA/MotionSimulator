@@ -12,6 +12,7 @@
 #include "UDPParseView.h"
 #include "ControlBoard.h"
 #include "PlotView.h"
+#include "LauncherView.h"
 #include "MainFrm.h"
 
 
@@ -89,6 +90,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
+
+	//개발모드, 릴리즈모드 확인
+	CheckMode();
 
 	// View 가 화면에 나오지 않을 때, 리셋시키기 위한 환경파일을 검사한다. 
 	using namespace std;
@@ -216,6 +220,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	CREATE_DOCKPANE(CControlBoard, L"Control Board", ID_VIEW_CONTROLBOARD, m_controlBoardView);
 	CREATE_DOCKPANE(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
 	CREATE_DOCKPANE(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
+	CREATE_DOCKPANE(CLauncherView, L"Launcher View", ID_VIEW_LAUNCHER, m_launcherView);
 
 	g_mwaveView = (CMotionWaveView*)m_motionWaveView->GetChildView();
 	g_udpInputView = (CUDPInputView *)m_udpInputView->GetChildView();
@@ -362,4 +367,29 @@ BOOL CMainFrame::NewPlotWindow()
 	((CPlotView*)plotView->GetChildView())->SetAddPlotView(true);
 
 	return TRUE;
+}
+
+
+// 설정 파일을 읽어, 모드를 체크한다.
+void CMainFrame::CheckMode()
+{
+	using namespace std;
+	ifstream ifs("mm_config.cfg");
+	if (ifs.is_open())
+	{
+		int n;
+		ifs >> n;
+		
+		// 0 : machine gun develop
+		// 1 : machine gun release
+		// 2 : dirt3 debug
+		// 3 : dirt3 release
+		switch (n)
+		{
+		case 0: g_devMode = MM_MODE::DEVELOP; g_gameType = GAME_TYPE::MACHINEGUN; break;
+		case 1: g_devMode = MM_MODE::RELEASE; g_gameType = GAME_TYPE::MACHINEGUN; break;
+		case 2: g_devMode = MM_MODE::DEVELOP; g_gameType = GAME_TYPE::DIRT3; break;
+		case 3: g_devMode = MM_MODE::RELEASE; g_gameType = GAME_TYPE::DIRT3; break;
+		}
+	}
 }

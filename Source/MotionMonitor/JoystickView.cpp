@@ -234,7 +234,6 @@ void CJoystickView::OnBnClickedButtonStart()
 }
 
 
-
 // 매프레임마다 호출된다.
 void CJoystickView::Update(const float deltaSeconds)
 {

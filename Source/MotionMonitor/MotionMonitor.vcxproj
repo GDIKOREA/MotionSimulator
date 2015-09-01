@@ -134,6 +134,7 @@
     <ClInclude Include="Dirt3Controller.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="JoystickView.h" />
+    <ClInclude Include="LauncherView.h" />
     <ClInclude Include="MachineGunController.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="mathinterpreter.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="Dirt3Controller.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="JoystickView.cpp" />
+    <ClCompile Include="LauncherView.cpp" />
     <ClCompile Include="MachineGunController.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="mathinterpreter.cpp" />
