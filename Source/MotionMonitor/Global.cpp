@@ -1,6 +1,10 @@
 
 #include "stdafx.h"
 #include "Global.h"
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+
 
 
 GAME_TYPE::TYPE g_gameType = GAME_TYPE::MACHINEGUN;
@@ -111,3 +115,62 @@ void SendMotionSimMessage(const int state)
 	}
 }
 
+
+// 카메라 감도 값 조정
+bool WriteCameraSensitive(const string &fileName, const float sens)
+{
+	try
+	{
+		// boost property tree
+		using boost::property_tree::ptree;
+		using std::string;
+		ptree props;
+		boost::property_tree::read_json(fileName, props);
+
+		if (props.get<string>("format", "") != "camera contour")
+		{
+			::AfxMessageBox(L"Fail!!\n");
+			return false;
+		}
+
+		props.put<float>("scale", sens);
+
+		boost::property_tree::write_json(fileName, props);
+	}
+	catch (std::exception&e)
+	{
+		::AfxMessageBox(CString(L"Error!!\n") + str2wstr(e.what()).c_str());
+		return false;
+	}
+
+	return true;
+}
+
+
+// 카메라 감도 값을 읽어서 리턴한다.
+bool ReadCameraSensitive(const string &fileName, OUT float &sens)
+{
+	try
+	{
+		// boost property tree
+		using boost::property_tree::ptree;
+		using std::string;
+		ptree props;
+		boost::property_tree::read_json(fileName, props);
+
+		if (props.get<string>("format", "") != "camera contour")
+		{
+			::AfxMessageBox(L"Fail!!\n");
+			return false;
+		}
+
+		sens = props.get<float>("scale", 1);
+	}
+	catch (std::exception&e)
+	{
+		::AfxMessageBox(CString(L"Error!!\n") + str2wstr(e.what()).c_str());
+		return false;
+	}
+
+	return true;
+}

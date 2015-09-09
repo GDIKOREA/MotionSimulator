@@ -57,6 +57,7 @@ void CUDPNetGraphDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_RADIO_CLIENT, m_ConnectRadioType);
 	DDX_Control(pDX, IDC_IPADDRESS_IP, m_IpAddr);
 	DDX_Control(pDX, IDC_STATIC_IP, m_StaticIP);
+	DDX_Control(pDX, IDC_STATIC_PACKET, m_PacketString);
 }
 
 BEGIN_MESSAGE_MAP(CUDPNetGraphDlg, CDialogEx)
@@ -246,7 +247,7 @@ void CUDPNetGraphDlg::MainLoop()
 
 		const int curT = timeGetTime();
 		const int deltaT = curT - oldT;
-		if (deltaT > 10)
+		if (deltaT > 1)
 		{
 			oldT = curT;
 
@@ -266,8 +267,8 @@ void CUDPNetGraphDlg::PacketProcess()
 		char buff[512];
 
 		// 주기적으로 서버에게 패킷을 보내고, 받는다. 1초에 30번을 보낸다.
-		if ((timeGetTime() - m_clientSndTime) < 33)
-			return;
+// 		if ((timeGetTime() - m_clientSndTime) < 33)
+// 			return;
 
 		m_clientSndTime = timeGetTime();
 
@@ -336,6 +337,7 @@ void CUDPNetGraphDlg::ParsePacket(char buff[128], const int buffLen)
 		else
 		{
 			CString str = str2wstr(buff).c_str();
+			//m_PacketString.SetWindowTextW(str);
 			AppendToLogAndScroll(str, RGB(200, 200, 200));
 		}
 	}

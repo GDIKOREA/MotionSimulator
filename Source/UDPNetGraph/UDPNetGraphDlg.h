@@ -71,4 +71,5 @@ public:
 	BOOL m_ConnectRadioType; // 0 : client, 1 : server
 	CIPAddressCtrl m_IpAddr;
 	CStatic m_StaticIP;
+	CStatic m_PacketString;
 };

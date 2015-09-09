@@ -122,7 +122,7 @@ void PrintBuffer(const char *buffer, const int bufferLen)
 unsigned WINAPI UDPServerThreadFunction(void* arg)
 {
 	cUDPServer *udp = (cUDPServer*)arg;
-	const int sleepMillis = 30;
+	const int sleepMillis = 1;
 
 	while (udp->m_threadLoop)
 	{

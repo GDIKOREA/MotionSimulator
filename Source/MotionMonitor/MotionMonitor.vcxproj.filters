@@ -210,6 +210,12 @@
     <ClInclude Include="LauncherView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LauncherConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ExeTracker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -366,6 +372,12 @@
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="LauncherView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LauncherConfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ExeTracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

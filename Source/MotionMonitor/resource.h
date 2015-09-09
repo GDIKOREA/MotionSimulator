@@ -214,12 +214,15 @@
 #define IDC_STATIC_PLOT                 1101
 #define IDC_BUTTON_GAMESTART            1102
 #define IDC_COMBO_DIFFICULT             1103
+#define IDC_COMBO_DIFFICULT2            1104
 #define IDC_BUTTON_PLAYER1              1105
 #define IDC_BUTTON_PLAYER2              1106
 #define IDC_SLIDER_CAM_SENS             1107
 #define IDC_EDIT_CAM_SENS               1108
 #define IDC_BUTTON_CAM_ADJUSTMENT_P1    1109
 #define IDC_BUTTON_CAM_ADJUSTMENT_P2    1110
+#define IDC_SLIDER_CAM_SENS2            1111
+#define IDC_EDIT_CAM_SENS2              1112
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects

@@ -100,6 +100,7 @@ bool cMotionMonitorConfig::WriteConfigFile(const string &fileName)
 	{
 		::AfxMessageBox(CString(L"Error!!\n") + str2wstr(e.what()).c_str());
 	}
+
 	return true;
 }
 
