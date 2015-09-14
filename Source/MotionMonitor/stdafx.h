@@ -33,7 +33,8 @@
 
 #include <afxcontrolbars.h>     // MFC support for ribbons and control bars
 
-
+#include <winspool.h>
+#include <WBemCli.h>
 
 
 
