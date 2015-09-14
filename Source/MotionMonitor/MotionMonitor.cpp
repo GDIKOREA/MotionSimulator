@@ -171,6 +171,16 @@ BOOL CMotionMonitorApp::InitInstance()
 	const string title = common::GetFileName(cMotionController::Get()->m_config.m_fileName);
 	m_pMainWnd->SetWindowTextW(str2wstr(title).c_str());
 
+	// 윈도우 크기 설정
+	if (config.m_mode == "machinegun_stand")
+	{
+		CRect wr;
+		m_pMainWnd->GetWindowRect(wr);
+		wr.right = wr.left + 445;
+		wr.bottom = wr.top + 450;
+		m_pMainWnd->MoveWindow(wr);
+	}
+
 	//Close down COM
 	CoUninitialize();
 
