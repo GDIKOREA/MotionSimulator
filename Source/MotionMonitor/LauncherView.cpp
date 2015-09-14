@@ -6,6 +6,8 @@
 #include "LauncherView.h"
 #include "afxdialogex.h"
 #include "LauncherConfig.h"
+#include "MainFrm.h"
+#include "MachineGunController.h"
 
 
 void GameExeTerminate(int id, void*arg);
@@ -16,6 +18,7 @@ CLauncherView::CLauncherView(CWnd* pParent /*=NULL*/)
 	, m_CamSens1Edit(0)
 	, m_CamSens2Edit(0)
 	, m_camSensitiveMid(2.3f)
+	, m_isGameExeTerminate(false)
 {
 }
 
@@ -101,32 +104,41 @@ void CLauncherView::OnSize(UINT nType, int cx, int cy)
 // 프로그램을 시작한다.
 void CLauncherView::OnBnClickedButtonGamestart()
 {
+	UpdateData();
+
 	// 설정한 옵션을 저장한 후, 게임을 실행한다.
 	WriteCameraSensitive("camera contour1.cfg", m_camSens1);
 	WriteCameraSensitive("camera contour2.cfg", m_camSens2);
 
+	cLauncherConfig launcherConfig("../media/machinegun/launcher_config.cfg");
 
-	const string cameraExeDir = "D:\\Project\\LaserRecognition2\\Source\\Bin\\";
-	const string cameraExePath = "MachineGunCamera.exe";
-	const string gameExePath = "aa.exe";
-
-	// 프로그램이 이미 실행 중이라면, 종료하고, 다시 실행한다.
-//	ShellExecuteA(NULL, "open", cameraExePath.c_str(), NULL, cameraExeDir.c_str(), SW_SHOW);
+	// 머신건 카메라 프로그램 실행
+	m_cameraExeTracker.Execute(launcherConfig.m_cameraExePath, "", 1, GameExeTerminate, this);
 
 
-	cLauncherConfig config("../media/machine gun/launcher_config.cfg");
-// 	const string gameExeDir = common::GetFilePathExceptFileName(config.m_gameExePath) + "\\";
-// 	const string gameExeName = common::GetFileName(config.m_gameExePath);
-	// 프로그램이 이미 실행 중이라면, 종료하고, 다시 실행한다.
-	//ShellExecuteA(NULL, "open", gameExeName.c_str(), "1 2 1920 1080", gameExeDir.c_str(), SW_SHOW);
+	// 머신건 게임 실행
+	stringstream ss;
+	ss << m_DifficultCombo.GetCurSel() + 1 << " ";
+	ss << m_DifficultCombo2.GetCurSel() + 1 << " ";
+	ss << 1920 << " " << 1080; // 해상도
+	const string commandLine = ss.str();	
+	m_gameExeTracker.Execute(launcherConfig.m_gameExePath, commandLine, 0, GameExeTerminate, this);
+	
 
-	m_gameExeTracker.Execute(config.m_gameExePath, 0, GameExeTerminate, this);
+ 	// UDP 통신 시작
+ 	const cMotionMonitorConfig &config = cMotionController::Get()->m_config;
+	cMachineGunController::Get()->StartMotionSim(config.m_fileName, false);
+
+
+
+	// 매니저 프로그램은 타이틀바로 이동한다.
+	::ShowWindow(::AfxGetMainWnd()->m_hWnd, SW_MINIMIZE);
 }
 
 
 void CLauncherView::OnBnClickedButtonPlayer1()
 {
-	cLauncherConfig config("../media/machine gun/launcher_config.cfg");
+	cLauncherConfig config("../media/machinegun/launcher_config.cfg");
 	const string exeDir = common::GetFilePathExceptFileName(config.m_cameraCheckExePath);
 	const string exeName = common::GetFileName(config.m_cameraCheckExePath);
 
@@ -137,7 +149,7 @@ void CLauncherView::OnBnClickedButtonPlayer1()
 
 void CLauncherView::OnBnClickedButtonPlayer2()
 {
-	cLauncherConfig config("../media/machine gun/launcher_config.cfg");
+	cLauncherConfig config("../media/machinegun/launcher_config.cfg");
 	const string exeDir = common::GetFilePathExceptFileName(config.m_cameraCheckExePath);
 	const string exeName = common::GetFileName(config.m_cameraCheckExePath);
 
@@ -148,7 +160,7 @@ void CLauncherView::OnBnClickedButtonPlayer2()
 
 void CLauncherView::OnBnClickedButtonCamAdjustmentP1()
 {
-	cLauncherConfig config("../media/machine gun/launcher_config.cfg");
+	cLauncherConfig config("../media/machinegun/launcher_config.cfg");
 	const string calibrationExeDir = common::GetFilePathExceptFileName(config.m_cameraCalibrationExePath);
 	const string calibrationExeName = common::GetFileName(config.m_cameraCalibrationExePath);
 
@@ -159,7 +171,7 @@ void CLauncherView::OnBnClickedButtonCamAdjustmentP1()
 
 void CLauncherView::OnBnClickedButtonCamAdjustmentP2()
 {
-	cLauncherConfig config("../media/machine gun/launcher_config.cfg");
+	cLauncherConfig config("../media/machinegun/launcher_config.cfg");
 	const string calibrationExeDir = common::GetFilePathExceptFileName(config.m_cameraCalibrationExePath);
 	const string calibrationExeName = common::GetFileName(config.m_cameraCalibrationExePath);
 
@@ -194,10 +206,24 @@ void CLauncherView::OnNMCustomdrawSliderCamSens2(NMHDR *pNMHDR, LRESULT *pResult
 }
 
 
+// 매프레임 마다 호출된다.
+// 게임이 종료되면, 윈도우를 활성화 시킨다.
+void CLauncherView::Update(const float deltaSeconds)
+{
+	//  게임이 종료된 후, 이벤트 처리
+	if (m_isGameExeTerminate)
+	{
+		m_isGameExeTerminate = false;
+		::ShowWindow(::AfxGetMainWnd()->m_hWnd, SW_RESTORE);
+	}
+	
+}
+
+
 // 게임 클라이언트가 종료되면, 호출된다.
 void GameExeTerminate(int id, void*arg)
 {
 	CLauncherView *launcherView = (CLauncherView*)arg;
-
+	launcherView->m_isGameExeTerminate = true;
 }
 

@@ -18,4 +18,5 @@ public:
 	string m_cameraCalibrationExePath;
 	string m_cameraCheckExePath;
 	string m_gameExePath;
+	string m_cameraExePath;
 };

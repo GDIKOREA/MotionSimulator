@@ -14,6 +14,8 @@ public:
 public:
 	string m_fileName;
 
+	string m_mode; // machinegun_stand, machinegun, dirt3, joystick, mwav
+
 	int m_udpPort;
 	string m_udpPlotCommand;
 	string m_udpModCommand;

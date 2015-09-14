@@ -14,6 +14,10 @@ public:
 
 // Dialog Data
 	enum { IDD = IDD_DIALOG_LAUNCHER };
+	
+	virtual void Update(const float deltaSeconds) override;
+	bool m_isGameExeTerminate;
+
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -21,8 +25,8 @@ protected:
 	const float m_camSensitiveMid; // 카메라 감도 중간 값 = 2.3
 	float m_camSens1;
 	float m_camSens2;
-
 	cExeTracker m_gameExeTracker;
+	cExeTracker m_cameraExeTracker;
 
 
 	DECLARE_MESSAGE_MAP()

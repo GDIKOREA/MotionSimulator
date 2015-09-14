@@ -8,7 +8,7 @@
 
 
 GAME_TYPE::TYPE g_gameType = GAME_TYPE::MACHINEGUN;
-MM_MODE::TYPE g_devMode = MM_MODE::DEVELOP;
+
 
 
 // http://www.codeproject.com/Articles/12093/Using-RichEditCtrl-to-Display-Formatted-Logs

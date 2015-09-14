@@ -25,6 +25,7 @@ public:
 protected:
 	cProtocolParser m_protocolParser;
 	cMemDumpWindow *m_dumpWindow;
+	int m_recvCount;
 
 
 protected:
@@ -49,4 +50,5 @@ public:
 	afx_msg void OnBnClickedCheckAscii();
 	afx_msg void OnBnClickedCheckSymbol();
 	BOOL m_IsDisplaySymbol;
+	CStatic m_ReceiveCount;
 };

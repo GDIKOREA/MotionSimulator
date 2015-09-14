@@ -134,6 +134,7 @@
 #define IDC_IPADDRESS_UDP_IP            1042
 #define IDC_STATIC_PLAY_POS             1043
 #define IDC_CHECK_REPEAT                1044
+#define IDC_STATIC_RCVCOUNT             1045
 #define ID_FILE_SAVEAS                  32771
 #define ID_VIEW_INITDOCKINGWINDOWS      32772
 
@@ -143,7 +144,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        316
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1045
+#define _APS_NEXT_CONTROL_VALUE         1046
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

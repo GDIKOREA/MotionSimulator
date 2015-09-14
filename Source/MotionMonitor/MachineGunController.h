@@ -30,6 +30,7 @@ protected:
 
 
 public:
+	network::cUDPServer m_hardwareInput;
 	cVitconMotionSim m_vitconMotionSim;
 
 	string m_configFileName;

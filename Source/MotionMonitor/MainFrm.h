@@ -18,7 +18,6 @@ public:
 	void UpdateConfig(bool IsSaveAndValidate = true);
 	void LoadConfigFile(const string &fileName);
 	BOOL NewPlotWindow();
-	void CheckMode();
 
 
 // Overrides

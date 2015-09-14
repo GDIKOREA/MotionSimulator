@@ -9,6 +9,7 @@
 
 
 cMotionMonitorConfig::cMotionMonitorConfig()
+	: m_mode("Normal")
 {
 }
 
@@ -30,6 +31,7 @@ bool cMotionMonitorConfig::ReadConfigFile(const string &fileName)
 
 		m_fileName = fileName;
 
+		m_mode = props.get<string>("MODE", "Normal");
 		m_udpPort = props.get<int>("UDP_PORT", 8888);
 		m_udpPlotCommand = props.get<string>("UDP_PLOT_COMMAND", "");
 		m_udpModCommand = props.get<string>("UDP_MOD_COMMAND", "");
@@ -74,6 +76,7 @@ bool cMotionMonitorConfig::WriteConfigFile(const string &fileName)
 		
 		m_fileName = fileName;
 
+		props.add<string>("MODE", m_mode);
 		props.add<int>("UDP_PORT", m_udpPort);
 		props.add<string>("UDP_PLOT_COMMAND", m_udpPlotCommand);
 		props.add<string>("UDP_MOD_COMMAND", m_udpModCommand);

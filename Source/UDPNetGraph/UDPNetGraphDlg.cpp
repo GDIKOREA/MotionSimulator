@@ -337,7 +337,7 @@ void CUDPNetGraphDlg::ParsePacket(char buff[128], const int buffLen)
 		else
 		{
 			CString str = str2wstr(buff).c_str();
-			//m_PacketString.SetWindowTextW(str);
+			m_PacketString.SetWindowTextW(str);
 			AppendToLogAndScroll(str, RGB(200, 200, 200));
 		}
 	}

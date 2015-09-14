@@ -34,7 +34,7 @@ CUDPInputView *g_udpInputView = NULL;
 #define CREATE_DOCKPANE(CLASS, DOCKNAME, PANE_ID, VAR)\
 {\
 	VAR = new CDockablePaneBase();\
-	if (!VAR->Create(DOCKNAME, this, CRect(0, 0, 200, 200), TRUE, PANE_ID, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))\
+	if (!VAR->Create(DOCKNAME, this, CRect(0, 0, 460, 500), TRUE, PANE_ID, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))\
 	{\
 		TRACE0("Failed to create pane window\n");\
 		return FALSE;\
@@ -47,6 +47,14 @@ CUDPInputView *g_udpInputView = NULL;
 	HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(theApp.m_bHiColorIcons ? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);\
 	VAR->SetIcon(hClassViewIcon, FALSE);\
 }
+
+
+// 일반 뷰 생성
+#define CREATE_PANE(CLASS, VAR) \
+	CLASS *VAR = new CLASS(this);\
+	VAR->Create(CLASS::IDD, this);\
+	VAR->ShowWindow(SW_SHOW);
+
 
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
@@ -66,7 +74,17 @@ static UINT indicators[] =
 
 // CMainFrame construction/destruction
 
-CMainFrame::CMainFrame()
+CMainFrame::CMainFrame() 
+	:m_wndCube3DView(NULL)
+, m_udpInputView(NULL)
+, m_udpParseView(NULL)
+, m_motionOutputView(NULL)
+, m_joystickView(NULL)
+, m_motionWaveView(NULL)
+, m_mixingView(NULL)
+, m_controlBoardView(NULL)
+, m_plotView(NULL)
+, m_launcherView(NULL)
 {
 	theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
 }
@@ -91,9 +109,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	//개발모드, 릴리즈모드 확인
-	CheckMode();
-
 	// View 가 화면에 나오지 않을 때, 리셋시키기 위한 환경파일을 검사한다. 
 	using namespace std;
 	ifstream ifs("view.cfg");
@@ -115,25 +130,32 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		}
 	}
 
-	BOOL bNameValid;
 
-	if (!m_wndMenuBar.Create(this))
+	const cMotionMonitorConfig &config = cMotionController::Get()->m_config;
+
+	// 머신건 스탠드 버젼은 심플하게 간다.
+	if (config.m_mode == "machinegun_stand")
 	{
-		TRACE0("Failed to create menubar\n");
-		return -1;      // fail to create
+		SetMenu(NULL);
+	}
+	else
+	{
+		if (!m_wndMenuBar.Create(this))
+		{
+			TRACE0("Failed to create menubar\n");
+			return -1;      // fail to create
+		}
+		m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
+		// prevent the menu bar from taking the focus on activation
+		CMFCPopupMenu::SetForceMenuFocus(FALSE);
+		m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
+		EnableDocking(CBRS_ALIGN_ANY);
+		DockPane(&m_wndMenuBar);
 	}
 
-	m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
-
-	// prevent the menu bar from taking the focus on activation
-	CMFCPopupMenu::SetForceMenuFocus(FALSE);
 
 	CString strCustomize;
-	bNameValid = strCustomize.LoadString(IDS_TOOLBAR_CUSTOMIZE);
-
-	m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
-	EnableDocking(CBRS_ALIGN_ANY);
-	DockPane(&m_wndMenuBar);
+	BOOL bNameValid = strCustomize.LoadString(IDS_TOOLBAR_CUSTOMIZE);
 
 	// enable Visual Studio 2005 style docking window behavior
 	CDockingManager::SetDockingMode(DT_SMART);
@@ -150,15 +172,22 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 
-	for each (auto &view in m_viewList)
-		view->EnableDocking(CBRS_ALIGN_ANY);
 
-	DockPane(m_wndCube3DView);
-	CDockablePane* pTabbedBar = NULL;
-	for each (auto &view in m_viewList)
+	if (!m_viewList.empty())
 	{
-		if (view != m_wndCube3DView)
-			view->AttachToTabWnd(m_wndCube3DView, DM_SHOW, TRUE, &pTabbedBar);
+ 		for each (auto &view in m_viewList)
+ 			view->EnableDocking(CBRS_ALIGN_ANY);
+
+		CDockablePaneBase *parentPane = m_viewList.front();
+
+		DockPane(parentPane);
+
+		CDockablePane* pTabbedBar = NULL;
+		for each (auto &view in m_viewList)
+		{
+			if (view != parentPane)
+				view->AttachToTabWnd(parentPane, DM_SHOW, TRUE, &pTabbedBar);
+		}
 	}
 
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
@@ -192,55 +221,73 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
 
+
+	const cMotionMonitorConfig &config = cMotionController::Get()->m_config;
+	if (config.m_mode == "machinegun_stand")
+	{
+		// 사이즈를 줄이거나 늘리지 못하게 한다.
+		cs.style = WS_OVERLAPPED | WS_SYSMENU | WS_BORDER;
+	}
+
 	return TRUE;
 }
 
 BOOL CMainFrame::CreateDockingWindows()
 {
-	BOOL bNameValid;
+	cMotionMonitorConfig &config = cMotionController::Get()->m_config;
 
 	// Create class view
 	CString strClassView;
-	bNameValid = strClassView.LoadString(IDS_CLASS_VIEW);
+	BOOL bNameValid = strClassView.LoadString(IDS_CLASS_VIEW);
 	ASSERT(bNameValid);
 
-	// Create cube3d view
-	m_wndCube3DView = new CCube3DPane();
-	if (!m_wndCube3DView->Create(L"3DView", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_CUBE3D, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+
+	if (config.m_mode == "machinegun_stand")
 	{
-		TRACE0("Failed to create cube 3d View window\n");
-		return FALSE; // failed to create
+		CREATE_PANE(CLauncherView, view);
+
+		CREATE_DOCKPANE(CUDPInputView, L"UDP Input View", ID_VIEW_MOTION_INPUT, m_udpInputView);
+		CREATE_DOCKPANE(CMixingView, L"Mixing View", ID_VIEW_MIXING, m_mixingView);
+		CREATE_DOCKPANE(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
+		CREATE_DOCKPANE(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
+
+		g_udpInputView = (CUDPInputView *)m_udpInputView->GetChildView();
+
+	}
+	else
+	{
+		// Create cube3d view
+		m_wndCube3DView = new CCube3DPane();
+		if (!m_wndCube3DView->Create(L"3DView", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_CUBE3D, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+		{
+			TRACE0("Failed to create cube 3d View window\n");
+			return FALSE; // failed to create
+		}
+		HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(theApp.m_bHiColorIcons ? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+		m_wndCube3DView->SetIcon(hClassViewIcon, FALSE);
+		m_viewList.push_back(m_wndCube3DView);
+
+		CREATE_DOCKPANE(CMotionOutputView, L"Motion Output View", ID_VIEW_MOTION_OUTPUT, m_motionOutputView);
+		CREATE_DOCKPANE(CUDPInputView, L"UDP Input View", ID_VIEW_MOTION_INPUT, m_udpInputView);
+		CREATE_DOCKPANE(CJoystickView, L"Joystick View", ID_VIEW_JOYSTICK, m_joystickView);
+		CREATE_DOCKPANE(CMotionWaveView, L"MotionWave View", ID_VIEW_MOTIONWAVE, m_motionWaveView);
+		CREATE_DOCKPANE(CMixingView, L"Mixing View", ID_VIEW_MIXING, m_mixingView);
+		CREATE_DOCKPANE(CControlBoard, L"Control Board", ID_VIEW_CONTROLBOARD, m_controlBoardView);
+		CREATE_DOCKPANE(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
+		CREATE_DOCKPANE(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
+		CREATE_DOCKPANE(CLauncherView, L"Launcher View", ID_VIEW_LAUNCHER, m_launcherView);
+
+		g_mwaveView = (CMotionWaveView*)m_motionWaveView->GetChildView();
+		g_udpInputView = (CUDPInputView *)m_udpInputView->GetChildView();
 	}
 
-	CREATE_DOCKPANE(CMotionOutputView, L"Motion Output View", ID_VIEW_MOTION_OUTPUT, m_motionOutputView);
-	CREATE_DOCKPANE(CUDPInputView, L"UDP Input View", ID_VIEW_MOTION_INPUT, m_udpInputView);
-	CREATE_DOCKPANE(CJoystickView, L"Joystick View", ID_VIEW_JOYSTICK, m_joystickView);
-	CREATE_DOCKPANE(CMotionWaveView, L"MotionWave View", ID_VIEW_MOTIONWAVE, m_motionWaveView);
-	CREATE_DOCKPANE(CMixingView, L"Mixing View", ID_VIEW_MIXING, m_mixingView);
-	CREATE_DOCKPANE(CControlBoard, L"Control Board", ID_VIEW_CONTROLBOARD, m_controlBoardView);
-	CREATE_DOCKPANE(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
-	CREATE_DOCKPANE(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
-	CREATE_DOCKPANE(CLauncherView, L"Launcher View", ID_VIEW_LAUNCHER, m_launcherView);
-
-	g_mwaveView = (CMotionWaveView*)m_motionWaveView->GetChildView();
-	g_udpInputView = (CUDPInputView *)m_udpInputView->GetChildView();
-
-	SetDockingWindowIcons(theApp.m_bHiColorIcons);
 	return TRUE;
 }
 
 void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
 {
-  	HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
- 	m_wndCube3DView->SetIcon(hClassViewIcon, FALSE);
-// 	m_motionOutputView->SetIcon(hClassViewIcon, FALSE);
-// 	m_udpInputView->SetIcon(hClassViewIcon, FALSE);
-// 	m_joystickView->SetIcon(hClassViewIcon, FALSE);
-// 	m_motionWaveView->SetIcon(hClassViewIcon, FALSE);
-// 	m_mixingView->SetIcon(hClassViewIcon, FALSE);
-// 	m_controlBoardView->SetIcon(hClassViewIcon, FALSE);
-// 	m_udpParseView->SetIcon(hClassViewIcon, FALSE);
-// 	m_plotView->SetIcon(hClassViewIcon, FALSE);
+//   	HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+//  	m_wndCube3DView->SetIcon(hClassViewIcon, FALSE);
 }
 
 // CMainFrame diagnostics
@@ -369,27 +416,3 @@ BOOL CMainFrame::NewPlotWindow()
 	return TRUE;
 }
 
-
-// 설정 파일을 읽어, 모드를 체크한다.
-void CMainFrame::CheckMode()
-{
-	using namespace std;
-	ifstream ifs("mm_config.cfg");
-	if (ifs.is_open())
-	{
-		int n;
-		ifs >> n;
-		
-		// 0 : machine gun develop
-		// 1 : machine gun release
-		// 2 : dirt3 debug
-		// 3 : dirt3 release
-		switch (n)
-		{
-		case 0: g_devMode = MM_MODE::DEVELOP; g_gameType = GAME_TYPE::MACHINEGUN; break;
-		case 1: g_devMode = MM_MODE::RELEASE; g_gameType = GAME_TYPE::MACHINEGUN; break;
-		case 2: g_devMode = MM_MODE::DEVELOP; g_gameType = GAME_TYPE::DIRT3; break;
-		case 3: g_devMode = MM_MODE::RELEASE; g_gameType = GAME_TYPE::DIRT3; break;
-		}
-	}
-}

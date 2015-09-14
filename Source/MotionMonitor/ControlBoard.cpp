@@ -14,10 +14,10 @@
 // CControlBoard dialog
 const static string g_configFileNames[] =
 {
-	"../media/machine gun/motionmonitor_dirt3.json",
-	"../media/machine gun/motionmonitor_mg.json",
-	"../media/machine gun/motionmonitor_joystick.json",
-	"../media/machine gun/motionmonitor_mwave.json",
+	"../media/machinegun/motionmonitor_dirt3.json",
+	"../media/machinegun/motionmonitor_mg.json",
+	"../media/machinegun/motionmonitor_joystick.json",
+	"../media/machinegun/motionmonitor_mwave.json",
 };
 
 

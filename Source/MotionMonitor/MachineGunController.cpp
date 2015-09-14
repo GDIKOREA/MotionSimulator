@@ -54,6 +54,14 @@ void cMachineGunController::Update(const float deltaSeconds)
 		m_oldState = m_vitconMotionSim.GetState();
 	}
 
+	char buff[256];
+	if (m_hardwareInput.GetRecvData(buff, sizeof(buff)) > 0)
+	{
+
+		int a = 0;
+
+	}
+
 }
 
 
@@ -93,15 +101,21 @@ void cMachineGunController::StartMotionSim(const string &configFileName, const b
 		// UDP View, Mixing View, Output View Start
 		// 안전을 위해 순서를 지키자.
 		//pFrm->m_udpInputView->GetChildView()->Start();
-		pFrm->m_udpParseView->GetChildView()->Start();
-		pFrm->m_mixingView->GetChildView()->Start();
-		pFrm->m_motionWaveView->GetChildView()->Start();
+		if (pFrm->m_udpParseView)
+			pFrm->m_udpParseView->GetChildView()->Start();
+		if (pFrm->m_mixingView)
+			pFrm->m_mixingView->GetChildView()->Start();
+		if (pFrm->m_motionWaveView)
+			pFrm->m_motionWaveView->GetChildView()->Start();
 
 		if (isStartMotionSimOut)
-			pFrm->m_motionOutputView->GetChildView()->Start();
+			if (pFrm->m_motionOutputView)
+				pFrm->m_motionOutputView->GetChildView()->Start();
 
 		m_configFileName = configFileName;
 		m_vitconMotionSim.On();
+		m_hardwareInput.Init(0, 20590);
+
 	}
 }
 
@@ -113,12 +127,17 @@ void cMachineGunController::StopMotionSim()
 	{
 		// 안전을 위해 순서를 지키자.
 		//pFrm->m_udpInputView->GetChildView()->Stop();
-		pFrm->m_udpParseView->GetChildView()->Stop();
-		pFrm->m_mixingView->GetChildView()->Stop();
-		pFrm->m_joystickView->GetChildView()->Stop();
-		pFrm->m_motionWaveView->GetChildView()->Stop();
+		if (pFrm->m_udpParseView)
+			pFrm->m_udpParseView->GetChildView()->Stop();
+		if (pFrm->m_mixingView)
+			pFrm->m_mixingView->GetChildView()->Stop();
+		if (pFrm->m_joystickView)
+			pFrm->m_joystickView->GetChildView()->Stop();
+		if (pFrm->m_motionWaveView)
+			pFrm->m_motionWaveView->GetChildView()->Stop();
 
 		m_vitconMotionSim.Off();
+		m_hardwareInput.Close();
 	}
 }
 
@@ -133,7 +152,7 @@ void cMachineGunController::GameStart(const int mission)
 	m_gameMission = mission;
 	m_playTime = 0;
 
-	g_mwaveView->LoadandPlayMotionWave("../media/machine gun/motion wave/scene1.mwav");
+	g_mwaveView->LoadandPlayMotionWave("../media/machinegun/motion wave/scene1.mwav");
 
 	m_vitconMotionSim.Play();
 }

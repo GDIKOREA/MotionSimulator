@@ -12,7 +12,7 @@ void main(char argc, char *argv[])
 {
 	cout << "ArgumentPrint.exe";
 
-	for (int i = 1; i < argc; ++i)
+	for (int i = 0; i < argc; ++i)
 	{
 		cout << ", ";
 		cout << argv[i];

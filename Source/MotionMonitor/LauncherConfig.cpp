@@ -34,6 +34,7 @@ bool cLauncherConfig::Read(const string &fileName)
 		m_cameraCalibrationExePath = props.get<string>("CAMERA_CALIBRATION_EXE_PATH", "");
 		m_cameraCheckExePath = props.get<string>("CAMERA_CHECK_EXE_PATH", "");
 		m_gameExePath = props.get<string>("GAME_EXE_PATH", "");
+		m_cameraExePath = props.get<string>("CAMERA_EXE_PATH", "");
 	}
 	catch (std::exception&e)
 	{

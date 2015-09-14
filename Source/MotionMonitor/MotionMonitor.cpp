@@ -129,6 +129,17 @@ BOOL CMotionMonitorApp::InitInstance()
 	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL,
 		RUNTIME_CLASS(CMFCToolTipCtrl), &ttParams);
 
+
+
+	// 실행인자값으로 넘어온 설정파일명을 로드한다.
+	cMotionMonitorConfig &config = cMotionController::Get()->m_config;
+	string commandLine = wstr2str(m_lpCmdLine);
+	if (!commandLine.empty())
+	{
+		config.ReadConfigFile(commandLine);
+	}
+
+
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views
 	CSingleDocTemplate* pDocTemplate;
@@ -156,7 +167,9 @@ BOOL CMotionMonitorApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 	//m_pMainWnd->SetWindowTextW(L"Motion Monitor");
-	m_pMainWnd->SetWindowTextW(L"motionmonitor_mg.json");	
+
+	const string title = common::GetFileName(cMotionController::Get()->m_config.m_fileName);
+	m_pMainWnd->SetWindowTextW(str2wstr(title).c_str());
 
 	//Close down COM
 	CoUninitialize();

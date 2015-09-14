@@ -16,6 +16,7 @@ CUDPView::CUDPView(CWnd* pParent /*=NULL*/)
 	, m_IsASCII(FALSE)
 	, m_dumpWindow(NULL)
 	, m_IsDisplaySymbol(FALSE)
+	, m_recvCount(0)
 {
 }
 
@@ -32,6 +33,7 @@ void CUDPView::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_DUMP, m_IsDump);
 	DDX_Check(pDX, IDC_CHECK_ASCII, m_IsASCII);
 	DDX_Check(pDX, IDC_CHECK_SYMBOL, m_IsDisplaySymbol);
+	DDX_Control(pDX, IDC_STATIC_RCVCOUNT, m_ReceiveCount);
 }
 
 
@@ -148,6 +150,10 @@ void CUDPView::UpdateUDP(const char *buffer, const int bufferLen)
 
 	if (m_IsDump && m_dumpWindow)
 		m_dumpWindow->UpdateDump(buffer, bufferLen);
+
+	++m_recvCount;
+	m_ReceiveCount.SetWindowTextW(common::formatw("%d", m_recvCount).c_str());
+
 }
 
 

@@ -15,12 +15,14 @@ public:
 	virtual ~cExeTracker();
 
 
-	bool Execute(const string &fileName, const int id, void(*terminateCallBack)(int,void*), void*arg);
+	bool Execute(const string &fileName, const string &commandLine, 
+		const int id, void(*terminateCallBack)(int, void*), void*arg);
 
 
 public:
 	int m_id;
 	string m_exeFileName;
+	string m_commandLine;
 	void (*m_terminateCallBack)(int,void*); // 프로그램이 종료될 때 호출되는 함수 포인터
 
 	HANDLE m_handle;

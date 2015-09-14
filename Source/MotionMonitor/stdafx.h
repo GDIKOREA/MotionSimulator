@@ -98,19 +98,7 @@ namespace GAME_TYPE {
 }
 
 
-// 모션 모니터 모드
-// 릴리즈 모드 : 설치 버젼
-// 디버그 모드 : 개발 버전
-namespace MM_MODE {
-	enum TYPE {
-		DEVELOP,	// develop mode
-		RELEASE,	// release mode
-	};
-}
-
-
 extern GAME_TYPE::TYPE g_gameType;
-extern MM_MODE::TYPE g_devMode;
 
 
 class CMotionWaveView;
