@@ -1,4 +1,5 @@
 {
+    "MODE": "machinegun_stand_debug",
     "UDP_PORT": "9989",
     "UDP_PLOT_COMMAND": "plot1 = 0, 0, 0, 0, 0\r\nstring1 = %f;\r\nname1 = Yaw\r\nlinewidth1 = 2\r\nplot2 = 0, 0, 0, 0, 0\r\nstring2 = %*f; %f;\r\nname2 = Pitch\r\nlinewidth2 = 2\r\nplot3 = 0, 0, 0, 0, 0\r\nstring3 = %*f; %*f; %f;\r\nname3 = Roll\r\nlinewidth3 = 2\r\nplot4 = 0, 0, 0, 0, 0\r\nstring4 = %*f; %*f; %*f; %f;\r\nname4 = Heave\r\nlinewidth4 = 2",
     "UDP_MOD_COMMAND": "# udp input\r\n\r\nyaw_proportion = 1\r\npitch_proportion = 1\r\nroll_proportion = 1\r\nheave_proportion = 1\r\n\r\nyaw_recover_enable = 1\r\nyaw_max_difference_enable = 1\r\nyaw_recover_target = 0\r\nyaw_recover_proportion = 0.02\r\nyaw_max_difference = 3.1415\r\nyaw_limit = 6.283\r\nyaw_x2_proportion = 0.1\r\nyaw_x2_limit = 1\r\n\r\npitch_recover_enable = 1\r\npitch_max_difference_enable = 1\r\npitch_recover_target = 0\r\npitch_recover_proportion = 0.01\r\npitch_max_difference = 3.1415\r\npitch_limit = 6.283\r\npitch_max_difference_proportion = 0.2\r\n\r\nroll_recover_enable = 1\r\nroll_max_difference_enable = 1\r\nroll_recover_target = 0\r\nroll_recover_proportion = 0.01\r\nroll_max_difference = 3.1415\r\nroll_limit = 6.283\r\nroll_max_difference_proportion = 0.2\r\n\r\nheave_recover_enable = 1\r\nheave_max_difference_enable = 0\r\nheave_recover_target = 0\r\nheave_recover_proportion = 0.01\r\nheave_max_difference = 100000\r\nheave_limit = 1000000\r\nheave_max_difference_proportion = 0.2\r\n\r\nspline_enable = 0\r\n\r\nyaw_c1 = 0\r\nyaw_c2 = 1\r\nyaw_c3 = 0\r\n\r\npitch_c1 = 0\r\npitch_c2 = 1\r\npitch_c3 = 0\r\n\r\nroll_c1 = 0\r\nroll_c2 = 1\r\nroll_c3 = 0\r\n\r\nheave_c1 = 0\r\nheave_c2 = 0\r\nheave_c3 = 0\r\n\r\nspline_plot_sampling_rate = 10\r\nspline_interpolation_rate = 10\r\n\r\n",
@@ -7,9 +8,9 @@
     "MIXING_COMMAND": "#input = udp\r\n#input = motionwave\r\ninput = joystick+udp+motionwave\r\n\r\nmixing_input1_enable = 1\r\nmixing_rate1_all = 1\r\nmixing_rate1_yaw = 0\r\nmixing_rate1_pitch = 0\r\nmixing_rate1_roll = 0\r\nmixing_rate1_heave = 0\r\n\r\nmixing_input2_enable = 0\r\nmixing_rate2_all = 0\r\nmixing_rate2_yaw = 0\r\nmixing_rate2_pitch = 0\r\nmixing_rate2_roll = 0\r\nmixing_rate2_heave = 0\r\n\r\nmixing_input3_enable = 0\r\nmixing_rate3_all = 0\r\nmixing_rate3_yaw = 0\r\nmixing_rate3_pitch = 0\r\nmixing_rate3_roll = 0\r\nmixing_rate3_heave = 0\r\n\r\nmixing_bias_yaw = 0\r\nmixing_bias_pitch = 0\r\nmixing_bias_roll = 0\r\nmixing_bias_heave = 0\r\n\r\n",
     "MOTION_OUTPUT_COMPORT": "7",
     "MOTION_OUTPUT_BAUDRATE": "0",
-    "UDP_PARSE_PORT": "20778",
-    "UDP_PROTOCOL_COMMAND": "4, float # 1, directX\r\n4, float # 2, directY\r\n4, float # 3, directZ\r\n4, float # 4, pitch\r\n4, float # 5, yaw\r\n4, float # 6, roll\r\n4, float # 7, speed\r\n",
-    "MIXING_SCRIPT": "$roll = -$6\r\n$pitch = -$4\r\n$yaw = $5 - 3.1415\r\n",
+    "UDP_PARSE_PORT": "9988",
+    "UDP_PROTOCOL_COMMAND": "4, float # $1, directX\r\n4, float # $2, directY\r\n4, float # $3, directZ\r\n4, float # $4, roll\r\n4, float # $5, pitch\r\n4, float # $6, yaw\r\n4, float # $7, speed\r\n4, int # $8, bulletcount1\r\n4, int # $9, bulletcount2\r\n4, int # $10, game state\r\n4, int # $11, mission\r\n4, int # $12, score1\r\n4, int # $13, score2\r\n4, int # $14, creditDown\r\n4, int # $15, creditDown\r\n\r\n",
+    "MIXING_SCRIPT": "$roll = -$6\r\n$pitch = -$4\r\n$yaw = $5 - 3.1415\r\n@bullet1 = $8\r\n@bullet2 = $9\r\n$gamestate = $10\r\n$mission = $11\r\n$score1 = $12\r\n$score2 = $13\r\n",
     "UDP_INPUT_ROLL_COMMAND": "$roll",
     "UDP_INPUT_PITCH_COMMAND": "$pitch",
     "UDP_INPUT_YAW_COMMAND": "$yaw",
