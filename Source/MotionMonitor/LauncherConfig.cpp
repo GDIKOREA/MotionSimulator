@@ -31,6 +31,7 @@ bool cLauncherConfig::Read(const string &fileName)
 		ptree props;
 		boost::property_tree::read_json(fileName, props);
 
+		m_boardCheckExePath = props.get<string>("BOARD_CHECK_EXE_PATH", "");
 		m_cameraCalibrationExePath = props.get<string>("CAMERA_CALIBRATION_EXE_PATH", "");
 		m_cameraCheckExePath = props.get<string>("CAMERA_CHECK_EXE_PATH", "");
 		m_gameExePath = props.get<string>("GAME_EXE_PATH", "");

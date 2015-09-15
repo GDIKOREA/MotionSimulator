@@ -168,12 +168,15 @@ void CControlBoard::Update(const float deltaSeconds)
 				}
 
 				//m_InnerState = cMachineGunController::Get()->GetInnerStateName();
-				m_GameMission.Format(L"%d", cMachineGunController::Get()->m_gameMission);
-				UpdateData(FALSE);
+
+				// 속도를 높이기위해 주석
+				//m_GameMission.Format(L"%d", cMachineGunController::Get()->m_gameMission);
+				//UpdateData(FALSE);
 			}
 
-			m_GameTime.Format(L"%.1f", cMachineGunController::Get()->m_playTime);
-			UpdateData(FALSE);
+			// 속도를 높이기위해 주석
+			//m_GameTime.Format(L"%.1f", cMachineGunController::Get()->m_playTime);
+			//UpdateData(FALSE);
 		}
 		break;
 	case GAME_TYPE::JOYSTICK:

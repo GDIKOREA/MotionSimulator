@@ -20,6 +20,9 @@ CLauncherView::CLauncherView(CWnd* pParent /*=NULL*/)
 	, m_CamSens2Edit(0)
 	, m_camSensitiveMid(2.3f)
 	, m_isGameExeTerminate(false)
+	, m_Credit(0)
+	, m_Coin(0)
+	, m_CoinPerGame(10)
 {
 }
 
@@ -36,6 +39,9 @@ void CLauncherView::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_CAM_SENS2, m_CamSens2Edit);
 	DDX_Control(pDX, IDC_SLIDER_CAM_SENS2, m_CamSens2Slider);
 	DDX_Control(pDX, IDC_COMBO_DIFFICULT2, m_DifficultCombo2);
+	DDX_Text(pDX, IDC_EDIT_CREDIT, m_Credit);
+	DDX_Text(pDX, IDC_EDIT_COIN, m_Coin);
+	DDX_Text(pDX, IDC_EDIT_COINPERGAME, m_CoinPerGame);
 }
 
 
@@ -50,6 +56,10 @@ BEGIN_MESSAGE_MAP(CLauncherView, CDockablePaneChildView)
 	ON_BN_CLICKED(IDC_BUTTON_CAM_ADJUSTMENT_P2, &CLauncherView::OnBnClickedButtonCamAdjustmentP2)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_CAM_SENS, &CLauncherView::OnNMCustomdrawSliderCamSens)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_CAM_SENS2, &CLauncherView::OnNMCustomdrawSliderCamSens2)
+	ON_EN_CHANGE(IDC_EDIT_CREDIT, &CLauncherView::OnEnChangeEditCredit)
+	ON_EN_CHANGE(IDC_EDIT_COIN, &CLauncherView::OnEnChangeEditCoin)
+	ON_EN_CHANGE(IDC_EDIT_COINPERGAME, &CLauncherView::OnEnChangeEditCoinpergame)
+	ON_BN_CLICKED(IDC_BUTTON_BOARDCHECK, &CLauncherView::OnBnClickedButtonBoardcheck)
 END_MESSAGE_MAP()
 
 
@@ -91,6 +101,13 @@ BOOL CLauncherView::OnInitDialog()
 	const int sliderPos2 = (int)((m_camSens2 - 2.3f) * 1000.f);
 	m_CamSensSlider.SetPos(sliderPos1 + 1000);
 	m_CamSens2Slider.SetPos(sliderPos2 + 1000);
+
+
+	const cMotionMonitorConfig &config = cMotionController::Get()->m_config;
+	if (config.m_mode == "machinegun_stand")
+	{
+		cMachineGunController::Get()->Init();
+	}
 
 	return TRUE;
 }
@@ -142,7 +159,6 @@ void CLauncherView::OnBnClickedButtonPlayer1()
 	const string exeDir = common::GetFilePathExceptFileName(config.m_cameraCheckExePath);
 	const string exeName = common::GetFileName(config.m_cameraCheckExePath);
 
-	// 프로그램이 이미 실행 중이라면, 종료하고, 다시 실행한다.
 	ShellExecuteA(NULL, "open", exeName.c_str(), "0", exeDir.c_str(), SW_SHOW);
 }
 
@@ -153,7 +169,6 @@ void CLauncherView::OnBnClickedButtonPlayer2()
 	const string exeDir = common::GetFilePathExceptFileName(config.m_cameraCheckExePath);
 	const string exeName = common::GetFileName(config.m_cameraCheckExePath);
 
-	// 프로그램이 이미 실행 중이라면, 종료하고, 다시 실행한다.
 	ShellExecuteA(NULL, "open", exeName.c_str(), "1", exeDir.c_str(), SW_SHOW);
 }
 
@@ -164,7 +179,6 @@ void CLauncherView::OnBnClickedButtonCamAdjustmentP1()
 	const string calibrationExeDir = common::GetFilePathExceptFileName(config.m_cameraCalibrationExePath);
 	const string calibrationExeName = common::GetFileName(config.m_cameraCalibrationExePath);
 
-	// 프로그램이 이미 실행 중이라면, 종료하고, 다시 실행한다.
 	ShellExecuteA(NULL, "open", calibrationExeName.c_str(), "0", calibrationExeDir.c_str(), SW_SHOW);
 }
 
@@ -175,7 +189,6 @@ void CLauncherView::OnBnClickedButtonCamAdjustmentP2()
 	const string calibrationExeDir = common::GetFilePathExceptFileName(config.m_cameraCalibrationExePath);
 	const string calibrationExeName = common::GetFileName(config.m_cameraCalibrationExePath);
 
-	// 프로그램이 이미 실행 중이라면, 종료하고, 다시 실행한다.
 	ShellExecuteA(NULL, "open", calibrationExeName.c_str(), "1", calibrationExeDir.c_str(), SW_SHOW);
 }
 
@@ -227,3 +240,54 @@ void GameExeTerminate(int id, void*arg)
 	launcherView->m_isGameExeTerminate = true;
 }
 
+
+void CLauncherView::OnEnChangeEditCredit()
+{
+	UpdateData();
+
+	cMachineGunController::Get()->m_credit = m_Credit;
+}
+
+
+void CLauncherView::OnEnChangeEditCoin()
+{
+	UpdateData();
+
+	cMachineGunController::Get()->m_coin = m_Coin;
+}
+
+
+void CLauncherView::OnEnChangeEditCoinpergame()
+{
+	UpdateData();
+	if (m_CoinPerGame <= 0)
+	{
+		m_CoinPerGame = 10;
+		UpdateData(FALSE);
+	}
+
+	cMachineGunController::Get()->m_coinPerGame = m_CoinPerGame;
+}
+
+
+void CLauncherView::UpdateCoin(const int credit, const int coin, const int coinPerGame)
+{
+	m_Credit = credit;
+	m_Coin = coin;
+	m_CoinPerGame = coinPerGame;
+	UpdateData(FALSE);
+}
+
+
+void CLauncherView::OnBnClickedButtonBoardcheck()
+{
+	cLauncherConfig config("../media/machinegun/launcher_config.cfg");
+	const string exeDir = common::GetFilePathExceptFileName(config.m_boardCheckExePath);
+	const string exeName = common::GetFileName(config.m_boardCheckExePath);
+
+	// 매인보드로 부터온 UDP를 프록시로 보내는 포트로 프로그램을 연다.
+	const string fileName = "../media/machinegun/mg_controller.ini";
+	const int proxyPort = uiutil::GetProfileInt("MainBoard UDP", "ProxyPort", 10000, fileName);
+
+	ShellExecuteA(NULL, "open", exeName.c_str(), format("%d", proxyPort).c_str(), exeDir.c_str(), SW_SHOW);
+}

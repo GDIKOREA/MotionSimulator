@@ -10,6 +10,8 @@
 
 #include "MotionMonitorDoc.h"
 #include "MotionMonitorView.h"
+#include "LoginDialog.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -139,6 +141,10 @@ BOOL CMotionMonitorApp::InitInstance()
 		config.ReadConfigFile(commandLine);
 	}
 
+	CLoginDialog loginDlg;
+	if (IDCANCEL == loginDlg.DoModal())
+		return FALSE;
+
 
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views
@@ -170,7 +176,7 @@ BOOL CMotionMonitorApp::InitInstance()
 		CRect wr;
 		m_pMainWnd->GetWindowRect(wr);
 		wr.right = wr.left + 445;
-		wr.bottom = wr.top + 450;
+		wr.bottom = wr.top + 550;
 		m_pMainWnd->MoveWindow(wr);
 	}
 
@@ -181,8 +187,8 @@ BOOL CMotionMonitorApp::InitInstance()
 	//m_pMainWnd->SetWindowTextW(L"Motion Monitor");
 
 	const string title = common::GetFileName(cMotionController::Get()->m_config.m_fileName);
-	m_pMainWnd->SetWindowTextW(str2wstr(title).c_str());
-
+	//m_pMainWnd->SetWindowTextW(str2wstr(title).c_str());
+	m_pMainWnd->SetWindowTextW(L"MachineGun Manager");
 
 	//Close down COM
 	CoUninitialize();
@@ -233,7 +239,7 @@ BOOL CMotionMonitorApp::OnIdle(LONG lCount)
 
 	oldT = curT;
 
-	//CWinAppEx::OnIdle(lCount); 호출 안해도 됨.
+	//return CWinAppEx::OnIdle(lCount); //호출 안해도 됨.
 	return TRUE; // TRUE를 리턴시켜야 계속 OnIdle()이 호출된다.
 }
 

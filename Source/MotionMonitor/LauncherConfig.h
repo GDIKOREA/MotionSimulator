@@ -15,6 +15,7 @@ public:
 
 	
 public:
+	string m_boardCheckExePath;
 	string m_cameraCalibrationExePath;
 	string m_cameraCheckExePath;
 	string m_gameExePath;

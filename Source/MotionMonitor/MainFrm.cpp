@@ -14,6 +14,9 @@
 #include "PlotView.h"
 #include "LauncherView.h"
 #include "MainFrm.h"
+#include "MachineGunController.h"
+
+#pragma comment(lib, "winmm.lib")
 
 
 #ifdef _DEBUG
@@ -31,6 +34,7 @@ const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
 CMotionWaveView *g_mwaveView = NULL;
 CUDPInputView *g_udpInputView = NULL;
 CControlBoard *g_controlView = NULL;
+CLauncherView *g_launcherView = NULL;
 
 
 #define CREATE_DOCKPANE(CLASS, DOCKNAME, PANE_ID, VAR)\
@@ -55,7 +59,7 @@ CControlBoard *g_controlView = NULL;
 #define CREATE_PANE(CLASS, VAR, SHOWCMD) \
 	CLASS *VAR = new CLASS(this);\
 	VAR->Create(CLASS::IDD, this);\
-	VAR->ShowWindow(SHOWCMD);
+	VAR->ShowWindow(SHOWCMD);\
 
 
 
@@ -77,7 +81,7 @@ static UINT indicators[] =
 // CMainFrame construction/destruction
 
 CMainFrame::CMainFrame() 
-	:m_wndCube3DView(NULL)
+: m_wndCube3DView(NULL)
 , m_udpInputView(NULL)
 , m_udpParseView(NULL)
 , m_motionOutputView(NULL)
@@ -190,15 +194,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 			if (view != parentPane)
 				view->AttachToTabWnd(parentPane, DM_SHOW, TRUE, &pTabbedBar);
 		}
-
-		if (config.m_mode == "machinegun_stand")
-		{
-			for each (auto &view in m_viewList)
-			{
-				//view->SetDockingMode()
-				//view->ShowWindow(SW_HIDE);
-			}
-		}
 	}
 
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
@@ -255,15 +250,16 @@ BOOL CMainFrame::CreateDockingWindows()
 
 	if (config.m_mode == "machinegun_stand")
 	{
-		CREATE_PANE(CLauncherView, view, SW_SHOW);
-		CREATE_PANE(CUDPInputView, m_udpInputView, SW_HIDE);
-		CREATE_PANE(CMixingView, m_mixingView, SW_HIDE);
-		CREATE_PANE(CUDPParseView, m_udpParseView, SW_HIDE);
-		CREATE_PANE(CPlotView, m_plotView, SW_HIDE);
-		CREATE_PANE(CControlBoard, m_controlBoardView, SW_HIDE);
+		CREATE_PANE(CLauncherView, launcherView, SW_SHOW);
+		CREATE_PANE(CUDPInputView, udpInputView, SW_HIDE);
+		CREATE_PANE(CMixingView, mixingView, SW_HIDE);
+		CREATE_PANE(CUDPParseView, udpParseView, SW_HIDE);
+		CREATE_PANE(CPlotView, plotView, SW_HIDE);
+		CREATE_PANE(CControlBoard, controlBoardView, SW_HIDE);
 
-		g_udpInputView = (CUDPInputView *)m_udpInputView;
-		g_controlView = (CControlBoard*)m_controlBoardView;
+		g_udpInputView = udpInputView;
+		g_controlView = controlBoardView;
+		g_launcherView = launcherView;
 	}
 	else
 	{

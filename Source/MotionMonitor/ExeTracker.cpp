@@ -42,14 +42,18 @@ unsigned WINAPI ExeTrackerThreadFunction(void* arg)
 {
 	cExeTracker *tracker = (cExeTracker*)arg;
 
-	const string exeDir = common::GetFilePathExceptFileName(tracker->m_exeFileName) + "\\";
+	string exeDir = common::GetFilePathExceptFileName(tracker->m_exeFileName);
+	if (exeDir.empty())
+		exeDir = "./";
+	else
+		exeDir += "\\";
 	const string exeName = tracker->m_exeFileName;
 
 	STARTUPINFOA StartupInfo = { 0 };
 	StartupInfo.cb = sizeof(STARTUPINFOA);
 	PROCESS_INFORMATION ProcessInfo;
 
-	CONST BOOL result = CreateProcessA(exeName.c_str(), 
+	const BOOL result = CreateProcessA(exeName.c_str(), 
 		(char*)tracker->m_commandLine.c_str(),
 		NULL, NULL, FALSE,
 		NORMAL_PRIORITY_CLASS,

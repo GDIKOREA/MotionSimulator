@@ -74,8 +74,8 @@ struct sMGDevicePacket
 	char player1UpSensor;		// 0/1
 	char player1DownSensor;		// 0/1
 	char player1EmergencySwitch;// 0/1
+	char coin;
 	char space1;
-	char space2;
 
 	char player2Fire;			// 0/1
 	char player2FireEvent;		// 0/1

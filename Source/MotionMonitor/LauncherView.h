@@ -16,6 +16,8 @@ public:
 	enum { IDD = IDD_DIALOG_LAUNCHER };
 	
 	virtual void Update(const float deltaSeconds) override;
+
+	void UpdateCoin(const int credit, const int coin, const int coinPerGame);
 	bool m_isGameExeTerminate;
 
 
@@ -48,4 +50,11 @@ public:
 	afx_msg void OnNMCustomdrawSliderCamSens(NMHDR *pNMHDR, LRESULT *pResult);
 	CSliderCtrl m_CamSens2Slider;
 	afx_msg void OnNMCustomdrawSliderCamSens2(NMHDR *pNMHDR, LRESULT *pResult);
+	int m_Credit;
+	int m_Coin;
+	int m_CoinPerGame;
+	afx_msg void OnEnChangeEditCredit();
+	afx_msg void OnEnChangeEditCoin();
+	afx_msg void OnEnChangeEditCoinpergame();
+	afx_msg void OnBnClickedButtonBoardcheck();
 };

@@ -138,9 +138,9 @@ unsigned WINAPI UDPServerThreadFunction(void* arg)
 			const int result = recv(readSockets.fd_array[0], buff, sizeof(buff), 0);
 			if (result == SOCKET_ERROR || result == 0) // 받은 패킷사이즈가 0이면 서버와 접속이 끊겼다는 의미다.
 			{
-				closesocket(udp->m_socket);
-				udp->m_threadLoop = false;
-				udp->m_isConnect = false;
+// 				closesocket(udp->m_socket);
+// 				udp->m_threadLoop = false;
+// 				udp->m_isConnect = false;
 			}
 			else
 			{

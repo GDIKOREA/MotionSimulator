@@ -47,6 +47,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)..\Bin\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -137,6 +138,7 @@
     <ClInclude Include="JoystickView.h" />
     <ClInclude Include="LauncherConfig.h" />
     <ClInclude Include="LauncherView.h" />
+    <ClInclude Include="LoginDialog.h" />
     <ClInclude Include="MachineGunController.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="mathinterpreter.h" />
@@ -195,6 +197,7 @@
     <ClCompile Include="JoystickView.cpp" />
     <ClCompile Include="LauncherConfig.cpp" />
     <ClCompile Include="LauncherView.cpp" />
+    <ClCompile Include="LoginDialog.cpp" />
     <ClCompile Include="MachineGunController.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="mathinterpreter.cpp" />
