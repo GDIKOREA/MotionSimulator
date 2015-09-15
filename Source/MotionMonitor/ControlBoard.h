@@ -16,12 +16,12 @@ public:
 	virtual void Update(const float deltaSeconds) override;
 	virtual void UpdateUDP(const char *buffer, const int bufferLen) override;
 
-
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	void Start();
 	void Stop();
 
+
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	enum STATE {
 		STOP,

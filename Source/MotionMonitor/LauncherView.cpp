@@ -8,6 +8,7 @@
 #include "LauncherConfig.h"
 #include "MainFrm.h"
 #include "MachineGunController.h"
+#include "ControlBoard.h"
 
 
 void GameExeTerminate(int id, void*arg);
@@ -128,7 +129,6 @@ void CLauncherView::OnBnClickedButtonGamestart()
  	// UDP 통신 시작
  	const cMotionMonitorConfig &config = cMotionController::Get()->m_config;
 	cMachineGunController::Get()->StartMotionSim(config.m_fileName, false);
-
 
 
 	// 매니저 프로그램은 타이틀바로 이동한다.

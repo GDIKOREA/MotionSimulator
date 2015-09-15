@@ -30,7 +30,12 @@ protected:
 
 
 public:
-	network::cUDPServer m_hardwareInput;
+	network::cUDPServer m_hardwareInput; // 머신건 매인보드로 부터 정보를 얻는다.
+	network::cUDPClient m_hardwareSender; // 머신건 매인보드에게 정보를 보내는 객체
+
+	network::cUDPServer m_cameraUDPReceiver; // 머신건 카메라로 부터 정보를 얻는다.
+	network::cUDPClient m_gameClientSender; // 머신건 클라이언트에 정보를 보낸다.
+
 	cVitconMotionSim m_vitconMotionSim;
 
 	string m_configFileName;

@@ -163,13 +163,6 @@ BOOL CMotionMonitorApp::InitInstance()
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
 
-	// The one and only window has been initialized, so show and update it
-	m_pMainWnd->ShowWindow(SW_SHOW);
-	m_pMainWnd->UpdateWindow();
-	//m_pMainWnd->SetWindowTextW(L"Motion Monitor");
-
-	const string title = common::GetFileName(cMotionController::Get()->m_config.m_fileName);
-	m_pMainWnd->SetWindowTextW(str2wstr(title).c_str());
 
 	// 윈도우 크기 설정
 	if (config.m_mode == "machinegun_stand")
@@ -180,6 +173,16 @@ BOOL CMotionMonitorApp::InitInstance()
 		wr.bottom = wr.top + 450;
 		m_pMainWnd->MoveWindow(wr);
 	}
+
+
+	// The one and only window has been initialized, so show and update it
+	m_pMainWnd->ShowWindow(SW_SHOW);
+	m_pMainWnd->UpdateWindow();
+	//m_pMainWnd->SetWindowTextW(L"Motion Monitor");
+
+	const string title = common::GetFileName(cMotionController::Get()->m_config.m_fileName);
+	m_pMainWnd->SetWindowTextW(str2wstr(title).c_str());
+
 
 	//Close down COM
 	CoUninitialize();

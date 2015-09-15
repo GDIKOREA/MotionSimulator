@@ -30,6 +30,8 @@ const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
 
 CMotionWaveView *g_mwaveView = NULL;
 CUDPInputView *g_udpInputView = NULL;
+CControlBoard *g_controlView = NULL;
+
 
 #define CREATE_DOCKPANE(CLASS, DOCKNAME, PANE_ID, VAR)\
 {\
@@ -50,10 +52,10 @@ CUDPInputView *g_udpInputView = NULL;
 
 
 // ÀÏ¹Ý ºä »ý¼º
-#define CREATE_PANE(CLASS, VAR) \
+#define CREATE_PANE(CLASS, VAR, SHOWCMD) \
 	CLASS *VAR = new CLASS(this);\
 	VAR->Create(CLASS::IDD, this);\
-	VAR->ShowWindow(SW_SHOW);
+	VAR->ShowWindow(SHOWCMD);
 
 
 
@@ -188,6 +190,15 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 			if (view != parentPane)
 				view->AttachToTabWnd(parentPane, DM_SHOW, TRUE, &pTabbedBar);
 		}
+
+		if (config.m_mode == "machinegun_stand")
+		{
+			for each (auto &view in m_viewList)
+			{
+				//view->SetDockingMode()
+				//view->ShowWindow(SW_HIDE);
+			}
+		}
 	}
 
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
@@ -244,15 +255,15 @@ BOOL CMainFrame::CreateDockingWindows()
 
 	if (config.m_mode == "machinegun_stand")
 	{
-		CREATE_PANE(CLauncherView, view);
+		CREATE_PANE(CLauncherView, view, SW_SHOW);
+		CREATE_PANE(CUDPInputView, m_udpInputView, SW_HIDE);
+		CREATE_PANE(CMixingView, m_mixingView, SW_HIDE);
+		CREATE_PANE(CUDPParseView, m_udpParseView, SW_HIDE);
+		CREATE_PANE(CPlotView, m_plotView, SW_HIDE);
+		CREATE_PANE(CControlBoard, m_controlBoardView, SW_HIDE);
 
-		CREATE_DOCKPANE(CUDPInputView, L"UDP Input View", ID_VIEW_MOTION_INPUT, m_udpInputView);
-		CREATE_DOCKPANE(CMixingView, L"Mixing View", ID_VIEW_MIXING, m_mixingView);
-		CREATE_DOCKPANE(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
-		CREATE_DOCKPANE(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
-
-		g_udpInputView = (CUDPInputView *)m_udpInputView->GetChildView();
-
+		g_udpInputView = (CUDPInputView *)m_udpInputView;
+		g_controlView = (CControlBoard*)m_controlBoardView;
 	}
 	else
 	{
@@ -279,6 +290,7 @@ BOOL CMainFrame::CreateDockingWindows()
 
 		g_mwaveView = (CMotionWaveView*)m_motionWaveView->GetChildView();
 		g_udpInputView = (CUDPInputView *)m_udpInputView->GetChildView();
+		g_controlView = (CControlBoard*)m_controlBoardView->GetChildView();
 	}
 
 	return TRUE;

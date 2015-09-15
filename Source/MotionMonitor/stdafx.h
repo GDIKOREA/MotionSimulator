@@ -104,8 +104,11 @@ extern GAME_TYPE::TYPE g_gameType;
 
 class CMotionWaveView;
 class CUDPInputView;
+class CControlBoard;
 extern CMotionWaveView *g_mwaveView;
 extern CUDPInputView *g_udpInputView;
+extern CControlBoard *g_controlView;
+
 
 #include "Global.h"
 #include "motionwave.h"

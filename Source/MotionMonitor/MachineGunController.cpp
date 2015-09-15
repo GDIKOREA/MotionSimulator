@@ -54,13 +54,41 @@ void cMachineGunController::Update(const float deltaSeconds)
 		m_oldState = m_vitconMotionSim.GetState();
 	}
 
-	char buff[256];
-	if (m_hardwareInput.GetRecvData(buff, sizeof(buff)) > 0)
+	char hwBuff[256];
+	sMGDevicePacket *devPacket = NULL;
+	if (m_hardwareInput.GetRecvData(hwBuff, sizeof(hwBuff)) > 0)
 	{
-
-		int a = 0;
-
+		devPacket = (sMGDevicePacket*)hwBuff;
 	}
+
+	char camBuff[256];
+	const int camBuffLen = m_cameraUDPReceiver.GetRecvData(camBuff, sizeof(camBuff));
+	if (camBuffLen > 0)
+	{
+		// 총 좌표에 관련된 정보는 카메라 프로그램으로부터 받는다.
+		SMGCameraData *rcvPacket = (SMGCameraData*)camBuff;
+
+ 		SMGCameraData sndPacket;
+		ZeroMemory(&sndPacket, sizeof(sndPacket));
+		sndPacket.x1 = rcvPacket->x1;
+		sndPacket.y1 = rcvPacket->y1;
+		sndPacket.x2 = rcvPacket->x2;
+		sndPacket.y2 = rcvPacket->y2;
+
+		if (devPacket)
+		{
+			sndPacket.fire1 = (devPacket->player1Fire == '1')? 1 : 0;
+			sndPacket.start1 = (devPacket->player1Start == '1') ? 1 : 0;
+			sndPacket.reload1 = (devPacket->player1Reload == '1') ? 1 : 0;
+
+			sndPacket.fire2 = (devPacket->player2Fire == '1') ? 1 : 0;
+			sndPacket.start2 = (devPacket->player2Start == '1') ? 1 : 0;
+			sndPacket.reload2 = (devPacket->player2Reload == '1') ? 1 : 0;
+		}
+
+		m_gameClientSender.SendData((char*)&sndPacket, sizeof(sndPacket));
+	}
+
 
 }
 
@@ -114,8 +142,12 @@ void cMachineGunController::StartMotionSim(const string &configFileName, const b
 
 		m_configFileName = configFileName;
 		m_vitconMotionSim.On();
-		m_hardwareInput.Init(0, 20590);
+		//m_hardwareInput.Init(0, 20590);
+		m_hardwareInput.Init(0, 20591);
+		m_hardwareSender.Init("192.168.0.254", 20590);
 
+		m_cameraUDPReceiver.Init(1, 10000);
+		m_gameClientSender.Init("192.168.0.121", 10000);
 	}
 }
 
@@ -138,6 +170,49 @@ void cMachineGunController::StopMotionSim()
 
 		m_vitconMotionSim.Off();
 		m_hardwareInput.Close();
+		m_cameraUDPReceiver.Close();
+		m_gameClientSender.Close();
+
+
+		sMGDevicePacket sndPacket;
+		ZeroMemory(&sndPacket, sizeof(sndPacket));
+		sndPacket.header = '$';
+		sndPacket.comma1 = ',';
+		sndPacket.deviceNumber = '9';
+		sndPacket.zero1 = '0';
+		sndPacket.comma2 = ',';
+
+		sndPacket.player1Fire = '0';
+		sndPacket.player1FireEvent = '0';
+		sndPacket.player1Reload = '0';
+		sndPacket.player1Start = '0';
+		sndPacket.player1UpMotor = '0';
+		sndPacket.player1DownMotor = '0';
+		sndPacket.player1UpSensor = '0';
+		sndPacket.player1DownSensor = '0';
+		sndPacket.player1EmergencySwitch = '0';
+		sndPacket.space1 = '0';
+		sndPacket.space2 = '0';
+
+		sndPacket.player2Fire = '0';
+		sndPacket.player2FireEvent = '0';
+		sndPacket.player2Reload = '0';
+		sndPacket.player2Start = '0';
+		sndPacket.player2UpMotor = '0';
+		sndPacket.player2DownMotor = '0';
+		sndPacket.player2UpSensor = '0';
+		sndPacket.player2DownSensor = '0';
+		sndPacket.player2EmergencySwitch = '0';
+		sndPacket.space3 = '0';
+		sndPacket.space4 = '0';
+
+		sndPacket.comma3 = ',';
+		sndPacket.at = '@';
+
+		sndPacket.cr[0] = (char)0x0d;
+		sndPacket.cr[1] = (char)0x0a;
+
+		m_hardwareSender.SendData((char*)&sndPacket, sizeof(sndPacket));
 	}
 }
 
