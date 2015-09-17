@@ -29,7 +29,7 @@ namespace network
 		bool IsConnect() const;
 
 
-		//protected:
+	//protected:
 		int m_id;
 		SOCKET m_socket;
 		int m_port;
@@ -37,6 +37,7 @@ namespace network
 		char m_buffer[BUFLEN];
 		int m_bufferLen;
 		bool m_isReceiveData; // 패킷을 받았다면 true가 된다. GetRecvData() 함수에서 초기화 된다.
+		int m_sleepMillis; // default = 10
 
 		HANDLE m_handle;
 		DWORD m_threadId;

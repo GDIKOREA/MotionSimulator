@@ -39,26 +39,27 @@ CLauncherView *g_launcherView = NULL;
 
 #define CREATE_DOCKPANE(CLASS, DOCKNAME, PANE_ID, VAR)\
 {\
-	VAR = new CDockablePaneBase();\
-	if (!VAR->Create(DOCKNAME, this, CRect(0, 0, 460, 500), TRUE, PANE_ID, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))\
-	{\
+	CDockablePaneBase *pane = new CDockablePaneBase();\
+	if (!pane->Create(DOCKNAME, this, CRect(0, 0, 460, 500), TRUE, PANE_ID, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))\
+		{\
 		TRACE0("Failed to create pane window\n");\
 		return FALSE;\
-	}\
-	CLASS *view = new CLASS(VAR);\
-	view->Create(CLASS::IDD, VAR);\
-	view->ShowWindow(SW_SHOW);\
-	VAR->SetChildView(view);\
-	m_viewList.push_back(VAR);\
+		}\
+	VAR = new CLASS(pane);\
+	VAR->Create(CLASS::IDD, pane);\
+	VAR->ShowWindow(SW_SHOW);\
+	pane->SetChildView(VAR);\
+	m_viewList.push_back(pane);\
 	HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(theApp.m_bHiColorIcons ? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);\
-	VAR->SetIcon(hClassViewIcon, FALSE);\
+	pane->SetIcon(hClassViewIcon, FALSE);\
 }
 
 
 // 일반 뷰 생성
 #define CREATE_PANE(CLASS, VAR, SHOWCMD) \
-	CLASS *VAR = new CLASS(this);\
+	VAR = new CLASS(this);\
 	VAR->Create(CLASS::IDD, this);\
+	m_childViewList.push_back(VAR);\
 	VAR->ShowWindow(SHOWCMD);\
 
 
@@ -97,9 +98,18 @@ CMainFrame::CMainFrame()
 
 CMainFrame::~CMainFrame()
 {
-	for each (auto &pane in m_viewList)
-		delete pane;
-	m_viewList.clear();
+	if (m_viewList.empty())
+	{
+		for each (auto &view in m_childViewList)
+			delete view;
+		m_childViewList.clear();
+	}
+	else
+	{
+		for each (auto &pane in m_viewList)
+			delete pane;
+		m_viewList.clear();
+	}
 }
 
 void CMainFrame::OnClose()
@@ -107,6 +117,16 @@ void CMainFrame::OnClose()
 	UpdateConfig(false);
 	cMotionController::Get()->m_config.WriteConfigFile(cMotionController::Get()->m_config.m_fileName);
 	CFrameWndEx::OnClose();
+}
+
+
+// 매인프레임이 모두 생성되고 난 후, App에서 호출 된다.
+void CMainFrame::Init()
+{
+	if (m_launcherView)
+	{
+		m_launcherView->Init();
+	}
 }
 
 
@@ -232,7 +252,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	if (config.m_mode == "machinegun_stand")
 	{
 		// 사이즈를 줄이거나 늘리지 못하게 한다.
-		cs.style = WS_OVERLAPPED | WS_SYSMENU | WS_BORDER;
+		cs.style = WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX | WS_BORDER;
 	}
 
 	return TRUE;
@@ -250,16 +270,16 @@ BOOL CMainFrame::CreateDockingWindows()
 
 	if (config.m_mode == "machinegun_stand")
 	{
-		CREATE_PANE(CLauncherView, launcherView, SW_SHOW);
-		CREATE_PANE(CUDPInputView, udpInputView, SW_HIDE);
-		CREATE_PANE(CMixingView, mixingView, SW_HIDE);
-		CREATE_PANE(CUDPParseView, udpParseView, SW_HIDE);
-		CREATE_PANE(CPlotView, plotView, SW_HIDE);
-		CREATE_PANE(CControlBoard, controlBoardView, SW_HIDE);
+		CREATE_PANE(CLauncherView, m_launcherView, SW_SHOW);
+		CREATE_PANE(CUDPInputView, m_udpInputView, SW_HIDE);
+		CREATE_PANE(CMixingView, m_mixingView, SW_HIDE);
+		CREATE_PANE(CUDPParseView, m_udpParseView, SW_HIDE);
+		CREATE_PANE(CPlotView, m_plotView, SW_HIDE);
+		CREATE_PANE(CControlBoard, m_controlBoardView, SW_HIDE);
 
-		g_udpInputView = udpInputView;
-		g_controlView = controlBoardView;
-		g_launcherView = launcherView;
+		g_udpInputView = m_udpInputView;
+		g_controlView = m_controlBoardView;
+		g_launcherView = m_launcherView;
 	}
 	else
 	{
@@ -284,9 +304,10 @@ BOOL CMainFrame::CreateDockingWindows()
 		CREATE_DOCKPANE(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
 		CREATE_DOCKPANE(CLauncherView, L"Launcher View", ID_VIEW_LAUNCHER, m_launcherView);
 
-		g_mwaveView = (CMotionWaveView*)m_motionWaveView->GetChildView();
-		g_udpInputView = (CUDPInputView *)m_udpInputView->GetChildView();
-		g_controlView = (CControlBoard*)m_controlBoardView->GetChildView();
+		g_mwaveView = m_motionWaveView;
+		g_udpInputView = m_udpInputView;
+		g_controlView = m_controlBoardView;
+		g_launcherView = m_launcherView;
 	}
 
 	return TRUE;
@@ -409,17 +430,18 @@ BOOL CMainFrame::NewPlotWindow()
 {
 	static int plotViewId = 50000;
 	static int plotViewIncId = 2;
-	CDockablePaneBase *plotView;
+	CPlotView *plotView;
 
 	CString viewName;
 	viewName.Format(L"Plot View%d", plotViewIncId++);
 	CREATE_DOCKPANE(CPlotView, viewName, plotViewId++, plotView);
 
-	plotView->EnableDocking(CBRS_ALIGN_ANY);
+	CDockablePane *pane = (CDockablePane*)plotView->GetParent();
+	pane->EnableDocking(CBRS_ALIGN_ANY);
 	CDockablePane* pTabbedBar = NULL;
-	plotView->AttachToTabWnd(m_plotView, DM_SHOW, TRUE, &pTabbedBar);
+	pane->AttachToTabWnd((CDockablePane*)m_plotView->GetParent(), DM_SHOW, TRUE, &pTabbedBar);
 
-	((CPlotView*)plotView->GetChildView())->SetAddPlotView(true);
+	plotView->SetAddPlotView(true);
 
 	return TRUE;
 }

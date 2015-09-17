@@ -15,6 +15,7 @@ cUDPServer::cUDPServer() :
 	, m_isConnect(false)
 	, m_threadLoop(true)
 	, m_bufferLen(0)
+	, m_sleepMillis(10)
 {
 	InitializeCriticalSectionAndSpinCount(&m_CriticalSection, 0x00000400);
 }
@@ -122,7 +123,7 @@ void PrintBuffer(const char *buffer, const int bufferLen)
 unsigned WINAPI UDPServerThreadFunction(void* arg)
 {
 	cUDPServer *udp = (cUDPServer*)arg;
-	const int sleepMillis = 1;
+	const int sleepMillis = udp->m_sleepMillis;
 
 	while (udp->m_threadLoop)
 	{

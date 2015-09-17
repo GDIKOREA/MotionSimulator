@@ -15,9 +15,11 @@ public:
 // Dialog Data
 	enum { IDD = IDD_DIALOG_LAUNCHER };
 	
-	virtual void Update(const float deltaSeconds) override;
+	bool Init();
 
+	virtual void Update(const float deltaSeconds) override;
 	void UpdateCoin(const int credit, const int coin, const int coinPerGame);
+	void UpdateGameInfo(const int creditCount, const int gameCount);
 	bool m_isGameExeTerminate;
 
 
@@ -29,6 +31,8 @@ protected:
 	float m_camSens2;
 	cExeTracker m_gameExeTracker;
 	cExeTracker m_cameraExeTracker;
+
+	Gdiplus::Bitmap m_titleImage;
 
 
 	DECLARE_MESSAGE_MAP()
@@ -57,4 +61,8 @@ public:
 	afx_msg void OnEnChangeEditCoin();
 	afx_msg void OnEnChangeEditCoinpergame();
 	afx_msg void OnBnClickedButtonBoardcheck();
+	CButton m_StartButton;
+	int m_GameCount;
+	int m_CreditCount;
+	afx_msg void OnPaint();
 };

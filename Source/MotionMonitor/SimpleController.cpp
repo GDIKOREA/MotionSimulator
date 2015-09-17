@@ -2,6 +2,13 @@
 #include "stdafx.h"
 #include "SimpleController.h"
 #include "MainFrm.h"
+#include "resource.h"
+#include "MotionWaveView.h"
+#include "MixingView.h"
+#include "MotionOutputView.h"
+#include "UDPInputView.h"
+#include "JoystickView.h"
+
 
 
 cSimpleController::cSimpleController() :
@@ -24,17 +31,17 @@ void cSimpleController::StartMotionSim(const string &configFileName, const bool 
 	{
 		// UDP View, Mixing View, Output View Start
 		// 안전을 위해 순서를 지키자.
-		pFrm->m_mixingView->GetChildView()->Start();
+		pFrm->m_mixingView->Start();
 
 		if (isStartMotionSimOut)
-			pFrm->m_motionOutputView->GetChildView()->Start();
+			pFrm->m_motionOutputView->Start();
 
 		switch (g_gameType)
 		{
 		case GAME_TYPE::DIRT3: break;
 		case GAME_TYPE::MACHINEGUN: break;
-		case GAME_TYPE::JOYSTICK: pFrm->m_joystickView->GetChildView()->Start(); break;
-		case GAME_TYPE::MWAVE: pFrm->m_motionWaveView->GetChildView()->Start(); break;
+		case GAME_TYPE::JOYSTICK: pFrm->m_joystickView->Start(); break;
+		case GAME_TYPE::MWAVE: pFrm->m_motionWaveView->Start(); break;
 		default:
 			break;
 		}
@@ -49,10 +56,10 @@ void cSimpleController::StopMotionSim()
 	if (CMainFrame *pFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
 	{
 		// 안전을 위해 순서를 지키자.
-		pFrm->m_udpInputView->GetChildView()->Stop();
-		pFrm->m_mixingView->GetChildView()->Stop();
-		pFrm->m_joystickView->GetChildView()->Stop();
-		pFrm->m_motionWaveView->GetChildView()->Stop();
+		pFrm->m_udpInputView->Stop();
+		pFrm->m_mixingView->Stop();
+		pFrm->m_joystickView->Stop();
+		pFrm->m_motionWaveView->Stop();
 
 		m_vitconMotionSim.Off();
 	}
@@ -74,8 +81,8 @@ void cSimpleController::Update(const float deltaSeconds)
 			// ServoOff 상태로 바뀔 때, MotionOutputView도 같이 Stop 된다.
 			if (CMainFrame *pFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
 			{
-				pFrm->m_motionOutputView->GetChildView()->Stop();
-				pFrm->m_motionWaveView->GetChildView()->Stop();
+				pFrm->m_motionOutputView->Stop();
+				pFrm->m_motionWaveView->Stop();
 			}
 			break;
 

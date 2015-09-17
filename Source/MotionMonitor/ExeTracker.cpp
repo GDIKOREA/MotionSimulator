@@ -4,12 +4,14 @@
 
 
 unsigned WINAPI ExeTrackerThreadFunction(void* arg);
+BOOL SafeTerminateProcess(HANDLE hProcess, UINT uExitCode);
 
 
 cExeTracker::cExeTracker() 
 	: m_terminateCallBack(NULL)
 	, m_handle(NULL)
 	, m_arg(NULL)
+	, m_process(NULL)
 {
 }
 
@@ -37,6 +39,64 @@ bool cExeTracker::Execute(const string &fileName, const string &commandLine, con
 }
 
 
+void cExeTracker::Termaniate()
+{
+	//TerminateProcess(m_process, 0);
+	if (m_process)
+	{
+		SafeTerminateProcess(m_process, 0);
+		WaitForSingleObject(m_handle, INFINITE); // 쓰레드가 종료될 때까지 대기한다.
+	}
+}
+
+
+//http://www.digipine.com/index.php?mid=programming&sort_index=last_update&order_type=desc&page=3&listStyle=gallery&document_srl=570
+BOOL SafeTerminateProcess(HANDLE hProcess, UINT uExitCode)
+{
+	DWORD dwTID, dwCode, dwErr = 0;
+	HANDLE hProcessDup = INVALID_HANDLE_VALUE;
+	HANDLE hRT = NULL;
+	HINSTANCE hKernel = GetModuleHandle(L"Kernel32");
+
+	BOOL bSuccess = FALSE;
+	BOOL bDup = DuplicateHandle(GetCurrentProcess(),
+		hProcess,
+		GetCurrentProcess(),
+		&hProcessDup,
+		PROCESS_ALL_ACCESS,
+		FALSE,
+		0);
+	if (GetExitCodeProcess((bDup) ? hProcessDup : hProcess, &dwCode)
+		&& (dwCode == STILL_ACTIVE))
+	{
+		FARPROC pfnExitProc;
+		pfnExitProc = GetProcAddress(hKernel, "ExitProcess");
+		hRT = CreateRemoteThread((bDup) ? hProcessDup : hProcess,
+			NULL,
+			0,
+			(LPTHREAD_START_ROUTINE)pfnExitProc,
+			(PVOID)uExitCode, 0, &dwTID);
+		if (hRT == NULL) dwErr = GetLastError();
+	}
+	else
+	{
+		dwErr = ERROR_PROCESS_ABORTED;
+	}
+	if (hRT)
+	{
+		WaitForSingleObject((bDup) ? hProcessDup : hProcess, INFINITE);
+		CloseHandle(hRT);
+		bSuccess = TRUE;
+	}
+	if (bDup)
+		CloseHandle(hProcessDup);
+	if (!bSuccess)
+		SetLastError(dwErr);
+
+	return bSuccess;
+}
+
+
 // 프로그램을 실행하고, 종료될 때까지 대기한다.
 unsigned WINAPI ExeTrackerThreadFunction(void* arg)
 {
@@ -59,6 +119,8 @@ unsigned WINAPI ExeTrackerThreadFunction(void* arg)
 		NORMAL_PRIORITY_CLASS,
 		NULL, exeDir.c_str(), &StartupInfo, &ProcessInfo);
 
+	tracker->m_process = ProcessInfo.hProcess;
+
 	if (result)
 	{
 		WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
@@ -69,4 +131,3 @@ unsigned WINAPI ExeTrackerThreadFunction(void* arg)
 
 	return 0;
 }
-

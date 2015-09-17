@@ -29,6 +29,10 @@ protected:
 	void GameStart(const int stage);
 	void GameStop();
 	void MainBoardProcess(const char *buff, const int size);
+	void CheckCreditPulse(const sMotionPacket &packet);
+	void CheckReload(const sMotionPacket &packet);
+	void ActiveMainBoard();
+	void ActiveGunFire(const bool active1, const bool active2);
 
 
 public:
@@ -40,13 +44,26 @@ public:
 	int m_gameMission;
 	float m_playTime; // seconds
 	float m_lastUDPUpdateTime; // 가장 최근에 UDP 패킷을 받은 시간을 저장한다.
+
 	int m_credit;
 	int m_coin;
 	int m_coinPerGame;
 
+	int m_totalGameCount;	// 총 진행된 게임 횟수
+	int m_totalCredit;		// 총 크래딧수 (게임을 시작한 크래딧)
+	int m_totalInputCredit; // 총 들어온 크래딧수
+
 	bool m_checkCoin; // 코인신호가 들어 올 때부터 true 가 되고, 0 이 되면 false가 된다.
 	int m_coinDownEdgeTime;
 	int m_coinUpEdgeTime;
+
+	bool m_checkCreditDown1;
+	int m_creditUpEdgeTime1;
+	bool m_checkCreditDown2;
+	int m_creditUpEdgeTime2;
+
+	bool m_activeGunFire1; // 1 플레어 총 활성화
+	bool m_activeGunFire2; // 2 플레어 총 활성화
 
  	bool m_changeInformationPulse; // game state가 바뀔 때만 true 가 된다.
 	cVitconMotionSim::STATE m_oldState;

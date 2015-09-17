@@ -36,6 +36,9 @@ CControlBoard::CControlBoard(CWnd* pParent /*=NULL*/)
 
 CControlBoard::~CControlBoard()
 {
+	cMachineGunController::Release();
+	cDirt3Controller::Release();
+	cSimpleController::Release();
 }
 
 void CControlBoard::DoDataExchange(CDataExchange* pDX)

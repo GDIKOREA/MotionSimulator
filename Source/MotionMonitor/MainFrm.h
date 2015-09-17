@@ -6,6 +6,17 @@
 #include "Cube3DPane.h"
 
 
+class CCube3DPane;
+class CUDPInputView;
+class CUDPParseView;
+class CMotionOutputView;
+class CJoystickView;
+class CMotionWaveView;
+class CMixingView;
+class CControlBoard;
+class CPlotView;
+class CLauncherView;
+
 class CMainFrame : public CFrameWndEx
 {	
 protected: // create from serialization only
@@ -14,6 +25,7 @@ protected: // create from serialization only
 
 
 public:
+	void Init();
 	void UpdateConfig(bool IsSaveAndValidate = true);
 	void LoadConfigFile(const string &fileName);
 	BOOL NewPlotWindow();
@@ -38,16 +50,18 @@ public:
 	CMFCToolBarImages m_UserImages;
 
 	list<CDockablePaneBase*> m_viewList;
+	list<CDockablePaneChildView*> m_childViewList;
+
 	CCube3DPane *m_wndCube3DView;
-	CDockablePaneBase *m_udpInputView;
-	CDockablePaneBase *m_udpParseView;
-	CDockablePaneBase *m_motionOutputView;
-	CDockablePaneBase *m_joystickView;
-	CDockablePaneBase *m_motionWaveView;
-	CDockablePaneBase *m_mixingView;
-	CDockablePaneBase *m_controlBoardView;
-	CDockablePaneBase *m_plotView;
-	CDockablePaneBase *m_launcherView;
+	CUDPInputView *m_udpInputView;
+	CUDPParseView *m_udpParseView;
+	CMotionOutputView *m_motionOutputView;
+	CJoystickView *m_joystickView;
+	CMotionWaveView *m_motionWaveView;
+	CMixingView *m_mixingView;
+	CControlBoard *m_controlBoardView;
+	CPlotView *m_plotView;
+	CLauncherView *m_launcherView;
 
 
 // Generated message map functions

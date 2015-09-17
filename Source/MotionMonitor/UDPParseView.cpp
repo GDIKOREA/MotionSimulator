@@ -431,6 +431,9 @@ void CUDPParseView::InitSymbolList()
 // 심볼리스트 정보를 업데이트 한다.
 void CUDPParseView::UpdateSymbolList(const float deltaSeconds)
 {
+	if (!IsWindowVisible())
+		return;
+
 	using namespace script;
 
 	m_incSymbolUpdateTime += deltaSeconds;

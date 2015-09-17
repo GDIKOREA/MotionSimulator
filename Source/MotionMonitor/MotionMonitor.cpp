@@ -11,6 +11,10 @@
 #include "MotionMonitorDoc.h"
 #include "MotionMonitorView.h"
 #include "LoginDialog.h"
+#include <gdiplus.h> 
+#pragma comment( lib, "gdiplus.lib" ) 
+using namespace Gdiplus;
+
 
 
 #ifdef _DEBUG
@@ -93,6 +97,13 @@ BOOL CMotionMonitorApp::InitInstance()
 		return false;
 	}
 
+	
+	GdiplusStartupInput GdiplusStartupInput;
+	if (::GdiplusStartup(&m_gdiplusToken, &GdiplusStartupInput, NULL) != Ok)
+	{
+		AfxMessageBox(_T("Error : Failed to initialize GDI+ library!"));
+		return FALSE;
+	}
 
 
 
@@ -176,7 +187,7 @@ BOOL CMotionMonitorApp::InitInstance()
 		CRect wr;
 		m_pMainWnd->GetWindowRect(wr);
 		wr.right = wr.left + 445;
-		wr.bottom = wr.top + 550;
+		wr.bottom = wr.top + 580;
 		m_pMainWnd->MoveWindow(wr);
 	}
 
@@ -188,8 +199,9 @@ BOOL CMotionMonitorApp::InitInstance()
 
 	const string title = common::GetFileName(cMotionController::Get()->m_config.m_fileName);
 	//m_pMainWnd->SetWindowTextW(str2wstr(title).c_str());
-	m_pMainWnd->SetWindowTextW(L"MachineGun Manager");
-
+	m_pMainWnd->SetWindowTextW(L"MachineGun-X Admin Manager");
+	((CMainFrame*)m_pMainWnd)->Init();
+		
 	//Close down COM
 	CoUninitialize();
 
@@ -200,6 +212,8 @@ int CMotionMonitorApp::ExitInstance()
 {
 	//TODO: handle additional resources you may have added
 	AfxOleTerm(FALSE);
+
+	::GdiplusShutdown(m_gdiplusToken);
 
 	return CWinAppEx::ExitInstance();
 }

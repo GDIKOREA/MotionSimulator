@@ -99,6 +99,7 @@
 #define IDD_DIALOG_PLOT                 331
 #define IDD_DIALOG_LAUNCHER             332
 #define IDD_DIALOG_LOGIN                333
+#define IDI_ICON_MACHINEGUN             336
 #define IDC_CHECK_FIXEDMODE             1000
 #define IDC_EDIT_COMMAND                1001
 #define IDC_BUTTON_HELP                 1002
@@ -230,15 +231,17 @@
 #define IDC_EDIT_COIN                   1114
 #define IDC_EDIT_COINPERGAME            1115
 #define IDC_BUTTON_BOARDCHECK           1116
+#define IDC_STATIC_GAME_COUNT           1117
+#define IDC_STATIC_CREDIT_COUNT         1118
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        334
+#define _APS_NEXT_RESOURCE_VALUE        337
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1117
+#define _APS_NEXT_CONTROL_VALUE         1119
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

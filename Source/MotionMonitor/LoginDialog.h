@@ -14,7 +14,7 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	bool CheckID(const string &id, const string &passwd);
+	bool CheckID(const string &id, const string &passwd, int &errorCode);
 
 	DECLARE_MESSAGE_MAP()
 public:

@@ -22,12 +22,17 @@ CLauncherView::CLauncherView(CWnd* pParent /*=NULL*/)
 	, m_isGameExeTerminate(false)
 	, m_Credit(0)
 	, m_Coin(0)
-	, m_CoinPerGame(10)
+	, m_CoinPerGame(2)
+	, m_GameCount(0)
+	, m_CreditCount(0)
+	, m_titleImage(common::str2wstr("../media/machinegun/MGX_White.png").c_str())
 {
 }
 
 CLauncherView::~CLauncherView()
 {
+	m_gameExeTracker.Termaniate();
+	m_cameraExeTracker.Termaniate();
 }
 
 void CLauncherView::DoDataExchange(CDataExchange* pDX)
@@ -42,6 +47,9 @@ void CLauncherView::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_CREDIT, m_Credit);
 	DDX_Text(pDX, IDC_EDIT_COIN, m_Coin);
 	DDX_Text(pDX, IDC_EDIT_COINPERGAME, m_CoinPerGame);
+	DDX_Control(pDX, IDC_BUTTON_GAMESTART, m_StartButton);
+	DDX_Text(pDX, IDC_STATIC_GAME_COUNT, m_GameCount);
+	DDX_Text(pDX, IDC_STATIC_CREDIT_COUNT, m_CreditCount);
 }
 
 
@@ -60,6 +68,7 @@ BEGIN_MESSAGE_MAP(CLauncherView, CDockablePaneChildView)
 	ON_EN_CHANGE(IDC_EDIT_COIN, &CLauncherView::OnEnChangeEditCoin)
 	ON_EN_CHANGE(IDC_EDIT_COINPERGAME, &CLauncherView::OnEnChangeEditCoinpergame)
 	ON_BN_CLICKED(IDC_BUTTON_BOARDCHECK, &CLauncherView::OnBnClickedButtonBoardcheck)
+	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 
@@ -79,15 +88,15 @@ BOOL CLauncherView::OnInitDialog()
 {
 	CDockablePaneChildView::OnInitDialog();
 
-	m_DifficultCombo.AddString(L"1");
-	m_DifficultCombo.AddString(L"2");
-	m_DifficultCombo.AddString(L"3");
-	m_DifficultCombo.SetCurSel(0);
+	m_DifficultCombo.AddString(L"Easy");
+	m_DifficultCombo.AddString(L"Normal");
+	m_DifficultCombo.AddString(L"Hard");
+	m_DifficultCombo.SetCurSel(1);
 
-	m_DifficultCombo2.AddString(L"1");
-	m_DifficultCombo2.AddString(L"2");
-	m_DifficultCombo2.AddString(L"3");
-	m_DifficultCombo2.SetCurSel(0);
+	m_DifficultCombo2.AddString(L"Easy");
+	m_DifficultCombo2.AddString(L"Normal");
+	m_DifficultCombo2.AddString(L"Hard");
+	m_DifficultCombo2.SetCurSel(1);
 
 	m_CamSensSlider.SetRange(0, 2000);
 	m_CamSens2Slider.SetRange(0, 2000);
@@ -102,14 +111,37 @@ BOOL CLauncherView::OnInitDialog()
 	m_CamSensSlider.SetPos(sliderPos1 + 1000);
 	m_CamSens2Slider.SetPos(sliderPos2 + 1000);
 
+	//SetBackgroundColor(RGB(8, 8, 8));
 
-	const cMotionMonitorConfig &config = cMotionController::Get()->m_config;
-	if (config.m_mode == "machinegun_stand")
-	{
-		cMachineGunController::Get()->Init();
-	}
+
+// 	const wstring wfileName = common::str2wstr("../media/machinegun/MGX_White.png");
+// 	m_titleImage.FromFile(wfileName.c_str());
+// 	Gdiplus::Bitmap bmp(wfileName.c_str());
+// 	if (Gdiplus::Ok != bmp.GetLastStatus())
+// 		return false;
 
 	return TRUE;
+}
+
+
+// 객체가 모두 생성된 후, 호출된다.
+// 머신건 컨트롤러 초기화
+bool CLauncherView::Init()
+{
+
+	const cMotionMonitorConfig &config = cMotionController::Get()->m_config;
+	if ((config.m_mode == "machinegun_stand") ||
+		(config.m_mode == "machinegun_stand_debug"))
+
+	{
+		// UDP 통신 초기화
+		cMachineGunController::Get()->Init();
+		// 게임 클라이언트와 UDP 통신 시작
+		g_controlView->Start();
+		//cMachineGunController::Get()->StartMotionSim(config.m_fileName, false);
+	}
+
+	return true;
 }
 
 
@@ -136,17 +168,12 @@ void CLauncherView::OnBnClickedButtonGamestart()
 
 	// 머신건 게임 실행
 	stringstream ss;
-	ss << m_DifficultCombo.GetCurSel() + 1 << " ";
-	ss << m_DifficultCombo2.GetCurSel() + 1 << " ";
+	ss << m_DifficultCombo.GetCurSel() << " ";
+	ss << m_DifficultCombo2.GetCurSel() << " ";
 	ss << 1920 << " " << 1080; // 해상도
 	const string commandLine = ss.str();	
 	m_gameExeTracker.Execute(launcherConfig.m_gameExePath, commandLine, 0, GameExeTerminate, this);
 	
-
- 	// UDP 통신 시작
- 	const cMotionMonitorConfig &config = cMotionController::Get()->m_config;
-	cMachineGunController::Get()->StartMotionSim(config.m_fileName, false);
-
 
 	// 매니저 프로그램은 타이틀바로 이동한다.
 	::ShowWindow(::AfxGetMainWnd()->m_hWnd, SW_MINIMIZE);
@@ -279,6 +306,14 @@ void CLauncherView::UpdateCoin(const int credit, const int coin, const int coinP
 }
 
 
+void CLauncherView::UpdateGameInfo(const int creditCount, const int gameCount)
+{
+	m_CreditCount = creditCount;
+	m_GameCount = gameCount;
+	UpdateData(FALSE);
+}
+
+
 void CLauncherView::OnBnClickedButtonBoardcheck()
 {
 	cLauncherConfig config("../media/machinegun/launcher_config.cfg");
@@ -290,4 +325,14 @@ void CLauncherView::OnBnClickedButtonBoardcheck()
 	const int proxyPort = uiutil::GetProfileInt("MainBoard UDP", "ProxyPort", 10000, fileName);
 
 	ShellExecuteA(NULL, "open", exeName.c_str(), format("%d", proxyPort).c_str(), exeDir.c_str(), SW_SHOW);
+}
+
+
+void CLauncherView::OnPaint()
+{
+	CPaintDC dc(this); // device context for painting
+
+	// 타이틀 이미지 출력
+	Gdiplus::Graphics graphic(dc);
+	graphic.DrawImage(&m_titleImage, Gdiplus::Rect(80, 0, m_titleImage.GetWidth(), m_titleImage.GetHeight()));
 }

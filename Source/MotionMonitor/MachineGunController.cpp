@@ -6,6 +6,12 @@
 #include "MotionWaveView.h"
 #include "LauncherView.h"
 #include "MainFrm.h"
+#include "resource.h"
+#include "MotionOutputView.h"
+#include "UDPParseView.h"
+#include "MixingView.h"
+#include "MotionWaveView.h"
+#include "JoystickView.h"
 
 
 
@@ -18,10 +24,19 @@ cMachineGunController::cMachineGunController() :
 	, m_oldState(cVitconMotionSim::OFF)
 	, m_credit(0)
 	, m_coin(0)
-	, m_coinPerGame(10)
+	, m_coinPerGame(2)
 	, m_checkCoin(false)
 	, m_coinDownEdgeTime(0)
 	, m_coinUpEdgeTime(0)
+	, m_checkCreditDown1(false)
+	, m_creditUpEdgeTime1(0)
+	, m_checkCreditDown2(false)
+	, m_creditUpEdgeTime2(0)
+	, m_activeGunFire1(false)
+	, m_activeGunFire2(false)
+	, m_totalGameCount(0)
+	, m_totalCredit(0)
+	, m_totalInputCredit(0)
 
 {
 	ZeroMemory(&m_devicePacket, sizeof(m_devicePacket));
@@ -29,6 +44,18 @@ cMachineGunController::cMachineGunController() :
 
 cMachineGunController::~cMachineGunController()
 {
+	// 종료될 때, 기록들을 저장한다.
+	using namespace std;
+
+	ofstream ofs("gameinfo.txt", ios::app); // 파일에 정보를 추가한다.
+	if (ofs.is_open())
+	{
+		SYSTEMTIME sysTime;
+		GetLocalTime(&sysTime);
+		ofs << sysTime.wYear << "-" << sysTime.wMonth << "-" << sysTime.wDay << " " << sysTime.wHour << ":" << sysTime.wMinute << ":" << sysTime.wSecond << "\t";
+		ofs << m_totalGameCount << "\t" << m_totalCredit << "\t" << m_totalInputCredit << endl;
+	}
+
 }
 
 
@@ -59,46 +86,7 @@ bool cMachineGunController::Init()
 	m_cameraUDPReceiver.Init(1, cameraPort);
 	m_gameClientSender.Init(gameClientIp, gameClientPort, 10);
 
-
-	sMGDevicePacket sndPacket;
-	ZeroMemory(&sndPacket, sizeof(sndPacket));
-	sndPacket.header = '$';
-	sndPacket.comma1 = ',';
-	sndPacket.deviceNumber = '9';
-	sndPacket.zero1 = '0';
-	sndPacket.comma2 = ',';
-
-	sndPacket.player1Fire = '1';
-	sndPacket.player1FireEvent = '1';
-	sndPacket.player1Reload = '1';
-	sndPacket.player1Start = '1';
-	sndPacket.player1UpMotor = '1';
-	sndPacket.player1DownMotor = '1';
-	sndPacket.player1UpSensor = '1';
-	sndPacket.player1DownSensor = '1';
-	sndPacket.player1EmergencySwitch = '0';
-	sndPacket.coin = '0';
-	sndPacket.space1 = '0';
-
-	sndPacket.player2Fire = '1';
-	sndPacket.player2FireEvent = '1';
-	sndPacket.player2Reload = '1';
-	sndPacket.player2Start = '1';
-	sndPacket.player2UpMotor = '1';
-	sndPacket.player2DownMotor = '1';
-	sndPacket.player2UpSensor = '1';
-	sndPacket.player2DownSensor = '1';
-	sndPacket.player2EmergencySwitch = '0';
-	sndPacket.space3 = '0';
-	sndPacket.space4 = '0';
-
-	sndPacket.comma3 = ',';
-	sndPacket.at = '@';
-
-	sndPacket.cr[0] = (char)0x0d;
-	sndPacket.cr[1] = (char)0x0a;
-
-	m_mainBoardSender.SendData((char*)&sndPacket, sizeof(sndPacket));
+	ActiveMainBoard();
 
 	return true;
 }
@@ -118,8 +106,8 @@ void cMachineGunController::Update(const float deltaSeconds)
 			// ServoOff 상태로 바뀔 때, MotionOutputView도 같이 Stop 된다.
 			if (CMainFrame *pFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
 			{
-				pFrm->m_motionOutputView->GetChildView()->Stop();
-				pFrm->m_motionWaveView->GetChildView()->Stop();
+				pFrm->m_motionOutputView->Stop();
+				pFrm->m_motionWaveView->Stop();
 			}
 			break;
 
@@ -189,13 +177,24 @@ void cMachineGunController::UpdateUDP(const sMotionPacket &packet)
 		if (0 == packet.gamestate)
 		{
 			GameStop();
+
+			// 총,모터를 활성 상태로 만든다.
+			ActiveMainBoard();
+
+			// 총 게임횟수 증가
+			++m_totalGameCount;
+
+			g_launcherView->UpdateGameInfo(m_totalCredit, m_totalGameCount);
 		}
 	}
+
+	CheckCreditPulse(packet);
+	CheckReload(packet);
 
 	if (m_vitconMotionSim.GetState() == cVitconMotionSim::READY)
 	{
 		// 게임중이 아닐 때, gamestate == 1이 되면, 게임이 시작된다.
-		if (1 == packet.gamestate)
+		if (!m_isPlayGame && (1 == packet.gamestate))
 		{
 			GameStart(packet.mission);
 		}
@@ -213,15 +212,15 @@ void cMachineGunController::StartMotionSim(const string &configFileName, const b
 		// 안전을 위해 순서를 지키자.
 		//pFrm->m_udpInputView->GetChildView()->Start();
 		if (pFrm->m_udpParseView)
-			pFrm->m_udpParseView->GetChildView()->Start();
+			pFrm->m_udpParseView->Start();
 		if (pFrm->m_mixingView)
-			pFrm->m_mixingView->GetChildView()->Start();
+			pFrm->m_mixingView->Start();
 		if (pFrm->m_motionWaveView)
-			pFrm->m_motionWaveView->GetChildView()->Start();
+			pFrm->m_motionWaveView->Start();
 
 		if (isStartMotionSimOut)
 			if (pFrm->m_motionOutputView)
-				pFrm->m_motionOutputView->GetChildView()->Start();
+				pFrm->m_motionOutputView->Start();
 
 		m_configFileName = configFileName;
 		m_vitconMotionSim.On();
@@ -237,13 +236,13 @@ void cMachineGunController::StopMotionSim()
 		// 안전을 위해 순서를 지키자.
 		//pFrm->m_udpInputView->GetChildView()->Stop();
 		if (pFrm->m_udpParseView)
-			pFrm->m_udpParseView->GetChildView()->Stop();
+			pFrm->m_udpParseView->Stop();
 		if (pFrm->m_mixingView)
-			pFrm->m_mixingView->GetChildView()->Stop();
+			pFrm->m_mixingView->Stop();
 		if (pFrm->m_joystickView)
-			pFrm->m_joystickView->GetChildView()->Stop();
+			pFrm->m_joystickView->Stop();
 		if (pFrm->m_motionWaveView)
-			pFrm->m_motionWaveView->GetChildView()->Stop();
+			pFrm->m_motionWaveView->Stop();
 
 		m_vitconMotionSim.Off();
 	}
@@ -260,7 +259,8 @@ void cMachineGunController::GameStart(const int mission)
 	m_gameMission = mission;
 	m_playTime = 0;
 
-	g_mwaveView->LoadandPlayMotionWave("../media/machinegun/motion wave/scene1.mwav");
+	if (g_mwaveView)
+		g_mwaveView->LoadandPlayMotionWave("../media/machinegun/motion wave/scene1.mwav");
 
 	m_vitconMotionSim.Play();
 }
@@ -310,6 +310,7 @@ void cMachineGunController::MainBoardProcess(const char *buff, const int size)
 			{
 				++m_credit;
 				m_coin %= m_coinPerGame;
+				++m_totalInputCredit;
 			}
 
 			// UI를 갱신한다.
@@ -357,3 +358,198 @@ void cMachineGunController::MainBoardProcess(const char *buff, const int size)
 // 	default: return L"DEFAULT";
 // 	}
 // }
+
+
+// 머신건 장치를 모두 사용할 수 있도록, 활성화 한다.
+void cMachineGunController::ActiveMainBoard()
+{
+	sMGDevicePacket sndPacket;
+	ZeroMemory(&sndPacket, sizeof(sndPacket));
+	sndPacket.header = '$';
+	sndPacket.comma1 = ',';
+	sndPacket.deviceNumber = '9';
+	sndPacket.zero1 = '0';
+	sndPacket.comma2 = ',';
+
+	sndPacket.player1Fire = '1';
+	sndPacket.player1FireEvent = '1';
+	sndPacket.player1Reload = '1';
+	sndPacket.player1Start = '1';
+	sndPacket.player1UpMotor = '1';
+	sndPacket.player1DownMotor = '1';
+	sndPacket.player1UpSensor = '1';
+	sndPacket.player1DownSensor = '1';
+	sndPacket.player1EmergencySwitch = '0';
+	sndPacket.coin = '0';
+	sndPacket.space1 = '0';
+
+	sndPacket.player2Fire = '1';
+	sndPacket.player2FireEvent = '1';
+	sndPacket.player2Reload = '1';
+	sndPacket.player2Start = '1';
+	sndPacket.player2UpMotor = '1';
+	sndPacket.player2DownMotor = '1';
+	sndPacket.player2UpSensor = '1';
+	sndPacket.player2DownSensor = '1';
+	sndPacket.player2EmergencySwitch = '0';
+	sndPacket.space3 = '0';
+	sndPacket.space4 = '0';
+
+	sndPacket.comma3 = ',';
+	sndPacket.at = '@';
+
+	sndPacket.cr[0] = (char)0x0d;
+	sndPacket.cr[1] = (char)0x0a;
+
+	m_mainBoardSender.SendData((char*)&sndPacket, sizeof(sndPacket));
+}
+
+
+// 머신건 총 활성/비활성 상태 설정
+void cMachineGunController::ActiveGunFire(const bool active1, const bool active2)
+{
+	sMGDevicePacket sndPacket;
+	ZeroMemory(&sndPacket, sizeof(sndPacket));
+	sndPacket.header = '$';
+	sndPacket.comma1 = ',';
+	sndPacket.deviceNumber = '9';
+	sndPacket.zero1 = '0';
+	sndPacket.comma2 = ',';
+
+	sndPacket.player1Fire = (active1)? '1' : '0';
+	sndPacket.player1FireEvent = '1';
+	sndPacket.player1Reload = '1';
+	sndPacket.player1Start = '1';
+	sndPacket.player1UpMotor = '1';
+	sndPacket.player1DownMotor = '1';
+	sndPacket.player1UpSensor = '1';
+	sndPacket.player1DownSensor = '1';
+	sndPacket.player1EmergencySwitch = '0';
+	sndPacket.coin = '0';
+	sndPacket.space1 = '0';
+
+	sndPacket.player2Fire = (active2) ? '1' : '0';
+	sndPacket.player2FireEvent = '1';
+	sndPacket.player2Reload = '1';
+	sndPacket.player2Start = '1';
+	sndPacket.player2UpMotor = '1';
+	sndPacket.player2DownMotor = '1';
+	sndPacket.player2UpSensor = '1';
+	sndPacket.player2DownSensor = '1';
+	sndPacket.player2EmergencySwitch = '0';
+	sndPacket.space3 = '0';
+	sndPacket.space4 = '0';
+
+	sndPacket.comma3 = ',';
+	sndPacket.at = '@';
+
+	sndPacket.cr[0] = (char)0x0d;
+	sndPacket.cr[1] = (char)0x0a;
+
+	m_mainBoardSender.SendData((char*)&sndPacket, sizeof(sndPacket));
+}
+
+
+// Credit 신호를 검사해서 처리한다.
+void cMachineGunController::CheckCreditPulse(const sMotionPacket &packet)
+{
+	// Player1 Credit Pulse
+	if (m_checkCreditDown1) // 신호가 발생된 후, 하강에지를 기다린다.
+	{
+		// Credit 하강에지
+		if (packet.creditDown1 == 0)
+		{
+			m_checkCreditDown1 = false;
+
+			--m_credit;
+			if (m_credit < 0)
+				m_credit = 0;
+
+			// 총 크래딧 증가
+			++m_totalCredit;
+
+			// UI를 갱신한다.
+			g_launcherView->UpdateCoin(m_credit, m_coin, m_coinPerGame);
+			g_launcherView->UpdateGameInfo(m_totalCredit, m_totalGameCount);
+		}
+	}
+	else
+	{
+		// Credit 상승에지 
+		if (packet.creditDown1 == 1)
+		{
+			// 최소 1초 이상의 간격이 있을 때만 인식하게 한다.
+			if (timeGetTime()-m_creditUpEdgeTime1 > 1000)
+			{
+				m_creditUpEdgeTime1 = timeGetTime();
+				m_checkCreditDown1 = true;
+			}
+		}
+	}
+
+
+	// Player2 Credit Pulse
+	if (m_checkCreditDown2) // 신호가 발생된 후, 하강에지를 기다린다.
+	{
+		// Credit 하강에지
+		if (packet.creditDown2 == 0)
+		{
+			m_checkCreditDown2 = false;
+
+			--m_credit;
+			if (m_credit < 0)
+				m_credit = 0;
+
+			// 총 크래딧 증가
+			++m_totalCredit;
+
+			// UI를 갱신한다.
+			g_launcherView->UpdateCoin(m_credit, m_coin, m_coinPerGame);
+			g_launcherView->UpdateGameInfo(m_totalCredit, m_totalGameCount);
+		}
+	}
+	else
+	{
+		// Credit 상승에지 
+		if (packet.creditDown2 == 1)
+		{
+			// 최소 1초 이상의 간격이 있을 때만 인식하게 한다.
+			if (timeGetTime() - m_creditUpEdgeTime2 > 1000)
+			{
+				m_creditUpEdgeTime2 = timeGetTime();
+				m_checkCreditDown2 = true;
+			}
+		}
+	}
+
+}
+
+
+// 총알이 없을 때, 리로드가 될 때까지 총이 발사되지 않게 한다.
+void cMachineGunController::CheckReload(const sMotionPacket &packet)
+{
+
+	if (m_activeGunFire1 && packet.bulletcount1 <= 0)
+	{
+		m_activeGunFire1 = false;
+		ActiveGunFire(m_activeGunFire1, m_activeGunFire2);
+	}
+	else if (!m_activeGunFire1 && packet.bulletcount1 > 0)
+	{
+		m_activeGunFire1 = true;
+		ActiveGunFire(m_activeGunFire1, m_activeGunFire2);
+	}
+
+	if (m_activeGunFire2 && packet.bulletcount2 <= 0)
+	{
+		m_activeGunFire2 = false;
+		ActiveGunFire(m_activeGunFire1, m_activeGunFire2);
+	}
+	else if (!m_activeGunFire2 && packet.bulletcount2 > 0)
+	{
+		m_activeGunFire2 = true;
+ 		ActiveGunFire(m_activeGunFire1, m_activeGunFire2);
+	}
+
+}
+
