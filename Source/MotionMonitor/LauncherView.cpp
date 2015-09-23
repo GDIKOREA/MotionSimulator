@@ -118,7 +118,8 @@ BOOL CLauncherView::OnInitDialog()
 // 	m_titleImage.FromFile(wfileName.c_str());
 // 	Gdiplus::Bitmap bmp(wfileName.c_str());
 // 	if (Gdiplus::Ok != bmp.GetLastStatus())
-// 		return false;
+// 		return false;
+
 
 	return TRUE;
 }
@@ -132,7 +133,6 @@ bool CLauncherView::Init()
 	const cMotionMonitorConfig &config = cMotionController::Get()->m_config;
 	if ((config.m_mode == "machinegun_stand") ||
 		(config.m_mode == "machinegun_stand_debug"))
-
 	{
 		// UDP 통신 초기화
 		cMachineGunController::Get()->Init();
