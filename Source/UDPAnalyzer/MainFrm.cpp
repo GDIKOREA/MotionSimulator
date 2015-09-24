@@ -62,6 +62,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_COMMAND(ID_FILE_NEW, &CMainFrame::OnFileNew)
 	ON_UPDATE_COMMAND_UI(ID_FILE_SAVEAS, &CMainFrame::OnUpdateFileSaveas)
 	ON_COMMAND(ID_VIEW_INITDOCKINGWINDOWS, &CMainFrame::OnViewInitdockingwindows)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -285,6 +286,15 @@ void CMainFrame::OnDestroy()
 }
 
 
+void CMainFrame::OnClose()
+{
+	// 변경된 정보를 저장한다.
+	SaveViewConfig(g_option.m_fileName);
+
+	CFrameWndEx::OnClose();
+}
+
+
 // 환경변수에 설정된 값을 UI 에 적용한다.
 void CMainFrame::UpdateViewConfig()
 {
@@ -293,6 +303,7 @@ void CMainFrame::UpdateViewConfig()
 	m_udpView->UpdateConfig();
 	m_mixingView->UpdateConfig();
 	m_udpPlayerView->UpdateConfig();
+	m_udpSendView->UpdateConfig();
 }
 
 
@@ -306,6 +317,7 @@ void CMainFrame::SaveViewConfig(const string fileName)
 	m_udpView->SaveConfig();
 	m_mixingView->SaveConfig();
 	m_udpPlayerView->SaveConfig();
+	m_udpSendView->SaveConfig();
 
 	// 환경변수 파일 저장
 	g_option.m_fileName = fileName;

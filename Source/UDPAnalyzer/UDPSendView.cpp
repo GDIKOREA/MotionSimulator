@@ -211,5 +211,34 @@ void CUDPSendView::SendString(const int editIndex, const string &str)
 		// 직접 연결한 UDP로 전송한다.
 		m_udpClient.SendData(packet.c_str(), packet.length());
 	}
+}
 
+
+void CUDPSendView::UpdateConfig()
+{
+	SetIP(m_IP, g_option.m_udpSendIp);
+	m_Port = g_option.m_udpSendPort;
+
+	for (int i = 0; i < 10; ++i)
+	{
+		((CEdit*)GetDlgItem(IDC_EDIT1 + i))->SetWindowTextW(str2wstr(g_option.m_udpSendEdit[i]).c_str());
+	}
+
+	UpdateData(FALSE);
+}
+
+
+void CUDPSendView::SaveConfig()
+{
+	UpdateData();
+
+	g_option.m_udpSendIp = GetIP(m_IP);
+	g_option.m_udpSendPort = m_Port;
+
+	for (int i = 0; i < 10; ++i)
+	{
+		CString text;
+		((CEdit*)GetDlgItem(IDC_EDIT1 + i))->GetWindowTextW(text);
+		g_option.m_udpSendEdit[i] = wstr2str((LPCTSTR)text);
+	}
 }

@@ -90,7 +90,7 @@ void MoveChildCtrlWindow(CWnd &parent, CWnd &wndCtrl, int cx, int cy)
 }
 
 
-// 송신 클라이언트가 접속할 IP 주소를 리턴한다.
+// IPAddressCtrl의 IP정보를 문자열로 리턴한다.
 string GetIP(CIPAddressCtrl &ipControl)
 {
 	DWORD address;
@@ -102,6 +102,25 @@ string GetIP(CIPAddressCtrl &ipControl)
 		<< (address & 0x000000ff);
 	const string ip = ss.str();
 	return ip;
+}
+
+
+// 문자열 IP정보를 CIPAddressCtrl 에 저장한다.
+void SetIP(CIPAddressCtrl &ipControl, const string &ip)
+{
+	vector<string> ipnums;
+	tokenizer(ip, ".", "", ipnums);
+	if (ipnums.size() >= 4)
+	{
+		ipControl.SetAddress(atoi(ipnums[0].c_str()),
+			atoi(ipnums[1].c_str()),
+			atoi(ipnums[2].c_str()),
+			atoi(ipnums[3].c_str()));
+	}
+	else
+	{
+		ipControl.SetAddress(127, 0, 0, 1);
+	}
 }
 
 

@@ -54,6 +54,19 @@ bool cUDPAnalyzerOption::Read(const string &fileName, const bool showMsgBox ) //
 		m_udpPlayerIP = props.get<string>("UDPPLAYERIP", "127.0.0.1");
 		m_udpPlayerPort = props.get<int>("UDPPLAYERPORT", 8888);
 
+		m_udpSendIp = props.get<string>("UDPSEND_IP", "127.0.0.1");
+		m_udpSendPort = props.get<int>("UDPSEND_PORT", 8888);
+		m_udpSendEdit[0] = props.get<string>("UDPSEND_EDIT1", "");
+		m_udpSendEdit[1] = props.get<string>("UDPSEND_EDIT2", "");
+		m_udpSendEdit[2] = props.get<string>("UDPSEND_EDIT3", "");
+		m_udpSendEdit[3] = props.get<string>("UDPSEND_EDIT4", "");
+		m_udpSendEdit[4] = props.get<string>("UDPSEND_EDIT5", "");
+		m_udpSendEdit[5] = props.get<string>("UDPSEND_EDIT6", "");
+		m_udpSendEdit[6] = props.get<string>("UDPSEND_EDIT7", "");
+		m_udpSendEdit[7] = props.get<string>("UDPSEND_EDIT8", "");
+		m_udpSendEdit[8] = props.get<string>("UDPSEND_EDIT9", "");
+		m_udpSendEdit[9] = props.get<string>("UDPSEND_EDIT10", "");
+
 		m_initWindows = props.get<bool>("INITWINDOWS", false);
 	}
 	catch (std::exception&e)
@@ -92,6 +105,19 @@ bool cUDPAnalyzerOption::Write(const string &fileName)
 		props.add<int>("UDPPORT", m_udpPort);
 		props.add<string>("UDPPLAYERIP", m_udpPlayerIP);
 		props.add<int>("UDPPLAYERPORT", m_udpPlayerPort);
+
+		props.add<string>("UDPSEND_IP", m_udpSendIp);
+		props.add<int>("UDPSEND_PORT", m_udpSendPort);
+		props.add<string>("UDPSEND_EDIT1", m_udpSendEdit[0]);
+		props.add<string>("UDPSEND_EDIT2", m_udpSendEdit[1]);
+		props.add<string>("UDPSEND_EDIT3", m_udpSendEdit[2]);
+		props.add<string>("UDPSEND_EDIT4", m_udpSendEdit[3]);
+		props.add<string>("UDPSEND_EDIT5", m_udpSendEdit[4]);
+		props.add<string>("UDPSEND_EDIT6", m_udpSendEdit[5]);
+		props.add<string>("UDPSEND_EDIT7", m_udpSendEdit[6]);
+		props.add<string>("UDPSEND_EDIT8", m_udpSendEdit[7]);
+		props.add<string>("UDPSEND_EDIT9", m_udpSendEdit[8]);
+		props.add<string>("UDPSEND_EDIT10", m_udpSendEdit[9]);
 
 		props.add<bool>("INITWINDOWS", m_initWindows);
 

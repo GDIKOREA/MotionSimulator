@@ -31,6 +31,10 @@ public:
 	string m_udpPlayerIP;
 	int m_udpPlayerPort;
 
+	string m_udpSendIp;
+	int m_udpSendPort;
+	string m_udpSendEdit[10];
+
 	bool m_initWindows;
 };
 

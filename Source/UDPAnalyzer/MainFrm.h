@@ -71,6 +71,7 @@ public:
 	afx_msg void OnFileNew();
 	afx_msg void OnUpdateFileSaveas(CCmdUI *pCmdUI);
 	afx_msg void OnViewInitdockingwindows();
+	afx_msg void OnClose();
 };
 
 
