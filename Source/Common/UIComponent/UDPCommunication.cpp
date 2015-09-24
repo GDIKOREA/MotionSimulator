@@ -69,3 +69,11 @@ int cUDPCommunication::Update(const float deltaSeconds, OUT char *buffer, const 
 
 	return 0;
 }
+
+
+int cUDPCommunication::SendData(const char *buff, const int buffLen)
+{
+	const int result = send(m_socket, (char*)buff, buffLen, 0);
+	return result;
+}
+

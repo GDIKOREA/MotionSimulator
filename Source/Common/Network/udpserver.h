@@ -25,6 +25,7 @@ namespace network
 		bool Init(const int id, const int port);
 		void SetRecvData(const char *buff, const int buffLen);
 		int GetRecvData(OUT char *dst, const int maxSize);
+		int SendData(const char *buff, const int buffLen);
 		void Close(const bool isWait = false);
 		bool IsConnect() const;
 

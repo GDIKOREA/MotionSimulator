@@ -11,25 +11,26 @@
 #include "OutputView.h"
 #include "DXView.h"
 #include "UDPPlayerView.h"
+#include "UDPSendView.h"
 #include "MainFrm.h"
 
 
 #define CREATE_DOCKVIEW2(Class, VAR, PANE_NAME, PANE_ID, RESOURCE_ID) \
 				{\
-		VAR = new CDockablePaneBase();\
-		if (!VAR->Create(PANE_NAME, this, CRect(0, 0, 200, 200), TRUE, PANE_ID, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))\
+		CDockablePaneBase *pane  = new CDockablePaneBase();\
+		if (!pane->Create(PANE_NAME, this, CRect(0, 0, 200, 200), TRUE, PANE_ID, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))\
 												{\
 			TRACE0("Failed to create View window\n");\
 			return FALSE;\
 												}\
-		Class *view = new Class(VAR);\
-		BOOL reval = view->Create(RESOURCE_ID, VAR);\
-		view->ShowWindow(SW_SHOW);\
-		VAR->SetChildView(view);\
-		m_viewList.push_back(VAR);\
+		VAR = new Class(pane);\
+		BOOL reval = VAR->Create(RESOURCE_ID, pane);\
+		VAR->ShowWindow(SW_SHOW);\
+		pane->SetChildView(VAR);\
+		m_viewList.push_back(pane);\
 		\
 		HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(theApp.m_bHiColorIcons? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);\
- 		VAR->SetIcon(hClassViewIcon, FALSE);\
+ 		pane->SetIcon(hClassViewIcon, FALSE);\
 				}
 #define CREATE_DOCKVIEW(Class, VAR, PANE_NAME, PANE_ID) \
 	CREATE_DOCKVIEW2(Class, VAR, PANE_NAME, PANE_ID, Class::IDD);
@@ -143,12 +144,13 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	for each (auto &view in m_viewList)
 		view->EnableDocking(CBRS_ALIGN_ANY);
 
-	DockPane(m_udpView);
+	CDockablePaneBase *parentPane = m_viewList.front();
+	DockPane(parentPane);
 	CDockablePane* pTabbedBar = NULL;
 	for each (auto &view in m_viewList)
 	{
-		if (view != m_udpView)
-			view->AttachToTabWnd(m_udpView, DM_SHOW, TRUE, &pTabbedBar);
+		if (view != parentPane)
+			view->AttachToTabWnd(parentPane, DM_SHOW, TRUE, &pTabbedBar);
 	}
 
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
@@ -181,6 +183,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	CREATE_DOCKVIEW(CPlotView, m_plotView, L"Plot View", ID_VIEW_PLOT);
 	CREATE_DOCKVIEW(CMixingView, m_mixingView, L"Mixing View", ID_VIEW_MIXING);
 	CREATE_DOCKVIEW(COutputView, m_outputView, L"Output View", ID_VIEW_OUTPUT);
+	CREATE_DOCKVIEW(CUDPSendView, m_udpSendView, L"UDP Send View", ID_VIEW_UDP_SEND);
 	CREATE_DOCKVIEW2(C3DView, m_dxView, L"3D View", ID_VIEW_DX, IDD_DIALOG_3D);
 	CREATE_DOCKVIEW2(CUDPPlayerView, m_udpPlayerView, L"UDP Player View", ID_VIEW_UDP_PLAYER, IDD_DIALOG_UDP_PLAYER);
 
@@ -269,7 +272,6 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 }
 
 
-
 void CMainFrame::OnDestroy()
 {
 	CFrameWndEx::OnDestroy();
@@ -280,17 +282,17 @@ void CMainFrame::OnDestroy()
 		delete view;
 	}
 	m_viewList.clear();
-
 }
+
 
 // 환경변수에 설정된 값을 UI 에 적용한다.
 void CMainFrame::UpdateViewConfig()
 {
-	((COutputView*)m_outputView->GetChildView())->UpdateConfig();
-	((CPlotView*)m_plotView->GetChildView())->UpdateConfig();
-	((CUDPView*)m_udpView->GetChildView())->UpdateConfig();
-	((CMixingView*)m_mixingView->GetChildView())->UpdateConfig();
-	((CUDPPlayerView*)m_udpPlayerView->GetChildView())->UpdateConfig();
+	m_outputView->UpdateConfig();
+	m_plotView->UpdateConfig();
+	m_udpView->UpdateConfig();
+	m_mixingView->UpdateConfig();
+	m_udpPlayerView->UpdateConfig();
 }
 
 
@@ -299,11 +301,11 @@ void CMainFrame::SaveViewConfig(const string fileName)
 {
 	RET(fileName.empty());
 
-	((COutputView*)m_outputView->GetChildView())->SaveConfig();
-	((CPlotView*)m_plotView->GetChildView())->SaveConfig();
-	((CUDPView*)m_udpView->GetChildView())->SaveConfig();
-	((CMixingView*)m_mixingView->GetChildView())->SaveConfig();
-	((CUDPPlayerView*)m_udpPlayerView->GetChildView())->SaveConfig();
+	m_outputView->SaveConfig();
+	m_plotView->SaveConfig();
+	m_udpView->SaveConfig();
+	m_mixingView->SaveConfig();
+	m_udpPlayerView->SaveConfig();
 
 	// 환경변수 파일 저장
 	g_option.m_fileName = fileName;
@@ -373,17 +375,20 @@ BOOL CMainFrame::NewPlotWindow()
 {
 	static int plotViewId = 50000;
 	static int plotViewIncId = 2;
-	CDockablePaneBase *plotView;
+	CPlotView *plotView;
 
 	CString viewName;
 	viewName.Format(L"Plot View%d", plotViewIncId++);
 	CREATE_DOCKVIEW(CPlotView, plotView, viewName, plotViewId++);
 
-	plotView->EnableDocking(CBRS_ALIGN_ANY);
+	CDockablePane *pane = (CDockablePane*)plotView->GetParent();
+	pane->EnableDocking(CBRS_ALIGN_ANY);
 	CDockablePane* pTabbedBar = NULL;
-	plotView->AttachToTabWnd(m_udpView, DM_SHOW, TRUE, &pTabbedBar);
 
-	((CPlotView*)plotView->GetChildView())->SetAddPlotView(true);
+	CDockablePane *parentPane = (CDockablePane*)m_plotView->GetParent();
+	pane->AttachToTabWnd(parentPane, DM_SHOW, TRUE, &pTabbedBar);
+
+	plotView->SetAddPlotView(true);
 
 	return TRUE;
 }

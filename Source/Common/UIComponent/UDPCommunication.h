@@ -13,6 +13,7 @@ public:
 	bool InitServer(const int port);
 	void Close();
 	int Update(const float deltaSeconds, OUT char *buffer, const int bufferLen);
+	int SendData(const char *buff, const int buffLen);
 	bool IsConnect() const;
 
 

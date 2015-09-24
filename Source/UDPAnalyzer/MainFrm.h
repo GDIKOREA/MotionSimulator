@@ -4,6 +4,14 @@
 
 #pragma once
 
+
+class CUDPView;
+class CUDPSendView;
+class CPlotView;
+class CMixingView;
+class COutputView;
+class CUDPPlayerView;
+
 class CMainFrame : public CFrameWndEx
 {
 	
@@ -14,12 +22,13 @@ protected: // create from serialization only
 // Attributes
 public:
 	list<CDockablePaneBase*> m_viewList;
-	CDockablePaneBase *m_udpView;
-	CDockablePaneBase *m_plotView;
-	CDockablePaneBase *m_mixingView;
-	CDockablePaneBase *m_outputView;
-	CDockablePaneBase *m_dxView;
-	CDockablePaneBase *m_udpPlayerView;
+	CUDPView *m_udpView;
+	CPlotView *m_plotView;
+	CMixingView *m_mixingView;
+	COutputView *m_outputView;
+	C3DView *m_dxView;
+	CUDPPlayerView *m_udpPlayerView;
+	CUDPSendView *m_udpSendView;
 
 
 // Operations

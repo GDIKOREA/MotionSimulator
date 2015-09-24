@@ -56,7 +56,7 @@ BOOL CMixingView::OnInitDialog()
 
 	m_SymbolList.InsertColumn(0, L"Name");
 	m_SymbolList.InsertColumn(1, L"Value");
-	m_SymbolList.SetColumnWidth(0, 50);
+	m_SymbolList.SetColumnWidth(0, 100);
 	m_SymbolList.SetColumnWidth(1, 200);
 
 	return TRUE;

@@ -149,6 +149,7 @@
     <ClInclude Include="UDPAnalyzerDoc.h" />
     <ClInclude Include="UDPAnalyzerView.h" />
     <ClInclude Include="UDPPlayerView.h" />
+    <ClInclude Include="UDPSendView.h" />
     <ClInclude Include="udpstream.h" />
     <ClInclude Include="udpstreamplayer.h" />
     <ClInclude Include="UDPView.h" />
@@ -195,6 +196,7 @@
     <ClCompile Include="UDPAnalyzerDoc.cpp" />
     <ClCompile Include="UDPAnalyzerView.cpp" />
     <ClCompile Include="UDPPlayerView.cpp" />
+    <ClCompile Include="UDPSendView.cpp" />
     <ClCompile Include="udpstream.cpp" />
     <ClCompile Include="udpstreamplayer.cpp" />
     <ClCompile Include="UDPView.cpp" />

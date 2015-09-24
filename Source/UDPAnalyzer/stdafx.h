@@ -73,6 +73,7 @@ enum VIEW_TYPE
 	ID_VIEW_OUTPUT,
 	ID_VIEW_DX,
 	ID_VIEW_UDP_PLAYER,
+	ID_VIEW_UDP_SEND,
 };
 
 #include "mathparser.h"
