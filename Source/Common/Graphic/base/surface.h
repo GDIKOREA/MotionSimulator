@@ -13,12 +13,12 @@ namespace graphic
 		cSurface();
 		virtual ~cSurface();
 
-		bool CreateRenderTarget(const int width, const int height);
+		bool CreateRenderTarget(cRenderer &renderer, const int width, const int height);
 		bool WritePNGFile(const string &fileName);
 
-		void Begin();
-		void End();
-		void Render();
+		void Begin(cRenderer &renderer);
+		void End(cRenderer &renderer);
+		void Render(cRenderer &renderer);
 		void Clear();
 
 		bool IsLoaded() const;

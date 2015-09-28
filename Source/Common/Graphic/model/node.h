@@ -2,6 +2,7 @@
 
 namespace graphic
 {
+	class cRenderer;
 
 	class cNode
 	{
@@ -32,8 +33,8 @@ namespace graphic
 		virtual void Clear();
 
 		virtual bool Move(const float elapseTime) {return true;}
-		virtual void Render(const Matrix44 &parentTm);
-		virtual void RenderShadow(const Matrix44 &viewProj, 
+		virtual void Render(cRenderer &renderer, const Matrix44 &parentTm);
+		virtual void RenderShadow(cRenderer &renderer, const Matrix44 &viewProj,
 			const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm);
 		virtual void SetShader(cShader *shader);
 

@@ -5,8 +5,8 @@
 using namespace graphic;
 
 
-cSkinnedMesh::cSkinnedMesh(const int id, vector<Matrix44> *palette, const sRawMesh &raw) : 
-	cMesh(id, raw)
+cSkinnedMesh::cSkinnedMesh(cRenderer &renderer, const int id, vector<Matrix44> *palette, const sRawMesh &raw) :
+	cMesh(renderer, id, raw)
 ,	m_rawMesh(raw)
 ,	m_palette(palette)
 ,	m_skinnMeshBuffer(NULL)
@@ -16,7 +16,7 @@ cSkinnedMesh::cSkinnedMesh(const int id, vector<Matrix44> *palette, const sRawMe
 	// 하기 위해서 버퍼를 동적으로 생성한다.
 	if (m_palette && (64 < m_palette->size()))
 	{
-		m_skinnMeshBuffer = new cMeshBuffer(raw);
+		m_skinnMeshBuffer = new cMeshBuffer(renderer, raw);
 		SetMeshBuffer(m_skinnMeshBuffer);
 	}
 
@@ -28,43 +28,43 @@ cSkinnedMesh::~cSkinnedMesh()
 }
 
 
-void cSkinnedMesh::Render(const Matrix44 &parentTm)
+void cSkinnedMesh::Render(cRenderer &renderer, const Matrix44 &parentTm)
 {
 	if (m_shader && m_palette && (m_palette->size() < 64))
 	{
 		ApplyPaletteShader(*m_shader);
-		cMesh::RenderShader(*m_shader, parentTm);
+		cMesh::RenderShader(renderer, *m_shader, parentTm);
 	}
 	else
 	{
-		ApplyPalette();
-		cMesh::Render(parentTm);
+		ApplyPalette(renderer);
+		cMesh::Render(renderer, parentTm);
 	}
 }
 
-void cSkinnedMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
+void cSkinnedMesh::RenderShader(cRenderer &renderer, cShader &shader, const Matrix44 &parentTm)
 {
 	ApplyPaletteShader(shader);
-	cMesh::RenderShader(shader, parentTm);
+	cMesh::RenderShader(renderer, shader, parentTm);
 }
 
 
-void cSkinnedMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
+void cSkinnedMesh::RenderShadow(cRenderer &renderer, cShader &shader, const Matrix44 &parentTm)
 {
 	ApplyPaletteShader(shader);
-	cMesh::RenderShadow(shader, parentTm);
+	cMesh::RenderShadow(renderer, shader, parentTm);
 }
 
 
 // 팔레트 적용.
-void cSkinnedMesh::ApplyPalette()
+void cSkinnedMesh::ApplyPalette(cRenderer &renderer)
 {
 	RET(!m_palette);
 
 	// 소프트웨어 스키닝일 때 동적으로 할당된 버퍼가 없다면 새로 생성한다.
 	if (!m_skinnMeshBuffer)
 	{
-		m_skinnMeshBuffer = new cMeshBuffer(m_rawMesh);
+		m_skinnMeshBuffer = new cMeshBuffer(renderer, m_rawMesh);
 		SetMeshBuffer(m_skinnMeshBuffer);
 	}
 

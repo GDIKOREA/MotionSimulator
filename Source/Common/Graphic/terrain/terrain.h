@@ -27,23 +27,23 @@ namespace graphic
 
 		//-----------------------------------------------------------------------------
 		// Create Terrain
-		bool CreateFromTRNFile(const string &fileName);
+		bool CreateFromTRNFile(cRenderer &renderer, const string &fileName);
 
-		bool CreateFromRawTerrain( const sRawTerrain &rawTerrain );
+		bool CreateFromRawTerrain(cRenderer &renderer, const sRawTerrain &rawTerrain);
 
-		bool CreateFromHeightMap( const string &heightMapFileName, 
+		bool CreateFromHeightMap(cRenderer &renderer, const string &heightMapFileName,
 			const string &textureFileName, const float heightFactor=3.f, 
 			const float textureUVFactor=1.f, const int rowCellCount=64, 
 			const int colCellCount=64, const float cellSize=50.f );
 
-		bool CreateFromGRDFormat( const string &gridFileName, 
+		bool CreateFromGRDFormat(cRenderer &renderer, const string &gridFileName,
 			const string &textureFileName, const float heightFactor=3.f, 
 			const float textureUVFactor=1.f );
 
-		bool CreateTerrain( const int rowCellCount=64, const int colCellCount=64, 
+		bool CreateTerrain(cRenderer &renderer, const int rowCellCount = 64, const int colCellCount = 64,
 			const float cellSize=50.f, const float textureUVFactor=1.f );
 
-		bool CreateTerrainTexture( const string &textureFileName );
+		bool CreateTerrainTexture(cRenderer &renderer, const string &textureFileName);
 
 		float GetHeight(const float x, const float z);
 		float GetHeightFromRay( const Vector3 &orig, const Vector3 &dir, OUT Vector3 &out );
@@ -55,8 +55,8 @@ namespace graphic
 
 		//-----------------------------------------------------------------------------
 		// Model
-		cModel* AddRigidModel(const cModel &model);
-		cModel* AddRigidModel(const string &fileName);
+		cModel* AddRigidModel(cRenderer &renderer, const cModel &model);
+		cModel* AddRigidModel(cRenderer &renderer, const string &fileName);
 		cModel* FindRigidModel(const int id);
 		bool RemoveRigidModel(cModel *model, const bool destruct=true);
 		bool RemoveRigidModel(const int id, const bool destruct=true);
@@ -65,9 +65,9 @@ namespace graphic
 
 		//-----------------------------------------------------------------------------
 		// Render
-		virtual void PreRender();
-		virtual void Render();
-		void RenderModelShadow(cModel &model);
+		virtual void PreRender(cRenderer &renderer);
+		virtual void Render(cRenderer &renderer);
+		void RenderModelShadow(cRenderer &renderer, cModel &model);
 		virtual void Move(const float elapseTime);
 
 
@@ -101,17 +101,17 @@ namespace graphic
 
 
 	protected:
-		virtual void RenderShader(cShader &shader, const Matrix44 &tm=Matrix44::Identity);
-		void RenderRigidModels(const Matrix44 &tm);
+		virtual void RenderShader(cRenderer &renderer, cShader &shader, const Matrix44 &tm = Matrix44::Identity);
+		void RenderRigidModels(cRenderer &renderer,  const Matrix44 &tm);
 
 		float GetHeightMapEntry( int row, int col );
-		bool UpdateHeightMap( const string &heightMapFileName, 
+		bool UpdateHeightMap(cRenderer &renderer, const string &heightMapFileName,
 			const string &textureFileName, const float heightFactor );
 
 		DWORD GetAlphaMask(const int layer);
 
 		// layer
-		void InitLayer();
+		void InitLayer(cRenderer &renderer);
 		sSplatLayer& GetTopLayer();
 		bool AddLayer();
 

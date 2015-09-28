@@ -13,14 +13,14 @@ namespace graphic
 		cShadow1();
 		virtual ~cShadow1();
 
-		bool Create(const int textureWidth, const int textureHeight);
-		void UpdateShadow( cNode &node );
+		bool Create(cRenderer &renderer, const int textureWidth, const int textureHeight);
+		void UpdateShadow(cRenderer &renderer, cNode &node);
 		IDirect3DTexture9* GetTexture();
 		const IDirect3DTexture9* GetTexture() const;
 		bool IsLoaded() const;
 
 		// 디버깅용 함수.
-		void RenderShadowMap();
+		void RenderShadowMap(cRenderer &renderer);
 
 
 	private:

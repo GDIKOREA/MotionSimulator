@@ -23,12 +23,12 @@ cSurface::~cSurface()
 
 // 렌더타겟 서피스를 생성한다.
 // 텍스쳐, 타겟 서피스, Z버퍼 생성.
-bool cSurface::CreateRenderTarget(const int width, const int height)
+bool cSurface::CreateRenderTarget(cRenderer &renderer, const int width, const int height)
 {
 	m_width = width;
 	m_height = height;
 
-	if (FAILED(GetDevice()->CreateTexture(width, height, 1, 
+	if (FAILED(renderer.GetDevice()->CreateTexture(width, height, 1, 
 		D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8,
 		D3DPOOL_DEFAULT, &m_texture, NULL)))
 		return false;
@@ -36,7 +36,7 @@ bool cSurface::CreateRenderTarget(const int width, const int height)
 	if (FAILED(m_texture->GetSurfaceLevel(0, &m_surface)))
 		return false;
 
-	if (FAILED(GetDevice()->CreateDepthStencilSurface(
+	if (FAILED(renderer.GetDevice()->CreateDepthStencilSurface(
 		width, height, D3DFMT_D24S8, 
 		D3DMULTISAMPLE_NONE, 0, TRUE,
 		&m_zbuffer, NULL)))
@@ -59,27 +59,27 @@ bool cSurface::WritePNGFile(const string &fileName)
 
 
 // 렌더 타겟을 교체한다.
-void cSurface::Begin()
+void cSurface::Begin(cRenderer &renderer)
 {
-	GetDevice()->GetRenderTarget(0, &m_oldBackBuffer);
-	GetDevice()->GetDepthStencilSurface(&m_oldZBuffer);
-	GetDevice()->GetViewport(&m_oldViewport);
+	renderer.GetDevice()->GetRenderTarget(0, &m_oldBackBuffer);
+	renderer.GetDevice()->GetDepthStencilSurface(&m_oldZBuffer);
+	renderer.GetDevice()->GetViewport(&m_oldViewport);
 
-	GetDevice()->SetRenderTarget(0, m_surface);
-	GetDevice()->SetDepthStencilSurface(m_zbuffer);
+	renderer.GetDevice()->SetRenderTarget(0, m_surface);
+	renderer.GetDevice()->SetDepthStencilSurface(m_zbuffer);
 	
 	// 뷰포트변경  x y  width    height   minz maxz
 	D3DVIEWPORT9 viewport = {0, 0, m_width, m_height, 0.0f, 1.0f};
-	GetDevice()->SetViewport(&viewport);
+	renderer.GetDevice()->SetViewport(&viewport);
 }
 
 
 // 렌더 타겟을 원본으로 되돌린다.
-void cSurface::End()
+void cSurface::End(cRenderer &renderer)
 {
-	GetDevice()->SetRenderTarget(0, m_oldBackBuffer);
-	GetDevice()->SetDepthStencilSurface(m_oldZBuffer);
-	GetDevice()->SetViewport(&m_oldViewport);
+	renderer.GetDevice()->SetRenderTarget(0, m_oldBackBuffer);
+	renderer.GetDevice()->SetDepthStencilSurface(m_oldZBuffer);
+	renderer.GetDevice()->SetViewport(&m_oldViewport);
 
 	SAFE_RELEASE(m_oldBackBuffer);
 	SAFE_RELEASE(m_oldZBuffer);
@@ -87,11 +87,11 @@ void cSurface::End()
 
 
 // 서피스 출력. 디버깅 용 이다.
-void cSurface::Render()
+void cSurface::Render(cRenderer &renderer)
 {
-	GetDevice()->SetTextureStageState(0,D3DTSS_COLOROP,	D3DTOP_SELECTARG1);
-	GetDevice()->SetTextureStageState(0,D3DTSS_COLORARG1,	D3DTA_TEXTURE);
-	GetDevice()->SetTextureStageState(1,D3DTSS_COLOROP,    D3DTOP_DISABLE);
+	renderer.GetDevice()->SetTextureStageState(0,D3DTSS_COLOROP,	D3DTOP_SELECTARG1);
+	renderer.GetDevice()->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	renderer.GetDevice()->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
 	float scale = 128.0f;
 	typedef struct {FLOAT p[4]; FLOAT tu, tv;} TVERTEX;
 
@@ -102,11 +102,11 @@ void cSurface::Render()
 		{scale, scale+scale,0, 1, 1, 1,},
 		{0, scale+scale,0, 1, 0, 1,},
 	};
-	GetDevice()->SetTexture( 0, m_texture );
-	GetDevice()->SetVertexShader(NULL);
-	GetDevice()->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX1 );
-	GetDevice()->SetPixelShader(0);
-	GetDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, Vertex, sizeof( TVERTEX ) );
+	renderer.GetDevice()->SetTexture(0, m_texture);
+	renderer.GetDevice()->SetVertexShader(NULL);
+	renderer.GetDevice()->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
+	renderer.GetDevice()->SetPixelShader(0);
+	renderer.GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, Vertex, sizeof(TVERTEX));
 }
 
 

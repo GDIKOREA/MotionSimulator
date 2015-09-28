@@ -3,7 +3,7 @@
 namespace graphic
 {
 
-	class cRenderer : public common::cSingleton<cRenderer>
+	class cRenderer// : public common::cSingleton<cRenderer>
 	{
 	public:
 		cRenderer();
@@ -13,6 +13,11 @@ namespace graphic
 		void Update(const float elpaseT);
 		LPDIRECT3DDEVICE9 GetDevice();
 		HWND GetHwnd() const;
+
+		bool ClearScene();
+		void BeginScene();
+		void Present();
+		void EndScene();
 
 		void RenderAxis();
 		void RenderFPS();
@@ -25,7 +30,7 @@ namespace graphic
 
 
 	private:
-		LPDIRECT3DDEVICE9 m_pDevice;		
+		LPDIRECT3DDEVICE9 m_pDevice;
 		HWND m_hWnd;
 
 		// Grid
@@ -44,10 +49,10 @@ namespace graphic
 
 
 	// 렌더러 초기화.
-	bool InitRenderer(HWND hWnd, const int width, const int height);
+	//bool InitRenderer(cRenderer &renderer, HWND hWnd, const int width, const int height);
 	void ReleaseRenderer();
-	inline cRenderer* GetRenderer() { return cRenderer::Get(); }
-	inline LPDIRECT3DDEVICE9 GetDevice() { return cRenderer::Get()->GetDevice(); }
+	//inline cRenderer* GetRenderer() { return cRenderer::Get(); }
+	///inline LPDIRECT3DDEVICE9 GetDevice() { return cRenderer::Get()->GetDevice(); }
 	inline LPDIRECT3DDEVICE9 cRenderer::GetDevice() { return m_pDevice; }
 	inline HWND cRenderer::GetHwnd() const { return m_hWnd; }
 

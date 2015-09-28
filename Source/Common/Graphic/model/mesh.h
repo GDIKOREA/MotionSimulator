@@ -11,17 +11,18 @@
 
 namespace graphic
 {
+	class cRenderer;
 
 	class cMesh : public cNode
 	{
 	public:
-		cMesh(const int id, const sRawMesh &rawMesh);
-		cMesh(const int id, const sRawBone &rawBone);
+		cMesh(cRenderer &renderer, const int id, const sRawMesh &rawMesh);
+		cMesh(cRenderer &renderer, const int id, const sRawBone &rawBone);
 		virtual ~cMesh();
 
 		virtual bool Move(const float elapseTime) override;
-		virtual void Render(const Matrix44 &parentTm) override;
-		virtual void RenderShadow(const Matrix44 &viewProj, 
+		virtual void Render(cRenderer &renderer, const Matrix44 &parentTm) override;
+		virtual void RenderShadow(cRenderer &renderer, const Matrix44 &viewProj,
 			const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm) override;
 
 		const cBoundingBox* GetBoundingBox();
@@ -30,10 +31,10 @@ namespace graphic
 		
 
 	protected:
-		void CreateMaterials(const sRawMesh &rawMesh);
+		void CreateMaterials(cRenderer &renderer, const sRawMesh &rawMesh);
 
-		virtual void RenderShader( cShader &shader, const Matrix44 &parentTm );
-		virtual void RenderShadow(cShader &shader, const Matrix44 &parentTm);
+		virtual void RenderShader(cRenderer &renderer, cShader &shader, const Matrix44 &parentTm);
+		virtual void RenderShadow(cRenderer &renderer, cShader &shader, const Matrix44 &parentTm);
 
 
 	protected:

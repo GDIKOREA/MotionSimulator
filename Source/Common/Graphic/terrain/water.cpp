@@ -42,22 +42,22 @@ cWater::~cWater()
 
 
 // 물 클래스 생성.
-bool cWater::Create()
+bool cWater::Create(cRenderer &renderer)
 {
 	RETV(m_grid.GetVertexBuffer().GetVertexCount() > 0, true); // 이미 생성되었다면 리턴
 
 	const int width = 512;
 	const int  height = 512;
 	D3DVIEWPORT9 vp = {0, 0, width, height, 0.0f, 1.0f};
-	m_reflectMap.Create(width, height, 0, D3DFMT_X8R8G8B8, true, D3DFMT_D24X8, vp, true);
-	m_refractMap.Create(width, height, 0, D3DFMT_X8R8G8B8, true, D3DFMT_D24X8, vp, true);
+	m_reflectMap.Create(renderer, width, height, 0, D3DFMT_X8R8G8B8, true, D3DFMT_D24X8, vp, true);
+	m_refractMap.Create(renderer, width, height, 0, D3DFMT_X8R8G8B8, true, D3DFMT_D24X8, vp, true);
 
-	m_shader.Create( cResourceManager::Get()->FindFile("water.fx"), "WaterTech" );
-	m_grid.Create(m_initInfo.vertRows, m_initInfo.vertCols, 64, 8.f, 0.f);
-	m_grid.GetTexture().Create( cResourceManager::Get()->FindFile("whitetex.dds") );
+	m_shader.Create(renderer, cResourceManager::Get()->FindFile("water.fx"), "WaterTech");
+	m_grid.Create(renderer, m_initInfo.vertRows, m_initInfo.vertCols, 64, 8.f, 0.f);
+	m_grid.GetTexture().Create(renderer, cResourceManager::Get()->FindFile("whitetex.dds"));
 
-	m_waveMap0.Create( cResourceManager::Get()->FindFile(m_initInfo.waveMapFilename0) );
-	m_waveMap1.Create( cResourceManager::Get()->FindFile(m_initInfo.waveMapFilename1) );
+	m_waveMap0.Create(renderer, cResourceManager::Get()->FindFile(m_initInfo.waveMapFilename0));
+	m_waveMap1.Create(renderer, cResourceManager::Get()->FindFile(m_initInfo.waveMapFilename1) );
 
 	m_hWVP = m_shader.GetValueHandle( "gWVP");
 	m_hEyePosW = m_shader.GetValueHandle( "gEyePosW");
@@ -95,7 +95,7 @@ bool cWater::Create()
 }
 
 
-void cWater::Render()
+void cWater::Render(cRenderer &renderer)
 {
 	m_shader.SetMatrix("mVP", cMainCamera::Get()->GetViewProjectionMatrix());
 	cLightManager::Get()->GetMainLight().Bind(m_shader);
@@ -107,13 +107,13 @@ void cWater::Render()
 	m_shader.SetTexture(m_hReflectMap, m_reflectMap.GetTexture());
 	m_shader.SetTexture(m_hRefractMap, m_refractMap.GetTexture());
 
-	m_grid.RenderShader(m_shader);
+	m_grid.RenderShader(renderer, m_shader);
 
 	// 디버깅용.
 	if (m_isRenderSurface)
 	{
-		m_refractMap.Render(1);
-		m_reflectMap.Render(2);
+		m_refractMap.Render(renderer, 1);
+		m_reflectMap.Render(renderer, 2);
 	}
 }
 

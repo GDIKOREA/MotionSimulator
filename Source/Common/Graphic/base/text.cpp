@@ -14,7 +14,7 @@ cText::cText()
 
 }
 
-cText::cText(const string &text, const int x, const int y, 
+cText::cText(cRenderer &renderer, const string &text, const int x, const int y,
 	const DWORD color, const int fontSize, const bool isBold, const string &fontName)
 	// fontSize=18, isBold=true, fontName=±¼¸²
 	: m_text(text)
@@ -22,7 +22,7 @@ cText::cText(const string &text, const int x, const int y,
 ,	m_rect(x, y, 100, 100)
 ,	m_color(color)
 {
-	Create(fontSize, isBold, fontName);
+	Create(renderer, fontSize, isBold, fontName);
 }
 
 
@@ -33,12 +33,12 @@ cText::~cText()
 
 
 // ÅØ½ºÆ® »ý¼º.
-bool cText::Create(const int fontSize, const bool isBold, const string &fontName)
+bool cText::Create(cRenderer &renderer, const int fontSize, const bool isBold, const string &fontName)
 	// fontSize=18, isBold=true, fontName=±¼¸²
 {
 	Clear();
 
-	const HRESULT hr = D3DXCreateFontA(GetDevice(), fontSize, 0, 
+	const HRESULT hr = D3DXCreateFontA(renderer.GetDevice(), fontSize, 0, 
 		isBold?  FW_BOLD : FW_NORMAL, 1, FALSE, 
 		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, 
 		DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, fontName.c_str(), 

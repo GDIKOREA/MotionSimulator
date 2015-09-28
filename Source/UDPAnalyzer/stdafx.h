@@ -53,10 +53,13 @@
 #endif
 
 
+// avoid compile error
+#include <winspool.h>
+#include <WBemCli.h>
 
 
 
-
+//--------------------------------------------------------------------------------------------------------------------------------
 #include "../Common/Common/common.h"
 #include "../Common/Graphic/graphic.h"
 #include "../Common/UIComponent/uicomponent.h"
@@ -74,6 +77,7 @@ enum VIEW_TYPE
 	ID_VIEW_DX,
 	ID_VIEW_UDP_PLAYER,
 	ID_VIEW_UDP_SEND,
+	ID_VIEW_DX2,
 };
 
 #include "mathparser.h"

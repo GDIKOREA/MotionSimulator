@@ -8,7 +8,8 @@
 using namespace graphic;
 
 
-cCollisionManager::cCollisionManager()
+cCollisionManager::cCollisionManager() :
+	m_renderer(NULL)
 {
 	m_group1 = new sCollisionNode(-1);
 	m_group2 = new sCollisionNode(-1);
@@ -27,7 +28,7 @@ cCollisionManager::~cCollisionManager()
 // pObj : 충돌테스트할 오브젝트
 // nTestNum : 충돌테스트 번호이며, 다른 그룹에서 같은 충돌테스트번호 끼리 충돌테스트한다.
 //-----------------------------------------------------------------------------//
-void cCollisionManager::InsertObject( int group, ICollisionable *obj, int nTestNum )
+void cCollisionManager::InsertObject(int group, ICollisionable *obj, int nTestNum)
 {
 	sCollisionNode *node;
 	if (0 == group) 
@@ -64,12 +65,12 @@ void cCollisionManager::InsertObject( ICollisionable *parent, ICollisionable *ob
 // 충돌테스트할 오브젝트 추가
 // nTestNum 이 3는 오브젝트가 이동할때 충돌을 체크하는 번호이다.
 //-----------------------------------------------------------------------------//
-void cCollisionManager::InsertObject( sCollisionNode *parent, ICollisionable *obj, int testNum )
+void cCollisionManager::InsertObject(sCollisionNode *parent, ICollisionable *obj, int testNum)
 {
 	sCollisionNode *pnew = new sCollisionNode( obj->GetCollisionId() );
 	pnew->testnum = testNum;
 	pnew->pobj = obj;
-	pnew->box = obj->GetCollisionBox();
+	pnew->box = obj->GetCollisionBox(*m_renderer);
 	//pnew->psphere = pObj->GetSphere();
 
 	parent->InsertChild(pnew);

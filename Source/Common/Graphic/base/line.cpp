@@ -9,31 +9,31 @@ cLine::cLine()
 	m_material.InitWhite();
 }
 
-cLine::cLine(const Vector3 &p0, const Vector3 &p1, const float width)
+cLine::cLine(cRenderer &renderer, const Vector3 &p0, const Vector3 &p1, const float width)
 {
-	SetLine(p0, p1, width);
+	SetLine(renderer, p0, p1, width);
 	m_material.InitWhite();
 }
 
 
-void cLine::Render()
+void cLine::Render(cRenderer &renderer)
 {
-	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&m_tm );
-	m_material.Bind();
-	m_vtxBuff.Bind();
-	m_idxBuff.Bind();
-	GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
+	renderer.GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&m_tm );
+	m_material.Bind(renderer);
+	m_vtxBuff.Bind(renderer);
+	m_idxBuff.Bind(renderer);
+	renderer.GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0,
 		m_vtxBuff.GetVertexCount(), 0, 12);
 }
 
 
-void cLine::SetLine(const Vector3 &p0, const Vector3 &p1, const float width)
+void cLine::SetLine(cRenderer &renderer, const Vector3 &p0, const Vector3 &p1, const float width)
 {
 	m_p0 = p0;
 	m_p1 = p1;
 	m_width = width;
 
-	InitCube();
+	InitCube(renderer);
 
 	Vector3 v = p1 - p0;
 	const float len = v.Length();
@@ -50,7 +50,7 @@ void cLine::SetLine(const Vector3 &p0, const Vector3 &p1, const float width)
 }
 
 
-void cLine::InitCube()
+void cLine::InitCube(cRenderer &renderer)
 {
 	if (m_vtxBuff.GetVertexCount() > 0)
 		return;
@@ -87,8 +87,8 @@ void cLine::InitCube()
 		1, 5, 7,
 	};
 
-	m_vtxBuff.Create(8, sizeof(sVertexDiffuse), sVertexDiffuse::FVF);
-	m_idxBuff.Create(12);
+	m_vtxBuff.Create(renderer, 8, sizeof(sVertexDiffuse), sVertexDiffuse::FVF);
+	m_idxBuff.Create(renderer, 12);
 
 	sVertexDiffuse *vbuff = (sVertexDiffuse*)m_vtxBuff.Lock();
 	WORD *ibuff = (WORD*)m_idxBuff.Lock();

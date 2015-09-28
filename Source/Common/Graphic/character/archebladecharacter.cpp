@@ -25,7 +25,7 @@ cArchebladeCharacter::~cArchebladeCharacter()
 }
 
 
-bool cArchebladeCharacter::Create(const string &modelName, MODEL_TYPE::TYPE type)
+bool cArchebladeCharacter::Create(cRenderer &renderer, const string &modelName, MODEL_TYPE::TYPE type)
 // type = MODEL_TYPE::AUTO
 {
 	m_weaponNode1 = NULL;
@@ -37,12 +37,12 @@ bool cArchebladeCharacter::Create(const string &modelName, MODEL_TYPE::TYPE type
 
 	SAFE_DELETE(m_weapon);
 
-	if (cModel::Create(modelName))
+	if (cModel::Create(renderer, modelName))
 	{
 		if (GetModelType() == MODEL_TYPE::SKIN)
 		{
 			SetShader( 
-				cResourceManager::Get()->LoadShader("hlsl_skinning_using_texcoord.fx") );
+				cResourceManager::Get()->LoadShader(renderer, "hlsl_skinning_using_texcoord.fx") );
 		}
 
 		return true;
@@ -52,7 +52,7 @@ bool cArchebladeCharacter::Create(const string &modelName, MODEL_TYPE::TYPE type
 }
 
 
-void cArchebladeCharacter::LoadWeapon(const string &fileName)
+void cArchebladeCharacter::LoadWeapon(cRenderer &renderer, const string &fileName)
 {
 	m_weaponNode1 = NULL;
 	m_weaponNode2 = NULL;
@@ -97,10 +97,10 @@ void cArchebladeCharacter::LoadWeapon(const string &fileName)
 	{
 		m_weapon = new cModel(common::GenerateId());
 		m_weapon->SetShader( 
-			cResourceManager::Get()->LoadShader("hlsl_skinning_using_texcoord_unlit.fx") );
+			cResourceManager::Get()->LoadShader(renderer, "hlsl_skinning_using_texcoord_unlit.fx") );
 	}
 
-	if (!m_weapon->Create(fileName))
+	if (!m_weapon->Create(renderer, fileName))
 		return;
 
 	RET(!m_weapon->GetBoneMgr());
@@ -166,12 +166,12 @@ bool cArchebladeCharacter::Move(const float elapseTime)
 }
 
 
-void cArchebladeCharacter::Render(const Matrix44 &tm)
+void cArchebladeCharacter::Render(cRenderer &renderer, const Matrix44 &tm)
 {
-	cModel::Render(tm);
+	cModel::Render(renderer, tm);
 
 	if (m_weapon)
-		m_weapon->Render(tm);
+		m_weapon->Render(renderer, tm);
 }
 
 

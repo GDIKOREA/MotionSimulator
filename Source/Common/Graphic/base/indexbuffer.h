@@ -5,6 +5,7 @@
 
 namespace graphic
 {
+	class cRenderer;
 
 	class cIndexBuffer
 	{
@@ -12,14 +13,15 @@ namespace graphic
 		cIndexBuffer();
 		virtual ~cIndexBuffer();
 
-		bool Create(int faceCount);
+		bool Create(cRenderer &renderer, int faceCount);
 		void* Lock();
 		void Unlock();
-		void Bind() const;
+		void Bind(cRenderer &renderer) const;
 		int GetFaceCount() const;
 		void Clear();
 
-		cIndexBuffer& operator=(cIndexBuffer &rhs);
+		void Set(cRenderer &renderer, cIndexBuffer &rhs);
+		//cIndexBuffer& operator=(cIndexBuffer &rhs);
 
 
 	private:

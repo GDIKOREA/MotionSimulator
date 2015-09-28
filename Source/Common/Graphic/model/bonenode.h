@@ -7,7 +7,7 @@ namespace graphic
 	class cBoneNode : public cNode
 	{
 	public:
-		cBoneNode(const int id, vector<Matrix44> &palette, const sRawBone &rawMesh);
+		cBoneNode(cRenderer &renderer, const int id, vector<Matrix44> &palette, const sRawBone &rawMesh);
 		virtual ~cBoneNode();
 
 		void SetAnimation( const sRawAni &rawAni, const int totalAniFrame, 
@@ -17,7 +17,7 @@ namespace graphic
 			const int totalAniFrame, const bool isLoop=false, const bool isBlend=true );
 
 		virtual bool Move(const float elapseTime) override;
-		virtual void Render(const Matrix44 &parentTm) override;
+		virtual void Render(cRenderer &renderer, const Matrix44 &parentTm) override;
 
 		void SetAccTM(const Matrix44 &mat);
 		const Matrix44& GetAccTM() const;

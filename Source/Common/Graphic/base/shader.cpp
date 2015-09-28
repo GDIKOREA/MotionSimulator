@@ -20,13 +20,13 @@ cShader::~cShader()
 }
 
 
-bool cShader::Create(const string &fileName, const string &technique, const bool showMsgBox)//showMsgBox=true
+bool cShader::Create(cRenderer &renderer, const string &fileName, const string &technique, const bool showMsgBox)//showMsgBox=true
 {
 	// 쉐이더 파일 읽기
 	HRESULT hr;
 	LPD3DXBUFFER pErr;
 	if (FAILED(hr = D3DXCreateEffectFromFileA(
-		GetDevice(), // IDirect3DDevice9 포인터
+		renderer.GetDevice(), // IDirect3DDevice9 포인터
 		fileName.c_str(), // 이펙트 파일명 포인터
 		NULL,	// 전처리기 포인터
 		NULL,	// 옵션 인터페이스 포인터

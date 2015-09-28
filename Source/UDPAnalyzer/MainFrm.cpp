@@ -14,6 +14,8 @@
 #include "UDPSendView.h"
 #include "MainFrm.h"
 
+#pragma comment(lib, "winmm.lib")
+
 
 #define CREATE_DOCKVIEW2(Class, VAR, PANE_NAME, PANE_ID, RESOURCE_ID) \
 				{\
@@ -63,6 +65,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_UPDATE_COMMAND_UI(ID_FILE_SAVEAS, &CMainFrame::OnUpdateFileSaveas)
 	ON_COMMAND(ID_VIEW_INITDOCKINGWINDOWS, &CMainFrame::OnViewInitdockingwindows)
 	ON_WM_CLOSE()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -186,10 +189,12 @@ BOOL CMainFrame::CreateDockingWindows()
 	CREATE_DOCKVIEW(COutputView, m_outputView, L"Output View", ID_VIEW_OUTPUT);
 	CREATE_DOCKVIEW(CUDPSendView, m_udpSendView, L"UDP Send View", ID_VIEW_UDP_SEND);
 	CREATE_DOCKVIEW2(C3DView, m_dxView, L"3D View", ID_VIEW_DX, IDD_DIALOG_3D);
+	//CREATE_DOCKVIEW2(C3DView, m_dxView2, L"3D View2", ID_VIEW_DX2, IDD_DIALOG_3D);
 	CREATE_DOCKVIEW2(CUDPPlayerView, m_udpPlayerView, L"UDP Player View", ID_VIEW_UDP_PLAYER, IDD_DIALOG_UDP_PLAYER);
 
+	cController::Get()->Init(m_dxView->GetRenderer());
+	m_dxView->SetRenderCube(true);
 
-	graphic::GetMainCamera()->SetCamera(Vector3(-8.5f, 2.4f, -3.2f), Vector3(0, 0, 0), Vector3(0, 1, 0));
 	return TRUE;
 }
 
@@ -403,4 +408,108 @@ BOOL CMainFrame::NewPlotWindow()
 	plotView->SetAddPlotView(true);
 
 	return TRUE;
+}
+
+
+void CMainFrame::OnSize(UINT nType, int cx, int cy)
+{
+	CFrameWndEx::OnSize(nType, cx, cy);
+
+	RET(m_viewList.empty());
+
+	// MainFrame크기에 따라 Pane 크기를 맞춘다.
+	CDockablePane *parentPane = NULL;
+	for each(auto it in m_viewList)
+	{
+		CPaneDivider* pDefaultPaneDivider = it->GetDefaultPaneDivider();
+		if (pDefaultPaneDivider)
+		{
+			parentPane = it;
+			break;
+		}
+	}
+
+	if (parentPane)
+	{
+		for each(auto it in m_viewList)
+		{
+			CBaseTabbedPane *tabPane = it->GetParentTabbedPane();
+			if (tabPane)
+			{
+				// TabPane과 일반 Pane이 같이 MainFrame안에 섞여있다면, 윈도우크기를 자동 조절하지 않는다.	
+				if (tabPane->GetDefaultPaneDivider())
+					return;
+			}
+		}
+	}
+	else
+	{ 
+		// ParentPane이 없다면, TabControl이 있는지 검사한다.
+		for each(auto it in m_viewList)
+		{
+			CBaseTabbedPane *tabPane = it->GetParentTabbedPane();
+			if (!tabPane)
+				continue;
+
+			CPaneDivider* pDefaultPaneDivider = tabPane->GetDefaultPaneDivider();
+ 			if (pDefaultPaneDivider)
+			{
+				parentPane = tabPane;
+				break;
+			}
+		}
+	}
+
+	RET(!parentPane);
+
+	if (IsWindowVisible())
+	{
+		// 꽁수, 화면에 비춰지는 윈도우 개수, 처음 시작시에는 -1로 설정되어 있다.
+		// 처음 시작시에는 윈도우 크기를 조정하지 않는다.
+		if (m_nWindow >= 0) 
+			SetContainerSize(parentPane, cx, cy);
+	}
+}
+
+
+// Pane 크기 조절
+void CMainFrame::SetContainerSize(CDockablePane* targetPane, UINT cx, UINT cy)
+{
+	CPaneDivider* pDefaultPaneDivider = targetPane->GetDefaultPaneDivider();
+	if (pDefaultPaneDivider == NULL)	
+	{
+		OutputDebugString(_T("The DialogBar is not docked.\n"));
+		return;
+	}
+
+	BOOL bLeftBar = FALSE;
+	CPaneContainer* pContainer = pDefaultPaneDivider->FindPaneContainer(targetPane, bLeftBar);
+
+	while (pContainer->GetParentPaneContainer() != NULL)	
+	{
+		pContainer = pContainer->GetParentPaneContainer();
+	}
+
+	CRect rectContainer;
+	pContainer->GetWindowRect(rectContainer, FALSE);
+	DWORD dwDividerStyle = pDefaultPaneDivider->GetCurrentAlignment();
+
+	CPoint ptOffset(0, 0);
+	switch (dwDividerStyle)
+	{
+	case CBRS_ALIGN_TOP:
+		ptOffset.y = cy - rectContainer.Height();
+		break;
+	case CBRS_ALIGN_BOTTOM:
+		ptOffset.y = rectContainer.Height() - cy;
+		break;
+	case CBRS_ALIGN_LEFT:
+		ptOffset.x = cx - rectContainer.Width();
+		break;
+	case CBRS_ALIGN_RIGHT:
+		ptOffset.x = rectContainer.Width() - cx;
+		break;
+	}
+
+	pDefaultPaneDivider->Move(ptOffset);
 }

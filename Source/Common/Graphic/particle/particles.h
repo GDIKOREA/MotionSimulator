@@ -46,10 +46,10 @@ namespace graphic
 		cParticles();
 		virtual ~cParticles();
 
-		bool Create( const string &textureFileName, const int maxParticle );
+		bool Create(cRenderer &renderer, const string &textureFileName, const int maxParticle);
 		
 		virtual void Move( const float elapseTime);
-		virtual void Render();
+		virtual void Render(cRenderer &renderer);
 
 		void AddCollisionPlane(const Plane &plane, const float bounceFactor = 1.0f, 
 			const PARTICLE_COLLISION_RESULT::TYPE cr = PARTICLE_COLLISION_RESULT::BOUNCE);

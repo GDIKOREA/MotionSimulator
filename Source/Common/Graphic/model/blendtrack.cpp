@@ -44,8 +44,8 @@ void cBlendTrack::PlayAnimation(
 	m_isLoop = isLoop;
 	m_isAni = true;
 
-	m_totalPlayFrame = (0 == totalAniFrame)? (rawAni.end - rawAni.start): totalAniFrame;
-	m_curPlayFrame = rawAni.start;
+	m_totalPlayFrame = (0 == totalAniFrame)? (int)(rawAni.end - rawAni.start): totalAniFrame;
+	m_curPlayFrame = (int)rawAni.start;
 	m_curPlayTime = rawAni.start * 0.03334f;
 	m_incPlayFrame = 0;
 	m_incPlayTime = 0;

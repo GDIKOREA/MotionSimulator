@@ -17,7 +17,7 @@ namespace graphic
 		cLight& GetMainLight();
 		cLight* GetLight(const int index);
 
-		bool Bind(const int index=0);
+		bool Bind(cRenderer &renderer, const int index = 0);
 
 
 	private:

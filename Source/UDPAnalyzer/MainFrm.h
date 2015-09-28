@@ -27,6 +27,7 @@ public:
 	CMixingView *m_mixingView;
 	COutputView *m_outputView;
 	C3DView *m_dxView;
+	C3DView *m_dxView2;
 	CUDPPlayerView *m_udpPlayerView;
 	CUDPSendView *m_udpSendView;
 
@@ -34,6 +35,7 @@ public:
 // Operations
 public:
 	BOOL NewPlotWindow();
+	void SetContainerSize(CDockablePane* targetPane, UINT cx, UINT cy);
 
 
 // Overrides
@@ -72,6 +74,7 @@ public:
 	afx_msg void OnUpdateFileSaveas(CCmdUI *pCmdUI);
 	afx_msg void OnViewInitdockingwindows();
 	afx_msg void OnClose();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 

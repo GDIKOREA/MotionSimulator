@@ -6,7 +6,7 @@
 using namespace  graphic;
 
 
-cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
+cBoneMgr::cBoneMgr(cRenderer &renderer, const int id, const sRawMeshGroup &rawMeshes) :
 	m_root(NULL)
 ,	m_id(id)
 ,	m_deltaTime(0)
@@ -16,7 +16,7 @@ cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
 	
 	sRawBone rootBone;
 	rootBone.name = "root bone";
-	m_root = new cBoneNode(-1, m_palette, rootBone);
+	m_root = new cBoneNode(renderer, -1, m_palette, rootBone);
 
 	for (u_int i=0; i < rawMeshes.bones.size(); ++i)
 	{
@@ -26,7 +26,7 @@ cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
 		if (m_bones[ id])
 			continue; // already exist continue;
 
-		cBoneNode *bone = new cBoneNode(id, m_palette, rawMeshes.bones[ i]);
+		cBoneNode *bone = new cBoneNode(renderer, id, m_palette, rawMeshes.bones[ i]);
 		SAFE_DELETE(m_bones[ id]);
 		m_bones[ id] = bone;
 
@@ -42,7 +42,7 @@ cBoneMgr::cBoneMgr(const int id, const sRawMeshGroup &rawMeshes) :
 		}
 	}
 
-	CreateBoundingBox(rawMeshes);
+	CreateBoundingBox(renderer, rawMeshes);
 
 }
 
@@ -119,10 +119,10 @@ bool cBoneMgr::Move(const float elapseTime)
 
 
 // 스켈레톤 출력.
-void cBoneMgr::Render(const Matrix44 &parentTm)
+void cBoneMgr::Render(cRenderer &renderer, const Matrix44 &parentTm)
 {
 	RET(!m_root);
-	m_root->Render(parentTm);
+	m_root->Render(renderer, parentTm);
 }
 
 //void cBoneMgr::RenderShader(cShader &shader, const Matrix44 &parentTm)
@@ -133,14 +133,14 @@ void cBoneMgr::Render(const Matrix44 &parentTm)
 
 
 // 경계박스 출력.
-void cBoneMgr::RenderBoundingBox(const Matrix44 &parentTm)
+void cBoneMgr::RenderBoundingBox(cRenderer &renderer, Matrix44 &parentTm)
 {
 	const Matrix44 identity;
 	for (int i=0; i < (int)m_boundingBox.size(); ++i)
 	{
 		if (m_bones[ i])
 			m_boundingBox[ i].SetTransform( m_bones[ i]->GetAccTM() * parentTm );
-		m_boundingBox[ i].Render(identity);
+		m_boundingBox[ i].Render(renderer, identity);
 	}
 }
 
@@ -169,7 +169,7 @@ void cBoneMgr::Clear()
 
 
 // 경계박스 생성.
-void cBoneMgr::CreateBoundingBox(const sRawMeshGroup &rawMeshes)
+void cBoneMgr::CreateBoundingBox(cRenderer &renderer, const sRawMeshGroup &rawMeshes)
 {
 	RET(!m_root);
 
@@ -212,7 +212,7 @@ void cBoneMgr::CreateBoundingBox(const sRawMeshGroup &rawMeshes)
 	{
 		if (!boundingBox[ i].IsOk())
 			continue;
-		m_boundingBox[ i].SetCube(  boundingBox[ i]._min,  boundingBox[ i]._max );
+		m_boundingBox[ i].SetCube(  renderer, boundingBox[ i]._min,  boundingBox[ i]._max );
 	}
 }
 

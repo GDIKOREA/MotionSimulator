@@ -5,15 +5,14 @@
 using namespace graphic;
 
 
-cRigidMesh::cRigidMesh(const int id, const sRawMesh &raw) : 
-	cMesh(id, raw)
+cRigidMesh::cRigidMesh(cRenderer &renderer, const int id, const sRawMesh &raw) : 
+	cMesh(renderer, id, raw)
 ,	m_track(NULL)
 ,	m_aniTime(0)
 ,	m_aniStart(0)
 ,	m_aniEnd(0)
 ,	m_aniFrame(0)
 {
-
 }
 
 cRigidMesh::~cRigidMesh()
@@ -57,15 +56,15 @@ bool cRigidMesh::Move(const float elapseTime)
 
 
 // Ãâ·Â.
-void cRigidMesh::Render(const Matrix44 &parentTm)
+void cRigidMesh::Render(cRenderer &renderer, const Matrix44 &parentTm)
 {
 	if (m_shader)
 	{
-		cMesh::RenderShader(*m_shader, parentTm);
+		cMesh::RenderShader(renderer, *m_shader, parentTm);
 		return;
 	}
 
-	cMesh::Render(parentTm);
+	cMesh::Render(renderer, parentTm);
 }
 
 

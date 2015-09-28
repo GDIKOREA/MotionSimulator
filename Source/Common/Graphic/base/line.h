@@ -9,15 +9,15 @@ namespace graphic
 	{
 	public:
 		cLine();
-		cLine(const Vector3 &p0, const Vector3 &p1, const float width);
+		cLine(cRenderer &renderer, const Vector3 &p0, const Vector3 &p1, const float width);
 
-		void Render();
-		void SetLine(const Vector3 &p0, const Vector3 &p1, const float width);
+		void Render(cRenderer &renderer);
+		void SetLine(cRenderer &renderer, const Vector3 &p0, const Vector3 &p1, const float width);
 		cMaterial& GetMaterial();		
 
 
 	protected:
-		void InitCube();
+		void InitCube(cRenderer &renderer);
 
 
 	private:

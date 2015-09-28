@@ -73,9 +73,9 @@ void cMaterial::InitGreen()
 	Init(Vector4(0, 1, 0, 1), Vector4(0, 1, 0, 1), Vector4(0, 1, 0, 1));
 }
 
-void cMaterial::Bind()
+void cMaterial::Bind(cRenderer &renderer)
 {
-	graphic::GetDevice()->SetMaterial(&m_mtrl);
+	renderer.GetDevice()->SetMaterial(&m_mtrl);
 }
 
 void cMaterial::Bind(cShader &shader)

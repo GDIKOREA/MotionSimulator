@@ -11,8 +11,8 @@ public:
 	cCubeFlight();
 	virtual ~cCubeFlight();
 
-	bool Init();
-	void Render();
+	bool Init(graphic::cRenderer &renderer);
+	void Render(graphic::cRenderer &renderer);
 	void Update(const float deltaSeconds);
 
 	void SetEulerAngle(const float roll, const float pitch, const float yaw);

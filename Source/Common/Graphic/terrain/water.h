@@ -32,8 +32,8 @@ namespace graphic
 		cWater();
 		virtual ~cWater();
 
-		bool Create();
-		virtual void Render();
+		bool Create(cRenderer &renderer);
+		virtual void Render(cRenderer &renderer);
 		virtual void Move(const float elapseTime);
 
 		void BeginRefractScene();

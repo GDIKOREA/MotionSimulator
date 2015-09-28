@@ -5,6 +5,7 @@
 
 namespace graphic
 {
+	class cRenderer;
 
 	class cVertexBuffer
 	{
@@ -12,27 +13,28 @@ namespace graphic
 		cVertexBuffer();
 		virtual ~cVertexBuffer();
 
-		bool Create(const int vertexCount, const int sizeofVertex, DWORD fvf);
-		bool CreateVMem(const int vertexCount, const int sizeofVertex, DWORD fvf);
-		bool Create(const int vertexCount, const int sizeofVertex, const cVertexDeclaration &decl);
+		bool Create(cRenderer &renderer, const int vertexCount, const int sizeofVertex, DWORD fvf);
+		bool CreateVMem(cRenderer &renderer, const int vertexCount, const int sizeofVertex, DWORD fvf);
+		bool Create(cRenderer &renderer, const int vertexCount, const int sizeofVertex, const cVertexDeclaration &decl);
 
 		void* Lock();
 		void* LockDiscard(const int idx=0, const int size=0);
 		void* LockNooverwrite(const int idx=0, const int size=0);
 		void Unlock();
-		void Bind() const;
+		void Bind(cRenderer &renderer) const;
 		void Clear();
 
-		void RenderTriangleStrip();
-		void RenderLineStrip();
-		void RenderPointList(const int count=0);
+		void RenderTriangleStrip(cRenderer &renderer );
+		void RenderLineStrip(cRenderer &renderer );
+		void RenderPointList(cRenderer &renderer, const int count = 0);
 
 		DWORD GetFVF() const;
 		int GetSizeOfVertex() const;
 		int GetVertexCount() const;
 		int GetOffset( const BYTE usage, const BYTE usageIndex=0 );
 
-		cVertexBuffer& operator=(cVertexBuffer &rhs);
+		void Set(cRenderer &renderer, cVertexBuffer &rhs);
+		//cVertexBuffer& operator=(cVertexBuffer &rhs);
 
 
 	private:

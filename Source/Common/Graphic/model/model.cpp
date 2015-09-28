@@ -32,7 +32,7 @@ cModel::~cModel()
 }
 
 
-bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
+bool cModel::Create(cRenderer &renderer, const string &modelName, MODEL_TYPE::TYPE type)
 	// type = MODEL_TYPE::AUTO
 {
 	sRawMeshGroup *rawMeshes = cResourceManager::Get()->LoadModel(modelName);
@@ -54,7 +54,7 @@ bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
 	case MODEL_TYPE::SKIN:
 		if (isSkinnedMesh)
 		{
-			m_bone = new cBoneMgr(0, *rawMeshes);
+			m_bone = new cBoneMgr(renderer, 0, *rawMeshes);
 			m_type = MODEL_TYPE::SKIN;
 		}
 		else
@@ -71,11 +71,11 @@ bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
 		cMesh *p = NULL;
 		if (MODEL_TYPE::SKIN == m_type)
 		{
-			p = new cSkinnedMesh(id++, &m_bone->GetPalette(), mesh);
+			p = new cSkinnedMesh(renderer, id++, &m_bone->GetPalette(), mesh);
 		}
 		else
 		{
-			p = new cRigidMesh(id++, mesh);
+			p = new cRigidMesh(renderer, id++, mesh);
 		}
 
 		if (p)
@@ -84,16 +84,16 @@ bool cModel::Create(const string &modelName, MODEL_TYPE::TYPE type )
 	
 	if (MODEL_TYPE::RIGID == m_type)
 	{
-		SetShader( cResourceManager::Get()->LoadShader("hlsl_rigid_phong.fx") );
+		SetShader( cResourceManager::Get()->LoadShader(renderer, "hlsl_rigid_phong.fx") );
 	}
 	else
 	{
-		SetShader( cResourceManager::Get()->LoadShader("hlsl_skinning_using_texcoord_unlit.fx") );
+		SetShader(cResourceManager::Get()->LoadShader(renderer, "hlsl_skinning_using_texcoord_unlit.fx"));
 	}
 
 
 	// 모델 충돌 박스를 생성한다.
-	GetCollisionBox();
+	GetCollisionBox(renderer);
 
 	return true;
 }
@@ -139,7 +139,7 @@ bool cModel::Move(const float elapseTime)
 }
 
 
-void cModel::Render(const Matrix44 &tm)
+void cModel::Render(cRenderer &renderer, const Matrix44 &tm)
 {
 
 	// 셰이더가 설정되지 않았다면 업데이트 한다.
@@ -152,35 +152,35 @@ void cModel::Render(const Matrix44 &tm)
 		}		
 	}
 
-	GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&Matrix44::Identity);
+	renderer.GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&Matrix44::Identity);
 
 	if (m_isRenderMesh)
 	{
 		BOOST_FOREACH (auto node, m_meshes)
-			node->Render(m_TM * tm);
+			node->Render(renderer, m_TM * tm);
 	}
 
 	if (m_isRenderBone && m_bone)
-		m_bone->Render(m_TM * tm);
+		m_bone->Render(renderer, m_TM * tm);
 
 	if (m_isRenderBoundingBox)
-		m_renderBoundingBox.Render(m_TM * tm);
+		m_renderBoundingBox.Render(renderer, m_TM * tm);
 	if (m_isRenderBoneBoundingBox && m_bone)
-		m_bone->RenderBoundingBox(m_TM * tm);
+		m_bone->RenderBoundingBox(renderer, m_TM * tm);
 }
 
 
 // 그림자 출력.
-void cModel::RenderShadow(const Matrix44 &viewProj, 
+void cModel::RenderShadow(cRenderer &renderer, const Matrix44 &viewProj,
 	const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm)
 {
-	GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&Matrix44::Identity);
+	renderer.GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&Matrix44::Identity);
 
 	if (m_isRenderMesh)
 	{
 		const Matrix44 tm = m_TM * parentTm;
 		BOOST_FOREACH (auto node, m_meshes)
-			node->RenderShadow(viewProj, lightPos, lightDir, tm);
+			node->RenderShadow(renderer, viewProj, lightPos, lightDir, tm);
 	}
 }
 
@@ -188,15 +188,15 @@ void cModel::RenderShadow(const Matrix44 &viewProj,
 // 그림자 업데이트.
 // GetDevice()->BeginScene(); 함수가 호출되기 전에 
 // UpdateShadow() 함수를 호출해야 한다.
-void cModel::UpdateShadow()
+void cModel::UpdateShadow(cRenderer &renderer)
 {	
 	if (m_isRenderShadow)
 	{
 		// 그림자맵 생성.
 		if (!m_shadow.IsLoaded())
-			m_shadow.Create(256, 256);
+			m_shadow.Create(renderer, 256, 256);
 
-		m_shadow.UpdateShadow(*this);
+		m_shadow.UpdateShadow(renderer, *this);
 	}
 }
 
@@ -262,7 +262,7 @@ void cModel::UpdateCollisionBox()
 }
 
 
-cBoundingBox* cModel::GetCollisionBox()
+cBoundingBox* cModel::GetCollisionBox(cRenderer &renderer)
 {
 	sMinMax mm;
 	BOOST_FOREACH (auto &mesh, m_meshes)
@@ -278,7 +278,7 @@ cBoundingBox* cModel::GetCollisionBox()
 	if (m_boundingBox.Length() >= FLT_MAX)
 		m_boundingBox.SetBoundingBox(Vector3(0,0,0), Vector3(0,0,0));
 
-	m_renderBoundingBox.SetCube(m_boundingBox.m_min, m_boundingBox.m_max);
+	m_renderBoundingBox.SetCube(renderer, m_boundingBox.m_min, m_boundingBox.m_max);
 	m_renderBoundingBox.SetColor(0x0000ff00);
 	return &m_boundingBox;
 }
@@ -291,10 +291,10 @@ void cModel::Collision( int testNum, ICollisionable *obj )
 
 
 // 모델을 복사해서 리턴한다.
-cModel* cModel::Clone() const
+cModel* cModel::Clone(cRenderer &renderer) const
 {
 	cModel *clone = new cModel(GenerateId());
-	clone->Create(m_fileName, m_type);
+	clone->Create(renderer, m_fileName, m_type);
 
 	clone->SetTransform(m_TM);
 	clone->SetShader(m_shader);

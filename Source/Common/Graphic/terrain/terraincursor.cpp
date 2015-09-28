@@ -5,7 +5,7 @@
 
 using namespace graphic;
 
-cTerrainCursor::cTerrainCursor() :
+cTerrainCursor::cTerrainCursor(cRenderer &renderer) :
 	m_innerRadius(10)
 ,	m_outerRadius(60)
 ,	m_innerAlpha(1.f)
@@ -15,8 +15,8 @@ cTerrainCursor::cTerrainCursor() :
 ,	m_editMode(TERRAIN_EDIT_MODE::NONE)
 ,	m_brushSpeed(20.f)
 {
-	m_innerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );
-	m_outerCircle.Create( CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );	
+	m_innerCircle.Create( renderer, CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );
+	m_outerCircle.Create( renderer, CURSOR_VERTEX_COUNT, sizeof(sVertexDiffuse), sVertexDiffuse::FVF );	
 }
 
 
@@ -26,24 +26,24 @@ cTerrainCursor::~cTerrainCursor()
 }
 
 
-void cTerrainCursor::RenderTerrainBrush()
+void cTerrainCursor::RenderTerrainBrush(cRenderer &renderer)
 {
 	//m_innerCircle.RenderLineStrip();
-	m_outerCircle.RenderLineStrip();
+	m_outerCircle.RenderLineStrip(renderer);
 }
 
 
-void cTerrainCursor::RenderBrush()
+void cTerrainCursor::RenderBrush(cRenderer &renderer)
 {
-	m_innerCircle.RenderLineStrip();
-	m_outerCircle.RenderLineStrip();
+	m_innerCircle.RenderLineStrip(renderer);
+	m_outerCircle.RenderLineStrip(renderer);
 }
 
 
-void cTerrainCursor::RenderModel()
+void cTerrainCursor::RenderModel(cRenderer &renderer)
 {
 	if (m_selectModel)
-		m_selectModel->Render(Matrix44::Identity);
+		m_selectModel->Render(renderer, Matrix44::Identity);
 }
 
 
@@ -97,7 +97,7 @@ void cTerrainCursor::EnableEraseMode(const bool erase)
 
 
 // 텍스쳐 브러쉬를 선택한다.
-void cTerrainCursor::SelectBrushTexture(const string &fileName )
+void cTerrainCursor::SelectBrushTexture(cRenderer &renderer, const string &fileName)
 {
 	if (fileName.empty())
 	{
@@ -105,7 +105,7 @@ void cTerrainCursor::SelectBrushTexture(const string &fileName )
 		return;
 	}
 
-	m_brushTexture = cResourceManager::Get()->LoadTexture(fileName);
+	m_brushTexture = cResourceManager::Get()->LoadTexture(renderer, fileName);
 	if (!m_brushTexture)
 	{
 		MessageBoxA(NULL, "텍스쳐 파일을 읽을 수 없습니다.", "ERROR", MB_OK);
@@ -114,7 +114,7 @@ void cTerrainCursor::SelectBrushTexture(const string &fileName )
 
 
 // 모델 선택.
-void cTerrainCursor::SelectModel(const string &fileName)
+void cTerrainCursor::SelectModel(cRenderer &renderer, const string &fileName)
 {
 	if (m_selectModel)
 	{
@@ -124,16 +124,16 @@ void cTerrainCursor::SelectModel(const string &fileName)
 
 	SAFE_DELETE (m_selectModel);
 	m_selectModel = new cModel(common::GenerateId());
-	m_selectModel->Create(fileName);
+	m_selectModel->Create(renderer, fileName);
 
 	cShader *shader = NULL;
 	switch (m_selectModel->GetModelType())
 	{
 	case MODEL_TYPE::RIGID: 
-		shader = cResourceManager::Get()->LoadShader(  "hlsl_rigid_phong.fx" );
+		shader = cResourceManager::Get()->LoadShader( renderer, "hlsl_rigid_phong.fx" );
 		break;
 	default:
-		shader = cResourceManager::Get()->LoadShader(  "hlsl_skinning_using_texcoord_unlit.fx" );
+		shader = cResourceManager::Get()->LoadShader( renderer, "hlsl_skinning_using_texcoord_unlit.fx" );
 		break;
 	}
 	m_selectModel->SetShader(shader);

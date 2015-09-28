@@ -9,12 +9,12 @@ using namespace graphic;
 
 
 
-cTerrainEditor::cTerrainEditor()
+cTerrainEditor::cTerrainEditor(cRenderer &renderer)
 {
-	InitLayer();
+	InitLayer(renderer);
 
 	//m_shader.Create( "./media/shader/hlsl_terrain_splatting.fx", "TShader" );
-	m_emptyTexture.Create( "./media/texture/emptyTexture.png" );
+	m_emptyTexture.Create(renderer, "./media/texture/emptyTexture.png" );
 }
 
 cTerrainEditor::~cTerrainEditor()
@@ -32,9 +32,9 @@ bool cTerrainEditor::WriteGRDFile( const string &fileName )
 
 
 // 지형 파일 로드
-bool cTerrainEditor::CreateFromGRDFile( const string &fileName )
+bool cTerrainEditor::CreateFromGRDFile(cRenderer &renderer, const string &fileName)
 {
-	return m_grid.CreateFromFile(fileName);
+	return m_grid.CreateFromFile(renderer, fileName);
 }
 
 
@@ -108,17 +108,17 @@ bool cTerrainEditor::WriteTRNFile(const string &fileName)
 
 
 // 스플래팅된 최종 지형 텍스쳐를 파일에 저장한다.
-bool cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
+bool cTerrainEditor::WriteTerrainTextureToPNGFile(cRenderer &renderer, const string &fileName)
 {
 	cShader shader;
-	shader.Create( "./media/shader/hlsl_terrain_splatting_texture_write.fx", "TShader" );
+	shader.Create(renderer, "./media/shader/hlsl_terrain_splatting_texture_write.fx", "TShader" );
 
 	cSurface surface;
-	surface.CreateRenderTarget(512, 512);
+	surface.CreateRenderTarget(renderer, 512, 512);
 
-	surface.Begin();
+	surface.Begin(renderer);
 
-	GetDevice()->Clear(0L, NULL
+	renderer.GetDevice()->Clear(0L, NULL
 		, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER
 		, 0x00000000, 1.0f, 0L);
 
@@ -135,7 +135,7 @@ bool cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
 	if (m_layer.empty())
 	{
 		shader.SetRenderPass(0);
-		m_grid.RenderShader(shader);
+		m_grid.RenderShader(renderer, shader);
 	}
 	else
 	{
@@ -149,10 +149,10 @@ bool cTerrainEditor::WriteTerrainTextureToPNGFile( const string &fileName )
 			shader.SetTexture( texName[ i], m_emptyTexture );
 
 		shader.SetRenderPass(1);
-		m_grid.RenderShader(shader);
+		m_grid.RenderShader(renderer, shader);
 	}
 
-	surface.End();
+	surface.End(renderer);
 
 	const bool result = surface.WritePNGFile(fileName);
 	return result;

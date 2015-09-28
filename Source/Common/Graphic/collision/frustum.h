@@ -4,7 +4,7 @@
 
 namespace graphic
 {
-
+	class cRenderer;
 
 	class cFrustum : public cCube
 	{
@@ -12,11 +12,11 @@ namespace graphic
 		cFrustum();
 		virtual ~cFrustum();
 
-		bool Create( const Matrix44 &matViewProj );
-		bool Create( const Vector3 &_min, const Vector3 &_max );
+		bool Create(cRenderer &renderer, const Matrix44 &matViewProj);
+		bool Create(cRenderer &renderer, const Vector3 &_min, const Vector3 &_max);
 		bool IsIn( const Vector3 &point );
 		bool IsInSphere( const Vector3 &point, float radius );
-		void Render();
+		void Render(cRenderer &renderer);
 		const Vector3& GetPos() const;
 		vector<Plane>& GetPlanes();
 		

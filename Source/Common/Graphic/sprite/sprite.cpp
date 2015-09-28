@@ -22,9 +22,9 @@ cSprite::~cSprite()
 }
 
 
-void cSprite::SetTexture(const string &fileName)
+void cSprite::SetTexture(cRenderer &renderer, const string &fileName)
 {
-	m_texture = cResourceManager::Get()->LoadTexture(fileName, false);
+	m_texture = cResourceManager::Get()->LoadTexture(renderer, fileName, false);
 	if (m_texture)
 	{
 		//if (::IsRectEmpty(&m_rect))
@@ -42,7 +42,7 @@ void cSprite::SetCenter(const Vector3 &center) // x,y = 0~1
 }
 
 
-void cSprite::Render(const Matrix44 &parentTm)
+void cSprite::Render(cRenderer &renderer, const Matrix44 &parentTm)
 {
 	RET(!m_sprite);
 
@@ -56,8 +56,8 @@ void cSprite::Render(const Matrix44 &parentTm)
 	if (m_texture)
 	{
 		m_sprite->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_SORT_TEXTURE);
-		GetDevice()->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_BORDER);
-		GetDevice()->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_BORDER);
+		renderer.GetDevice()->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_BORDER);
+		renderer.GetDevice()->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_BORDER);
 
 		m_sprite->SetTransform((D3DXMATRIX*)&tm);
 		m_sprite->Draw(m_texture->GetTexture(), &m_rect, (D3DXVECTOR3*)&m_center, 
@@ -66,7 +66,7 @@ void cSprite::Render(const Matrix44 &parentTm)
 	}
 
 	// 자식노드들의 Render를 호출한다.
-	cNode::Render(m_accTM);
+	cNode::Render(renderer, m_accTM);
 }
 
 

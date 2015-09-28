@@ -88,24 +88,24 @@ bool cNode::RemoveNode(const int id)
 
 
 // 자식노드의 Render 를 호출한다.
-void cNode::Render(const Matrix44 &parentTm)
+void cNode::Render(cRenderer &renderer, const Matrix44 &parentTm)
 {
 	RET(!m_isRender);
 	
 	BOOST_FOREACH (auto node, m_children)
 	{
-		node->Render(parentTm);
+		node->Render(renderer, parentTm);
 	}
 }
 
 
 // 자식노드의 RenderShadow를 호출한다.
-void cNode::RenderShadow(const Matrix44 &viewProj, 
+void cNode::RenderShadow(cRenderer &renderer, const Matrix44 &viewProj,
 	const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm)
 {
 	BOOST_FOREACH (auto node, m_children)
 	{
-		node->RenderShadow(viewProj, lightPos, lightDir, parentTm);
+		node->RenderShadow(renderer, viewProj, lightPos, lightDir, parentTm);
 	}
 }
 

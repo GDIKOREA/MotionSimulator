@@ -9,16 +9,16 @@ namespace graphic
 	{
 	public:
 		cSphere();
-		cSphere(const float radius, const int stacks, const int slices);
+		cSphere(cRenderer &renderer, const float radius, const int stacks, const int slices);
 		virtual ~cSphere();
 
-		void Create(const float radius, const int stacks, const int slices);
+		void Create(cRenderer &renderer, const float radius, const int stacks, const int slices);
 		void SetTransform( const Matrix44 &tm );
 		const Matrix44& GetTransform() const;
 		cMaterial& GetMaterial();
 
-		void Render(const Matrix44 &tm);
-		void RenderShader(cShader &shader, const Matrix44 &tm);
+		void Render(cRenderer &renderer, const Matrix44 &tm);
+		void RenderShader(cRenderer &renderer, cShader &shader, const Matrix44 &tm);
 
 
 	private:

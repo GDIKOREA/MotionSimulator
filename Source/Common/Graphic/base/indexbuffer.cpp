@@ -17,11 +17,11 @@ cIndexBuffer::~cIndexBuffer()
 }
 
 
-bool cIndexBuffer::Create(int faceCount)
+bool cIndexBuffer::Create(cRenderer &renderer, int faceCount)
 {
 	SAFE_RELEASE(m_pIdxBuff);
 
-	if (FAILED(graphic::GetDevice()->CreateIndexBuffer(faceCount*3*sizeof(WORD), 
+	if (FAILED(renderer.GetDevice()->CreateIndexBuffer(faceCount*3*sizeof(WORD), 
 		D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,
 		D3DPOOL_MANAGED,
@@ -51,9 +51,9 @@ void cIndexBuffer::Unlock()
 }
 
 
-void cIndexBuffer::Bind() const
+void cIndexBuffer::Bind(cRenderer &renderer) const
 {
-	GetDevice()->SetIndices(m_pIdxBuff);
+	renderer.GetDevice()->SetIndices(m_pIdxBuff);
 }
 
 
@@ -64,13 +64,14 @@ void cIndexBuffer::Clear()
 }
 
 
-cIndexBuffer& cIndexBuffer::operator=(cIndexBuffer &rhs)
+//cIndexBuffer& cIndexBuffer::operator=(cIndexBuffer &rhs)
+void cIndexBuffer::Set(cRenderer &renderer, cIndexBuffer &rhs)
 {
 	if (this != &rhs)
 	{
 		m_faceCount = rhs.m_faceCount;
 
-		if (Create(rhs.m_faceCount))
+		if (Create(renderer, rhs.m_faceCount))
 		{
 			if (BYTE* dest = (BYTE*)Lock())
 			{
@@ -83,5 +84,5 @@ cIndexBuffer& cIndexBuffer::operator=(cIndexBuffer &rhs)
 			}
 		}
 	}
-	return *this;
+	//return *this;
 }

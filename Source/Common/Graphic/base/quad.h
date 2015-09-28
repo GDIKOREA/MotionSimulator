@@ -12,11 +12,11 @@ namespace graphic
 		cQuad();
 		virtual ~cQuad();
 
-		bool Create( const float width, const float height, const Vector3 &pos, 
+		bool Create(cRenderer &renderer, const float width, const float height, const Vector3 &pos,
 			const string &textureFileName="" );
 
-		void Render();
-		void RenderLine();
+		void Render(cRenderer &renderer);
+		void RenderLine(cRenderer &renderer);
 
 		void SetTransform( const Matrix44 &tm );
 		const Matrix44& GetTransform() const;

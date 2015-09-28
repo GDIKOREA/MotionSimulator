@@ -11,10 +11,10 @@ namespace graphic
 		cSnow();
 		virtual ~cSnow();
 
-		bool Create( const Vector3 &_min, const Vector3 &_max, 
+		bool Create(cRenderer &renderer, const Vector3 &_min, const Vector3 &_max,
 			const int particleCount );
 		virtual void Move( const float elapseTime) override;
-		virtual void Render();
+		virtual void Render(cRenderer &renderer);
 		bool IsRenderFrustum() const;
 		void SetRenderFrustum(bool isRender);
 

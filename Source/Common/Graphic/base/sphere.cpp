@@ -4,50 +4,47 @@
 
 using namespace graphic;
 
-
 cSphere::cSphere()
 {
-
 }
 
-cSphere::cSphere(const float radius, const int stacks, const int slices)
+cSphere::cSphere(cRenderer &renderer, const float radius, const int stacks, const int slices)
 {
-	Create(radius, stacks, slices);
+	Create(renderer, radius, stacks, slices);
 	m_mtrl.InitWhite();
 }
 
 cSphere::~cSphere()
 {
-
 }
 
 
-void cSphere::Render(const Matrix44 &tm)
+void cSphere::Render(cRenderer &renderer, const Matrix44 &tm)
 {
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
+	renderer.GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	Matrix44 mat = m_tm * tm;
-	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&mat );
-	m_vtxBuff.Bind();
-	m_idxBuff.Bind();
-	m_mtrl.Bind();
-	GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
+	renderer.GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&mat);
+	m_vtxBuff.Bind(renderer);
+	m_idxBuff.Bind(renderer);
+	m_mtrl.Bind(renderer);
+	renderer.GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0,
 		m_vtxBuff.GetVertexCount(), 0, m_idxBuff.GetFaceCount());
 
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, TRUE );
+	renderer.GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 
-void cSphere::RenderShader(cShader &shader, const Matrix44 &tm)
+void cSphere::RenderShader(cRenderer &renderer, cShader &shader, const Matrix44 &tm)
 {
 	Matrix44 mat = m_tm * tm;
 	shader.SetMatrix( "mWorld", mat);
-	m_vtxBuff.Bind();
-	m_idxBuff.Bind();
+	m_vtxBuff.Bind(renderer);
+	m_idxBuff.Bind(renderer);
 
 	shader.Begin();
 	shader.BeginPass();
-	GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
+	renderer.GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0,
 		m_vtxBuff.GetVertexCount(), 0, m_idxBuff.GetFaceCount());
 	shader.EndPass();
 	shader.End();
@@ -55,7 +52,7 @@ void cSphere::RenderShader(cShader &shader, const Matrix44 &tm)
 
 
 // 구 생성
-void cSphere::Create(const float radius, const int stacks, const int slices)
+void cSphere::Create(cRenderer &renderer, const float radius, const int stacks, const int slices)
 {
 	if (m_vtxBuff.GetVertexCount() > 0)
 		return;
@@ -67,8 +64,8 @@ void cSphere::Create(const float radius, const int stacks, const int slices)
 	const int dwVertices = (slices) * (((stacks-2) * 4) + 6);
 	const int dwIndices = ((slices-1)*6) * stacks ;
 
-	m_vtxBuff.Create(dwVertices, sizeof(sVertexNormTex), sVertexNormTex::FVF);
-	m_idxBuff.Create(dwIndices);
+	m_vtxBuff.Create(renderer, dwVertices, sizeof(sVertexNormTex), sVertexNormTex::FVF);
+	m_idxBuff.Create(renderer, dwIndices);
 
 	sVertexNormTex *pVertex = (sVertexNormTex*)m_vtxBuff.Lock();
 	WORD *pIndices = (WORD*)m_idxBuff.Lock();

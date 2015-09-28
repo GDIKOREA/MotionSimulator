@@ -13,10 +13,10 @@ namespace graphic
 		cModel(const int id);
 		virtual ~cModel();
 
-		virtual bool Create(const string &modelName, MODEL_TYPE::TYPE type = MODEL_TYPE::AUTO);
+		virtual bool Create(cRenderer &renderer, const string &modelName, MODEL_TYPE::TYPE type = MODEL_TYPE::AUTO);
 		virtual bool Move(const float elapseTime) override;
-		virtual void Render(const Matrix44 &tm) override;
-		virtual void RenderShadow(const Matrix44 &viewProj, 
+		virtual void Render(cRenderer &renderer, const Matrix44 &tm) override;
+		virtual void RenderShadow(cRenderer &renderer, const Matrix44 &viewProj,
 			const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm) override;
 
 		virtual void Clear() override;
@@ -30,10 +30,10 @@ namespace graphic
 		void SetToolTransform(const sTransform& tm);
 
 		bool Pick(const Vector3 &orig, const Vector3 &dir);
-		cModel* Clone() const;
+		cModel* Clone(cRenderer &renderer) const;
 
 		// shadow
-		void UpdateShadow();
+		void UpdateShadow(cRenderer &renderer);
 		cShadow1& GetShadow();
 		const cShadow1& GetShadow() const;
 		bool IsRenderShadow() const;
@@ -52,7 +52,7 @@ namespace graphic
 		virtual bool IsTest( int testNum ) override;
 		virtual int GetCollisionId() override;
 		virtual void UpdateCollisionBox() override;
-		virtual cBoundingBox* GetCollisionBox() override;
+		virtual cBoundingBox* GetCollisionBox(cRenderer &renderer) override;
 		virtual void Collision( int testNum, ICollisionable *obj ) override;
 
 		// debug ¿ë ÇÔ¼ö.

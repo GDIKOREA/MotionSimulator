@@ -9,12 +9,12 @@ namespace graphic
 	{
 	public:
 		cText();
-		cText(const string &text, const int x, const int y, 
+		cText(cRenderer &renderer, const string &text, const int x, const int y,
 			const DWORD color=D3DXCOLOR(1,1,1,1),
 			const int fontSize=18, const bool isBold=true, const string &fontName="±¼¸²");
 		virtual ~cText();
 
-		bool Create(const int fontSize=18, const bool isBold=true, const string &fontName="±¼¸²");
+		bool Create(cRenderer &renderer, const int fontSize = 18, const bool isBold = true, const string &fontName = "±¼¸²");
 		void SetText(const string &text);
 		void SetText(const int x, const int y, const string &text);
 		const string& GetText() const;

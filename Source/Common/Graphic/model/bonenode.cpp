@@ -6,7 +6,7 @@
 using namespace graphic;
 
 
-cBoneNode::cBoneNode(const int id, vector<Matrix44> &palette, const sRawBone &rawBone) :
+cBoneNode::cBoneNode(cRenderer &renderer, const int id, vector<Matrix44> &palette, const sRawBone &rawBone) :
 	cNode(id, rawBone.name)
 ,	m_track(NULL)
 ,	m_mesh(NULL)
@@ -18,7 +18,7 @@ cBoneNode::cBoneNode(const int id, vector<Matrix44> &palette, const sRawBone &ra
 	m_track = new cBlendTrack();
 
 	// debug 용
-	m_mesh = new cMesh(id, rawBone);
+	m_mesh = new cMesh(renderer, id, rawBone);
 
 }
 
@@ -81,18 +81,18 @@ bool cBoneNode::Move(const float elapseTime)
 
 
 // 뼈 노드 출력
-void cBoneNode::Render(const Matrix44 &parentTm)
+void cBoneNode::Render(cRenderer &renderer, const Matrix44 &parentTm)
 {
 	RET(!m_mesh);
 
 	// 본 노드 메쉬는 world 좌표계로 되어있기 때문에 그냥 그리면 된다.
 	if (m_track)
-		m_mesh->Render(m_offset * m_accTM * parentTm);
+		m_mesh->Render(renderer, m_offset * m_accTM * parentTm);
 	else
-		m_mesh->Render(parentTm);
+		m_mesh->Render(renderer, parentTm);
 
 	BOOST_FOREACH (auto p, m_children)
-		p->Render( parentTm );
+		p->Render( renderer, parentTm );
 }
 
 

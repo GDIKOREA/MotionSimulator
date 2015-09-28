@@ -42,7 +42,7 @@ cGrid2::~cGrid2()
 }
 
 
-void cGrid2::Create( const int rowCellCount, const int colCellCount, const float cellSize,
+void cGrid2::Create(cRenderer &renderer, const int rowCellCount, const int colCellCount, const float cellSize,
 	const float textureUVFactor, const float offsetY)
 {
 	// init member
@@ -57,7 +57,7 @@ void cGrid2::Create( const int rowCellCount, const int colCellCount, const float
 	const int cellCnt = rowCellCount * colCellCount;
 	const int vtxCount= rowVtxCnt * colVtxCnt;
 
-	m_vtxBuff.Create( vtxCount, sizeof(sVertexNormTex), sVertexNormTex::FVF);
+	m_vtxBuff.Create( renderer, vtxCount, sizeof(sVertexNormTex), sVertexNormTex::FVF);
 	{
 		sVertexNormTex *vertices = (sVertexNormTex*)m_vtxBuff.Lock();
 		const float startx = -cellSize*(colCellCount/2);
@@ -85,7 +85,7 @@ void cGrid2::Create( const int rowCellCount, const int colCellCount, const float
 	}
 
 
-	m_idxBuff.Create( cellCnt*2 );
+	m_idxBuff.Create( renderer, cellCnt*2 );
 	{
 		WORD *indices = (WORD*)m_idxBuff.Lock();
 		int baseIndex = 0;
@@ -194,7 +194,7 @@ bool cGrid2::WriteFile(const string &fileName)
 // 파일로부터 정보를 가져와 Grid 클래스를 생성한다.
 // GRD 포맷이어야 한다. 
 // 현재는 version 1만 지원한다.
-bool cGrid2::CreateFromFile(const string &fileName)
+bool cGrid2::CreateFromFile(cRenderer &renderer, const string &fileName)
 {
 	using namespace std;
 	ifstream ifs(fileName, ios_base::binary | ios_base::in);
@@ -222,7 +222,7 @@ bool cGrid2::CreateFromFile(const string &fileName)
 	// cGrid 초기화.
 	Clear();
 
-	Create(gbin.rowCellCount, gbin.colCellCount, gbin.cellSize, gbin.textureUVFactor );
+	Create(renderer, gbin.rowCellCount, gbin.colCellCount, gbin.cellSize, gbin.textureUVFactor );
 	
 	// 높이맵 설정.
 	if (sVertexNormTex *vertices = (sVertexNormTex*)m_vtxBuff.Lock())
@@ -241,35 +241,35 @@ bool cGrid2::CreateFromFile(const string &fileName)
 }
 
 
-void cGrid2::Render(const Matrix44 &tm, const int stage)
+void cGrid2::Render(cRenderer &renderer, const Matrix44 &tm, const int stage)
 {
-	GetDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE);
-	GetDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	GetDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	renderer.GetDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE);
+	renderer.GetDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	renderer.GetDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	
-	GetDevice()->SetTransform(D3DTS_WORLD, ToDxM(tm));
+	renderer.GetDevice()->SetTransform(D3DTS_WORLD, ToDxM(tm));
 
-	m_mtrl.Bind();
-	m_tex.Bind(stage);
-	m_vtxBuff.Bind();
-	m_idxBuff.Bind();
-	GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, m_vtxBuff.GetVertexCount(), 
+	m_mtrl.Bind(renderer);
+	m_tex.Bind(renderer, stage);
+	m_vtxBuff.Bind(renderer);
+	m_idxBuff.Bind(renderer);
+	renderer.GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_vtxBuff.GetVertexCount(),
 		0, m_idxBuff.GetFaceCount());
 
-	GetDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE);
+	renderer.GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 }
 
 
-void cGrid2::RenderLinelist()
+void cGrid2::RenderLinelist(cRenderer &renderer)
 {
-	m_vtxBuff.Bind();
-	m_idxBuff.Bind();
-	GetDevice()->DrawIndexedPrimitive( D3DPT_LINELIST, 0, 0, m_vtxBuff.GetVertexCount(), 
+	m_vtxBuff.Bind(renderer);
+	m_idxBuff.Bind(renderer);
+	renderer.GetDevice()->DrawIndexedPrimitive(D3DPT_LINELIST, 0, 0, m_vtxBuff.GetVertexCount(),
 		0, m_idxBuff.GetFaceCount()*3/2);
 }
 
 
-void cGrid2::RenderShader(cShader &shader, const Matrix44 &tm )
+void cGrid2::RenderShader(cRenderer &renderer, cShader &shader, const Matrix44 &tm)
 {
 	shader.SetMatrix( "mWorld", tm);
 	Matrix44 tmInvs = tm.Inverse();
@@ -282,9 +282,9 @@ void cGrid2::RenderShader(cShader &shader, const Matrix44 &tm )
 	shader.Begin();
 	shader.BeginPass();
 
-	m_vtxBuff.Bind();
-	m_idxBuff.Bind();
-	GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, m_vtxBuff.GetVertexCount(), 
+	m_vtxBuff.Bind(renderer);
+	m_idxBuff.Bind(renderer);
+	renderer.GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_vtxBuff.GetVertexCount(),
 		0, m_idxBuff.GetFaceCount());
 
 	shader.EndPass();

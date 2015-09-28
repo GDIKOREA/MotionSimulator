@@ -10,6 +10,7 @@ cCamera::cCamera() :
 	m_eyePos(0,100,-100)
 ,	m_lookAt(0,0,0)
 ,	m_up(0,1,0)
+, m_renderer(NULL)
 {
 	UpdateViewMatrix();
 
@@ -19,6 +20,7 @@ cCamera::cCamera(const Vector3 &eyePos, const Vector3 &lookAt, const Vector3 &up
 	m_eyePos(eyePos)
 ,	m_lookAt(lookAt)
 ,	m_up(up)
+, m_renderer(NULL)
 {
 	UpdateViewMatrix();
 }
@@ -69,15 +71,19 @@ void cCamera::Update()
 
 void cCamera::UpdateViewMatrix()
 {
+	RET(!m_renderer);
+
 	m_view.SetView2(m_eyePos, m_lookAt, m_up);
-	if (GetDevice())
-		GetDevice()->SetTransform(D3DTS_VIEW, (D3DMATRIX*)&m_view);
+	if (m_renderer->GetDevice())
+		m_renderer->GetDevice()->SetTransform(D3DTS_VIEW, (D3DMATRIX*)&m_view);
 }
 
 void cCamera::UpdateProjectionMatrix()
 {
-	if (GetDevice())
-		GetDevice()->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&m_proj);
+	RET(!m_renderer);
+
+	if (m_renderer->GetDevice())
+		m_renderer->GetDevice()->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&m_proj);
 }
 
 

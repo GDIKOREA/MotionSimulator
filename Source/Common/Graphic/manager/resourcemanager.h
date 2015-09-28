@@ -23,17 +23,17 @@ namespace graphic
 		
 		sRawMeshGroup* LoadModel( const string &fileName );
 		sRawAniGroup* LoadAnimation( const string &fileName );
-		cMeshBuffer* LoadMeshBuffer( const string &meshName );
-		cMeshBuffer* LoadMeshBuffer( const sRawMesh &rawMesh );
-		cTexture* LoadTexture( const string &fileName, const bool isSizePow2=true );
-		cTexture* LoadTexture( const string &dirPath, const string &fileName, const bool isSizePow2=true );
-		cShader* LoadShader( const string &fileName );
+		cMeshBuffer* LoadMeshBuffer(cRenderer &renderer, const string &meshName);
+		cMeshBuffer* LoadMeshBuffer(cRenderer &renderer, const sRawMesh &rawMesh);
+		cTexture* LoadTexture(cRenderer &renderer, const string &fileName, const bool isSizePow2 = true);
+		cTexture* LoadTexture(cRenderer &renderer, const string &dirPath, const string &fileName, const bool isSizePow2 = true);
+		cShader* LoadShader(cRenderer &renderer, const string &fileName);
 
 		sRawMeshGroup* FindModel( const string &fileName );
 		sRawAniGroup* FindAnimation( const string &fileName );
 		cMeshBuffer* FindMeshBuffer( const string &meshName );
 		cTexture* FindTexture( const string &fileName );
-		cShader * FindShader( const string &fileName );
+		cShader * FindShader(const string &fileName);
 		string FindFile( const string &fileName );
 
 		void SetMediaDirectory( const string &path );

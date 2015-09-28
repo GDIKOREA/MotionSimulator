@@ -16,11 +16,11 @@ cBillboard::~cBillboard()
 
 
 // 빌보드 초기화.
-bool cBillboard::Create( const BILLBOARD_TYPE::TYPE type, 
+bool cBillboard::Create(cRenderer &renderer, const BILLBOARD_TYPE::TYPE type,
 	const float width, const float height, 
 	const Vector3 &pos, const string &textureFileName )
 {
-	if (!__super::Create(width, height, pos, textureFileName))
+	if (!__super::Create(renderer, width, height, pos, textureFileName))
 		return false;
 
 	m_type = type;
@@ -29,7 +29,7 @@ bool cBillboard::Create( const BILLBOARD_TYPE::TYPE type,
 
 
 // 화면에 출력.
-void cBillboard::Render()
+void cBillboard::Render(cRenderer &renderer)
 {
 	Matrix44 mat;
 	const Matrix44 view = cMainCamera::Get()->GetViewMatrix();
@@ -54,5 +54,5 @@ void cBillboard::Render()
 	Matrix44 T;
 	T.SetTranslate(GetTransform().GetPosition());
 	SetTransform(mat.Transpose() * T);
-	__super::Render();
+	__super::Render(renderer);
 }

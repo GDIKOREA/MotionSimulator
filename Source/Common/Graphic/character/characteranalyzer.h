@@ -5,6 +5,7 @@
 
 namespace graphic
 {
+	class cRenderer;
 
 	class cCharacterAnalyzer
 	{
@@ -17,9 +18,9 @@ namespace graphic
 		void SetCharacter(cCharacter *character);
 
 		bool Move(const float elapseTime);
-		void Render(const Matrix44 &tm);
+		void Render(cRenderer &renderer,  const Matrix44 &tm);
 
-		void HighlightBone(const string &boneName);
+		void HighlightBone(cRenderer &renderer, const string &boneName);
 
 
 	private:

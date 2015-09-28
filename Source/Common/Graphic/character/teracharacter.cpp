@@ -25,6 +25,7 @@ cTeraCharacter::~cTeraCharacter()
 
 
 bool cTeraCharacter::Create( 
+	cRenderer &renderer,
 	const string &faceModelFileName,
 	const string &hairModelFileName,
 	const string &bodyModelFileName,
@@ -34,27 +35,27 @@ bool cTeraCharacter::Create(
 {
 	if (!faceModelFileName.empty())
 	{
-		SetFaceModel(faceModelFileName);
+		SetFaceModel(renderer, faceModelFileName);
 	}
 
 	if (!hairModelFileName.empty())
 	{
-		SetHairModel(hairModelFileName);
+		SetHairModel(renderer, hairModelFileName);
 	}
 
 	if (!bodyModelFileName.empty())
 	{
-		SetBodyModel(bodyModelFileName);
+		SetBodyModel(renderer, bodyModelFileName);
 	}
 
 	if (!handModelFileName.empty())
 	{
-		SetHandModel(handModelFileName);
+		SetHandModel(renderer, handModelFileName);
 	}
 
 	if (!legModelFileName.empty())
 	{
-		SetLegModel(legModelFileName);
+		SetLegModel(renderer, legModelFileName);
 	}
 
 	return true;
@@ -85,26 +86,26 @@ bool cTeraCharacter::SetAnimation( const string &aniFileName,
 }
 
 
-void cTeraCharacter::Render(const Matrix44 &tm)
+void cTeraCharacter::Render(cRenderer &renderer, const Matrix44 &tm)
 {
 	if (m_models[ TERA_MODEL::BODY])
 	{
 		m_models[ TERA_MODEL::BODY]->SetRenderBone(m_isRenderBone);
-		m_models[ TERA_MODEL::BODY]->Render(m_TM*tm);
+		m_models[ TERA_MODEL::BODY]->Render(renderer, m_TM*tm);
 	}
 	if (m_models[ TERA_MODEL::HAND])
-		m_models[ TERA_MODEL::HAND]->Render(m_TM*tm);
+		m_models[ TERA_MODEL::HAND]->Render(renderer, m_TM*tm);
 	if (m_models[ TERA_MODEL::LEG])
-		m_models[ TERA_MODEL::LEG]->Render(m_TM*tm);
+		m_models[ TERA_MODEL::LEG]->Render(renderer, m_TM*tm);
 
 	if (m_models[ TERA_MODEL::FACE])
 	{
-		m_models[ TERA_MODEL::FACE]->Render(m_TM*tm);
+		m_models[TERA_MODEL::FACE]->Render(renderer, m_TM*tm);
 	}
 
 	if (m_models[ TERA_MODEL::HAIR])
 	{
-		m_models[ TERA_MODEL::HAIR]->Render(m_TM*tm);
+		m_models[TERA_MODEL::HAIR]->Render(renderer, m_TM*tm);
 	}
 
 }
@@ -143,16 +144,16 @@ bool cTeraCharacter::Move(const float elapseTime)
 }
 
 
-void cTeraCharacter::SetBodyModel( const string &fileName )
+void cTeraCharacter::SetBodyModel(cRenderer &renderer, const string &fileName)
 {
 	if (!m_models[TERA_MODEL::BODY])
 	{
 		m_models[TERA_MODEL::BODY] = new cModel(common::GenerateId());
 		m_models[TERA_MODEL::BODY]->SetShader( graphic::cResourceManager::Get()->LoadShader(
-			"hlsl_skinning_using_texcoord_unlit.fx") );
+			renderer, "hlsl_skinning_using_texcoord_unlit.fx") );
 	}
 
-	m_models[ TERA_MODEL::BODY]->Create(fileName);
+	m_models[ TERA_MODEL::BODY]->Create(renderer, fileName);
 	//m_models[ TERA_MODEL::BODY]->SetRenderBone(true);
 
 	m_bodyNeckNode = m_models[ TERA_MODEL::BODY]->GetBoneMgr()->FindBone( "Bip01-Neck" );
@@ -160,44 +161,44 @@ void cTeraCharacter::SetBodyModel( const string &fileName )
 }
 
 
-void cTeraCharacter::SetHandModel( const string &fileName )
+void cTeraCharacter::SetHandModel(cRenderer &renderer, const string &fileName)
 {
 	if (!m_models[TERA_MODEL::HAND])
 	{
 		m_models[TERA_MODEL::HAND] = new cModel(common::GenerateId());
 		m_models[TERA_MODEL::HAND]->SetShader( graphic::cResourceManager::Get()->LoadShader(
-			"hlsl_skinning_using_texcoord_unlit.fx") );
+			renderer, "hlsl_skinning_using_texcoord_unlit.fx"));
 	}
 
-	m_models[ TERA_MODEL::HAND]->Create(fileName);
+	m_models[ TERA_MODEL::HAND]->Create(renderer, fileName);
 	m_models[ TERA_MODEL::HAND]->SharePalette( &m_models[ TERA_MODEL::BODY]->GetBoneMgr()->GetPalette() );
 }
 
 
-void cTeraCharacter::SetLegModel( const string &fileName )
+void cTeraCharacter::SetLegModel(cRenderer &renderer, const string &fileName)
 {
 	if (!m_models[TERA_MODEL::LEG])
 	{
 		m_models[TERA_MODEL::LEG] = new cModel(common::GenerateId());
 		m_models[TERA_MODEL::LEG]->SetShader( graphic::cResourceManager::Get()->LoadShader(
-			"hlsl_skinning_using_texcoord_unlit.fx") );
+			renderer, "hlsl_skinning_using_texcoord_unlit.fx"));
 	}
 
-	m_models[ TERA_MODEL::LEG]->Create(fileName);
+	m_models[ TERA_MODEL::LEG]->Create(renderer, fileName);
 	m_models[ TERA_MODEL::LEG]->SharePalette( &m_models[ TERA_MODEL::BODY]->GetBoneMgr()->GetPalette() );
 }
 
 
-void cTeraCharacter::SetFaceModel( const string &fileName )
+void cTeraCharacter::SetFaceModel(cRenderer &renderer, const string &fileName)
 {
 	if (!m_models[TERA_MODEL::FACE])
 	{
 		m_models[TERA_MODEL::FACE] = new cModel(common::GenerateId());
 		m_models[TERA_MODEL::FACE]->SetShader( graphic::cResourceManager::Get()->LoadShader(
-			"hlsl_skinning_using_texcoord_unlit.fx") );
+			renderer, "hlsl_skinning_using_texcoord_unlit.fx"));
 	}
 
-	m_models[ TERA_MODEL::FACE]->Create(fileName);
+	m_models[ TERA_MODEL::FACE]->Create(renderer, fileName);
 	m_models[ TERA_MODEL::FACE]->GetBoneMgr()->SetAnimationOption( 0x01 );
 
 	m_faceNeckNode = m_models[ TERA_MODEL::FACE]->GetBoneMgr()->FindBone( "Dummy_Neck" );
@@ -205,21 +206,21 @@ void cTeraCharacter::SetFaceModel( const string &fileName )
 }
 
 
-void cTeraCharacter::SetHairModel( const string &fileName )
+void cTeraCharacter::SetHairModel(cRenderer &renderer, const string &fileName)
 {
 	if (!m_models[TERA_MODEL::HAIR])
 	{
 		m_models[TERA_MODEL::HAIR] = new cModel(common::GenerateId());
 		m_models[TERA_MODEL::HAIR]->SetShader( graphic::cResourceManager::Get()->LoadShader(
-			"hlsl_skinning_using_texcoord_unlit.fx") );
+			renderer, "hlsl_skinning_using_texcoord_unlit.fx"));
 	}
 
-	m_models[ TERA_MODEL::HAIR]->Create(fileName);
+	m_models[ TERA_MODEL::HAIR]->Create(renderer, fileName);
 	m_hairHairNode = m_models[ TERA_MODEL::HAIR]->GetBoneMgr()->FindBone( "Dummy_Hair" );
 }
 
 
-void cTeraCharacter::SetTailModel( const string &fileName )
+void cTeraCharacter::SetTailModel(cRenderer &renderer, const string &fileName)
 {
 
 }

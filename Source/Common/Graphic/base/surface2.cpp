@@ -22,7 +22,7 @@ cSurface2::~cSurface2()
 }
 
 
-bool cSurface2::Create(int width, int height, int mipLevels,
+bool cSurface2::Create(cRenderer &renderer, int width, int height, int mipLevels,
 	D3DFORMAT texFormat, bool useDepthBuffer,
 	D3DFORMAT depthFormat, D3DVIEWPORT9& viewport, bool autoGenMips)
 {
@@ -39,13 +39,13 @@ bool cSurface2::Create(int width, int height, int mipLevels,
 	if(m_autoGenMips)
 		usage |= D3DUSAGE_AUTOGENMIPMAP;
 
-	if (FAILED(D3DXCreateTexture(GetDevice(), width, height, mipLevels, 
+	if (FAILED(D3DXCreateTexture(renderer.GetDevice(), width, height, mipLevels, 
 		usage, texFormat, D3DPOOL_DEFAULT, &m_texture)))
 	{
 		return false;
 	}
 
-	if (FAILED(D3DXCreateRenderToSurface(GetDevice(), width, height, texFormat, 
+	if (FAILED(D3DXCreateRenderToSurface(renderer.GetDevice(), width, height, texFormat, 
 		useDepthBuffer, depthFormat, &m_rts)))
 	{
 		return false;
@@ -74,17 +74,17 @@ void cSurface2::End()
 }
 
 
-void cSurface2::Render(const int index) // index=1
+void cSurface2::Render(cRenderer &renderer, const int index) // index=1
 {
-	GetDevice()->SetTransform(D3DTS_WORLD, ToDxM(Matrix44::Identity));
-	GetDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE);
-	GetDevice()->SetTextureStageState(0,D3DTSS_COLOROP,	D3DTOP_SELECTARG1);
-	GetDevice()->SetTextureStageState(0,D3DTSS_COLORARG1,	D3DTA_TEXTURE);
-	GetDevice()->SetTextureStageState(1,D3DTSS_COLOROP, D3DTOP_DISABLE);
+	renderer.GetDevice()->SetTransform(D3DTS_WORLD, ToDxM(Matrix44::Identity));
+	renderer.GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	renderer.GetDevice()->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+	renderer.GetDevice()->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	renderer.GetDevice()->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
 
-	GetDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	GetDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	GetDevice()->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
+	renderer.GetDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	renderer.GetDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	renderer.GetDevice()->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
 
 	const float scale = 128.0f;
 	typedef struct {FLOAT p[4]; FLOAT tu, tv;} TVERTEX;
@@ -96,11 +96,11 @@ void cSurface2::Render(const int index) // index=1
 		{scale, scale*(index+1),0, 1, 1, 1,},
 		{0, scale*(index+1),0, 1, 0, 1,},
 	};
-	GetDevice()->SetTexture( 0, m_texture );
-	GetDevice()->SetVertexShader(NULL);
-	GetDevice()->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX1 );
-	GetDevice()->SetPixelShader(NULL);
-	GetDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, Vertex, sizeof(TVERTEX) );
+	renderer.GetDevice()->SetTexture(0, m_texture);
+	renderer.GetDevice()->SetVertexShader(NULL);
+	renderer.GetDevice()->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
+	renderer.GetDevice()->SetPixelShader(NULL);
+	renderer.GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, Vertex, sizeof(TVERTEX));
 }
 
 

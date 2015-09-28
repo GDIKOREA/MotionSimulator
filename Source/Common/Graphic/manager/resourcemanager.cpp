@@ -104,7 +104,7 @@ error:
 
 
 // meshName에 해당하는 메쉬버퍼를 리턴한다.
-cMeshBuffer* cResourceManager::LoadMeshBuffer( const string &meshName)
+cMeshBuffer* cResourceManager::LoadMeshBuffer(cRenderer &renderer, const string &meshName)
 {
 	if (cMeshBuffer *data = FindMeshBuffer(meshName))
 		return data;
@@ -118,7 +118,7 @@ cMeshBuffer* cResourceManager::LoadMeshBuffer( const string &meshName)
 		{
 			if (meshName == rawMesh.name)
 			{
-				cMeshBuffer *buffer = new cMeshBuffer(rawMesh);
+				cMeshBuffer *buffer = new cMeshBuffer(renderer, rawMesh);
 				m_mesheBuffers[ meshName] = buffer;
 				return buffer;
 			}
@@ -179,18 +179,18 @@ sRawAniGroup* cResourceManager::FindAnimation( const string &fileName )
 
 
 // 텍스쳐 로딩.
-cTexture* cResourceManager::LoadTexture( const string &fileName, const bool isSizePow2 )//isSizePow2=true
+cTexture* cResourceManager::LoadTexture(cRenderer &renderer, const string &fileName, const bool isSizePow2)//isSizePow2=true
 {
 	if (cTexture *p = FindTexture(fileName))
 		return p;
 
 	cTexture *texture = new cTexture();
-	if (!texture->Create(fileName, isSizePow2))
+	if (!texture->Create(renderer, fileName, isSizePow2))
 	{
 		string newPath;
 		if (common::FindFile(fileName, m_mediaDirectory, newPath))
 		{
-			if (!texture->Create(newPath, isSizePow2))
+			if (!texture->Create(renderer, newPath, isSizePow2))
 			{
 				delete texture;
 				return false;
@@ -203,19 +203,19 @@ cTexture* cResourceManager::LoadTexture( const string &fileName, const bool isSi
 
 // 텍스쳐 로딩.
 // fileName 에 해당하는 파일이 없다면, "./media/" + dirPath  경로에서 파일을 찾는다.
-cTexture* cResourceManager::LoadTexture( const string &dirPath, const string &fileName, const bool isSizePow2)
+cTexture* cResourceManager::LoadTexture(cRenderer &renderer, const string &dirPath, const string &fileName, const bool isSizePow2)
 	//isSizePow2=true
 {
 	if (cTexture *p = FindTexture(fileName))
 		return p;
 
 	cTexture *texture = new cTexture();
-	if (!texture->Create(fileName, isSizePow2))
+	if (!texture->Create(renderer, fileName, isSizePow2))
 	{
 		string newPath;
 		if (common::FindFile(fileName, m_mediaDirectory +dirPath+"/", newPath))
 		{
-			if (!texture->Create(newPath, isSizePow2))
+			if (!texture->Create(renderer, newPath, isSizePow2))
 			{
 				delete texture;
 				return false;
@@ -228,18 +228,18 @@ cTexture* cResourceManager::LoadTexture( const string &dirPath, const string &fi
 
 
 // 셰이더 로딩.
-cShader* cResourceManager::LoadShader( const string &fileName )
+cShader* cResourceManager::LoadShader(cRenderer &renderer, const string &fileName)
 {
 	if (cShader *p = FindShader(fileName))
 		return p;
 
 	cShader *shader = new cShader();
-	if (!shader->Create(fileName, "TShader", false))
+	if (!shader->Create(renderer, fileName, "TShader", false))
 	{
 		string newPath;
 		if (common::FindFile(fileName, m_mediaDirectory, newPath))
 		{
-			if (!shader->Create(newPath, "TShader"))
+			if (!shader->Create(renderer, newPath, "TShader"))
 			{
 				delete shader;
 				return NULL; // 실패 종료.

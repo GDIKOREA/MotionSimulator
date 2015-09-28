@@ -9,14 +9,14 @@ cCube::cCube()
 {
 }
 
-cCube::cCube(const Vector3 &vMin, const Vector3 &vMax )
+cCube::cCube(cRenderer &renderer, const Vector3 &vMin, const Vector3 &vMax)
 {
-	InitCube();
-	SetCube(vMin, vMax);
+	InitCube(renderer);
+	SetCube(renderer, vMin, vMax);
 }
 
 
-void cCube::InitCube()
+void cCube::InitCube(cRenderer &renderer)
 {
 	if (m_vtxBuff.GetVertexCount() > 0)
 		return;
@@ -53,8 +53,8 @@ void cCube::InitCube()
 		1, 5, 7,
 	};
 
-	m_vtxBuff.Create(8, sizeof(sVertexDiffuse), sVertexDiffuse::FVF);
-	m_idxBuff.Create(12);
+	m_vtxBuff.Create(renderer, 8, sizeof(sVertexDiffuse), sVertexDiffuse::FVF);
+	m_idxBuff.Create(renderer, 12);
 
 	sVertexDiffuse *vbuff = (sVertexDiffuse*)m_vtxBuff.Lock();
 	WORD *ibuff = (WORD*)m_idxBuff.Lock();
@@ -73,10 +73,10 @@ void cCube::InitCube()
 }
 
 
-void cCube::SetCube(const Vector3 &vMin, const Vector3 &vMax )
+void cCube::SetCube(cRenderer &renderer, const Vector3 &vMin, const Vector3 &vMax)
 {
 	if (m_vtxBuff.GetVertexCount() <= 0)
-		InitCube();
+		InitCube(renderer);
 
 	//        4 --- 5
 	//      / |  |  /|
@@ -109,9 +109,9 @@ void cCube::SetCube(const Vector3 &vMin, const Vector3 &vMax )
 }
 
 
-void cCube::SetCube(const cCube &cube)
+void cCube::SetCube(cRenderer &renderer, const cCube &cube)
 {
-	SetCube(cube.GetMin(), cube.GetMax());
+	SetCube(renderer, cube.GetMin(), cube.GetMax());
 	m_tm = cube.GetTransform();
 }
 
@@ -127,30 +127,30 @@ void cCube::SetColor( DWORD color )
 }
 
 
-void cCube::Render(const Matrix44 &tm)
+void cCube::Render(cRenderer &renderer, const Matrix44 &tm)
 {
 	RET(m_vtxBuff.GetVertexCount() <= 0);
 
 	DWORD cullMode;
 	DWORD fillMode;
 	DWORD lightMode;
-	GetDevice()->GetRenderState(D3DRS_CULLMODE, &cullMode);
-	GetDevice()->GetRenderState(D3DRS_FILLMODE, &fillMode);
-	GetDevice()->GetRenderState(D3DRS_LIGHTING, &lightMode);
+	renderer.GetDevice()->GetRenderState(D3DRS_CULLMODE, &cullMode);
+	renderer.GetDevice()->GetRenderState(D3DRS_FILLMODE, &fillMode);
+	renderer.GetDevice()->GetRenderState(D3DRS_LIGHTING, &lightMode);
 
-	GetDevice()->SetRenderState(D3DRS_CULLMODE, FALSE);
-	GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
-	GetDevice()->SetTexture(0, NULL);
+	renderer.GetDevice()->SetRenderState(D3DRS_CULLMODE, FALSE);
+	renderer.GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	renderer.GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
+	renderer.GetDevice()->SetTexture(0, NULL);
 	
 	Matrix44 mat = m_tm * tm;
-	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&mat );
-	m_vtxBuff.Bind();
-	m_idxBuff.Bind();
-	GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
+	renderer.GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&mat);
+	m_vtxBuff.Bind(renderer);
+	m_idxBuff.Bind(renderer);
+	renderer.GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0,
 		m_vtxBuff.GetVertexCount(), 0, 12);
 
-	GetDevice()->SetRenderState(D3DRS_CULLMODE, cullMode);
-	GetDevice()->SetRenderState(D3DRS_FILLMODE, fillMode );
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, lightMode );
+	renderer.GetDevice()->SetRenderState(D3DRS_CULLMODE, cullMode);
+	renderer.GetDevice()->SetRenderState(D3DRS_FILLMODE, fillMode);
+	renderer.GetDevice()->SetRenderState(D3DRS_LIGHTING, lightMode);
 }

@@ -22,10 +22,10 @@ cFrustum::~cFrustum()
 //-----------------------------------------------------------------------------//
 // 카메라(view) * 프로젝션(projection)행렬을 입력받아 6개의 평면을 만든다.
 //-----------------------------------------------------------------------------//
-bool cFrustum::Create( const Matrix44 &matViewProj )
+bool cFrustum::Create(cRenderer &renderer, const Matrix44 &matViewProj)
 {
 	// 투영행렬까지 거치면 모든 3차원 월드좌표의 점은 (-1,-1,0) ~ (1,1,1)사이의 값으로 바뀐다.
-	SetCube(Vector3(-1,-1,0), Vector3(1,1,1) );
+	SetCube(renderer, Vector3(-1,-1,0), Vector3(1,1,1) );
 
 	// view * proj의 역행렬을 구한다.
 	Matrix44 matInv = matViewProj.Inverse();
@@ -64,9 +64,9 @@ bool cFrustum::Create( const Matrix44 &matViewProj )
 //-----------------------------------------------------------------------------//
 // 정육면체의 minimum pos 와 maximum pos 로 절두체를 만든다.
 //-----------------------------------------------------------------------------//
-bool cFrustum::Create( const Vector3 &_min, const Vector3 &_max )
+bool cFrustum::Create(cRenderer &renderer, const Vector3 &_min, const Vector3 &_max)
 {
-	SetCube(_min, _max);
+	SetCube(renderer, _min, _max);
 
 	sVertexDiffuse *vertices = (sVertexDiffuse*)m_vtxBuff.Lock();
 	RETV(!vertices, false);
@@ -136,9 +136,9 @@ bool cFrustum::IsInSphere( const Vector3 &point, float radius )
 //-----------------------------------------------------------------------------//
 // 출력
 //-----------------------------------------------------------------------------//
-void cFrustum::Render()
+void cFrustum::Render(cRenderer &renderer)
 {
-	cCube::Render(Matrix44::Identity);
+	cCube::Render(renderer, Matrix44::Identity);
 
 	//WORD	index[] = { 0, 1, 2,
 	//	0, 2, 3,

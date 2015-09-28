@@ -17,15 +17,15 @@ cSc2Character::~cSc2Character()
 
 
 // 캐릭터 모델 생성.
-bool cSc2Character::Create(const string &modelName, MODEL_TYPE::TYPE type)
+bool cSc2Character::Create(cRenderer &renderer, const string &modelName, MODEL_TYPE::TYPE type)
 // type = MODEL_TYPE::AUTO
 {
-	if (cModel::Create(modelName))
+	if (cModel::Create(renderer, modelName))
 	{
 		if (GetModelType() == MODEL_TYPE::SKIN)
 		{
 			SetShader( 
-				cResourceManager::Get()->LoadShader("hlsl_skinning_using_texcoord_sc2.fx") );
+				cResourceManager::Get()->LoadShader(renderer, "hlsl_skinning_using_texcoord_sc2.fx") );
 		}
 		return true;
 	}

@@ -17,12 +17,12 @@ cSnow::~cSnow()
 }
 
 
-bool cSnow::Create( const Vector3 &_min, const Vector3 &_max, 
+bool cSnow::Create(cRenderer &renderer, const Vector3 &_min, const Vector3 &_max, 
 	const int particleCount )
 {
-	m_frustum.Create(_min, _max);
+	m_frustum.Create(renderer, _min, _max);
 
-	cParticles::Create( "particle.bmp", particleCount );
+	cParticles::Create( renderer,  "particle.bmp", particleCount );
 	m_numToRelease = 8;
 	m_releaseInterval = 0.8f;
 	m_lifeCycle = 35.f;
@@ -55,10 +55,10 @@ void cSnow::Move( const float elapseTime)
 }
 
 
-void cSnow::Render()
+void cSnow::Render(cRenderer &renderer)
 {
-	cParticles::Render();
+	cParticles::Render(renderer);
 
 	if (m_isRenderFrustum)
-		m_frustum.Render();
+		m_frustum.Render(renderer);
 }

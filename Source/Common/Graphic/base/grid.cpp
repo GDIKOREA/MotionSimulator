@@ -14,7 +14,7 @@ cGrid::~cGrid()
 }
 
 
-void cGrid::Create( const int rowCellCount, const int colCellCount, const float cellSize )
+void cGrid::Create(cRenderer &renderer, const int rowCellCount, const int colCellCount, const float cellSize)
 {
 	// init member
 	m_rowCellCount = rowCellCount;
@@ -27,7 +27,7 @@ void cGrid::Create( const int rowCellCount, const int colCellCount, const float 
 	const int cellCnt = rowCellCount * colCellCount;
 	const int vtxCount= rowVtxCnt * colVtxCnt;
 
-	m_vtxBuff.Create( vtxCount, sizeof(sVertexDiffuse), sVertexDiffuse::FVF);
+	m_vtxBuff.Create( renderer, vtxCount, sizeof(sVertexDiffuse), sVertexDiffuse::FVF);
 	{
 		sVertexDiffuse *vertices = (sVertexDiffuse*)m_vtxBuff.Lock();
 		const float startx = -cellSize*(colCellCount/2);
@@ -53,7 +53,7 @@ void cGrid::Create( const int rowCellCount, const int colCellCount, const float 
 	}	
 
 
-	m_idxBuff.Create( cellCnt*2 );
+	m_idxBuff.Create(renderer, cellCnt*2 );
 	{
 		WORD *indices = (WORD*)m_idxBuff.Lock();
 		int baseIndex = 0;
@@ -79,23 +79,23 @@ void cGrid::Create( const int rowCellCount, const int colCellCount, const float 
 }
 
 
-void cGrid::Render()
+void cGrid::Render(cRenderer &renderer)
 {
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE);
+	renderer.GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-	m_vtxBuff.Bind();
-	m_idxBuff.Bind();
-	GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, m_vtxBuff.GetVertexCount(), 
+	m_vtxBuff.Bind(renderer);
+	m_idxBuff.Bind(renderer);
+	renderer.GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_vtxBuff.GetVertexCount(),
 		0, m_idxBuff.GetFaceCount());
 }
 
 
-void cGrid::RenderLinelist()
+void cGrid::RenderLinelist(cRenderer &renderer)
 {
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE);
+	renderer.GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-	m_vtxBuff.Bind();
-	m_idxBuff.Bind();
-	GetDevice()->DrawIndexedPrimitive( D3DPT_LINELIST, 0, 0, m_vtxBuff.GetVertexCount(), 
+	m_vtxBuff.Bind(renderer);
+	m_idxBuff.Bind(renderer);
+	renderer.GetDevice()->DrawIndexedPrimitive(D3DPT_LINELIST, 0, 0, m_vtxBuff.GetVertexCount(),
 		0, m_idxBuff.GetFaceCount()*3/2);
 }

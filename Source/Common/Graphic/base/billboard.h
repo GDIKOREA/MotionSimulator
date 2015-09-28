@@ -22,9 +22,9 @@ namespace graphic
 		cBillboard();
 		virtual ~cBillboard();
 
-		bool Create( const BILLBOARD_TYPE::TYPE type, const float width, const float height, 
+		bool Create(cRenderer &renderer, const BILLBOARD_TYPE::TYPE type, const float width, const float height,
 			const Vector3 &pos, const string &textureFileName="" );
-		void Render();
+		void Render(cRenderer &renderer);
 
 
 	private:

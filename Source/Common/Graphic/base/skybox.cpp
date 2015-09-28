@@ -18,7 +18,7 @@ cSkyBox::~cSkyBox()
 // textureFilePath : 이 파일 경로에 skybox_top, skybox_front, skybox_back, 
 //				skybox_left, skybox_right, skybox_bottom.jpg 파일이 있어야 한다.
 //------------------------------------------------------------------------
-bool cSkyBox::Create(const string &textureFilePath)
+bool cSkyBox::Create(cRenderer &renderer, const string &textureFilePath)
 {
 	string textureFileName[] = 
 	{
@@ -29,10 +29,10 @@ bool cSkyBox::Create(const string &textureFilePath)
 	for (int i=0; i < MAX_FACE; ++i)
 	{
 		const string fileName = textureFilePath + "/" + textureFileName[ i];
-		m_textures[ i].Create( fileName );
+		m_textures[ i].Create( renderer, fileName );
 	}
 
-	if (!CreateVertexBuffer())
+	if (!CreateVertexBuffer(renderer))
 		return false;
 
 	return true;
@@ -42,7 +42,7 @@ bool cSkyBox::Create(const string &textureFilePath)
 //------------------------------------------------------------------------
 // 
 //------------------------------------------------------------------------
-bool  cSkyBox::CreateVertexBuffer()
+bool  cSkyBox::CreateVertexBuffer(cRenderer &renderer)
 {
 	// Example diagram of "front" quad
 	// The numbers are vertices
@@ -95,7 +95,7 @@ bool  cSkyBox::CreateVertexBuffer()
 	};
 
 	const int vtxSize = 24;
-	m_vtxBuff.Create( vtxSize, sizeof(sVertexTex), sVertexTex::FVF);
+	m_vtxBuff.Create(renderer, vtxSize, sizeof(sVertexTex), sVertexTex::FVF);
 
 	sVertexTex *pv = (sVertexTex*)m_vtxBuff.Lock();
 	memcpy( pv, SkyboxMesh, sizeof(sVertexTex) * 24 );
@@ -108,45 +108,45 @@ bool  cSkyBox::CreateVertexBuffer()
 //------------------------------------------------------------------------
 // 
 //------------------------------------------------------------------------
-void cSkyBox::Render(const Matrix44 &tm)
+void cSkyBox::Render(cRenderer &renderer, const Matrix44 &tm)
 {
-	GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
-	GetDevice()->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
+	renderer.GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
+	renderer.GetDevice()->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 	DWORD lighting, fogEnable;
-	GetDevice()->GetRenderState( D3DRS_LIGHTING, &lighting );
-	GetDevice()->GetRenderState( D3DRS_FOGENABLE, &fogEnable );
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
-	GetDevice()->SetRenderState( D3DRS_FOGENABLE, FALSE );
-	GetDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSU,  D3DTADDRESS_CLAMP);
-	GetDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSV,  D3DTADDRESS_CLAMP);
+	renderer.GetDevice()->GetRenderState(D3DRS_LIGHTING, &lighting);
+	renderer.GetDevice()->GetRenderState(D3DRS_FOGENABLE, &fogEnable);
+	renderer.GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
+	renderer.GetDevice()->SetRenderState(D3DRS_FOGENABLE, FALSE);
+	renderer.GetDevice()->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+	renderer.GetDevice()->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
 
 	//mat matView, matViewSave, matWorld;
 	Matrix44 matView, matViewSave, matWorld;
-	GetDevice()->GetTransform( D3DTS_VIEW, (D3DXMATRIX*)&matViewSave );
+	renderer.GetDevice()->GetTransform(D3DTS_VIEW, (D3DXMATRIX*)&matViewSave);
 	matView = matViewSave;
 	matView._41 = 0.0f; matView._42 = -0.4f; matView._43 = 0.0f;
-	GetDevice()->SetTransform( D3DTS_VIEW, (D3DXMATRIX*)&matView );
+	renderer.GetDevice()->SetTransform(D3DTS_VIEW, (D3DXMATRIX*)&matView);
 	// Set a default world matrix
-	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&tm);
+	renderer.GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&tm);
 
 	// render
-	m_vtxBuff.Bind();
+	m_vtxBuff.Bind(renderer);
 	for (int i = 0 ; i < MAX_FACE; i++)
 	{
 		//GetDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSU,  D3DTADDRESS_WRAP);
 		//GetDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSV,  D3DTADDRESS_WRAP);
 
-		m_textures[ i].Bind(0);
-		GetDevice()->DrawPrimitive( D3DPT_TRIANGLESTRIP, i*4, 2 );
+		m_textures[ i].Bind(renderer, 0);
+		renderer.GetDevice()->DrawPrimitive(D3DPT_TRIANGLESTRIP, i * 4, 2);
 	}
 
-	GetDevice()->SetTransform( D3DTS_VIEW, (D3DXMATRIX*)&matViewSave );
+	renderer.GetDevice()->SetTransform(D3DTS_VIEW, (D3DXMATRIX*)&matViewSave);
 
 
-	GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE);
-	GetDevice()->SetRenderState( D3DRS_ZWRITEENABLE, TRUE );
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, lighting );
-	GetDevice()->SetRenderState( D3DRS_FOGENABLE, fogEnable );
+	renderer.GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+	renderer.GetDevice()->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	renderer.GetDevice()->SetRenderState(D3DRS_LIGHTING, lighting);
+	renderer.GetDevice()->SetRenderState(D3DRS_FOGENABLE, fogEnable);
 }
 

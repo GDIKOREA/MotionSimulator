@@ -24,9 +24,9 @@ cController::~cController()
 
 
 // 변수들을 초기화 한다.
-bool cController::Init()
+bool cController::Init(graphic::cRenderer &renderer)
 {
-	m_cubeFlight->Init();
+	m_cubeFlight->Init(renderer);
 
 	return true;
 }

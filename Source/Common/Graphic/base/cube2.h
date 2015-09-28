@@ -7,14 +7,16 @@
 namespace graphic
 {
 
+	class cRenderer;
+
 	class cCube2
 	{
 	public:
 		cCube2();
-		cCube2(const Vector3 &vMin, const Vector3 &vMax );
+		cCube2(cRenderer &renderer, const Vector3 &vMin, const Vector3 &vMax);
 
-		void SetCube(const Vector3 &vMin, const Vector3 &vMax );
-		void SetCube(const cCube2 &cube);
+		void SetCube(cRenderer &renderer, const Vector3 &vMin, const Vector3 &vMax);
+		void SetCube(cRenderer &renderer, const cCube2 &cube);
 		void SetTransform( const Matrix44 &tm );
 		const Matrix44& GetTransform() const;
 		const Vector3& GetMin() const;
@@ -23,11 +25,11 @@ namespace graphic
 		cMaterial& GetMaterial();
 
 
-		void Render(const Matrix44 &tm);
+		void Render(cRenderer &renderer, Matrix44 &tm);
 
 
 	protected:
-		void InitCube();
+		void InitCube(cRenderer &renderer);
 
 
 	protected:

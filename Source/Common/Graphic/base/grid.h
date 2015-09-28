@@ -2,6 +2,7 @@
 
 namespace graphic
 {
+	class cRenderer;
 
 	class cGrid
 	{
@@ -9,9 +10,9 @@ namespace graphic
 		cGrid();
 		virtual ~cGrid();
 
-		void Create( const int rowCellCount, const int colCellCount, const float cellSize );
-		void Render();
-		void RenderLinelist();
+		void Create(cRenderer &renderer, const int rowCellCount, const int colCellCount, const float cellSize);
+		void Render(cRenderer &renderer);
+		void RenderLinelist(cRenderer &renderer);
 
 		cVertexBuffer& GetVertexBuffer();
 		cIndexBuffer& GetIndexBuffer();

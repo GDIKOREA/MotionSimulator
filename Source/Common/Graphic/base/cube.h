@@ -5,15 +5,16 @@
 
 namespace graphic
 {
+	class cRenderer;
 
 	class cCube
 	{
 	public:
 		cCube();
-		cCube(const Vector3 &vMin, const Vector3 &vMax );
+		cCube(cRenderer &renderer, const Vector3 &vMin, const Vector3 &vMax);
 
-		void SetCube(const Vector3 &vMin, const Vector3 &vMax );
-		void SetCube(const cCube &cube);
+		void SetCube(cRenderer &renderer, const Vector3 &vMin, const Vector3 &vMax);
+		void SetCube(cRenderer &renderer, const cCube &cube);
 		void SetTransform( const Matrix44 &tm );
 		void SetColor( DWORD color);
 		const Matrix44& GetTransform() const;
@@ -21,11 +22,11 @@ namespace graphic
 		const Vector3& GetMax() const;
 		const float Length() const; // length(min - max)
 
-		void Render(const Matrix44 &tm);
+		void Render(cRenderer &renderer, const Matrix44 &tm);
 
 
 	protected:
-		void InitCube();
+		void InitCube(cRenderer &renderer);
 
 
 	protected:

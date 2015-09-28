@@ -20,7 +20,7 @@ public:
 	cController();
 	virtual ~cController();
 
-	bool Init();
+	bool Init(graphic::cRenderer &renderer);
 	bool ConnectSerial(const int portNum, const int baudRate);
 	void CloseSerial();
 	void Update(const float deltaSeconds);

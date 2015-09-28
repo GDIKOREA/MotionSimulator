@@ -10,8 +10,8 @@ namespace graphic
 		cSprite(LPD3DXSPRITE sprite, const int id, const string &name="sprite");
 		virtual ~cSprite();
 
-		void SetTexture(const string &fileName);
-		virtual void Render(const Matrix44 &parentTm) override;
+		void SetTexture(cRenderer &renderer, const string &fileName);
+		virtual void Render(cRenderer &renderer, const Matrix44 &parentTm) override;
 		void SetCenter(const Vector3 &center); // x,y = 0~1
 		void SetPos(const Vector3 &pos);
 		const Vector3& GetPos() const;

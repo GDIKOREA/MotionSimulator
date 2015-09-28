@@ -5,7 +5,7 @@
 namespace graphic
 {
 
-
+	class cRenderer;
 	class cCamera
 	{
 	public:
@@ -13,6 +13,7 @@ namespace graphic
 		cCamera(const Vector3 &eyePos, const Vector3 &lookAt, const Vector3 &up);
 		virtual ~cCamera();
 
+		void Init(cRenderer *renderer);
 		void Update();
 
 		void SetCamera(const Vector3 &eyePos, const Vector3 &lookAt, const Vector3 &up);
@@ -61,9 +62,11 @@ namespace graphic
 		Matrix44 m_view; // 카메라 행렬.
 		Matrix44 m_proj; // 투영 행렬.
 		Matrix44 m_viewProj; // m_view X m_proj
+		cRenderer *m_renderer;
 	};
 
 
+	inline void cCamera::Init(cRenderer *renderer) { m_renderer = renderer;  }
 	inline void cCamera::SetEyePos(const Vector3 &eye) { m_eyePos = eye; UpdateViewMatrix(); }
 	inline void cCamera::SetLookAt(const Vector3 &lookAt) { m_lookAt = lookAt; UpdateViewMatrix(); }
 	inline void cCamera::SetUpVector(const Vector3 &up) { m_up = up; UpdateViewMatrix(); }

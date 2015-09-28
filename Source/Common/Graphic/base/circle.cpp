@@ -15,10 +15,10 @@ cCircle::~cCircle()
 
 
 // 원 생성
-bool cCircle::Create(const Vector3 &center, const float radius, const int slice)
+bool cCircle::Create(cRenderer &renderer, const Vector3 &center, const float radius, const int slice)
 {
 	m_radius = radius;
-	m_vtxBuff.Create(slice+1, sizeof(sVertexDiffuse), sVertexDiffuse::FVF); 
+	m_vtxBuff.Create(renderer, slice+1, sizeof(sVertexDiffuse), sVertexDiffuse::FVF); 
 
 	if (sVertexDiffuse *vertices = (sVertexDiffuse*)m_vtxBuff.Lock())
 	{
@@ -39,16 +39,16 @@ bool cCircle::Create(const Vector3 &center, const float radius, const int slice)
 
 
 // 출력.
-void cCircle::Render()
+void cCircle::Render(cRenderer &renderer)
 {
-	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&m_tm );
+	renderer.GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&m_tm);
 
 	DWORD lighting;
-	GetDevice()->GetRenderState( D3DRS_LIGHTING, &lighting );
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
-	GetDevice()->SetRenderState(D3DRS_ZENABLE, FALSE);
-	m_vtxBuff.Bind();
-	GetDevice()->DrawPrimitive( D3DPT_TRIANGLEFAN, 0, m_vtxBuff.GetVertexCount());
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, lighting );
-	GetDevice()->SetRenderState(D3DRS_ZENABLE, TRUE);
+	renderer.GetDevice()->GetRenderState(D3DRS_LIGHTING, &lighting);
+	renderer.GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
+	renderer.GetDevice()->SetRenderState(D3DRS_ZENABLE, FALSE);
+	m_vtxBuff.Bind(renderer);
+	renderer.GetDevice()->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, m_vtxBuff.GetVertexCount());
+	renderer.GetDevice()->SetRenderState(D3DRS_LIGHTING, lighting);
+	renderer.GetDevice()->SetRenderState(D3DRS_ZENABLE, TRUE);
 }

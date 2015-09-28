@@ -13,13 +13,13 @@ namespace graphic
 		cSurface2();
 		virtual ~cSurface2();
 
-		bool Create(int width, int height, int mipLevels,
+		bool Create(cRenderer &renderer, int width, int height, int mipLevels,
 			D3DFORMAT texFormat, bool useDepthBuffer,
 			D3DFORMAT depthFormat, D3DVIEWPORT9& viewport, bool autoGenMips);
 
 		void Begin();
 		void End();
-		void Render(const int index=1);
+		void Render(cRenderer &renderer, const int index = 1);
 		void Clear();
 
 		bool IsLoaded() const;

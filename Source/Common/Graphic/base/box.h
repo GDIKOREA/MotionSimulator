@@ -3,6 +3,7 @@
 
 namespace graphic
 {
+	class cRenderer;
 	// AABB Box
 	struct Box
 	{
@@ -15,8 +16,8 @@ namespace graphic
 		bool Collision( const Box &box ) const;
 		void SetWorldTM( const Matrix44 &mat );
 		void MultiplyWorldTM( const Matrix44 &mat );
-		void Render() const;
-		void Render_Hierarchy() const;
+		void Render(cRenderer &renderer) const;
+		void Render_Hierarchy(cRenderer &renderer) const;
 		vector<Vector3>& GetBoxVertices() { return m_box; }
 
 

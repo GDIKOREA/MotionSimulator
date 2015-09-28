@@ -22,11 +22,11 @@ cVertexBuffer::~cVertexBuffer()
 }
 
 
-bool cVertexBuffer::Create(const int vertexCount, const int sizeofVertex, DWORD fvf)
+bool cVertexBuffer::Create(cRenderer &renderer, const int vertexCount, const int sizeofVertex, DWORD fvf)
 {
 	SAFE_RELEASE(m_pVtxBuff);
 
-	if (FAILED(GetDevice()->CreateVertexBuffer( vertexCount*sizeofVertex,
+	if (FAILED(renderer.GetDevice()->CreateVertexBuffer( vertexCount*sizeofVertex,
 		D3DUSAGE_WRITEONLY, 
 		fvf,
 		D3DPOOL_MANAGED, &m_pVtxBuff, NULL)))
@@ -44,11 +44,11 @@ bool cVertexBuffer::Create(const int vertexCount, const int sizeofVertex, DWORD 
 
 // Video Memory 에 버텍스 버퍼를 생성한다.
 // 웬만하면 사용하지 말자. 잘쓰려면 복잡해지고, 잘 쓰더라도 효과가 거의 없다.
-bool cVertexBuffer::CreateVMem(const int vertexCount, const int sizeofVertex, DWORD fvf)
+bool cVertexBuffer::CreateVMem(cRenderer &renderer, const int vertexCount, const int sizeofVertex, DWORD fvf)
 {
 	SAFE_RELEASE(m_pVtxBuff);
 
-	if (FAILED(GetDevice()->CreateVertexBuffer( vertexCount*sizeofVertex,
+	if (FAILED(renderer.GetDevice()->CreateVertexBuffer( vertexCount*sizeofVertex,
 		D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, 
 		fvf,
 		D3DPOOL_DEFAULT, &m_pVtxBuff, NULL)))
@@ -65,17 +65,17 @@ bool cVertexBuffer::CreateVMem(const int vertexCount, const int sizeofVertex, DW
 
 
 // 버텍스 버퍼 생성.
-bool cVertexBuffer::Create(const int vertexCount, const int sizeofVertex, const cVertexDeclaration &decl)
+bool cVertexBuffer::Create(cRenderer &renderer, const int vertexCount, const int sizeofVertex, const cVertexDeclaration &decl)
 {
 	SAFE_RELEASE(m_pVtxBuff);
 	SAFE_RELEASE(m_pVtxDecl);
 
-	if (FAILED(GetDevice()->CreateVertexDeclaration(&decl.GetDecl()[0], &m_pVtxDecl)))
+	if (FAILED(renderer.GetDevice()->CreateVertexDeclaration(&decl.GetDecl()[0], &m_pVtxDecl)))
 	{
 		return false; //Failed to create vertex declaration.
 	}
 
-	if (FAILED(GetDevice()->CreateVertexBuffer( vertexCount*sizeofVertex,
+	if (FAILED(renderer.GetDevice()->CreateVertexBuffer( vertexCount*sizeofVertex,
 		D3DUSAGE_WRITEONLY, 
 		0,
 		D3DPOOL_MANAGED, &m_pVtxBuff, NULL)))
@@ -144,55 +144,55 @@ void cVertexBuffer::Unlock()
 }
 
 
-void cVertexBuffer::Bind() const
+void cVertexBuffer::Bind(cRenderer &renderer) const
 {
 	if (m_pVtxDecl)
 	{
-		GetDevice()->SetFVF( 0 );
-		GetDevice()->SetVertexDeclaration(m_pVtxDecl);
+		renderer.GetDevice()->SetFVF( 0 );
+		renderer.GetDevice()->SetVertexDeclaration(m_pVtxDecl);
 	}
 	else
 	{
-		GetDevice()->SetFVF( m_fvf );
+		renderer.GetDevice()->SetFVF(m_fvf);
 	}
 
-	GetDevice()->SetStreamSource( 0, m_pVtxBuff, 0, m_sizeOfVertex );
+	renderer.GetDevice()->SetStreamSource(0, m_pVtxBuff, 0, m_sizeOfVertex);
 }
 
 
-void cVertexBuffer::RenderLineStrip()
+void cVertexBuffer::RenderLineStrip(cRenderer &renderer)
 {
 	RET(!m_pVtxBuff);
 
-	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&Matrix44::Identity );
+	renderer.GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&Matrix44::Identity);
 
 	DWORD lighting;
-	GetDevice()->GetRenderState( D3DRS_LIGHTING, &lighting );
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
-	GetDevice()->SetRenderState(D3DRS_ZENABLE, FALSE);
-	Bind();
-	GetDevice()->DrawPrimitive( D3DPT_LINESTRIP, 0, m_vertexCount-1);
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, lighting );
-	GetDevice()->SetRenderState(D3DRS_ZENABLE, TRUE);
+	renderer.GetDevice()->GetRenderState(D3DRS_LIGHTING, &lighting);
+	renderer.GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
+	renderer.GetDevice()->SetRenderState(D3DRS_ZENABLE, FALSE);
+	Bind(renderer);
+	renderer.GetDevice()->DrawPrimitive(D3DPT_LINESTRIP, 0, m_vertexCount - 1);
+	renderer.GetDevice()->SetRenderState(D3DRS_LIGHTING, lighting);
+	renderer.GetDevice()->SetRenderState(D3DRS_ZENABLE, TRUE);
 }
 
 
-void cVertexBuffer::RenderPointList(const int count) // count=0
+void cVertexBuffer::RenderPointList(cRenderer &renderer, const int count) // count=0
 {
 	RET(!m_pVtxBuff);
 
-	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&Matrix44::Identity );
+	renderer.GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&Matrix44::Identity );
 
-	Bind();
-	GetDevice()->DrawPrimitive( D3DPT_POINTLIST, 0, (count==0)? m_vertexCount : count );
+	Bind(renderer);
+	renderer.GetDevice()->DrawPrimitive(D3DPT_POINTLIST, 0, (count == 0) ? m_vertexCount : count);
 }
 
 
-void cVertexBuffer::RenderTriangleStrip() 
+void cVertexBuffer::RenderTriangleStrip(cRenderer &renderer)
 {
 	RET(!m_pVtxBuff);
-	Bind();
-	GetDevice()->DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, m_vertexCount-2 );
+	Bind(renderer);
+	renderer.GetDevice()->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, m_vertexCount - 2);
 }
 
 
@@ -207,7 +207,8 @@ void cVertexBuffer::Clear()
 }
 
 
-cVertexBuffer& cVertexBuffer::operator=(cVertexBuffer &rhs)
+//cVertexBuffer& cVertexBuffer::operator=(cVertexBuffer &rhs)
+void cVertexBuffer::Set(cRenderer &renderer, cVertexBuffer &rhs)
 {
 	if (this != &rhs)
 	{
@@ -215,7 +216,7 @@ cVertexBuffer& cVertexBuffer::operator=(cVertexBuffer &rhs)
 		m_sizeOfVertex = rhs.m_sizeOfVertex;
 		m_vertexCount = rhs.m_vertexCount;
 		
-		if (Create(rhs.m_vertexCount, rhs.m_sizeOfVertex, rhs.m_fvf))
+		if (Create(renderer, rhs.m_vertexCount, rhs.m_sizeOfVertex, rhs.m_fvf))
 		{
 			if (BYTE* dest = (BYTE*)Lock())
 			{
@@ -228,5 +229,5 @@ cVertexBuffer& cVertexBuffer::operator=(cVertexBuffer &rhs)
 			}
 		}
 	}
-	return *this;
+	//return *this;
 }

@@ -10,8 +10,8 @@ namespace graphic
 		cCircle();
 		virtual ~cCircle();
 
-		bool Create(const Vector3 &center, const float radius, const int slice);
-		void Render();
+		bool Create(cRenderer &renderer, const Vector3 &center, const float radius, const int slice);
+		void Render(cRenderer &renderer);
 
 
 	private:

@@ -24,18 +24,18 @@ cTerrain::~cTerrain()
 
 
 // *.TRN  파일을 읽어서 지형을 초기화 한다.
-bool cTerrain::CreateFromTRNFile(const string &fileName)
+bool cTerrain::CreateFromTRNFile(cRenderer &renderer, const string &fileName)
 {
 	sRawTerrain rawTerrain;
 	if (!importer::ReadRawTerrainFile(fileName, rawTerrain))
 		return false;
 
-	return CreateFromRawTerrain(rawTerrain);
+	return CreateFromRawTerrain(renderer, rawTerrain);
 }
 
 
 // 지형정보를 토대로 지형을 생성한다.
-bool cTerrain::CreateFromRawTerrain( const sRawTerrain &rawTerrain )
+bool cTerrain::CreateFromRawTerrain(cRenderer &renderer, const sRawTerrain &rawTerrain)
 {
 	Clear();
 
@@ -46,21 +46,21 @@ bool cTerrain::CreateFromRawTerrain( const sRawTerrain &rawTerrain )
 		// 높이맵으로 만들어진 지형이면, 높이 맵을 로딩한다.
 		if (rawTerrain.heightMap.empty())
 		{
-			CreateTerrain( rawTerrain.rowCellCount, rawTerrain.colCellCount, 
+			CreateTerrain( renderer, rawTerrain.rowCellCount, rawTerrain.colCellCount, 
 				rawTerrain.cellSize, rawTerrain.textureFactor );
-			CreateTerrainTexture( mediaDir+rawTerrain.bgTexture );
+			CreateTerrainTexture(renderer, mediaDir+rawTerrain.bgTexture );
 		}
 		else
 		{
 			// 기본 지형에서 만들어진 지형이면, 기본 지형을 생성한다.
-			CreateFromHeightMap( mediaDir+rawTerrain.heightMap, mediaDir+rawTerrain.bgTexture, 
+			CreateFromHeightMap( renderer, mediaDir+rawTerrain.heightMap, mediaDir+rawTerrain.bgTexture, 
 				rawTerrain.heightFactor, rawTerrain.textureFactor, 
 				rawTerrain.rowCellCount, rawTerrain.colCellCount, rawTerrain.cellSize );
 		}
 	}
 	else if (rawTerrain.heightMapStyle == 1)
 	{
-		CreateFromGRDFormat(mediaDir+rawTerrain.heightMap, mediaDir+rawTerrain.bgTexture, 
+		CreateFromGRDFormat(renderer, mediaDir+rawTerrain.heightMap, mediaDir+rawTerrain.bgTexture, 
 			rawTerrain.heightFactor, rawTerrain.textureFactor );
 			//rawTerrain.rowCellCount, rawTerrain.colCellCount, rawTerrain.cellSize );
 	}
@@ -74,48 +74,48 @@ bool cTerrain::CreateFromRawTerrain( const sRawTerrain &rawTerrain )
 
 		AddLayer();
 		m_layer[ i].texture = cResourceManager::Get()->LoadTexture( 
-			mediaDir+rawTerrain.layer[ i].texture );
+			renderer, mediaDir+rawTerrain.layer[ i].texture );
 	}
 
 
 	// 모델 생성.
-	cShader *modelShader = cResourceManager::Get()->LoadShader( "hlsl_skinning_using_texcoord_unlit.fx" );
+	cShader *modelShader = cResourceManager::Get()->LoadShader(renderer, "hlsl_skinning_using_texcoord_unlit.fx" );
 
 	for (u_int i=0; i < rawTerrain.models.size(); ++i)
 	{
-		if (cModel *model = AddRigidModel(mediaDir+rawTerrain.models[ i].fileName))
+		if (cModel *model = AddRigidModel(renderer, mediaDir+rawTerrain.models[ i].fileName))
 		{
 			model->SetTransform(rawTerrain.models[ i].tm);
 			//model->SetShader(modelShader);
 		}
 	}
 
-	m_alphaTexture.Create( mediaDir+rawTerrain.alphaTexture );
+	m_alphaTexture.Create(renderer, mediaDir+rawTerrain.alphaTexture );
 
 	m_isRenderWater = rawTerrain.renderWater;
-	m_water.Create();
-	m_skybox.Create(
+	m_water.Create(renderer);
+	m_skybox.Create(renderer,
 		cResourceManager::Get()->FindFile("grassenvmap1024.dds"), 10000);
 
 	return true;
 }
 
 
-bool cTerrain::CreateFromHeightMap( const string &heightMapFileName, 
+bool cTerrain::CreateFromHeightMap(cRenderer &renderer, const string &heightMapFileName,
 	const string &textureFileName, const float heightFactor, const float textureUVFactor,
 	const int rowCellCount, const int colCellCount, const float cellSize)
 	// heightFactor=3.f, textureUVFactor=1.f
 	// rowCellCount=64, colCellCount=64, cellSize=50.f
 {
-	CreateTerrain(rowCellCount, colCellCount, cellSize, textureUVFactor);
-	const bool result = UpdateHeightMap(heightMapFileName, textureFileName, heightFactor );
+	CreateTerrain(renderer, rowCellCount, colCellCount, cellSize, textureUVFactor);
+	const bool result = UpdateHeightMap(renderer, heightMapFileName, textureFileName, heightFactor );
 	return result;
 }
 
 
 // Grid 포맷 파일로 지형을 생성한다.
 // GRD 포맷: 그리드의 높이 값을 저장하는 파일 포맷.
-bool cTerrain::CreateFromGRDFormat( const string &gridFileName, 
+bool cTerrain::CreateFromGRDFormat(cRenderer &renderer, const string &gridFileName,
 	const string &textureFileName, const float heightFactor, const float textureUVFactor )
 	// heightFactor=3.f, textureUVFactor=1.f
 	// rowCellCount=64, colCellCount=64, cellSize=50.f
@@ -123,14 +123,14 @@ bool cTerrain::CreateFromGRDFormat( const string &gridFileName,
 	Clear();
 
 	if (!m_shader)
-		m_shader = cResourceManager::Get()->LoadShader(  "hlsl_terrain_splatting.fx" );
+		m_shader = cResourceManager::Get()->LoadShader(renderer,  "hlsl_terrain_splatting.fx" );
 
-	InitLayer();
+	InitLayer(renderer);
 
-	if (!m_grid.CreateFromFile(gridFileName))
+	if (!m_grid.CreateFromFile(renderer, gridFileName))
 		return false;
 
-	m_grid.GetTexture().Create( textureFileName );
+	m_grid.GetTexture().Create( renderer, textureFileName );
 
 	m_heightFactor = heightFactor;
 	m_heightMapFileName = gridFileName;
@@ -140,31 +140,31 @@ bool cTerrain::CreateFromGRDFormat( const string &gridFileName,
 
 
 // 지형 텍스쳐 생성.
-bool cTerrain::CreateTerrainTexture( const string &textureFileName )
+bool cTerrain::CreateTerrainTexture(cRenderer &renderer, const string &textureFileName)
 {
 	m_grid.GetTexture().Clear();
-	return m_grid.GetTexture().Create( textureFileName );
+	return m_grid.GetTexture().Create(renderer, textureFileName );
 }
 
 
 // 지형 생성.
-bool cTerrain::CreateTerrain( const int rowCellCount, const int colCellCount, const float cellSize
+bool cTerrain::CreateTerrain(cRenderer &renderer, const int rowCellCount, const int colCellCount, const float cellSize
 	,const float textureUVFactor)
 	// rowCellCount=64, colCellCount=64, cellSize=50.f, textureUVFactor=1.f
 {
 	Clear();
 
 	if (!m_shader)
-		m_shader = cResourceManager::Get()->LoadShader(  "hlsl_terrain_splatting.fx" );
+		m_shader = cResourceManager::Get()->LoadShader(renderer,  "hlsl_terrain_splatting.fx" );
 
-	InitLayer();
+	InitLayer(renderer);
 
-	m_grid.Create(rowCellCount, colCellCount, cellSize, textureUVFactor);
+	m_grid.Create(renderer, rowCellCount, colCellCount, cellSize, textureUVFactor);
 
-	m_skybox.Create(
+	m_skybox.Create( renderer,
 		cResourceManager::Get()->FindFile("grassenvmap1024.dds"), 10000);
 
-	m_water.Create();
+	m_water.Create(renderer);
 
 	return true;
 }
@@ -172,7 +172,7 @@ bool cTerrain::CreateTerrain( const int rowCellCount, const int colCellCount, co
 
 // 텍스쳐 파일 정보로 높이 정보를 채운다.
 // m_grid 가 생성된 상태여야 한다.
-bool cTerrain::UpdateHeightMap( const string &heightMapFileName, 
+bool cTerrain::UpdateHeightMap(cRenderer &renderer, const string &heightMapFileName,
 	const string &textureFileName, const float heightFactor )
 {
 	m_heightFactor = heightFactor;
@@ -210,14 +210,14 @@ bool cTerrain::UpdateHeightMap( const string &heightMapFileName,
 	m_grid.GetVertexBuffer().Unlock();
 
 	m_grid.CalculateNormals();
-	m_grid.GetTexture().Create( textureFileName );
+	m_grid.GetTexture().Create( renderer, textureFileName );
 
 	return true;
 }
 
 
 
-void cTerrain::PreRender()
+void cTerrain::PreRender(cRenderer &renderer)
 {
 	RET(!m_shader);
 	RET(!m_isRenderWater);
@@ -239,34 +239,34 @@ void cTerrain::PreRender()
 	Plane waterPlaneH = waterPlaneL * WVPInvTrans;
 
 	float f[4] = {waterPlaneH.N.x, waterPlaneH.N.y, waterPlaneH.N.z, waterPlaneH.D};
-	GetDevice()->SetClipPlane(0, (float*)f);
-	GetDevice()->SetRenderState(D3DRS_CLIPPLANEENABLE, 1);
+	renderer.GetDevice()->SetClipPlane(0, (float*)f);
+	renderer.GetDevice()->SetRenderState(D3DRS_CLIPPLANEENABLE, 1);
 
 	m_water.BeginRefractScene();
-	m_skybox.Render();
-	RenderShader(*m_shader);
+	m_skybox.Render(renderer);
+	RenderShader(renderer, *m_shader);
 	m_water.EndRefractScene();
 
 	// Seems like we need to reset these due to a driver bug.  It works
 	// correctly without these next two lines in the REF and another 
 	//video card, however.
-	GetDevice()->SetClipPlane(0, (float*)f);
-	GetDevice()->SetRenderState(D3DRS_CLIPPLANEENABLE, 1);
-	GetDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+	renderer.GetDevice()->SetClipPlane(0, (float*)f);
+	renderer.GetDevice()->SetRenderState(D3DRS_CLIPPLANEENABLE, 1);
+	renderer.GetDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 
 	m_water.BeginReflectScene();
 	Matrix44 reflectMatrix = waterPlaneW.GetReflectMatrix();
-	m_skybox.Render(reflectMatrix);
-	RenderShader(*m_shader, reflectMatrix);
+	m_skybox.Render(renderer, reflectMatrix);
+	RenderShader(renderer, *m_shader, reflectMatrix);
 	m_water.EndReflectScene();
 
-	GetDevice()->SetRenderState(D3DRS_CLIPPLANEENABLE, 0);
-	GetDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	renderer.GetDevice()->SetRenderState(D3DRS_CLIPPLANEENABLE, 0);
+	renderer.GetDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 }
 
 
 // 지형 출력
-void cTerrain::Render()
+void cTerrain::Render(cRenderer &renderer)
 {
 	if (m_shader)
 	{
@@ -277,14 +277,14 @@ void cTerrain::Render()
 		m_shader->SetVector( "vEyePos", cMainCamera::Get()->GetEyePos());
 		m_shader->SetVector( "vFog", Vector3(1.f, 10000.f, 0)); // near, far
 
-		m_skybox.Render();
-		RenderShader(*m_shader);
+		m_skybox.Render(renderer);
+		RenderShader(renderer, *m_shader);
 		if (m_isRenderWater)
-			m_water.Render();
+			m_water.Render(renderer);
 	}
 	else
 	{
-		m_grid.Render();
+		m_grid.Render(renderer);
 	}
 }
 
@@ -297,7 +297,7 @@ void cTerrain::Move(const float elapseTime)
 
 
 // 셰이더로 지형을 출력한다.
-void cTerrain::RenderShader(cShader &shader, const Matrix44 &tm)
+void cTerrain::RenderShader(cRenderer &renderer, cShader &shader, const Matrix44 &tm)
 	// tm = Matrix44::Identity
 {
 	if (m_layer.empty())
@@ -324,25 +324,25 @@ void cTerrain::RenderShader(cShader &shader, const Matrix44 &tm)
 	}
 
 	if (m_isShowModel)
-		RenderRigidModels(tm);
-	m_grid.RenderShader(shader, tm);
+		RenderRigidModels(renderer, tm);
+	m_grid.RenderShader(renderer, shader, tm);
 }
 
 
 // 정적 모델 출력
-void cTerrain::RenderRigidModels(const Matrix44 &tm)
+void cTerrain::RenderRigidModels(cRenderer &renderer, const Matrix44 &tm)
 {
 	BOOST_FOREACH (auto model, m_rigids)
 	{
-		model->Render(tm);
+		model->Render(renderer, tm);
 	}
 }
 
 
 // 모델의 그림자를 지형에 출력한다.
-void cTerrain::RenderModelShadow(cModel &model)
+void cTerrain::RenderModelShadow(cRenderer &renderer, cModel &model)
 {
-	model.UpdateShadow();
+	model.UpdateShadow(renderer);
 
 	Vector3 lightPos;
 	Matrix44 view, proj, tt;
@@ -476,20 +476,20 @@ const string& cTerrain::GetTextureName()
 
 
 // 정적 모델 추가
-cModel* cTerrain::AddRigidModel(const cModel &model)
+cModel* cTerrain::AddRigidModel(cRenderer &renderer, const cModel &model)
 {
 	RETV(FindRigidModel(model.GetId()), false); // already exist return
 
-	m_rigids.push_back(model.Clone());
+	m_rigids.push_back(model.Clone(renderer));
 	return m_rigids.back();
 }
 
 
 // 정적 모델 추가
-cModel* cTerrain::AddRigidModel(const string &fileName)
+cModel* cTerrain::AddRigidModel(cRenderer &renderer, const string &fileName)
 {
 	cModel *model = new cModel(common::GenerateId());
-	if (!model->Create(fileName))
+	if (!model->Create(renderer, fileName))
 	{
 		delete model;
 		return NULL;
@@ -531,12 +531,12 @@ bool cTerrain::RemoveRigidModel(const int id, const bool destruct) //destruct=tr
 }
 
 
-void cTerrain::InitLayer()
+void cTerrain::InitLayer(cRenderer &renderer)
 {
 	m_layer.clear();
 
 	m_alphaTexture.Clear();
-	m_alphaTexture.Create( ALPHA_TEXTURE_SIZE_W, ALPHA_TEXTURE_SIZE_H,
+	m_alphaTexture.Create( renderer, ALPHA_TEXTURE_SIZE_W, ALPHA_TEXTURE_SIZE_H,
 		D3DFMT_A8R8G8B8 );
 }
 

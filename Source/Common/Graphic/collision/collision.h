@@ -3,6 +3,8 @@
 
 namespace graphic
 {
+	class cRenderer;
+
 	// interface ICollisionable
 	// 충돌테스트할 오브젝트는 ICollisionable 인터페이스를 상속받아 구현해야 한다.
 	struct ICollisionable
@@ -16,7 +18,7 @@ namespace graphic
 		virtual void UpdateCollisionBox()=0;
 
 		// 모델이 가진 충돌박스를 리스트에 저장한후 리턴한다. 
-		virtual cBoundingBox* GetCollisionBox()=0;
+		virtual cBoundingBox* GetCollisionBox(cRenderer &renderer) = 0;
 
 		// 충돌된후 충돌을 일으킨 객체에게 호출됨
 		// TestNum: 테스트 번호

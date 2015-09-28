@@ -23,12 +23,12 @@ namespace graphic
 
 
 	public:
-		cTerrainCursor(void);
+		cTerrainCursor(cRenderer &renderer);
 		virtual ~cTerrainCursor(void);
 
-		void RenderBrush();
-		void RenderModel();
-		void RenderTerrainBrush();
+		void RenderBrush(cRenderer &renderer);
+		void RenderModel(cRenderer &renderer);
+		void RenderTerrainBrush(cRenderer &renderer);
 		void UpdateCursor( graphic::cTerrain &terrain, const Vector3 &cursorPos);
 
 		int GetInnerBrushRadius() const;
@@ -48,11 +48,11 @@ namespace graphic
 		// brush
 		void EnableEraseMode(const bool erase);
 		bool IsEraseMode() const;
-		void SelectBrushTexture(const string &fileName );
+		void SelectBrushTexture(cRenderer &renderer, const string &fileName);
 		const cTexture* GetBrushTexture() const;
 
 		// model
-		void SelectModel(const string &fileName);
+		void SelectModel(cRenderer &renderer, const string &fileName);
 		void SelectModel(cModel *model);
 		const cModel* GetSelectModel() const;
 		void CancelSelectModel();

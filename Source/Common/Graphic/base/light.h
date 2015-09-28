@@ -30,7 +30,7 @@ namespace graphic
 		void SetPosition( const Vector3 &pos );
 		const Vector3& GetPosition() const;
 
-		void Bind(int lightIndex) const;
+		void Bind(cRenderer &renderer, int lightIndex) const;
 		void Bind(cShader &shader) const;
 
 		void GetShadowMatrix( const Vector3 &modelPos, 

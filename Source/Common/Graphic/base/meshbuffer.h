@@ -11,11 +11,11 @@ namespace graphic
 	{
 	public:
 		cMeshBuffer();
-		cMeshBuffer(const sRawMesh &rawMesh);
-		cMeshBuffer(const sRawBone &rawBone);
+		cMeshBuffer(cRenderer &renderer, const sRawMesh &rawMesh);
+		cMeshBuffer(cRenderer &renderer, const sRawBone &rawBone);
 
-		void Bind();
-		void Render(const int faceStart=0, const int faceCount=0);
+		void Bind(cRenderer &renderer);
+		void Render(cRenderer &renderer, const int faceStart = 0, const int faceCount = 0);
 
 		cMeshBuffer* Clone();
 		vector<sAttribute>& GetAttributes();
@@ -27,11 +27,11 @@ namespace graphic
 
 
 	protected:
-		void CreateMesh( const vector<Vector3> &vertices, 
+		void CreateMesh(cRenderer &renderer, const vector<Vector3> &vertices,
 			const vector<Vector3> &normals, 
 			const vector<Vector3> &tex,
 			const vector<int> &indices);
-		void CreateMesh( const sRawMesh &rawMesh );
+		void CreateMesh(cRenderer &renderer, const sRawMesh &rawMesh);
 		void CreateAttributes(const sRawMesh &rawMesh);
 
 

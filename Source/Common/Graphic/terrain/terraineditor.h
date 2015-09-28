@@ -7,13 +7,13 @@ namespace graphic
 	class cTerrainEditor : public cTerrain
 	{
 	public:
-		cTerrainEditor();
+		cTerrainEditor(cRenderer &renderer);
 		virtual ~cTerrainEditor();
 
-		bool CreateFromGRDFile( const string &fileName );
+		bool CreateFromGRDFile(cRenderer &renderer, const string &fileName);
 		bool WriteGRDFile( const string &fileName );
 		bool WriteTRNFile( const string &fileName );
-		bool WriteTerrainTextureToPNGFile( const string &fileName );
+		bool WriteTerrainTextureToPNGFile( cRenderer &renderer, const string &fileName );
 		void GenerateRawTerrain( OUT sRawTerrain &out );
 
 		void BrushTerrain( const cTerrainCursor &cursor, const float elapseT );

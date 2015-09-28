@@ -129,18 +129,18 @@ float Box::GetSize() const
 //-----------------------------------------------------------------------------//
 // 출력
 //-----------------------------------------------------------------------------//
-void Box::Render() const
+void Box::Render(cRenderer &renderer) const
 {
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
-	GetDevice()->SetFVF( D3DFVF_XYZ );
-	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&m_matWorld );
-	GetDevice()->DrawPrimitiveUP( D3DPT_LINESTRIP, 7, &m_box[0], sizeof(Vector3) );	
-	GetDevice()->SetRenderState( D3DRS_LIGHTING, TRUE );
+	renderer.GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
+	renderer.GetDevice()->SetFVF(D3DFVF_XYZ);
+	renderer.GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&m_matWorld);
+	renderer.GetDevice()->DrawPrimitiveUP(D3DPT_LINESTRIP, 7, &m_box[0], sizeof(Vector3));
+	renderer.GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 //-----------------------------------------------------------------------------//
 // 계층구조출력시 사용된다.
 //-----------------------------------------------------------------------------//
-void Box::Render_Hierarchy() const
+void Box::Render_Hierarchy(cRenderer &renderer) const
 {
 	//g_pDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
 	//g_pDevice->SetFVF( D3DFVF_XYZ );

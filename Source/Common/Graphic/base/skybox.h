@@ -11,12 +11,12 @@ namespace graphic
 		cSkyBox();
 		virtual ~cSkyBox();
 
-		bool Create(const string &textureFilePath);
-		void Render(const Matrix44 &tm = Matrix44::Identity);
+		bool Create(cRenderer &renderer, const string &textureFilePath);
+		void Render(cRenderer &renderer, const Matrix44 &tm = Matrix44::Identity);
 
 
 	protected:
-		bool CreateVertexBuffer();	
+		bool CreateVertexBuffer(cRenderer &renderer);
 
 
 	private:

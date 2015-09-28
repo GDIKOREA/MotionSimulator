@@ -32,13 +32,13 @@ namespace graphic
 		};
 
 
-		void InsertObject( int group, ICollisionable *obj, int testNum=0 ); // 충돌테스트할 오브젝트 추가
-		void InsertObject( ICollisionable *parent, ICollisionable *obj, int testNum=0 ); // 충돌테스트할 오브젝트 추가
+		void InsertObject(int group, ICollisionable *obj, int testNum = 0); // 충돌테스트할 오브젝트 추가
+		void InsertObject(ICollisionable *parent, ICollisionable *obj, int testNum = 0); // 충돌테스트할 오브젝트 추가
 		void RemoveObject( ICollisionable *obj ); // 리스트에서 오브젝트 추가
 		void UpdateCollisionBox(); // 충돌박스의 좌표를 갱신한다.
 		int CollisionTest( int testNum ); // 충돌테스트
 		int GetCollisionCount() const;
-
+		void SetRenderer(cRenderer *renderer);
 
 	protected:
 		void InsertObject( sCollisionNode *parent, ICollisionable *obj, int testNum );
@@ -53,8 +53,10 @@ namespace graphic
 		sCollisionNode *m_group1;
 		sCollisionNode *m_group2;
 		int m_collisionCount;
+		cRenderer *m_renderer;
 	};
 
 
 	inline int cCollisionManager::GetCollisionCount() const { return m_collisionCount; }
+	inline void cCollisionManager::SetRenderer(cRenderer *renderer) { m_renderer = renderer;  }
 }

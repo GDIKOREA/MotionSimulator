@@ -7,19 +7,19 @@ namespace graphic
 	class cSkinnedMesh : public cMesh
 	{
 	public:
-		cSkinnedMesh(const int id, vector<Matrix44> *palette, const sRawMesh &raw);
+		cSkinnedMesh(cRenderer &renderer, const int id, vector<Matrix44> *palette, const sRawMesh &raw);
 		virtual ~cSkinnedMesh();
 
-		virtual void Render(const Matrix44 &parentTm) override;
+		virtual void Render(cRenderer &renderer, const Matrix44 &parentTm) override;
 
 		void SetPalette(vector<Matrix44> *palette);
 
 
 	protected:
-		virtual void RenderShader( cShader &shader, const Matrix44 &parentTm );
-		virtual void RenderShadow(cShader &shader, const Matrix44 &parentTm);
+		virtual void RenderShader(cRenderer &renderer, cShader &shader, const Matrix44 &parentTm);
+		virtual void RenderShadow(cRenderer &renderer, cShader &shader, const Matrix44 &parentTm);
 
-		void ApplyPalette();
+		void ApplyPalette(cRenderer &renderer);
 		void ApplyPaletteShader(cShader &shader);
 
 

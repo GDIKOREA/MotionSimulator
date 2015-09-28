@@ -20,14 +20,20 @@ public:
 	virtual void RenderChild() {}
 
 	void SetFixedFrame(const bool isFixedFrame);
+	void SetRenderCube(const bool isRender);
+	graphic::cRenderer& GetRenderer();
 
 
 protected:
 	bool m_isInitDx = false;
 	bool m_isFixedFrame = true; // 고정 프레임모드시 true, (100 frame)
+	bool m_isRenderCube = false;
 	graphic::Box m_box;
 	graphic::cSphere m_sphere;
 	graphic::cCube m_cube;
+	graphic::cCamera m_camera;
+	graphic::cLight m_light;
+	graphic::cRenderer m_renderer;
 
 	Matrix44 m_cubeTm;
 	Matrix44 m_rotateTm;
@@ -59,3 +65,5 @@ public:
 
 
 inline void C3DView::SetFixedFrame(const bool isFixedFrame) { m_isFixedFrame = isFixedFrame;  }
+inline void C3DView::SetRenderCube(const bool isRender) { m_isRenderCube = isRender;  }
+inline graphic::cRenderer& C3DView::GetRenderer() { return m_renderer;  }

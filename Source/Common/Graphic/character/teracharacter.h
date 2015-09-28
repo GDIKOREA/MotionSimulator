@@ -7,6 +7,7 @@
 
 namespace graphic
 {
+	class cRenderer;
 
 	namespace TERA_MODEL
 	{
@@ -29,7 +30,7 @@ namespace graphic
 		cTeraCharacter();
 		virtual ~cTeraCharacter();
 
-		bool Create( 
+		bool Create( cRenderer &renderer,
 			const string &faceModelFileName,
 			const string &hairModelFileName,
 			const string &bodyModelFileName,
@@ -39,15 +40,15 @@ namespace graphic
 
 		virtual bool SetAnimation( const string &aniFileName, const int nAniFrame=0,  
 			const bool isLoop=false, const bool isBlend=true ) override;
-		void SetBodyModel( const string &fileName );
-		void SetHandModel( const string &fileName );
-		void SetLegModel( const string &fileName );
-		void SetFaceModel( const string &fileName );
-		void SetHairModel( const string &fileName );
-		void SetTailModel( const string &fileName );
+		void SetBodyModel(cRenderer &renderer, const string &fileName);
+		void SetHandModel(cRenderer &renderer, const string &fileName);
+		void SetLegModel(cRenderer &renderer, const string &fileName);
+		void SetFaceModel(cRenderer &renderer, const string &fileName);
+		void SetHairModel(cRenderer &renderer, const string &fileName);
+		void SetTailModel(cRenderer &renderer, const string &fileName);
 
 		virtual bool Move(const float elapseTime) override;
-		virtual void Render(const Matrix44 &tm) override;
+		virtual void Render(cRenderer &renderer, const Matrix44 &tm) override;
 
 
 	private:

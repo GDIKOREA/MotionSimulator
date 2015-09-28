@@ -12,10 +12,10 @@ namespace graphic
 		cArchebladeCharacter(const int id);
 		virtual ~cArchebladeCharacter();
 
-		virtual bool Create(const string &modelName, MODEL_TYPE::TYPE type = MODEL_TYPE::AUTO) override;
-		void LoadWeapon(const string &fileName);
+		virtual bool Create(cRenderer &renderer, const string &modelName, MODEL_TYPE::TYPE type = MODEL_TYPE::AUTO) override;
+		void LoadWeapon(cRenderer &renderer, const string &fileName);
 		virtual bool Move(const float elapseTime) override;
-		virtual void Render(const Matrix44 &tm) override;
+		virtual void Render(cRenderer &renderer, const Matrix44 &tm) override;
 
 		// debug ¿ë ÇÔ¼ö.
 		void SetRenderWeaponBoundingBox(const bool isRenderBoundingBox);

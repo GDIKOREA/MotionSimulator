@@ -77,9 +77,9 @@ void cLight::GetShadowMatrix( const Vector3 &modelPos,
 }
 
 
-void cLight::Bind(int lightIndex)  const
+void cLight::Bind(cRenderer &renderer, int lightIndex)  const
 {
-	GetDevice()->SetLight(lightIndex, &m_light); // ±¤¿ø ¼³Á¤.
+	renderer.GetDevice()->SetLight(lightIndex, &m_light); // ±¤¿ø ¼³Á¤.
 }
 
 

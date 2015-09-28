@@ -8,17 +8,17 @@ using namespace graphic;
 
 
 // 렌더러 초기화.
-bool graphic::InitRenderer(HWND hWnd, const int width, const int height)
-{
-	if (!cRenderer::Get()->CreateDirectX(hWnd, width, height))
-		return false;
-
-	return true;
-}
+// bool graphic::InitRenderer(cRenderer &renderer,	HWND hWnd, const int width, const int height)
+// {
+// 	if (!renderer.CreateDirectX(hWnd, width, height))
+// 		return false;
+// 
+// 	return true;
+// }
 
 void graphic::ReleaseRenderer()
 {
-	cRenderer::Release();
+	//cRenderer::Release();
 	cResourceManager::Release();
 	cMainCamera::Release();
 	cLightManager::Release();
@@ -49,7 +49,7 @@ bool cRenderer::CreateDirectX(HWND hWnd, const int width, const int height)
 	if (!InitDirectX(hWnd, width, height, m_pDevice))
 		return false;
 
-	m_textFps.Create();
+	m_textFps.Create(*this);
 	m_textFps.SetPos(10, 10);
 	m_textFps.SetColor(D3DXCOLOR(1,1,1,1));
 
@@ -216,3 +216,33 @@ void cRenderer::MakeAxis( const float length, DWORD xcolor, DWORD ycolor, DWORD 
 	out.push_back(v);
 }
 
+
+bool cRenderer::ClearScene()
+{
+	if (SUCCEEDED(GetDevice()->Clear(
+		0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL,
+		D3DCOLOR_XRGB(150, 150, 150), 1.0f, 0)))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+
+void cRenderer::BeginScene()
+{
+	GetDevice()->BeginScene();
+}
+
+
+void cRenderer::Present()
+{
+	GetDevice()->Present(NULL, NULL, NULL, NULL);
+}
+
+
+void cRenderer::EndScene()
+{
+	GetDevice()->EndScene();
+}

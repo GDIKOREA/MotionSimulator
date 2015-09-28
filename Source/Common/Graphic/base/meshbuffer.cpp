@@ -11,28 +11,28 @@ cMeshBuffer::cMeshBuffer()
 {
 }
 
-cMeshBuffer::cMeshBuffer(const sRawMesh &rawMesh)
+cMeshBuffer::cMeshBuffer(cRenderer &renderer, const sRawMesh &rawMesh)
 :	m_offset(0)
 {
-	CreateMesh(rawMesh);
+	CreateMesh(renderer, rawMesh);
 	CreateAttributes(rawMesh);
 }
 
-cMeshBuffer::cMeshBuffer(const sRawBone &rawBone)
+cMeshBuffer::cMeshBuffer(cRenderer &renderer, const sRawBone &rawBone)
 :	m_offset(0)
 {
-	CreateMesh(rawBone.vertices, rawBone.normals, rawBone.tex, rawBone.indices);
+	CreateMesh(renderer, rawBone.vertices, rawBone.normals, rawBone.tex, rawBone.indices);
 }
 
 
-void cMeshBuffer::Bind()
+void cMeshBuffer::Bind(cRenderer &renderer)
 {
-	m_idxBuff.Bind();
-	m_vtxBuff.Bind();
+	m_idxBuff.Bind(renderer);
+	m_vtxBuff.Bind(renderer);
 }
 
 
-void cMeshBuffer::CreateMesh( const vector<Vector3> &vertices, 
+void cMeshBuffer::CreateMesh(cRenderer &renderer, const vector<Vector3> &vertices,
 	const vector<Vector3> &normals, 
 	const vector<Vector3> &tex,
 	const vector<int> &indices)
@@ -40,7 +40,7 @@ void cMeshBuffer::CreateMesh( const vector<Vector3> &vertices,
 	const bool isTexture = !tex.empty();
 
 	// 버텍스 버퍼 생성
-	if (m_vtxBuff.Create(vertices.size(), sizeof(sVertexNormTex), sVertexNormTex::FVF))
+	if (m_vtxBuff.Create(renderer, vertices.size(), sizeof(sVertexNormTex), sVertexNormTex::FVF))
 	{
 		if (sVertexNormTex* pv = (sVertexNormTex*)m_vtxBuff.Lock())
 		{
@@ -66,7 +66,7 @@ void cMeshBuffer::CreateMesh( const vector<Vector3> &vertices,
 
 
 	// 인덱스 버퍼 생성.
-	if (m_idxBuff.Create(indices.size()))
+	if (m_idxBuff.Create(renderer, indices.size()))
 	{
 		WORD *pi = (WORD*)m_idxBuff.Lock();
 		for (u_int i = 0; i < indices.size(); ++i)
@@ -76,7 +76,7 @@ void cMeshBuffer::CreateMesh( const vector<Vector3> &vertices,
 }
 
 
-void cMeshBuffer::CreateMesh( const sRawMesh &rawMesh )
+void cMeshBuffer::CreateMesh(cRenderer &renderer, const sRawMesh &rawMesh)
 {
 	const bool isTexture = !rawMesh.tex.empty();
 
@@ -85,7 +85,7 @@ void cMeshBuffer::CreateMesh( const sRawMesh &rawMesh )
 
 
 	// 버텍스 버퍼 생성
-	if (m_vtxBuff.Create(rawMesh.vertices.size(), decl.GetElementSize(), decl))
+	if (m_vtxBuff.Create(renderer, rawMesh.vertices.size(), decl.GetElementSize(), decl))
 	{
 		if (BYTE* pv = (BYTE*)m_vtxBuff.Lock())
 		{
@@ -178,7 +178,7 @@ void cMeshBuffer::CreateMesh( const sRawMesh &rawMesh )
 	}	
 
 	// 인덱스 버퍼 생성.
-	if (m_idxBuff.Create(rawMesh.indices.size()))
+	if (m_idxBuff.Create(renderer, rawMesh.indices.size()))
 	{
 		WORD *pi = (WORD*)m_idxBuff.Lock();
 		for (u_int i = 0; i < rawMesh.indices.size(); ++i)
@@ -207,10 +207,10 @@ cMeshBuffer* cMeshBuffer::Clone()
 
 
 // 출력. 
-void cMeshBuffer::Render(const int faceStart, const int faceCount)
+void cMeshBuffer::Render(cRenderer &renderer, const int faceStart, const int faceCount)
 	//faceStart=0, faceCount=0
 {
-	GetDevice()->DrawIndexedPrimitive( 
+	renderer.GetDevice()->DrawIndexedPrimitive( 
 		D3DPT_TRIANGLELIST, 
 		m_offset, 
 		0, 

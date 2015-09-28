@@ -9,14 +9,14 @@ cCube2::cCube2()
 {
 }
 
-cCube2::cCube2(const Vector3 &vMin, const Vector3 &vMax )
+cCube2::cCube2(cRenderer &renderer, const Vector3 &vMin, const Vector3 &vMax)
 {
-	InitCube();
-	SetCube(vMin, vMax);
+	InitCube(renderer);
+	SetCube(renderer, vMin, vMax);
 }
 
 
-void cCube2::InitCube()
+void cCube2::InitCube(cRenderer &renderer)
 {
 	if (m_vtxBuff.GetVertexCount() > 0)
 		return;
@@ -110,7 +110,7 @@ void cCube2::InitCube()
 		1, 5, 7,
 	};
 
-	m_vtxBuff.Create(36, sizeof(sVertexNormTex), sVertexNormTex::FVF);
+	m_vtxBuff.Create(renderer, 36, sizeof(sVertexNormTex), sVertexNormTex::FVF);
 	if (sVertexNormTex *vbuff = (sVertexNormTex*)m_vtxBuff.Lock())
 	{
 		for (int i=0; i < 36; ++i)
@@ -130,10 +130,10 @@ void cCube2::InitCube()
 }
 
 
-void cCube2::SetCube(const Vector3 &vMin, const Vector3 &vMax )
+void cCube2::SetCube(cRenderer &renderer, const Vector3 &vMin, const Vector3 &vMax)
 {
 	if (m_vtxBuff.GetVertexCount() <= 0)
-		InitCube();
+		InitCube(renderer);
 
 	const Vector3 center = (vMin + vMax) / 2.f;
 	const Vector3 v1 = vMin - vMax;
@@ -158,14 +158,14 @@ void cCube2::SetCube(const Vector3 &vMin, const Vector3 &vMax )
 }
 
 
-void cCube2::SetCube(const cCube2 &cube)
+void cCube2::SetCube(cRenderer &renderer, const cCube2 &cube)
 {
-	SetCube(cube.GetMin(), cube.GetMax());
+	SetCube(renderer, cube.GetMin(), cube.GetMax());
 	m_tm = cube.GetTransform();
 }
 
 
-void cCube2::Render(const Matrix44 &tm)
+void cCube2::Render(cRenderer &renderer,  Matrix44 &tm)
 {
 	//DWORD cullMode;
 	//DWORD fillMode;
@@ -177,13 +177,13 @@ void cCube2::Render(const Matrix44 &tm)
 	//GetDevice()->SetRenderState(D3DRS_CULLMODE, FALSE);
 	//GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	//GetDevice()->SetRenderState( D3DRS_LIGHTING, FALSE );
-	GetDevice()->SetTexture(0, NULL);
+	renderer.GetDevice()->SetTexture(0, NULL);
 
 	Matrix44 mat = m_tm * tm;
-	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&mat );
-	m_mtrl.Bind();
-	m_vtxBuff.Bind();
-	GetDevice()->DrawPrimitive( D3DPT_TRIANGLELIST, 0, 12);
+	renderer.GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&mat);
+	m_mtrl.Bind(renderer);
+	m_vtxBuff.Bind(renderer);
+	renderer.GetDevice()->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 12);
 	//GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
 	//	m_vtxBuff.GetVertexCount(), 0, 12);
 

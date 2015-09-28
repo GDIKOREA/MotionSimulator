@@ -18,22 +18,22 @@ cSkyBox2::~cSkyBox2()
 }
 
 
-bool cSkyBox2::Create(const string &skyboxFileName, const float radius)
+bool cSkyBox2::Create(cRenderer &renderer, const string &skyboxFileName, const float radius)
 {
 	RETV(m_sphere, true);// 이미 생성되었다면 리턴.
 
-	if (FAILED(D3DXCreateSphere(GetDevice(), radius, 30, 30, &m_sphere, 0)))
+	if (FAILED(D3DXCreateSphere(renderer.GetDevice(), radius, 30, 30, &m_sphere, 0)))
 	{
 		return false;
 	}
 
-	if (FAILED(D3DXCreateCubeTextureFromFileA(GetDevice(), 
+	if (FAILED(D3DXCreateCubeTextureFromFileA(renderer.GetDevice(), 
 		skyboxFileName.c_str(), &m_envMap)))
 	{
 		return false;
 	}
 
-	if (!m_shader.Create( cResourceManager::Get()->FindFile("sky.fx"), "SkyTech"))
+	if (!m_shader.Create(renderer, cResourceManager::Get()->FindFile("sky.fx"), "SkyTech"))
 	{
 		return false;
 	}
@@ -47,7 +47,7 @@ bool cSkyBox2::Create(const string &skyboxFileName, const float radius)
 }
 
 
-void cSkyBox2::Render(const Matrix44 &tm)//tm = Matrix44::Identity
+void cSkyBox2::Render(cRenderer &renderer, const Matrix44 &tm)//tm = Matrix44::Identity
 {
 	RET(!m_sphere);
 

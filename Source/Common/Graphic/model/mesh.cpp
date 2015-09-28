@@ -5,23 +5,23 @@
 using namespace graphic;
 
 
-cMesh::cMesh(const int id, const sRawMesh &rawMesh) : 
+cMesh::cMesh(cRenderer &renderer, const int id, const sRawMesh &rawMesh) :
 	cNode(id, rawMesh.name)
 ,	m_buffers(NULL)
 ,	m_isBoneMesh(false)
 {
-	CreateMaterials(rawMesh);
+	CreateMaterials(renderer, rawMesh);
 
-	m_buffers = cResourceManager::Get()->LoadMeshBuffer(rawMesh.name);
+	m_buffers = cResourceManager::Get()->LoadMeshBuffer(renderer, rawMesh.name);
 }
 
-cMesh::cMesh(const int id, const sRawBone &rawBone) : 
+cMesh::cMesh(cRenderer &renderer, const int id, const sRawBone &rawBone) :
 	cNode(id)
 ,	m_buffers(NULL)
 ,	m_isBoneMesh(true)
 {
 	// 뼈 메쉬는 동적으로 메쉬버퍼를 생성한다. (디버깅용)
-	m_buffers = new cMeshBuffer(rawBone);
+	m_buffers = new cMeshBuffer(renderer, rawBone);
 }
 
 cMesh::~cMesh()
@@ -32,7 +32,7 @@ cMesh::~cMesh()
 
 
 // 매터리얼 생성.
-void cMesh::CreateMaterials(const sRawMesh &rawMesh)
+void cMesh::CreateMaterials(cRenderer &renderer, const sRawMesh &rawMesh)
 {
 	m_colorMap.resize(rawMesh.mtrls.size(), NULL);
 	m_normalMap.resize(rawMesh.mtrls.size(), NULL);
@@ -47,16 +47,16 @@ void cMesh::CreateMaterials(const sRawMesh &rawMesh)
 		m_mtrls.push_back(cMaterial());
 		m_mtrls.back().Init(mtrl);
 
-		m_colorMap[ i] = cResourceManager::Get()->LoadTexture(mtrl.directoryPath, mtrl.texture);
+		m_colorMap[ i] = cResourceManager::Get()->LoadTexture(renderer, mtrl.directoryPath, mtrl.texture);
 
 		if (!mtrl.bumpMap.empty())
-			m_normalMap[ i] = cResourceManager::Get()->LoadTexture(mtrl.directoryPath, mtrl.bumpMap);
+			m_normalMap[i] = cResourceManager::Get()->LoadTexture(renderer, mtrl.directoryPath, mtrl.bumpMap);
 
 		if (!mtrl.specularMap.empty())
-			m_specularMap[ i] = cResourceManager::Get()->LoadTexture(mtrl.directoryPath, mtrl.specularMap);
+			m_specularMap[i] = cResourceManager::Get()->LoadTexture(renderer, mtrl.directoryPath, mtrl.specularMap);
 
 		if (!mtrl.selfIllumMap.empty())
-			m_selfIllumMap[ i] = cResourceManager::Get()->LoadTexture(mtrl.directoryPath, mtrl.selfIllumMap);
+			m_selfIllumMap[i] = cResourceManager::Get()->LoadTexture(renderer, mtrl.directoryPath, mtrl.selfIllumMap);
 	}
 }
 
@@ -69,7 +69,7 @@ bool cMesh::Move(const float elapseTime)
 
 
 // Render
-void cMesh::Render(const Matrix44 &parentTm)
+void cMesh::Render(cRenderer &renderer, const Matrix44 &parentTm)
 {
 	RET(!IsRender());
 	RET(!m_buffers);
@@ -84,22 +84,22 @@ void cMesh::Render(const Matrix44 &parentTm)
 	if (m_buffers->GetAttributes().empty())
 	{
 		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
-		GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&tm );
+		renderer.GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&tm );
 
 		if (!m_mtrls.empty())
-			m_mtrls[ 0].Bind();
+			m_mtrls[ 0].Bind(renderer);
 		if (!m_colorMap.empty())
-			m_colorMap[ 0]->Bind(0);
+			m_colorMap[ 0]->Bind(renderer, 0);
 
-		m_buffers->Bind();
-		m_buffers->Render();
+		m_buffers->Bind(renderer);
+		m_buffers->Render(renderer);
 	}
 	else
 	{
-		m_buffers->Bind();
+		m_buffers->Bind(renderer);
 
 		const Matrix44 tm = m_localTM * m_aniTM * m_TM * parentTm;
-		GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&tm );
+		renderer.GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&tm );
 
 		for (u_int i=0; i < m_buffers->GetAttributes().size(); ++i)
 		{
@@ -107,11 +107,11 @@ void cMesh::Render(const Matrix44 &parentTm)
 			if ((int)m_mtrls.size() <= mtrlId)
 				continue;
 			
-			m_mtrls[ mtrlId].Bind();
+			m_mtrls[ mtrlId].Bind(renderer);
 			if (m_colorMap[ mtrlId])
-				m_colorMap[ mtrlId]->Bind(0);
+				m_colorMap[ mtrlId]->Bind(renderer, 0);
 
-			m_buffers->Render( 
+			m_buffers->Render( renderer,
 				m_buffers->GetAttributes()[ i].faceStart*3, 
 				m_buffers->GetAttributes()[ i].faceCount);
 		}
@@ -121,7 +121,7 @@ void cMesh::Render(const Matrix44 &parentTm)
 
 
 // 셰이더를 통해 화면을 그린다.
-void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
+void cMesh::RenderShader(cRenderer &renderer, cShader &shader, const Matrix44 &parentTm)
 {
 	RET(!IsRender());
 	RET(!m_buffers);
@@ -163,12 +163,12 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 
 		shader.SetRenderPass(isNormalMapping? 4 : 0);
 
-		m_buffers->Bind();
+		m_buffers->Bind(renderer);
 
 		shader.Begin();
 		shader.BeginPass();
 
-		GetDevice()->DrawIndexedPrimitive( 
+		renderer.GetDevice()->DrawIndexedPrimitive( 
 			D3DPT_TRIANGLELIST, 0, 0, 
 			m_buffers->GetVertexBuffer().GetVertexCount(), 0, 
 			m_buffers->GetIndexBuffer().GetFaceCount());
@@ -187,7 +187,7 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 
 		shader.Begin();
 
-		m_buffers->Bind();
+		m_buffers->Bind(renderer);
 
 		for (u_int i=0; i < m_buffers->GetAttributes().size(); ++i)
 		{
@@ -218,7 +218,7 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 
 			shader.BeginPass();
 
-			GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
+			renderer.GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
 				m_buffers->GetVertexBuffer().GetVertexCount(), 
 				m_buffers->GetAttributes()[ i].faceStart*3, 
 				m_buffers->GetAttributes()[ i].faceCount);
@@ -232,7 +232,7 @@ void cMesh::RenderShader( cShader &shader, const Matrix44 &parentTm )
 
 
 // 그림자 출력.
-void cMesh::RenderShadow(const Matrix44 &viewProj, 
+void cMesh::RenderShadow(cRenderer &renderer, const Matrix44 &viewProj,
 	const Vector3 &lightPos, const Vector3 &lightDir, const Matrix44 &parentTm)
 {
 	RET(!IsRender());
@@ -254,12 +254,12 @@ void cMesh::RenderShadow(const Matrix44 &viewProj,
 		wit.Transpose();
 		m_shader->SetMatrix("mWIT", wit);
 
-		m_buffers->Bind();
+		m_buffers->Bind(renderer);
 
 		m_shader->Begin();
 		m_shader->BeginPass(1);
 
-		GetDevice()->DrawIndexedPrimitive( 
+		renderer.GetDevice()->DrawIndexedPrimitive(
 			D3DPT_TRIANGLELIST, 0, 0, 
 			m_buffers->GetVertexBuffer().GetVertexCount(), 0, 
 			m_buffers->GetIndexBuffer().GetFaceCount());
@@ -278,7 +278,7 @@ void cMesh::RenderShadow(const Matrix44 &viewProj,
 
 		m_shader->Begin();
 
-		m_buffers->Bind();
+		m_buffers->Bind(renderer);
 
 		for (u_int i=0; i < m_buffers->GetAttributes().size(); ++i)
 		{
@@ -288,7 +288,7 @@ void cMesh::RenderShadow(const Matrix44 &viewProj,
 
 			m_shader->BeginPass(1);
 
-			GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
+			renderer.GetDevice()->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0,
 				m_buffers->GetVertexBuffer().GetVertexCount(), 
 				m_buffers->GetAttributes()[ i].faceStart*3, 
 				m_buffers->GetAttributes()[ i].faceCount);
@@ -302,7 +302,7 @@ void cMesh::RenderShadow(const Matrix44 &viewProj,
 }
 
 
-void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
+void cMesh::RenderShadow(cRenderer &renderer, cShader &shader, const Matrix44 &parentTm)
 {
 	RET(!IsRender());
 	RET(!m_buffers);
@@ -326,12 +326,12 @@ void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 		//if (!m_textures.empty())
 		//	m_textures[ 0]->Bind(shader, "colorMapTexture");
 
-		m_buffers->Bind();
+		m_buffers->Bind(renderer);
 
 		shader.Begin();
 		shader.BeginPass();
 
-		GetDevice()->DrawIndexedPrimitive( 
+		renderer.GetDevice()->DrawIndexedPrimitive( 
 			D3DPT_TRIANGLELIST, 0, 0, 
 			m_buffers->GetVertexBuffer().GetVertexCount(), 0, 
 			m_buffers->GetIndexBuffer().GetFaceCount());
@@ -355,7 +355,7 @@ void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 		//shader.SetMatrix("mWIT", wit);
 
 		shader.Begin();
-		m_buffers->Bind();
+		m_buffers->Bind(renderer);
 		//m_vtxBuff.Bind();
 		//m_idxBuff.Bind();
 
@@ -371,7 +371,7 @@ void cMesh::RenderShadow(cShader &shader, const Matrix44 &parentTm)
 
 			shader.BeginPass();
 
-			GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
+			renderer.GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 
 				m_buffers->GetVertexBuffer().GetVertexCount(), 
 				m_buffers->GetAttributes()[ i].faceStart*3, 
 				m_buffers->GetAttributes()[ i].faceCount);

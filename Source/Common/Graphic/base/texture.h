@@ -12,13 +12,13 @@ namespace graphic
 		cTexture();
 		virtual ~cTexture();
 
-		bool Create(const string &fileName, bool isSizePow2=true);
-		bool Create(const int width, const int height, const D3DFORMAT format);
+		bool Create(cRenderer &renderer, const string &fileName, bool isSizePow2 = true);
+		bool Create(cRenderer &renderer, const int width, const int height, const D3DFORMAT format);
 		bool WritePNGFile( const string &fileName );
 
-		void Bind(const int stage);
+		void Bind(cRenderer &renderer, const int stage);
 		void Bind(cShader &shader, const string &key);
-		void Unbind(const int stage);
+		void Unbind(cRenderer &renderer, const int stage);
 		void Lock(D3DLOCKED_RECT &out);
 		void Unlock();
 		IDirect3DTexture9* GetTexture();
@@ -28,7 +28,7 @@ namespace graphic
 		
 
 	protected:
-		bool CreateEx(const string &fileName);
+		bool CreateEx(cRenderer &renderer, const string &fileName);
 
 
 	private:

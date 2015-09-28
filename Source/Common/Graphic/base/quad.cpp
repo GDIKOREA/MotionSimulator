@@ -20,14 +20,14 @@ cQuad::~cQuad()
 // 쿼드를 초기화 한다.
 // width, height : 쿼드 크기
 // pos : 쿼드 위치
-bool cQuad::Create( const float width, const float height, 
+bool cQuad::Create(cRenderer &renderer, const float width, const float height,
 	const Vector3 &pos, 
 	const string &textureFileName // = " "
 	)
 {
 	if (m_vtxBuff.GetVertexCount() <= 0)
 	{
-		m_vtxBuff.Create(4, sizeof(sVertexNormTex), sVertexNormTex::FVF);
+		m_vtxBuff.Create(renderer, 4, sizeof(sVertexNormTex), sVertexNormTex::FVF);
 	}
 
 	sVertexNormTex *vertices = (sVertexNormTex*)m_vtxBuff.Lock();
@@ -55,7 +55,7 @@ bool cQuad::Create( const float width, const float height,
 	m_vtxBuff.Unlock();
 
 	if (!textureFileName.empty())
-		m_texture = cResourceManager::Get()->LoadTexture(textureFileName);
+		m_texture = cResourceManager::Get()->LoadTexture(renderer, textureFileName);
 
 	m_tm.SetTranslate(pos);
 
@@ -63,26 +63,26 @@ bool cQuad::Create( const float width, const float height,
 }
 
 
-void cQuad::Render()
+void cQuad::Render(cRenderer &renderer)
 {
-	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&m_tm );
-	m_material.Bind();
+	renderer.GetDevice()->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&m_tm);
+	m_material.Bind(renderer);
 	if (m_texture)
-		m_texture->Bind(0);
-	GetDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE);
-	GetDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	GetDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+		m_texture->Bind(renderer, 0);
+	renderer.GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	renderer.GetDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	renderer.GetDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-	m_vtxBuff.RenderTriangleStrip();
-	GetDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE);
+	m_vtxBuff.RenderTriangleStrip(renderer);
+	renderer.GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 }
 
 
-void cQuad::RenderLine()
+void cQuad::RenderLine(cRenderer &renderer)
 {
 	DWORD flag;
-	GetDevice()->GetRenderState(D3DRS_FILLMODE, &flag);
-	GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-	Render();
-	GetDevice()->SetRenderState(D3DRS_FILLMODE, flag);
+	renderer.GetDevice()->GetRenderState(D3DRS_FILLMODE, &flag);
+	renderer.GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	Render(renderer);
+	renderer.GetDevice()->SetRenderState(D3DRS_FILLMODE, flag);
 }
