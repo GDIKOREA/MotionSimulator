@@ -152,10 +152,9 @@ BOOL CMotionMonitorApp::InitInstance()
 		config.ReadConfigFile(commandLine);
 	}
 
-	CLoginDialog loginDlg;
-	if (IDCANCEL == loginDlg.DoModal())
-		return FALSE;
-
+// 	CLoginDialog loginDlg;
+// 	if (IDCANCEL == loginDlg.DoModal())
+// 		return FALSE;
 
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views
@@ -198,8 +197,15 @@ BOOL CMotionMonitorApp::InitInstance()
 	//m_pMainWnd->SetWindowTextW(L"Motion Monitor");
 
 	const string title = common::GetFileName(cMotionController::Get()->m_config.m_fileName);
-	//m_pMainWnd->SetWindowTextW(str2wstr(title).c_str());
-	m_pMainWnd->SetWindowTextW(L"MachineGun-X Admin Manager");
+
+	if (config.m_mode == "machinegun_stand")
+	{
+		m_pMainWnd->SetWindowTextW(L"MachineGun-X Admin Manager");
+	}
+	else
+	{
+		m_pMainWnd->SetWindowTextW(str2wstr(title).c_str());
+	}
 	((CMainFrame*)m_pMainWnd)->Init();
 		
 	//Close down COM

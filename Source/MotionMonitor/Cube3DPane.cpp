@@ -33,6 +33,8 @@ int CCube3DPane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_view->ShowWindow(SW_SHOW);
 	SetChildView(m_view);
 
+	cController::Get()->Init(m_view->GetRenderer());
+	m_view->SetRenderCube(true);
 	
 	graphic::GetMainCamera()->SetCamera(Vector3(-8.5f, 2.4f, -3.2f), Vector3(0, 0, 0), Vector3(0, 1, 0));
 

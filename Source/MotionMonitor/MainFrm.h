@@ -29,6 +29,7 @@ public:
 	void UpdateConfig(bool IsSaveAndValidate = true);
 	void LoadConfigFile(const string &fileName);
 	BOOL NewPlotWindow();
+	void SetContainerSize(CDockablePane* targetPane, UINT cx, UINT cy);
 
 
 // Overrides
@@ -52,7 +53,7 @@ public:
 	list<CDockablePaneBase*> m_viewList;
 	list<CDockablePaneChildView*> m_childViewList;
 
-	CCube3DPane *m_wndCube3DView;
+	C3DView *m_wndCube3DView;
 	CUDPInputView *m_udpInputView;
 	CUDPParseView *m_udpParseView;
 	CMotionOutputView *m_motionOutputView;
@@ -75,4 +76,5 @@ protected:
 public:
 	afx_msg void OnViewViewinitialize();
 	afx_msg void OnClose();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

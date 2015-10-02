@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "MotionMonitor.h"
-
 #include "MotionOutputView.h"
 #include "UDPInputView.h"
 #include "JoystickView.h"
@@ -37,7 +36,7 @@ CControlBoard *g_controlView = NULL;
 CLauncherView *g_launcherView = NULL;
 
 
-#define CREATE_DOCKPANE(CLASS, DOCKNAME, PANE_ID, VAR)\
+#define CREATE_DOCKPANE(CLASS, DOCKNAME, PANE_ID, RESOURCE_ID, VAR)\
 {\
 	CDockablePaneBase *pane = new CDockablePaneBase();\
 	if (!pane->Create(DOCKNAME, this, CRect(0, 0, 460, 500), TRUE, PANE_ID, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))\
@@ -46,13 +45,18 @@ CLauncherView *g_launcherView = NULL;
 		return FALSE;\
 		}\
 	VAR = new CLASS(pane);\
-	VAR->Create(CLASS::IDD, pane);\
+	VAR->Create(RESOURCE_ID, pane);\
 	VAR->ShowWindow(SW_SHOW);\
 	pane->SetChildView(VAR);\
 	m_viewList.push_back(pane);\
 	HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(theApp.m_bHiColorIcons ? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);\
 	pane->SetIcon(hClassViewIcon, FALSE);\
 }
+
+
+#define CREATE_DOCKPANE2(CLASS, DOCKNAME, PANE_ID, VAR) \
+	CREATE_DOCKPANE(CLASS, DOCKNAME, PANE_ID, CLASS::IDD, VAR)
+
 
 
 // 일반 뷰 생성
@@ -69,6 +73,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &CMainFrame::OnToolbarCreateNew)
 	ON_COMMAND(ID_VIEW_VIEWINITIALIZE, &CMainFrame::OnViewViewinitialize)
 	ON_WM_CLOSE()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -283,31 +288,23 @@ BOOL CMainFrame::CreateDockingWindows()
 	}
 	else
 	{
-		// Create cube3d view
-		m_wndCube3DView = new CCube3DPane();
-		if (!m_wndCube3DView->Create(L"3DView", this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_CUBE3D, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
-		{
-			TRACE0("Failed to create cube 3d View window\n");
-			return FALSE; // failed to create
-		}
-		HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(theApp.m_bHiColorIcons ? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
-		m_wndCube3DView->SetIcon(hClassViewIcon, FALSE);
-		m_viewList.push_back(m_wndCube3DView);
-
-		CREATE_DOCKPANE(CMotionOutputView, L"Motion Output View", ID_VIEW_MOTION_OUTPUT, m_motionOutputView);
-		CREATE_DOCKPANE(CUDPInputView, L"UDP Input View", ID_VIEW_MOTION_INPUT, m_udpInputView);
-		CREATE_DOCKPANE(CJoystickView, L"Joystick View", ID_VIEW_JOYSTICK, m_joystickView);
-		CREATE_DOCKPANE(CMotionWaveView, L"MotionWave View", ID_VIEW_MOTIONWAVE, m_motionWaveView);
-		CREATE_DOCKPANE(CMixingView, L"Mixing View", ID_VIEW_MIXING, m_mixingView);
-		CREATE_DOCKPANE(CControlBoard, L"Control Board", ID_VIEW_CONTROLBOARD, m_controlBoardView);
-		CREATE_DOCKPANE(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
-		CREATE_DOCKPANE(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
-		CREATE_DOCKPANE(CLauncherView, L"Launcher View", ID_VIEW_LAUNCHER, m_launcherView);
+		CREATE_DOCKPANE(C3DView, L"Motion Output View", ID_VIEW_CUBE3D, IDD_DIALOG_3D, m_wndCube3DView);
+		CREATE_DOCKPANE2(CMotionOutputView, L"Motion Output View", ID_VIEW_MOTION_OUTPUT, m_motionOutputView);
+		CREATE_DOCKPANE2(CUDPInputView, L"UDP Input View", ID_VIEW_MOTION_INPUT, m_udpInputView);
+		CREATE_DOCKPANE2(CJoystickView, L"Joystick View", ID_VIEW_JOYSTICK, m_joystickView);
+		CREATE_DOCKPANE2(CMotionWaveView, L"MotionWave View", ID_VIEW_MOTIONWAVE, m_motionWaveView);
+		CREATE_DOCKPANE2(CMixingView, L"Mixing View", ID_VIEW_MIXING, m_mixingView);
+		CREATE_DOCKPANE2(CControlBoard, L"Control Board", ID_VIEW_CONTROLBOARD, m_controlBoardView);
+		CREATE_DOCKPANE2(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
+		CREATE_DOCKPANE2(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
 
 		g_mwaveView = m_motionWaveView;
 		g_udpInputView = m_udpInputView;
 		g_controlView = m_controlBoardView;
 		g_launcherView = m_launcherView;
+
+		cController::Get()->Init(m_wndCube3DView->GetRenderer());
+		m_wndCube3DView->SetRenderCube(true);
 	}
 
 	return TRUE;
@@ -434,7 +431,7 @@ BOOL CMainFrame::NewPlotWindow()
 
 	CString viewName;
 	viewName.Format(L"Plot View%d", plotViewIncId++);
-	CREATE_DOCKPANE(CPlotView, viewName, plotViewId++, plotView);
+	CREATE_DOCKPANE2(CPlotView, viewName, plotViewId++, plotView);
 
 	CDockablePane *pane = (CDockablePane*)plotView->GetParent();
 	pane->EnableDocking(CBRS_ALIGN_ANY);
@@ -444,5 +441,109 @@ BOOL CMainFrame::NewPlotWindow()
 	plotView->SetAddPlotView(true);
 
 	return TRUE;
+}
+
+
+void CMainFrame::OnSize(UINT nType, int cx, int cy)
+{
+	CFrameWndEx::OnSize(nType, cx, cy);
+
+	RET(m_viewList.empty());
+
+	// MainFrame크기에 따라 Pane 크기를 맞춘다.
+	CDockablePane *parentPane = NULL;
+	for each(auto it in m_viewList)
+	{
+		CPaneDivider* pDefaultPaneDivider = it->GetDefaultPaneDivider();
+		if (pDefaultPaneDivider)
+		{
+			parentPane = it;
+			break;
+		}
+	}
+
+	if (parentPane)
+	{
+		for each(auto it in m_viewList)
+		{
+			CBaseTabbedPane *tabPane = it->GetParentTabbedPane();
+			if (tabPane)
+			{
+				// TabPane과 일반 Pane이 같이 MainFrame안에 섞여있다면, 윈도우크기를 자동 조절하지 않는다.	
+				if (tabPane->GetDefaultPaneDivider())
+					return;
+			}
+		}
+	}
+	else
+	{
+		// ParentPane이 없다면, TabControl이 있는지 검사한다.
+		for each(auto it in m_viewList)
+		{
+			CBaseTabbedPane *tabPane = it->GetParentTabbedPane();
+			if (!tabPane)
+				continue;
+
+			CPaneDivider* pDefaultPaneDivider = tabPane->GetDefaultPaneDivider();
+			if (pDefaultPaneDivider)
+			{
+				parentPane = tabPane;
+				break;
+			}
+		}
+	}
+
+	RET(!parentPane);
+
+	if (IsWindowVisible())
+	{
+		// 꽁수, 화면에 비춰지는 윈도우 개수, 처음 시작시에는 -1로 설정되어 있다.
+		// 처음 시작시에는 윈도우 크기를 조정하지 않는다.
+		if (m_nWindow >= 0)
+			SetContainerSize(parentPane, cx, cy);
+	}
+}
+
+
+// Pane 크기 조절
+void CMainFrame::SetContainerSize(CDockablePane* targetPane, UINT cx, UINT cy)
+{
+	CPaneDivider* pDefaultPaneDivider = targetPane->GetDefaultPaneDivider();
+	if (pDefaultPaneDivider == NULL)
+	{
+		OutputDebugString(_T("The DialogBar is not docked.\n"));
+		return;
+	}
+
+	BOOL bLeftBar = FALSE;
+	CPaneContainer* pContainer = pDefaultPaneDivider->FindPaneContainer(targetPane, bLeftBar);
+
+	while (pContainer->GetParentPaneContainer() != NULL)
+	{
+		pContainer = pContainer->GetParentPaneContainer();
+	}
+
+	CRect rectContainer;
+	pContainer->GetWindowRect(rectContainer, FALSE);
+	DWORD dwDividerStyle = pDefaultPaneDivider->GetCurrentAlignment();
+
+	CPoint ptOffset(0, 0);
+	switch (dwDividerStyle)
+	{
+	case CBRS_ALIGN_TOP:
+		ptOffset.y = cy - rectContainer.Height();
+		break;
+	case CBRS_ALIGN_BOTTOM:
+		ptOffset.y = rectContainer.Height() - cy;
+		break;
+	case CBRS_ALIGN_LEFT:
+		ptOffset.x = cx - rectContainer.Width();
+		break;
+	case CBRS_ALIGN_RIGHT:
+		ptOffset.x = rectContainer.Width() - cx;
+		break;
+	}
+
+	pDefaultPaneDivider->Move(ptOffset);
 }
 
