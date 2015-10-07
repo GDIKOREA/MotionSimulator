@@ -48,9 +48,6 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Cube3DPane.h">
-      <Filter>Pane</Filter>
-    </ClInclude>
     <ClInclude Include="MotionController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -180,9 +177,6 @@
     <ClInclude Include="vitconmotionsim.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UDPParseView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="script.h">
       <Filter>Script</Filter>
     </ClInclude>
@@ -198,17 +192,11 @@
     <ClInclude Include="protocolparser.h">
       <Filter>Script</Filter>
     </ClInclude>
-    <ClInclude Include="PlotView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="plotinputparser.h">
       <Filter>Script</Filter>
     </ClInclude>
     <ClInclude Include="plotinputscript.h">
       <Filter>Script</Filter>
-    </ClInclude>
-    <ClInclude Include="LauncherView.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LauncherConfig.h">
       <Filter>Header Files</Filter>
@@ -217,6 +205,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LoginDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LauncherView.h">
+      <Filter>Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="PlotView.h">
+      <Filter>Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="UDPParseView.h">
+      <Filter>Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="EditDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlotInputDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -235,9 +238,6 @@
     </ClCompile>
     <ClCompile Include="MotionMonitorView.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Cube3DPane.cpp">
-      <Filter>Pane</Filter>
     </ClCompile>
     <ClCompile Include="MotionController.cpp">
       <Filter>Source Files</Filter>
@@ -347,9 +347,6 @@
     <ClCompile Include="vitconmotionsim.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UDPParseView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="mathinterpreter.cpp">
       <Filter>Script</Filter>
     </ClCompile>
@@ -365,17 +362,11 @@
     <ClCompile Include="protocolparser.cpp">
       <Filter>Script</Filter>
     </ClCompile>
-    <ClCompile Include="PlotView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="plotinputparser.cpp">
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="plotinputscript.cpp">
       <Filter>Script</Filter>
-    </ClCompile>
-    <ClCompile Include="LauncherView.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LauncherConfig.cpp">
       <Filter>Source Files</Filter>
@@ -384,6 +375,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LoginDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LauncherView.cpp">
+      <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="UDPParseView.cpp">
+      <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="PlotView.cpp">
+      <Filter>Pane</Filter>
+    </ClCompile>
+    <ClCompile Include="EditDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlotInputDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

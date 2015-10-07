@@ -76,7 +76,7 @@ BOOL CUDPParseView::OnInitDialog()
 
 	m_SymbolList.InsertColumn(0, L"Name");
 	m_SymbolList.InsertColumn(1, L"Value");
-	m_SymbolList.SetColumnWidth(0, 50);
+	m_SymbolList.SetColumnWidth(0, 100);
 	m_SymbolList.SetColumnWidth(1, 200);
 
 	UpdateConfig();
@@ -326,13 +326,26 @@ void CUDPParseView::Update(const float deltaSeconds)
 		script::g_symbols["@roll0"] = data;
 		data.fVal = chPitch;
 		script::g_symbols["@pitch0"] = data;
-		data.fVal = chYaw;
+		data.fVal = yaw;
 		script::g_symbols["@yaw0"] = data;
+		data.fVal = heave;
+		script::g_symbols["@heave0"] = data;
 
 		// -pi ~ +pi 내의 각도로 정규화한 각도값(radian) chRoll, chPitch,chYaw 값으로 정보를 업데이트한다.
 		cController::Get()->GetCubeFlight().SetEulerAngle(chRoll, chPitch, chYaw);
 		cMotionController::Get()->m_udpMod.Update(m_incTime, yaw, chPitch, chRoll, heave);
 
+		float froll, fpitch, fyaw, fheave;
+		cMotionController::Get()->m_udpMod.GetFinal(fyaw, fpitch, froll, fheave);
+
+		data.fVal = froll;
+		script::g_symbols["@roll1"] = data;
+		data.fVal = fpitch;
+		script::g_symbols["@pitch1"] = data;
+		data.fVal = fyaw;
+		script::g_symbols["@yaw1"] = data;
+		data.fVal = fheave;
+		script::g_symbols["@heave1"] = data;
 
 		if (m_IsUpdateSymbol)
 		{

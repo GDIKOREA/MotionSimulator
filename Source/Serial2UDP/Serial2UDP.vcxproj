@@ -44,9 +44,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\Bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\Bin\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -141,7 +143,7 @@
     <Image Include="res\Serial2UDP.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Simulator\Common\Network\Network.vcxproj">
+    <ProjectReference Include="..\Common\Network\Network.vcxproj">
       <Project>{a202aa06-f0ee-4b05-86de-da63b9f146d4}</Project>
     </ProjectReference>
   </ItemGroup>

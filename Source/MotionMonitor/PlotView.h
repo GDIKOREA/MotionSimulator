@@ -1,10 +1,10 @@
 #pragma once
 #include "afxwin.h"
 
-#include "plotinputparser.h"
 
 // CPlotView dialog
-
+class CEditDlg;
+class CPlotInputDlg;
 class CPlotView : public CDockablePaneChildView
 {
 public:
@@ -26,7 +26,11 @@ protected:
 	bool m_isStart;
 	bool m_addPlotView; // true 이면, 환경변수에 값을 저장하지 않는다. 환경변수는 처음에 생성된 PlotView만 저장된다.
 
-	cPlotInputParser m_parser;
+	CEditDlg *m_plotCmdEditDlg;
+	CPlotInputDlg *m_plotInputDlg;
+
+	//cPlotInputParser m_parser;
+	vector<cPlotInputParser> m_plotInputParser;
 
 
 protected:
@@ -38,13 +42,15 @@ public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
 	CEdit m_PlotInputCommandEditor;
-	CEdit m_PlotInputOut;
+	//CEdit m_PlotInputOut;
 	CEdit m_PlotCommandEditor;
 	afx_msg void OnBnClickedButtonUpdate();
 	afx_msg void OnBnClickedButtonNewplot();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnDestroy();
 	virtual BOOL OnInitDialog();
+	afx_msg void OnBnClickedButtonPlotinput();
+	afx_msg void OnBnClickedButtonPlotcmd();
 };
 
 

@@ -131,7 +131,6 @@
     <ClInclude Include="..\Common\UIComponent\UIUtiltity.h" />
     <ClInclude Include="..\Common\UIComponent\UpdateObserver.h" />
     <ClInclude Include="ControlBoard.h" />
-    <ClInclude Include="Cube3DPane.h" />
     <ClInclude Include="Dirt3Controller.h" />
     <ClInclude Include="ExeTracker.h" />
     <ClInclude Include="Global.h" />
@@ -146,7 +145,9 @@
     <ClInclude Include="mathscript.h" />
     <ClInclude Include="mixingconfig.h" />
     <ClInclude Include="MixingView.h" />
+    <ClInclude Include="EditDlg.h" />
     <ClInclude Include="MotionController.h" />
+    <ClInclude Include="PlotInputDlg.h" />
     <ClInclude Include="plotinputparser.h" />
     <ClInclude Include="plotinputscript.h" />
     <ClInclude Include="PlotView.h" />
@@ -190,7 +191,6 @@
     <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp" />
     <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp" />
     <ClCompile Include="ControlBoard.cpp" />
-    <ClCompile Include="Cube3DPane.cpp" />
     <ClCompile Include="Dirt3Controller.cpp" />
     <ClCompile Include="ExeTracker.cpp" />
     <ClCompile Include="Global.cpp" />
@@ -205,7 +205,9 @@
     <ClCompile Include="mathscript.cpp" />
     <ClCompile Include="mixingconfig.cpp" />
     <ClCompile Include="MixingView.cpp" />
+    <ClCompile Include="EditDlg.cpp" />
     <ClCompile Include="MotionController.cpp" />
+    <ClCompile Include="PlotInputDlg.cpp" />
     <ClCompile Include="plotinputparser.cpp" />
     <ClCompile Include="plotinputscript.cpp" />
     <ClCompile Include="PlotView.cpp" />

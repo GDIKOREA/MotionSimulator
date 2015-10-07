@@ -5,6 +5,9 @@
 #include "MotionMonitor.h"
 #include "UDPInputView.h"
 #include "afxdialogex.h"
+#include "EditDlg.h"
+#include "PlotInputDlg.h"
+
 
 
 // UDPInputView dialog
@@ -15,11 +18,17 @@ CUDPInputView::CUDPInputView(CWnd* pParent /*=NULL*/)
 	, m_isPause(false)
 	, m_rcvPacketCount(0)
 	, m_state(STOP)
+	, m_modEditDlg(NULL)
+	, m_plotCmdEditDlg(NULL)
+	, m_plotInputDlg(NULL)
 {
 }
 
 CUDPInputView::~CUDPInputView()
 {
+	DELETE_WINDOW(m_modEditDlg);
+	DELETE_WINDOW(m_plotCmdEditDlg);
+	DELETE_WINDOW(m_plotInputDlg);
 }
 
 void CUDPInputView::DoDataExchange(CDataExchange* pDX)
@@ -31,19 +40,23 @@ void CUDPInputView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_COMMAND, m_PlotCommandEditor);
 	DDX_Control(pDX, IDC_CHECK_FIXEDMODE, m_FixedModeButton);
 	DDX_Control(pDX, IDC_STATIC_PACKET_COUNT, m_PacketRecvCount);
-	DDX_Control(pDX, IDC_STATIC_PLOTINPUT, m_PlotInputString);
+//	DDX_Control(pDX, IDC_STATIC_PLOTINPUT, m_PlotInputString);
+	DDX_Control(pDX, IDC_EDIT_PLOTINPUT, m_PlotInputStrEditor);
 }
 
 
 BEGIN_ANCHOR_MAP(CUDPInputView)
 	ANCHOR_MAP_ENTRY(IDC_STATIC_GRAPH, ANF_LEFT | ANF_TOP | ANF_RIGHT | ANF_BOTTOM)
 	ANCHOR_MAP_ENTRY(IDC_RICHEDIT2_COMMAND, ANF_LEFT | ANF_TOP | ANF_RIGHT)
+	ANCHOR_MAP_ENTRY(IDC_EDIT_PLOTINPUT, ANF_LEFT | ANF_TOP | ANF_RIGHT)
 	ANCHOR_MAP_ENTRY(IDC_EDIT_COMMAND, ANF_LEFT | ANF_RIGHT | ANF_BOTTOM)
 	ANCHOR_MAP_ENTRY(IDC_STATIC1, ANF_LEFT | ANF_BOTTOM)
 	ANCHOR_MAP_ENTRY(IDC_BUTTON_PLOTUPDATE, ANF_RIGHT | ANF_BOTTOM)
 	ANCHOR_MAP_ENTRY(IDC_BUTTON_HELP, ANF_RIGHT | ANF_BOTTOM)
 	ANCHOR_MAP_ENTRY(IDC_BUTTON_PLOTPAUSE, ANF_RIGHT | ANF_BOTTOM)
-	ANCHOR_MAP_ENTRY(IDC_CHECK_FIXEDMODE, ANF_LEFT | ANF_BOTTOM)
+	ANCHOR_MAP_ENTRY(IDC_CHECK_FIXEDMODE, ANF_RIGHT | ANF_BOTTOM)
+//	ANCHOR_MAP_ENTRY(IDC_STATIC2, ANF_LEFT | ANF_BOTTOM)
+	ANCHOR_MAP_ENTRY(IDC_BUTTON_PLOTCMD, ANF_LEFT | ANF_BOTTOM)
 END_ANCHOR_MAP()
 
 
@@ -58,6 +71,10 @@ BEGIN_MESSAGE_MAP(CUDPInputView, CDockablePaneChildView)
 	ON_BN_CLICKED(IDC_BUTTON_HELP, &CUDPInputView::OnBnClickedButtonHelp)
 	ON_BN_CLICKED(IDC_BUTTON_PLOTPAUSE, &CUDPInputView::OnBnClickedButtonPlotpause)
 	ON_BN_CLICKED(IDC_CHECK_FIXEDMODE, &CUDPInputView::OnBnClickedCheckFixedmode)
+	ON_BN_CLICKED(IDC_BUTTON_MOD_EDITDLG, &CUDPInputView::OnBnClickedButtonModEditdlg)
+	ON_BN_CLICKED(IDC_BUTTON_PLOTINPUT_DLG, &CUDPInputView::OnBnClickedButtonPlotinputDlg)
+	ON_BN_CLICKED(IDC_BUTTON_PLOTCMD, &CUDPInputView::OnBnClickedButtonPlotcmd)
+	ON_BN_CLICKED(IDC_BUTTON_PLOTINPUT_UPDATE, &CUDPInputView::OnBnClickedButtonPlotinputUpdate)
 END_MESSAGE_MAP()
 
 
@@ -170,6 +187,21 @@ name4 = Heave\r\n";
 
 		m_PlotCommandEditor.SetWindowTextW(strPlotComandEditor);
 
+
+		CString strPlotInputComandEditor;
+		if (!cMotionController::Get()->m_config.m_udpPlotInputCmd.empty())
+		{
+			strPlotInputComandEditor = str2wstr(cMotionController::Get()->m_config.m_udpPlotInputCmd).c_str();
+		}
+		else
+		{
+			strPlotInputComandEditor = L"$1;$2;$3;\r\n"
+										L"$4;$5;$6;\r\n";
+		}
+
+		ParsePlotInputStringFormat(wstr2str((LPCTSTR)strPlotInputComandEditor), m_plotInputParser);
+		m_PlotInputStrEditor.SetWindowTextW(strPlotInputComandEditor);
+
 		UpdateData(FALSE);
 	}
 	else
@@ -181,8 +213,11 @@ name4 = Heave\r\n";
 		m_EditCommand.GetWindowTextW(modCommand);
 		CString plotCommand;
 		m_PlotCommandEditor.GetWindowText(plotCommand);
+		CString plotInputCommand;
+		m_PlotInputStrEditor.GetWindowText(plotInputCommand);
 		cMotionController::Get()->m_config.m_udpModCommand = wstr2str((LPCTSTR)modCommand);
 		cMotionController::Get()->m_config.m_udpPlotCommand = wstr2str((LPCTSTR)plotCommand);
+		cMotionController::Get()->m_config.m_udpPlotInputCmd = wstr2str((LPCTSTR)plotInputCommand);
 	}	
 }
 
@@ -248,21 +283,28 @@ void CUDPInputView::UpdateUDP(const char *buffer, const int bufferLen)
 	}
 
 	const float t = timeGetTime()*0.001f;
- 	float yaw, pitch, roll, heave;
- 	cMotionController::Get()->m_udpMod.GetOriginal(yaw, pitch, roll, heave);
- 	string plotInputStr = common::format("%f;%f;%f;%f", yaw, pitch, roll, heave).c_str();
- 	m_PlotInputString.SetWindowTextW(str2wstr(plotInputStr).c_str());
+	float yaw, pitch, roll, heave;
+	cMotionController::Get()->m_udpMod.GetOriginal(yaw, pitch, roll, heave);
+// 	string plotInputStr = common::format("%f;%f;%f;%f", yaw, pitch, roll, heave).c_str();
+// 	m_PlotInputString.SetWindowTextW(str2wstr(plotInputStr).c_str());
 
-	// 그래프 출력
+	// 그래프 출력, 원래 주석
 	//m_multiPlotWindows->SetString(t, plotInputStr.c_str());
 
 	float origRoll, origPitch, origYaw, origHeave;
 	cMotionController::Get()->m_udpMod.GetOriginal(origYaw, origPitch, origRoll, origHeave);
-	m_multiPlotWindows->SetString(t, common::format("%f;%f;%f;%f", origYaw, origPitch, origRoll, origHeave).c_str(), 0);
+	//m_multiPlotWindows->SetString(t, common::format("%f;%f;%f;%f", origYaw, origPitch, origRoll, origHeave).c_str(), 0);
 
 	float froll, fpitch, fyaw, fheave;
 	cMotionController::Get()->m_udpMod.GetFinal(fyaw, fpitch, froll, fheave);
-	m_multiPlotWindows->SetString(t, common::format("%f;%f;%f;%f;", fyaw, fpitch, froll, fheave).c_str(), 1);
+	//m_multiPlotWindows->SetString(t, common::format("%f;%f;%f;%f;", fyaw, fpitch, froll, fheave).c_str(), 1);
+
+	for (u_int i = 0; i < m_plotInputParser.size(); ++i)
+	{
+		const string str = m_plotInputParser[i].Execute();
+		m_multiPlotWindows->SetString(t, str.c_str(), i);
+	}
+
 
 	++m_rcvPacketCount;
 	CString str;
@@ -370,3 +412,60 @@ void CUDPInputView::Stop()
 
 	SetBackgroundColor(g_grayColor);
 }
+
+
+void CUDPInputView::OnBnClickedButtonModEditdlg()
+{
+	if (!m_modEditDlg)
+	{
+		m_modEditDlg = new CEditDlg();
+		m_modEditDlg->Create(CEditDlg::IDD);
+	}
+
+	m_modEditDlg->Init(L"UDP Input View -  Modulator Edit", &m_EditCommand, 
+		this, (UpdateFunc)&CUDPInputView::OnBnClickedButtonUpdate);
+	m_modEditDlg->ShowWindow(SW_SHOW);
+}
+
+
+void CUDPInputView::OnBnClickedButtonPlotinputDlg()
+{
+	if (!m_plotInputDlg)
+	{
+		m_plotInputDlg = new CPlotInputDlg();
+		m_plotInputDlg->Create(CPlotInputDlg::IDD);
+	}
+
+	m_plotInputDlg->Init(L"UDP Input View - Plot Input String Format Edit", &m_PlotInputStrEditor,
+		this, (UpdateFunc)&CUDPInputView::OnBnClickedButtonPlotinputUpdate);
+	m_plotInputDlg->ShowWindow(SW_SHOW);
+}
+
+
+void CUDPInputView::OnBnClickedButtonPlotcmd()
+{
+	if (!m_plotCmdEditDlg)
+	{
+		m_plotCmdEditDlg = new CEditDlg();
+		m_plotCmdEditDlg->Create(CEditDlg::IDD);
+	}
+
+	m_plotCmdEditDlg->Init(L"UDP Input View - Plot Command Edit", &m_PlotCommandEditor, 
+		this, (UpdateFunc)&CUDPInputView::OnBnClickedButtonPlotupdate);
+	m_plotCmdEditDlg->ShowWindow(SW_SHOW);
+}
+
+
+
+void CUDPInputView::OnBnClickedButtonPlotinputUpdate()
+{
+	CString tmp;
+	m_PlotInputStrEditor.GetWindowTextW(tmp);
+
+	const string str = wstr2str((LPCTSTR)tmp);
+	if (str.empty())
+		return;
+
+	ParsePlotInputStringFormat(str, m_plotInputParser);
+}
+

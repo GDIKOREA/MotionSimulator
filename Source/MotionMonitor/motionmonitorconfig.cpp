@@ -34,6 +34,7 @@ bool cMotionMonitorConfig::ReadConfigFile(const string &fileName)
 		m_mode = props.get<string>("MODE", "Normal");
 		m_udpPort = props.get<int>("UDP_PORT", 8888);
 		m_udpPlotCommand = props.get<string>("UDP_PLOT_COMMAND", "");
+		m_udpPlotInputCmd = props.get<string>("UDP_PLOTINPUT_COMMAND", "");
 		m_udpModCommand = props.get<string>("UDP_MOD_COMMAND", "");
 		m_mwaveModCommand = props.get<string>("MWAVE_MOD_COMMAND", "");
 		m_joystickModCommand = props.get<string>("JOYSTICK_MOD_COMMAND", "");
@@ -79,6 +80,7 @@ bool cMotionMonitorConfig::WriteConfigFile(const string &fileName)
 		props.add<string>("MODE", m_mode);
 		props.add<int>("UDP_PORT", m_udpPort);
 		props.add<string>("UDP_PLOT_COMMAND", m_udpPlotCommand);
+		props.add<string>("UDP_PLOTINPUT_COMMAND", m_udpPlotInputCmd);
 		props.add<string>("UDP_MOD_COMMAND", m_udpModCommand);
 		props.add<string>("MWAVE_MOD_COMMAND", m_mwaveModCommand);
 		props.add<string>("JOYSTICK_MOD_COMMAND", m_joystickModCommand);

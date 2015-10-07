@@ -381,6 +381,9 @@ void CPlotWindow::SetPlotY(const float y, const int plotIndex)
 // Ring형 배열 구조, 추가
 void CPlotWindow::SetPlotXY(const float x, const float y, const int plotIndex) //plotIndex=0
 {
+	if ((int)m_plots.size() <= plotIndex)
+		return;
+
 	sPlotData &plot = m_plots[plotIndex];
 	plot.xy[plot.tailIdx] = Vector2(x, y);
 	plot.tailIdx = ++plot.tailIdx % plot.xy.size();

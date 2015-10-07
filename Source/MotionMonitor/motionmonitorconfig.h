@@ -19,6 +19,7 @@ public:
 	int m_udpPort;
 	string m_udpPlotCommand;
 	string m_udpModCommand;
+	string m_udpPlotInputCmd;
 	string m_mwaveModCommand;
 	string m_joystickModCommand;
 	string m_mixingModCommand;

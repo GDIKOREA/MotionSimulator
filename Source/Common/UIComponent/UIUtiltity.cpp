@@ -168,3 +168,24 @@ string uiutil::GetProfileString(const string &appName, const string &keyName, co
 	return wstr2str(buff);
 }
 
+
+
+// Plot Input String Format 을 파싱해서 저장한다.
+// 2개 이상의 Format 스트링 파싱
+void ParsePlotInputStringFormat(const string &str, OUT vector<cPlotInputParser> &out)
+{
+	stringstream ss(str);
+	out.clear();
+	out.reserve(4); // 최대 4개까지만 설정할 수 있다.
+
+	// 한 라인씩 분석한다.
+	int cnt = 0;
+	char line[128];
+	while (ss.getline(line, sizeof(line)) && (cnt < 4))
+	{
+		out.push_back(cPlotInputParser());
+		out.back().ParseStr(line);
+		++cnt;
+	}
+}
+

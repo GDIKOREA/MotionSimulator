@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Serial2UDP", "Serial2UDP.vcxproj", "{B559C067-4F45-4F4D-8BB3-73592E85F1BB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Network", "..\Simulator\Common\Network\Network.vcxproj", "{A202AA06-F0EE-4B05-86DE-DA63B9F146D4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Network", "..\Common\Network\Network.vcxproj", "{A202AA06-F0EE-4B05-86DE-DA63B9F146D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

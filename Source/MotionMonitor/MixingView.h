@@ -1,6 +1,7 @@
 #pragma once
 #include "afxcmn.h"
 #include "mixingconfig.h"
+#include "afxwin.h"
 
 // CMixingView dialog
 
@@ -47,4 +48,5 @@ public:
 	afx_msg void OnBnClickedButtonUpdate();
 	CRichEditCtrl m_EditCommand;
 	afx_msg void OnDestroy();
+	CButton m_StartButton;
 };

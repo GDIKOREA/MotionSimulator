@@ -3,6 +3,22 @@
 #pragma once
 
 
+//--------------------------------------------------------------------------------------------------
+// Macro
+
+// CWnd* °´Ã¼ Á¦°Å
+#define DELETE_WINDOW(window) \
+	if (window)\
+	{\
+		window->DestroyWindow();\
+		delete window;\
+		window = NULL;\
+	}
+
+
+
+//--------------------------------------------------------------------------------------------------
+// Function
 
 void ExpandAll(CTreeCtrl &treeCtrl);
 
@@ -12,6 +28,10 @@ void MoveChildCtrlWindow(CWnd &parent, CWnd &wndCtrl, int cx, int cy);
 
 std::string GetIP(CIPAddressCtrl &ipControl);
 void SetIP(CIPAddressCtrl &ipControl, const string &ip);
+
+class cPlotInputParser;
+void ParsePlotInputStringFormat(const string &str, OUT vector<cPlotInputParser> &out);
+
 
 
 namespace uiutil

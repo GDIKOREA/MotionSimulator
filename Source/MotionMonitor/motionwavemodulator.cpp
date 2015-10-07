@@ -15,8 +15,8 @@ cMotionWaveModulator::cMotionWaveModulator()
 	, m_motionviewTimeScaling(1)
 	, m_motionviewStartDelay(0)
 
-	, m_yawX2Propertion(0.1f)
-	, m_yawX2Limit(1)
+	//, m_yawX2Propertion(0.1f)
+	//, m_yawX2Limit(1)
 {
 	const int len = sizeof(m_axis) / sizeof(sAxisOption);
 	for (int i = 0; i < len; ++i)
@@ -86,6 +86,7 @@ float GetDifference(const float x0, const float x1,
 	return diff;
 }
 
+
 // 변화값을 리턴한다.
 float GetNormalDifference(const float x0, const float x1, const float proportion)
 {
@@ -94,13 +95,11 @@ float GetNormalDifference(const float x0, const float x1, const float proportion
 }
 
 
-
 // x에서 target으로 복귀하는 정도를 리턴한다.
 float GetRecoverValue(const float x, const float target, const float proportion)
 {
 	return (target - x) * proportion;
 }
-
 
 
 // 정보를 업데이트 한다.
@@ -254,8 +253,8 @@ void cMotionWaveModulator::UpdateParseData()
 	m_spline[2].Init(m_isSplineEnable, m_splinePlotSamplingRate, m_splineInterpolationRate);
 	m_spline[3].Init(m_isSplineEnable, m_splinePlotSamplingRate, m_splineInterpolationRate);
 
-	m_yawX2Propertion = GetFloat("yaw_x2_proportion", 0.1f);
-	m_yawX2Limit = GetFloat("yaw_x2_limit", 1.f);	
+	//m_yawX2Propertion = GetFloat("yaw_x2_proportion", 0.1f);
+	//m_yawX2Limit = GetFloat("yaw_x2_limit", 1.f);
 
 	m_axis[0].recoverEnable = GetBool("yaw_recover_enable", true);
 	m_axis[0].maxDifferenceEnable = GetBool("yaw_max_difference_enable", true);

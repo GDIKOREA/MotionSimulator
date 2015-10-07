@@ -12,6 +12,7 @@
 #include "udpnetgraphconfig.h"
 
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
+#pragma comment(lib,"winmm.lib") //Winsock Library
 
 
 #ifdef _DEBUG
@@ -210,7 +211,6 @@ HCURSOR CUDPNetGraphDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
-
 
 
 void CUDPNetGraphDlg::OnBnClickedOk()

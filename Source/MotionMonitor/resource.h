@@ -100,15 +100,19 @@
 #define IDD_DIALOG_LAUNCHER             332
 #define IDD_DIALOG_LOGIN                333
 #define IDI_ICON_MACHINEGUN             336
+#define IDD_DIALOG_EDIT                 337
+#define IDD_DIALOG_PLOTINPUT            338
 #define IDC_CHECK_FIXEDMODE             1000
 #define IDC_EDIT_COMMAND                1001
 #define IDC_BUTTON_HELP                 1002
 #define IDC_BUTTON_UPDATE               1003
 #define IDC_STATIC1                     1004
 #define IDC_BUTTON_NEWPLOT              1004
+#define IDC_BUTTON_CLOSE                1004
 #define IDC_BUTTON_PAUSE                1005
 #define IDC_BUTTON_PLOTUPDATE           1005
 #define IDC_BUTTON_PLOTPAUSE            1006
+#define IDC_BUTTON_PLOTINPUT_UPDATE     1007
 #define IDC_EDIT1                       1008
 #define IDC_BUTTON_UDP_SERVER_BIND      1009
 #define IDC_EDIT_PLOTINPUT_OUT          1009
@@ -233,15 +237,24 @@
 #define IDC_BUTTON_BOARDCHECK           1116
 #define IDC_STATIC_GAME_COUNT           1117
 #define IDC_STATIC_CREDIT_COUNT         1118
+#define IDC_BUTTON_MOD_EDITDLG          1119
+#define IDC_BUTTON_PLOTINPUT_DLG        1120
+#define IDC_BUTTON_PLOTCMD              1121
+#define IDC_EDIT_INPUTSTR1              1124
+#define IDC_EDIT_PLOTINPUT_FORMAT       1125
+#define IDC_EDIT_INPUTSTR2              1126
+#define IDC_BUTTON_PLOTINPUT            1126
+#define IDC_EDIT_INPUTSTR3              1127
+#define IDC_EDIT_INPUTSTR4              1128
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        337
+#define _APS_NEXT_RESOURCE_VALUE        339
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1119
+#define _APS_NEXT_CONTROL_VALUE         1127
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

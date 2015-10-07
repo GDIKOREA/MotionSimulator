@@ -46,6 +46,7 @@ void CMixingView::DoDataExchange(CDataExchange* pDX)
 {
 	CDockablePaneChildView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_RICHEDIT2_COMMAND, m_EditCommand);
+	DDX_Control(pDX, IDC_BUTTON_UPDATE, m_StartButton);
 }
 
 
@@ -185,7 +186,14 @@ void CMixingView::OnSize(UINT nType, int cx, int cy)
 
 void CMixingView::OnBnClickedButtonUpdate()
 {
-	Start();
+	if (START == m_state)
+	{
+		Stop();
+	}
+	else
+	{
+		Start();
+	}
 }
 
 
@@ -366,6 +374,8 @@ void CMixingView::Start()
 	m_multiPlotWindows->SetFixedWidthMode(true);
 	m_incTime = 0;
 
+	m_StartButton.SetWindowTextW(L"Stop");
+
 	SetBackgroundColor(g_blueColor);
 }
 
@@ -374,6 +384,8 @@ void CMixingView::Start()
 void CMixingView::Stop()
 {
 	m_state = STOP;
+
+	m_StartButton.SetWindowTextW(L"Start");
 
 	SetBackgroundColor(g_grayColor);
 }

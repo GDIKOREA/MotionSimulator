@@ -288,7 +288,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	}
 	else
 	{
-		CREATE_DOCKPANE(C3DView, L"Motion Output View", ID_VIEW_CUBE3D, IDD_DIALOG_3D, m_wndCube3DView);
+		CREATE_DOCKPANE(C3DView, L"3D View", ID_VIEW_CUBE3D, IDD_DIALOG_3D, m_wndCube3DView);
 		CREATE_DOCKPANE2(CMotionOutputView, L"Motion Output View", ID_VIEW_MOTION_OUTPUT, m_motionOutputView);
 		CREATE_DOCKPANE2(CUDPInputView, L"UDP Input View", ID_VIEW_MOTION_INPUT, m_udpInputView);
 		CREATE_DOCKPANE2(CJoystickView, L"Joystick View", ID_VIEW_JOYSTICK, m_joystickView);

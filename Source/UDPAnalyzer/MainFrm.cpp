@@ -189,7 +189,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	CREATE_DOCKVIEW(COutputView, m_outputView, L"Output View", ID_VIEW_OUTPUT);
 	CREATE_DOCKVIEW(CUDPSendView, m_udpSendView, L"UDP Send View", ID_VIEW_UDP_SEND);
 	CREATE_DOCKVIEW2(C3DView, m_dxView, L"3D View", ID_VIEW_DX, IDD_DIALOG_3D);
-	//CREATE_DOCKVIEW2(C3DView, m_dxView2, L"3D View2", ID_VIEW_DX2, IDD_DIALOG_3D);
+	CREATE_DOCKVIEW2(C3DView, m_dxView2, L"3D View2", ID_VIEW_DX2, IDD_DIALOG_3D);
 	CREATE_DOCKVIEW2(CUDPPlayerView, m_udpPlayerView, L"UDP Player View", ID_VIEW_UDP_PLAYER, IDD_DIALOG_UDP_PLAYER);
 
 	cController::Get()->Init(m_dxView->GetRenderer());

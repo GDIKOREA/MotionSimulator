@@ -23,21 +23,6 @@ public:
 
 
 public:
-	// Spline계산을 위해 4포인트의 값을 저장한다.
-	cSpline m_spline[4];
-	bool m_isSplineEnable;
-
-	int m_splinePlotSamplingRate;
-	int m_splineInterpolationRate;
-
-	int m_motionviewSplineSamplingRate;
-	int m_motionviewSplineInterpolationRate;
-	float m_motionviewTimeScaling;
-	int m_motionviewStartDelay;
-
-	float m_yawX2Propertion;
-	float m_yawX2Limit;
-
 	struct sAxisOption
 	{
 		bool recoverEnable;
@@ -54,6 +39,24 @@ public:
 		float value[3]; // original, pid, final
 	};
 	sAxisOption m_axis[4]; // yaw-pitch-roll-heave
+
+
+	// Spline계산을 위해 4포인트의 값을 저장한다.
+	cSpline m_spline[4];
+	
+	// spline
+	bool m_isSplineEnable;
+	int m_splinePlotSamplingRate;
+	int m_splineInterpolationRate;
+	
+	// motion wave
+	int m_motionviewSplineSamplingRate;
+	int m_motionviewSplineInterpolationRate;
+	float m_motionviewTimeScaling;
+	int m_motionviewStartDelay;
+
+	//float m_yawX2Propertion;
+	//float m_yawX2Limit;
 
 	float m_incTime;
 	float m_totalIncTime;

@@ -5,6 +5,8 @@
 
 // CUDPInputView dialog
 
+class CEditDlg;
+class CPlotInputDlg;
 class CUDPInputView : public CDockablePaneChildView
 {
 public:
@@ -25,6 +27,7 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
+
 	enum STATE {
 		STOP,
 		START,
@@ -35,6 +38,12 @@ protected:
 	CMultiPlotWindow *m_multiPlotWindows;
 	float m_updateIncTime;
 	int m_rcvPacketCount;
+
+	CEditDlg *m_modEditDlg;
+	CEditDlg *m_plotCmdEditDlg;
+	CPlotInputDlg *m_plotInputDlg;
+
+	vector<cPlotInputParser> m_plotInputParser;
 
 
 	DECLARE_ANCHOR_MAP();
@@ -57,5 +66,10 @@ public:
 	CEdit m_PlotCommandEditor;
 	CButton m_FixedModeButton;
 	CStatic m_PacketRecvCount;
-	CStatic m_PlotInputString;
+//	CStatic m_PlotInputString;
+	afx_msg void OnBnClickedButtonModEditdlg();
+	afx_msg void OnBnClickedButtonPlotinputDlg();
+	afx_msg void OnBnClickedButtonPlotcmd();
+	CEdit m_PlotInputStrEditor;
+	afx_msg void OnBnClickedButtonPlotinputUpdate();
 };

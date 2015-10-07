@@ -116,3 +116,4 @@ extern CLauncherView *g_launcherView;
 #include "motionwavemodulator.h"
 #include "spline.h"
 #include "MotionController.h"
+#include "plotinputparser.h"
