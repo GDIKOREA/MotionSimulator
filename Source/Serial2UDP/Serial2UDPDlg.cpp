@@ -64,7 +64,7 @@ BOOL CSerial2UDPDlg::OnInitDialog()
 	m_ServerIP.SetAddress(127, 0, 0, 1);
 
 	
-	const int baudRate[] = { 9600, 14400, 19200, 38400, 56000, 57600, 115200 };
+	const int baudRate[] = { 9600, 14400, 19200, 38400, 56000, 57600, 115200, 912600 };
 	for (int i = 0; i < ARRAYSIZE(baudRate); ++i)
 	{
 		TCHAR brateName[32];

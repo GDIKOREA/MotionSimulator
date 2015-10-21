@@ -9,7 +9,7 @@
 cController::cController() :
 	m_globalSeconds(0)
 {
-	m_cubeFlight = new cCubeFlight();
+	//m_cubeFlight = new cCubeFlight();
 	m_serialComm = new cSerialCommunication();
 	m_udpComm = new cUDPCommunication();
 }
@@ -17,18 +17,9 @@ cController::cController() :
 
 cController::~cController()
 {
-	SAFE_DELETE(m_cubeFlight);
+	//SAFE_DELETE(m_cubeFlight);
 	SAFE_DELETE(m_serialComm);
 	SAFE_DELETE(m_udpComm);
-}
-
-
-// 변수들을 초기화 한다.
-bool cController::Init(graphic::cRenderer &renderer)
-{
-	m_cubeFlight->Init(renderer);
-
-	return true;
 }
 
 

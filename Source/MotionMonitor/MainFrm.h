@@ -16,6 +16,7 @@ class CMixingView;
 class CControlBoard;
 class CPlotView;
 class CLauncherView;
+class C3DSimulView;
 
 class CMainFrame : public CFrameWndEx
 {	
@@ -53,7 +54,8 @@ public:
 	list<CDockablePaneBase*> m_viewList;
 	list<CDockablePaneChildView*> m_childViewList;
 
-	C3DView *m_wndCube3DView;
+	C3DView *m_3DGameView;
+	C3DView *m_3DMotionView;
 	CUDPInputView *m_udpInputView;
 	CUDPParseView *m_udpParseView;
 	CMotionOutputView *m_motionOutputView;
@@ -63,6 +65,7 @@ public:
 	CControlBoard *m_controlBoardView;
 	CPlotView *m_plotView;
 	CLauncherView *m_launcherView;
+	C3DSimulView *m_3dSimulView;
 
 
 // Generated message map functions

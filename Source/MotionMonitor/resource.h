@@ -102,6 +102,7 @@
 #define IDI_ICON_MACHINEGUN             336
 #define IDD_DIALOG_EDIT                 337
 #define IDD_DIALOG_PLOTINPUT            338
+#define IDD_DIALOG_SIMUL                339
 #define IDC_CHECK_FIXEDMODE             1000
 #define IDC_EDIT_COMMAND                1001
 #define IDC_BUTTON_HELP                 1002
@@ -252,7 +253,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        339
+#define _APS_NEXT_RESOURCE_VALUE        340
 #define _APS_NEXT_COMMAND_VALUE         32773
 #define _APS_NEXT_CONTROL_VALUE         1127
 #define _APS_NEXT_SYMED_VALUE           310

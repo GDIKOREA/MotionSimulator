@@ -359,6 +359,12 @@ BEGIN
     EDITTEXT        IDC_EDIT_INPUTSTR4,7,137,295,14,ES_AUTOHSCROLL | WS_DISABLED
 END
 
+IDD_DIALOG_SIMUL DIALOGEX 0, 0, 309, 283
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -502,6 +508,14 @@ BEGIN
         RIGHTMARGIN, 302
         TOPMARGIN, 7
         BOTTOMMARGIN, 169
+    END
+
+    IDD_DIALOG_SIMUL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 276
     END
 END
 #endif    // APSTUDIO_INVOKED

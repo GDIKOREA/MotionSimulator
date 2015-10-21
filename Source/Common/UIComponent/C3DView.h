@@ -22,6 +22,7 @@ public:
 	void SetFixedFrame(const bool isFixedFrame);
 	void SetRenderCube(const bool isRender);
 	graphic::cRenderer& GetRenderer();
+	cCubeFlight& GetCar();
 
 
 protected:
@@ -33,6 +34,7 @@ protected:
 	graphic::cCube m_cube;
 	graphic::cCamera m_camera;
 	graphic::cLight m_light;
+	cCubeFlight m_car;
 	graphic::cRenderer m_renderer;
 
 	Matrix44 m_cubeTm;
@@ -67,3 +69,4 @@ public:
 inline void C3DView::SetFixedFrame(const bool isFixedFrame) { m_isFixedFrame = isFixedFrame;  }
 inline void C3DView::SetRenderCube(const bool isRender) { m_isRenderCube = isRender;  }
 inline graphic::cRenderer& C3DView::GetRenderer() { return m_renderer;  }
+inline cCubeFlight& C3DView::GetCar() { return m_car; }

@@ -12,6 +12,7 @@
 #include "ControlBoard.h"
 #include "PlotView.h"
 #include "LauncherView.h"
+#include "C3DSimulView.h"
 #include "MainFrm.h"
 #include "MachineGunController.h"
 
@@ -34,6 +35,8 @@ CMotionWaveView *g_mwaveView = NULL;
 CUDPInputView *g_udpInputView = NULL;
 CControlBoard *g_controlView = NULL;
 CLauncherView *g_launcherView = NULL;
+C3DView *g_3dGameView = NULL;
+C3DView *g_3dMotionView = NULL;
 
 
 #define CREATE_DOCKPANE(CLASS, DOCKNAME, PANE_ID, RESOURCE_ID, VAR)\
@@ -87,7 +90,7 @@ static UINT indicators[] =
 // CMainFrame construction/destruction
 
 CMainFrame::CMainFrame() 
-: m_wndCube3DView(NULL)
+: m_3DGameView(NULL)
 , m_udpInputView(NULL)
 , m_udpParseView(NULL)
 , m_motionOutputView(NULL)
@@ -288,7 +291,8 @@ BOOL CMainFrame::CreateDockingWindows()
 	}
 	else
 	{
-		CREATE_DOCKPANE(C3DView, L"3D View", ID_VIEW_CUBE3D, IDD_DIALOG_3D, m_wndCube3DView);
+		CREATE_DOCKPANE(C3DView, L"3D Game View", ID_VIEW_3D, IDD_DIALOG_3D, m_3DGameView);
+		CREATE_DOCKPANE(C3DView, L"3D Motion View", ID_VIEW_MOTION3D, IDD_DIALOG_3D, m_3DMotionView);
 		CREATE_DOCKPANE2(CMotionOutputView, L"Motion Output View", ID_VIEW_MOTION_OUTPUT, m_motionOutputView);
 		CREATE_DOCKPANE2(CUDPInputView, L"UDP Input View", ID_VIEW_MOTION_INPUT, m_udpInputView);
 		CREATE_DOCKPANE2(CJoystickView, L"Joystick View", ID_VIEW_JOYSTICK, m_joystickView);
@@ -297,14 +301,18 @@ BOOL CMainFrame::CreateDockingWindows()
 		CREATE_DOCKPANE2(CControlBoard, L"Control Board", ID_VIEW_CONTROLBOARD, m_controlBoardView);
 		CREATE_DOCKPANE2(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
 		CREATE_DOCKPANE2(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
+		CREATE_DOCKPANE2(C3DSimulView, L"3D Simulation View", ID_VIEW_3DSIMUL, m_3dSimulView);
 
+		g_3dGameView = m_3DGameView;
+		g_3dMotionView = m_3DMotionView;
 		g_mwaveView = m_motionWaveView;
 		g_udpInputView = m_udpInputView;
 		g_controlView = m_controlBoardView;
 		g_launcherView = m_launcherView;
 
-		cController::Get()->Init(m_wndCube3DView->GetRenderer());
-		m_wndCube3DView->SetRenderCube(true);
+		//m_wndCube3DView->GetCar().Init(m_wndCube3DView->GetRenderer());
+		m_3DGameView->SetRenderCube(true);
+		m_3DMotionView->SetRenderCube(true);
 	}
 
 	return TRUE;

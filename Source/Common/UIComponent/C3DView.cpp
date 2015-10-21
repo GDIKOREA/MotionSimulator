@@ -102,6 +102,8 @@ BOOL C3DView::OnInitDialog()
 
 	cController::Get()->AddUpdateObserver(this);
 
+	m_car.Init(m_renderer);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -125,7 +127,8 @@ void C3DView::Update(const float deltaSeconds)
 	m_renderer.Update(m_IncSeconds);
 
 	if (m_isRenderCube)
-		cController::Get()->GetCubeFlight().Update(m_IncSeconds);
+		m_car.Update(m_IncSeconds);
+		//cController::Get()->GetCubeFlight().Update(m_IncSeconds);
 
 	static float angle = 0;
 	angle += m_IncSeconds;
@@ -161,7 +164,8 @@ void C3DView::Render()
 		//m_sphere.GetMaterial().Bind();
 		//m_sphere.Render(Matrix44::Identity);
 		if (m_isRenderCube)
-			cController::Get()->GetCubeFlight().Render(m_renderer);
+			m_car.Render(m_renderer);
+			//cController::Get()->GetCubeFlight().Render(m_renderer);
 
 
 		// 파생받는 클래스에서 구현한다.

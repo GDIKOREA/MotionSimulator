@@ -130,6 +130,7 @@
     <ClInclude Include="..\Common\UIComponent\UIComponent.h" />
     <ClInclude Include="..\Common\UIComponent\UIUtiltity.h" />
     <ClInclude Include="..\Common\UIComponent\UpdateObserver.h" />
+    <ClInclude Include="C3DSimulView.h" />
     <ClInclude Include="ControlBoard.h" />
     <ClInclude Include="Dirt3Controller.h" />
     <ClInclude Include="ExeTracker.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="..\Common\UIComponent\SerialObserver.cpp" />
     <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp" />
     <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp" />
+    <ClCompile Include="C3DSimulView.cpp" />
     <ClCompile Include="ControlBoard.cpp" />
     <ClCompile Include="Dirt3Controller.cpp" />
     <ClCompile Include="ExeTracker.cpp" />

@@ -14,16 +14,17 @@ cMotionWaveModulator::cMotionWaveModulator()
 	, m_motionviewSplineInterpolationRate(2)
 	, m_motionviewTimeScaling(1)
 	, m_motionviewStartDelay(0)
-
-	//, m_yawX2Propertion(0.1f)
-	//, m_yawX2Limit(1)
 {
 	const int len = sizeof(m_axis) / sizeof(sAxisOption);
 	for (int i = 0; i < len; ++i)
 	{
 		m_axis[i].recoverEnable = true;
 		m_axis[i].maxDifferenceEnable = true;
-		m_axis[i].proportion = 1.f;
+		m_axis[i].Kp = 1.f;
+		m_axis[i].Ki = 0;
+		m_axis[i].Kd = 0;
+		m_axis[i].oldDiff = 0;
+		m_axis[i].incDiff = 0;
 		m_axis[i].recoverTarget = 0;
 		m_axis[i].recoverProportion = 0.01f;
 		m_axis[i].maxDifference = MATH_PI;
@@ -34,22 +35,12 @@ cMotionWaveModulator::cMotionWaveModulator()
 		m_axis[i].c = 0;
 		ZeroMemory(m_axis[i].value, sizeof(m_axis[i]));
 	}
-
 }
 
 cMotionWaveModulator::~cMotionWaveModulator()
 {
 }
 
-
-float climp(const float _min, const float _max, const float val)
-{
-	if (val < _min)
-		return _min;
-	if (val > _max)
-		return _max;
-	return val;
-}
 
 
 // 변화값을 리턴한다.
@@ -59,10 +50,14 @@ float climp(const float _min, const float _max, const float val)
 // proportion : PID, P
 // range : x0,x1 range
 // maxDiff : 최대 변화 값
+// maxDiffProportion : 최대 변화값을 넘었을 때 proportion 값 정의
+// x2Proportion : 변화값의 제곱의 비율 값
 float GetDifference(const float x0, const float x1,
-	const float proportion, const float range, const float maxDiff)
+	const float proportionK, const float integralK, const float differenceK, 
+	const float range, const float maxDiff, const float maxDiffProportion)
 {
-	float diff = (x1 - x0) * proportion;
+	float diff = (x1 - x0) * proportionK;
+
 	if (abs(x1 - x0) > maxDiff)
 	{
 		if (x1 * x0 < 0)
@@ -73,17 +68,50 @@ float GetDifference(const float x0, const float x1,
 			if (x1 > 0)
 				newDiff = -newDiff;
 
-			diff = newDiff * proportion;
+			diff = newDiff * proportionK;
 		}
 		else
 		{// 같은 극성일 때.. 큰 변화가 일어 났을 때..
 
 			// proportion을 한 번더 적용한다.
-			diff = diff * proportion;
+			diff = diff * maxDiffProportion;
 		}
 	}
 
 	return diff;
+}
+
+
+float GetManufactureValue(const float x0, const float x1,
+	cMotionWaveModulator::sAxisOption &option)
+{
+	float diff = (x1 - x0);
+	if (abs(x1 - x0) > option.maxDifference)
+	{
+		if (x1 * x0 < 0)
+		{// 극성이 다를 때.. 즉 limit 값을 넘겼을 때..
+			// limit 를 넘긴 값을 보정한다.
+
+			float newDiff = option.range - abs(x1 - x0);
+			if (x1 > 0)
+				newDiff = -newDiff;
+
+			diff = newDiff * option.Kp;
+		}
+// 		else
+// 		{// 같은 극성일 때.. 큰 변화가 일어 났을 때..
+// 
+// 			// proportion을 한 번더 적용한다.
+// 			diff = diff * option.maxDifferenceProportion;
+// 		}
+	}
+
+	float ndiff = diff - option.oldDiff;
+	float mv = option.Kp * diff + option.Kd * ndiff + option.Ki * option.incDiff;
+	option.oldDiff = diff;
+	option.incDiff += diff;
+
+	return mv;
 }
 
 
@@ -121,13 +149,16 @@ void cMotionWaveModulator::Update(const float deltaSeconds,
 		float diff = 0;
 		if (m_axis[i].maxDifferenceEnable)
 		{
-			diff = GetDifference(m_axis[i].value[0], value[i], m_axis[i].proportion, m_axis[i].range, m_axis[i].maxDifference);
+// 			diff = GetDifference(m_axis[i].value[0], value[i], 
+// 				m_axis[i].proportion, m_axis[i].integral, m_axis[i].difference,
+// 				m_axis[i].range, m_axis[i].maxDifference, m_axis[i].maxDifferenceProportion);
+			diff = GetManufactureValue(m_axis[i].value[0], value[i], m_axis[i]);
 			m_axis[i].value[1] += diff;
-			m_axis[i].value[1] = climp(-MATH_PI, MATH_PI, m_axis[i].value[1]);
+			m_axis[i].value[1] = common::clamp(-MATH_PI, MATH_PI, m_axis[i].value[1]);
 		}
 		else
 		{
-			diff = GetNormalDifference(m_axis[i].value[1], value[i], m_axis[i].proportion);
+			diff = GetNormalDifference(m_axis[i].value[1], value[i], m_axis[i].Kp);
 			m_axis[i].value[1] += diff;
 		}
 
@@ -217,10 +248,10 @@ void cMotionWaveModulator::UpdateParseData()
 {
 	m_incTime = 0;
 
-	m_axis[0].proportion = GetFloat("yaw_proportion");
-	m_axis[1].proportion = GetFloat("pitch_proportion");
-	m_axis[2].proportion = GetFloat("roll_proportion");
-	m_axis[3].proportion = GetFloat("heave_proportion");
+// 	m_axis[0].proportion = GetFloat("yaw_proportion");
+// 	m_axis[1].proportion = GetFloat("pitch_proportion");
+// 	m_axis[2].proportion = GetFloat("roll_proportion");
+// 	m_axis[3].proportion = GetFloat("heave_proportion");
 
 	m_isSplineEnable = GetBool("spline_enable");
 
@@ -256,33 +287,59 @@ void cMotionWaveModulator::UpdateParseData()
 	//m_yawX2Propertion = GetFloat("yaw_x2_proportion", 0.1f);
 	//m_yawX2Limit = GetFloat("yaw_x2_limit", 1.f);
 
-	m_axis[0].recoverEnable = GetBool("yaw_recover_enable", true);
-	m_axis[0].maxDifferenceEnable = GetBool("yaw_max_difference_enable", true);
-	m_axis[0].recoverTarget = GetFloat("yaw_recover_target", 0);
-	m_axis[0].recoverProportion = GetFloat("yaw_recover_proportion", 0.01f);
-	m_axis[0].maxDifference = GetFloat("yaw_max_difference", MATH_PI);
-	m_axis[0].range = GetFloat("yaw_range", MATH_PI * 2.f);
 
-	m_axis[1].recoverEnable = GetBool("pitch_recover_enable", true);
-	m_axis[1].maxDifferenceEnable = GetBool("pitch_max_difference_enable", true);
-	m_axis[1].recoverTarget = GetFloat("pitch_recover_target", 0);
-	m_axis[1].recoverProportion = GetFloat("pitch_recover_proportion", 0.01f);
-	m_axis[1].maxDifference = GetFloat("pitch_max_difference", MATH_PI);
-	m_axis[1].range = GetFloat("pitch_range", MATH_PI * 2.f);
+	string axis[4] = { "yaw", "pitch", "roll", "heave" };
+	for (int i = 0; i < 4; ++i)
+	{
+		m_axis[i].Kp = GetFloat(axis[i] + "_kp", 1.f);
+		m_axis[i].Ki = GetFloat(axis[i] + "_ki", 0.f);
+		m_axis[i].Kd = GetFloat(axis[i] + "_kd", 0.f);
+		m_axis[i].oldDiff = 0;
+		m_axis[i].incDiff = 0;
 
-	m_axis[2].recoverEnable = GetBool("roll_recover_enable", true);
-	m_axis[2].maxDifferenceEnable = GetBool("roll_max_difference_enable", true);
-	m_axis[2].recoverTarget = GetFloat("roll_recover_target", 0);
-	m_axis[2].recoverProportion = GetFloat("roll_recover_proportion", 0.01f);
-	m_axis[2].maxDifference = GetFloat("roll_max_difference", MATH_PI);
-	m_axis[2].range = GetFloat("roll_range", MATH_PI * 2.f);
+		m_axis[i].recoverEnable = GetBool(axis[i] + "_recover_enable", true);
+		m_axis[i].recoverTarget = GetFloat(axis[i] + "_recover_target", 0);
+		m_axis[i].recoverProportion = GetFloat(axis[i] + "_recover_proportion", 0.01f);
 
-	m_axis[3].recoverEnable = GetBool("heave_recover_enable", true);
-	m_axis[3].maxDifferenceEnable = GetBool("heave_max_difference_enable", true);
-	m_axis[3].recoverTarget = GetFloat("heave_recover_target", 0);
-	m_axis[3].recoverProportion = GetFloat("heave_recover_proportion", 0.01f);
-	m_axis[3].maxDifference = GetFloat("heave_max_difference", 1000);
-	m_axis[3].range = GetFloat("heave_range", 100000000);
+		m_axis[i].maxDifferenceEnable = GetBool(axis[i] + "_max_difference_enable", true);
+		m_axis[i].maxDifference = GetFloat(axis[i] + "_max_difference", MATH_PI);
+		m_axis[i].maxDifferenceProportion = GetFloat(axis[i] + "_max_difference_proportion", 0.1f);
+		m_axis[i].range = GetFloat(axis[i] + "_range", MATH_PI * 2.f);
+
+	}
+
+
+// 	m_axis[0].recoverEnable = GetBool("yaw_recover_enable", true);
+// 	m_axis[0].maxDifferenceEnable = GetBool("yaw_max_difference_enable", true);
+// 	m_axis[0].recoverTarget = GetFloat("yaw_recover_target", 0);
+// 	m_axis[0].recoverProportion = GetFloat("yaw_recover_proportion", 0.01f);
+// 	m_axis[0].maxDifference = GetFloat("yaw_max_difference", MATH_PI);
+// 	m_axis[0].maxDifferenceProportion = GetFloat("yaw_max_difference_proportion", 0.1f);
+// 	m_axis[0].range = GetFloat("yaw_range", MATH_PI * 2.f);
+// 
+// 	m_axis[1].recoverEnable = GetBool("pitch_recover_enable", true);
+// 	m_axis[1].maxDifferenceEnable = GetBool("pitch_max_difference_enable", true);
+// 	m_axis[1].recoverTarget = GetFloat("pitch_recover_target", 0);
+// 	m_axis[1].recoverProportion = GetFloat("pitch_recover_proportion", 0.01f);
+// 	m_axis[1].maxDifference = GetFloat("pitch_max_difference", MATH_PI);
+// 	m_axis[1].maxDifferenceProportion = GetFloat("pitch_max_difference_proportion", 0.1f);
+// 	m_axis[1].range = GetFloat("pitch_range", MATH_PI * 2.f);
+// 
+// 	m_axis[2].recoverEnable = GetBool("roll_recover_enable", true);
+// 	m_axis[2].maxDifferenceEnable = GetBool("roll_max_difference_enable", true);
+// 	m_axis[2].recoverTarget = GetFloat("roll_recover_target", 0);
+// 	m_axis[2].recoverProportion = GetFloat("roll_recover_proportion", 0.01f);
+// 	m_axis[2].maxDifference = GetFloat("roll_max_difference", MATH_PI);
+// 	m_axis[2].maxDifferenceProportion = GetFloat("roll_max_difference_proportion", 0.1f);
+// 	m_axis[2].range = GetFloat("roll_range", MATH_PI * 2.f);
+// 
+// 	m_axis[3].recoverEnable = GetBool("heave_recover_enable", true);
+// 	m_axis[3].maxDifferenceEnable = GetBool("heave_max_difference_enable", true);
+// 	m_axis[3].recoverTarget = GetFloat("heave_recover_target", 0);
+// 	m_axis[3].recoverProportion = GetFloat("heave_recover_proportion", 0.01f);
+// 	m_axis[3].maxDifference = GetFloat("heave_max_difference", 1000);
+// 	m_axis[3].maxDifferenceProportion = GetFloat("heave_max_difference_proportion ", 0.01f);
+// 	m_axis[3].range = GetFloat("heave_range", 100000000);
 	
 }
 

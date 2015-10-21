@@ -80,5 +80,12 @@ namespace common
 		common::lerp(out, abbc, bccd, t);
 	}
 
-
+	inline float clamp(const float _min, const float _max, const float val)
+	{
+		if (val < _min)
+			return _min;
+		if (val > _max)
+			return _max;
+		return val;
+	}
 }

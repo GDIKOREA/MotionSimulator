@@ -25,13 +25,25 @@ public:
 public:
 	struct sAxisOption
 	{
+		// pid control
+		float Kp; // p
+		float Ki; // i
+		float Kd; // d
+		float oldDiff;
+		float incDiff;
+		//
+		
+
+
 		bool recoverEnable;
-		bool maxDifferenceEnable;
-		float proportion; // pid
 		float recoverTarget;
 		float recoverProportion;
+
+		bool maxDifferenceEnable;
 		float maxDifference;
+		float maxDifferenceProportion;
 		float range;
+
 		// ax^2 + bx + c
 		float a;
 		float b;
@@ -55,8 +67,6 @@ public:
 	float m_motionviewTimeScaling;
 	int m_motionviewStartDelay;
 
-	//float m_yawX2Propertion;
-	//float m_yawX2Limit;
 
 	float m_incTime;
 	float m_totalIncTime;

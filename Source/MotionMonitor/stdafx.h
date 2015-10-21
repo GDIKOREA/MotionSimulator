@@ -74,7 +74,8 @@ extern C3DPhysxView *g_3DPhysxView;
 
 enum VIEW_TYPE {
 	ID_VIEW_SENSOR = 10001,
-	ID_VIEW_CUBE3D,
+	ID_VIEW_3D,
+	ID_VIEW_MOTION3D,
 	ID_VIEW_MOTION_OUTPUT,
 	ID_VIEW_MOTION_INPUT,
 	ID_VIEW_JOYSTICK,
@@ -84,6 +85,7 @@ enum VIEW_TYPE {
 	ID_VIEW_UDPPARSE,
 	ID_VIEW_PLOT,
 	ID_VIEW_LAUNCHER,
+	ID_VIEW_3DSIMUL,
 };
 
 #define CENUMERATESERIAL_USE_STL
@@ -110,6 +112,9 @@ extern CMotionWaveView *g_mwaveView;
 extern CUDPInputView *g_udpInputView;
 extern CControlBoard *g_controlView;
 extern CLauncherView *g_launcherView;
+extern C3DView *g_3dGameView;
+extern C3DView *g_3dMotionView;
+
 
 #include "Global.h"
 #include "motionwave.h"

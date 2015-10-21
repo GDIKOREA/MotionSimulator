@@ -37,10 +37,11 @@ namespace common
 		Matrix44 GetMatrix() const;
 		Vector3 GetDirection() const;
 
-		void	SetRotationX( const float fRadian );
-		void	SetRotationY( const float fRadian );
-		void	SetRotationZ( const float fRadian );
-		void	SetRotationArc( const Vector3& vDir, const Vector3& vDir2 );
+		void SetRotationX( const float fRadian );
+		void SetRotationY( const float fRadian );
+		void SetRotationZ( const float fRadian );
+		void SetRotationArc( const Vector3& vDir, const Vector3& vDir2 );
+		void SetRotationArc(const Vector3& v0, const Vector3& v1, const Vector3 &norm);
 		void Euler(const Vector3& euler);
 		void Euler2(const Vector3& euler);
 		Vector3 Euler() const;
