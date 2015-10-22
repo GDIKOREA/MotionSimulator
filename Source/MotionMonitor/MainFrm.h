@@ -17,6 +17,7 @@ class CControlBoard;
 class CPlotView;
 class CLauncherView;
 class C3DSimulView;
+class CDirt3View;
 
 class CMainFrame : public CFrameWndEx
 {	
@@ -66,6 +67,7 @@ public:
 	CPlotView *m_plotView;
 	CLauncherView *m_launcherView;
 	C3DSimulView *m_3dSimulView;
+	CDirt3View *m_dirt3View;
 
 
 // Generated message map functions
@@ -75,7 +77,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	BOOL CreateDockingWindows();
-	void SetDockingWindowIcons(BOOL bHiColorIcons);
 public:
 	afx_msg void OnViewViewinitialize();
 	afx_msg void OnClose();

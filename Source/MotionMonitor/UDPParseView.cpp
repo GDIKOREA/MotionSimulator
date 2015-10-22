@@ -303,7 +303,7 @@ void CUDPParseView::Update(const float deltaSeconds)
 		const float yaw = m_interpreter.Excute(m_yawParser.m_stmt);
 		const float heave = m_interpreter.Excute(m_heaveParser.m_stmt);
 
-// update roll-pitch-yaw symbol
+		// update roll-pitch-yaw symbol
 		script::sFieldData data;
 		data.fVal = roll;
 		data.type = script::FEILD_TYPE::T_FLOAT;
@@ -315,26 +315,23 @@ void CUDPParseView::Update(const float deltaSeconds)
 		data.fVal = heave;
 		script::g_symbols["@heave0"] = data;
 
-		// -pi ~ +pi 내의 각도로 정규화한 각도값(radian) chRoll, chPitch,chYaw 값으로 정보를 업데이트한다.
-		if (g_3dGameView)
-			g_3dGameView->GetCar().SetEulerAngle(roll, pitch, yaw);
-		cMotionController::Get()->m_udpMod.Update(m_incTime, yaw, pitch, roll, heave);
-
 		// radian normalize
-// 		Quaternion rotr;
-// 		rotr.Euler2(Vector3(roll, 0, 0));
-// 		Quaternion rotp;
-// 		rotp.Euler2(Vector3(0, 0, pitch));
-// 		Quaternion roty;
-// 		roty.Euler2(Vector3(0, yaw, 0));
-// 
-// 		Quaternion rot = roty * rotr * rotp;
-// 		Vector3 euler = rot.Euler();
-//  		const float chRoll = euler.x;
-//  		const float chYaw = euler.y;
-//  		const float chPitch = euler.z;
-// 		if (g_3dGameView)
-// 			g_3dGameView->GetCar().SetEulerAngle(chRoll, chPitch, chYaw);
+		// -pi ~ +pi 내의 각도로 정규화한 각도값(radian) chRoll, chPitch,chYaw 값으로 정보를 업데이트한다.
+ 		Quaternion rotr;
+		rotr.Euler2(Vector3(roll, 0, 0));
+		Quaternion rotp;
+		rotp.Euler2(Vector3(0, 0, pitch));
+		Quaternion roty;
+		roty.Euler2(Vector3(0, yaw, 0));
+ 
+		Quaternion rot = roty * rotr * rotp;
+		Vector3 euler = rot.Euler();
+ 		const float chRoll = euler.x;
+ 		const float chYaw = euler.y;
+ 		const float chPitch = euler.z;
+		if (g_3dGameView)
+			g_3dGameView->GetCar().SetEulerAngle(chRoll, chPitch, chYaw);
+		cMotionController::Get()->m_udpMod.Update(m_incTime, yaw, pitch, roll, heave);
 // 
 // 		const Matrix44 tm = rot.GetMatrix();
 // 		const Vector3 forward = Vector3::Forward.MultiplyNormal(tm);

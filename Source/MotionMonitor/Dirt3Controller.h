@@ -5,6 +5,8 @@
 //
 #pragma once
 
+#include "vitconmotionsim.h"
+
 
 class cDirt3Controller : public common::cSingleton<cDirt3Controller>
 {
@@ -12,11 +14,13 @@ public:
 	cDirt3Controller();
 	virtual ~cDirt3Controller();
 
-	void StartMotionSim(const string &configFileName);
+	void StartMotionSim(const string &configFileName, const bool isStartMotionSimOut=false);
 	void StopMotionSim();
 	void Update(const float deltaSeconds);
-	void UpdateUDP(const sMotionPacket &packet);
+	void UpdateUDP(const char *buffer, const int bufferLen);
 
 
 protected:
+	cVitconMotionSim m_vitconMotionSim;
+	cVitconMotionSim::STATE m_oldState;
 };

@@ -225,6 +225,9 @@
     <ClInclude Include="C3DSimulView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Dirt3View.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -396,6 +399,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="C3DSimulView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dirt3View.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

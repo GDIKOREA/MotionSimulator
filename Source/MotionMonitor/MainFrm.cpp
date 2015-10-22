@@ -13,6 +13,7 @@
 #include "PlotView.h"
 #include "LauncherView.h"
 #include "C3DSimulView.h"
+#include "Dirt3View.h"
 #include "MainFrm.h"
 #include "MachineGunController.h"
 
@@ -302,6 +303,7 @@ BOOL CMainFrame::CreateDockingWindows()
 		CREATE_DOCKPANE2(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
 		CREATE_DOCKPANE2(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
 		CREATE_DOCKPANE2(C3DSimulView, L"3D Simulation View", ID_VIEW_3DSIMUL, m_3dSimulView);
+		CREATE_DOCKPANE2(CDirt3View, L"Dirt3 View", ID_VIEW_DIRT3, m_dirt3View);
 
 		g_3dGameView = m_3DGameView;
 		g_3dMotionView = m_3DMotionView;
@@ -310,7 +312,6 @@ BOOL CMainFrame::CreateDockingWindows()
 		g_controlView = m_controlBoardView;
 		g_launcherView = m_launcherView;
 
-		//m_wndCube3DView->GetCar().Init(m_wndCube3DView->GetRenderer());
 		m_3DGameView->SetRenderCube(true);
 		m_3DMotionView->SetRenderCube(true);
 	}
@@ -318,11 +319,6 @@ BOOL CMainFrame::CreateDockingWindows()
 	return TRUE;
 }
 
-void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
-{
-//   	HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_CLASS_VIEW_HC : IDI_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
-//  	m_wndCube3DView->SetIcon(hClassViewIcon, FALSE);
-}
 
 // CMainFrame diagnostics
 

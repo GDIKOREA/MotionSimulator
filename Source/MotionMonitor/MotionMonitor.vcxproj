@@ -133,6 +133,7 @@
     <ClInclude Include="C3DSimulView.h" />
     <ClInclude Include="ControlBoard.h" />
     <ClInclude Include="Dirt3Controller.h" />
+    <ClInclude Include="Dirt3View.h" />
     <ClInclude Include="ExeTracker.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="JoystickView.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="C3DSimulView.cpp" />
     <ClCompile Include="ControlBoard.cpp" />
     <ClCompile Include="Dirt3Controller.cpp" />
+    <ClCompile Include="Dirt3View.cpp" />
     <ClCompile Include="ExeTracker.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="JoystickView.cpp" />

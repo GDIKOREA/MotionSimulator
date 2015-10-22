@@ -77,7 +77,7 @@ BOOL C3DView::OnInitDialog()
 	m_camera.Init(&m_renderer);
 	m_camera.SetCamera(Vector3(12, 20, -10), Vector3(0, 0, 0), Vector3(0, 1, 0));
 	m_camera.SetProjection(D3DX_PI / 4.f, (float)WINSIZE_X / (float)WINSIZE_Y, 1.f, 1000.0f);
-	m_camera.SetCamera(Vector3(-8.5f, 2.4f, -3.2f), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	m_camera.SetCamera(Vector3(-11.8f, 4.2f, -5.3f), Vector3(0, 0, 0), Vector3(0, 1, 0));
 
 	m_renderer.GetDevice()->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 
