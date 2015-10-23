@@ -39,4 +39,5 @@ public:
 	afx_msg void OnPaint();
 	CStatic m_State1Text;
 	CStatic m_State2Text;
+	afx_msg void OnBnClickedButtonEmergency();
 };

@@ -6,6 +6,8 @@
 #include "Dirt3View.h"
 #include "Dirt3Controller.h"
 #include "afxdialogex.h"
+#include "MotionOutputView.h"
+#include "MainFrm.h"
 
 
 // CDirt3View dialog
@@ -40,6 +42,7 @@ BEGIN_MESSAGE_MAP(CDirt3View, CDockablePaneChildView)
 	ON_BN_CLICKED(IDC_BUTTON_START, &CDirt3View::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_CHECK_MOTION_SIM, &CDirt3View::OnBnClickedCheckMotionSim)
 	ON_WM_PAINT()
+	ON_BN_CLICKED(IDC_BUTTON_EMERGENCY, &CDirt3View::OnBnClickedButtonEmergency)
 END_MESSAGE_MAP()
 
 
@@ -112,4 +115,15 @@ void CDirt3View::OnPaint()
 	// 타이틀 이미지 출력
 	Gdiplus::Graphics graphic(dc);
 	graphic.DrawImage(&m_titleImage, Gdiplus::Rect(0, 0, m_titleImage.GetWidth(), m_titleImage.GetHeight()));
+}
+
+
+// 비상 정지 버튼 클릭
+void CDirt3View::OnBnClickedButtonEmergency()
+{
+	if (CMainFrame *pFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+	{
+		if (pFrm->m_motionOutputView)
+			pFrm->m_motionOutputView->EmergencyStop();
+	}
 }

@@ -17,6 +17,7 @@ public:
 	virtual void UpdateConfig(bool IsSaveAndValidate = true) override;
 	virtual void Start() override;
 	virtual void Stop() override;
+	void EmergencyStop();
 
 	virtual void Update(const float deltaSeconds) override;
 	virtual void UpdateSerial(char *buffer) override;

@@ -211,7 +211,7 @@ void CMotionOutputView::Update(const float deltaSeconds)
 			m_incTime = 0;
 		}
 
-		if (m_incSerialTime > 0.07f)
+		if (m_incSerialTime > 0.07f) // 15 frame
 		{
 			if (m_isStartSendMotion && !m_IsOnlyEmergency)
 			{
@@ -384,3 +384,15 @@ void CMotionOutputView::Stop()
 	SetBackgroundColor(g_grayColor);
 }
 
+
+// 비상 정지
+// 비상 정지 메세지를 보낸 후, 장비와 통신을 끊는다.
+// Stop 이나, ServoOff 는 하지 않는다.
+void CMotionOutputView::EmergencyStop()
+{
+	SendMotionControllSwitchMessage(BITCON_SER::EMERGENCY);
+
+	cController::Get()->CloseSerial();
+	m_ConnectButton.SetWindowTextW(L"Start");
+	SetBackgroundColor(g_grayColor);
+}
