@@ -229,3 +229,46 @@ void cVitconMotionSim::Delay(const float delaySeconds, const SUB_STATE next)
 	m_delayTime = delaySeconds;
 	m_delayNextState = next;
 }
+
+
+string cVitconMotionSim::GetStateStr() const
+{
+	string str;
+	switch (m_state)
+	{
+	case cVitconMotionSim::OFF: str = "Off"; break;
+	case cVitconMotionSim::INIT: str = "Init"; break;
+	case cVitconMotionSim::READY: str = "Ready"; break;
+	case cVitconMotionSim::PLAY: str = "Play"; break;
+	case cVitconMotionSim::END: str = "End"; break;
+	default: str = "None"; break;
+	}
+	return str;
+}
+
+
+string cVitconMotionSim::GetSubStateStr() const
+{
+	string str;
+	switch (m_subState)
+	{
+	case cVitconMotionSim::SUBSTATE_OFF: str = "Off"; break;
+	case cVitconMotionSim::SUBSTATE_START_MOTION: str = "Start_Motion"; break;
+	case cVitconMotionSim::SUBSTATE_INIT: str = "Init"; break;
+	case cVitconMotionSim::SUBSTATE_START: str = "Start"; break;
+	case cVitconMotionSim::SUBSTATE_ORIGIN: str = "Origin"; break;
+	case cVitconMotionSim::SUBSTATE_ORIGIN_STOP: str = "Origin_Stop"; break;
+	case cVitconMotionSim::SUBSTATE_STOP_READY: str = "Stop_Ready"; break;
+	case cVitconMotionSim::SUBSTATE_READY: str = "Ready"; break;
+	case cVitconMotionSim::SUBSTATE_LOAD: str = "Load"; break;
+	case cVitconMotionSim::SUBSTATE_PLAYING: str = "Playing"; break;
+	case cVitconMotionSim::SUBSTATE_END: str = "End"; break;
+	case cVitconMotionSim::SUBSTATE_END_STOP: str = "End_Stop"; break;
+	case cVitconMotionSim::SUBSTATE_RESTART: str = "Restart"; break;
+	case cVitconMotionSim::SUBSTATE_STOP_MOTION: str = "Stop_Motion"; break;
+	case cVitconMotionSim::SUBSTATE_STOP: str = "Stop"; break;
+	case cVitconMotionSim::SUBSTATE_DELAY: str = common::format("Delay %1.1f", m_delayTime); break;
+	default: str = "None"; break;
+	}
+	return str;
+}

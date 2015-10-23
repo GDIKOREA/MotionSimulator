@@ -169,7 +169,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	const cMotionMonitorConfig &config = cMotionController::Get()->m_config;
 
 	// 머신건 스탠드 버젼은 심플하게 간다.
-	if (config.m_mode == "machinegun_stand")
+	if ((config.m_mode == "machinegun_stand") || (config.m_mode == "dirt3_release"))
 	{
 		SetMenu(NULL);
 	}
@@ -258,7 +258,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 
 	const cMotionMonitorConfig &config = cMotionController::Get()->m_config;
-	if (config.m_mode == "machinegun_stand")
+	if ((config.m_mode == "machinegun_stand") || (config.m_mode == "dirt3_release"))
 	{
 		// 사이즈를 줄이거나 늘리지 못하게 한다.
 		cs.style = WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX | WS_BORDER;
@@ -290,17 +290,29 @@ BOOL CMainFrame::CreateDockingWindows()
 		g_controlView = m_controlBoardView;
 		g_launcherView = m_launcherView;
 	}
+	else if (config.m_mode == "dirt3_release")
+	{
+		CREATE_PANE(CDirt3View, m_dirt3View, SW_SHOW);
+		CREATE_PANE(CUDPParseView, m_udpParseView, SW_HIDE);
+		CREATE_PANE(CUDPInputView, m_udpInputView, SW_HIDE);
+		CREATE_PANE(CMotionWaveView, m_motionWaveView, SW_HIDE);
+		CREATE_PANE(CMotionOutputView, m_motionOutputView, SW_HIDE);
+		CREATE_PANE(CMixingView, m_mixingView, SW_HIDE);
+
+		g_mwaveView = m_motionWaveView;
+		g_udpInputView = m_udpInputView;
+	}
 	else
 	{
 		CREATE_DOCKPANE(C3DView, L"3D Game View", ID_VIEW_3D, IDD_DIALOG_3D, m_3DGameView);
 		CREATE_DOCKPANE(C3DView, L"3D Motion View", ID_VIEW_MOTION3D, IDD_DIALOG_3D, m_3DMotionView);
-		CREATE_DOCKPANE2(CMotionOutputView, L"Motion Output View", ID_VIEW_MOTION_OUTPUT, m_motionOutputView);
+		CREATE_DOCKPANE2(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
 		CREATE_DOCKPANE2(CUDPInputView, L"UDP Input View", ID_VIEW_MOTION_INPUT, m_udpInputView);
-		CREATE_DOCKPANE2(CJoystickView, L"Joystick View", ID_VIEW_JOYSTICK, m_joystickView);
 		CREATE_DOCKPANE2(CMotionWaveView, L"MotionWave View", ID_VIEW_MOTIONWAVE, m_motionWaveView);
+		CREATE_DOCKPANE2(CMotionOutputView, L"Motion Output View", ID_VIEW_MOTION_OUTPUT, m_motionOutputView);
+		CREATE_DOCKPANE2(CJoystickView, L"Joystick View", ID_VIEW_JOYSTICK, m_joystickView);
 		CREATE_DOCKPANE2(CMixingView, L"Mixing View", ID_VIEW_MIXING, m_mixingView);
 		CREATE_DOCKPANE2(CControlBoard, L"Control Board", ID_VIEW_CONTROLBOARD, m_controlBoardView);
-		CREATE_DOCKPANE2(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
 		CREATE_DOCKPANE2(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
 		CREATE_DOCKPANE2(C3DSimulView, L"3D Simulation View", ID_VIEW_3DSIMUL, m_3dSimulView);
 		CREATE_DOCKPANE2(CDirt3View, L"Dirt3 View", ID_VIEW_DIRT3, m_dirt3View);

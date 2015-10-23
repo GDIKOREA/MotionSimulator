@@ -189,6 +189,14 @@ BOOL CMotionMonitorApp::InitInstance()
 		wr.bottom = wr.top + 580;
 		m_pMainWnd->MoveWindow(wr);
 	}
+	else if (config.m_mode == "dirt3_release")
+	{
+		CRect wr;
+		m_pMainWnd->GetWindowRect(wr);
+		wr.right = wr.left + 475;
+		wr.bottom = wr.top + 420;
+		m_pMainWnd->MoveWindow(wr);
+	}
 
 
 	// The one and only window has been initialized, so show and update it
@@ -201,6 +209,10 @@ BOOL CMotionMonitorApp::InitInstance()
 	if (config.m_mode == "machinegun_stand")
 	{
 		m_pMainWnd->SetWindowTextW(L"MachineGun-X Admin Manager");
+	}
+	else if (config.m_mode == "dirt3_release")
+	{
+		m_pMainWnd->SetWindowTextW(L"Dirt3 Manager");
 	}
 	else
 	{

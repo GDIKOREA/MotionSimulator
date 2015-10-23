@@ -12,7 +12,6 @@ cSpline::cSpline()
 	, m_interplationRate(1)
 	, m_interpoationStep(0.1f)
 	, m_incTime(0)
-	, m_vec(4) // 4개 포인트만 저장한다.
 {
 
 }
@@ -32,6 +31,8 @@ void cSpline::Init(const bool enable, const int samplingRate, const int interpol
 	m_interpoationStep = 1.f / (float)interpolationRate;
 	m_storeCount = 0;
 	m_incTime = 0;
+
+	m_vec.resize(4); // 4개 포인트만 저장한다.
 }
 
 
@@ -54,7 +55,10 @@ bool cSpline::AddPoint(const float deltaSeconds, const Vector2 &pos)
 		else
 		{
 			// 처음 정보를 지우고, 왼쪽으로 시프트 한다.
-			std::rotate(m_vec.begin(), m_vec.begin() + 1, m_vec.end());
+			//std::rotate(m_vec.begin(), m_vec.begin() + 1, m_vec.end());
+			m_vec[0] = m_vec[1];
+			m_vec[1] = m_vec[2];
+			m_vec[2] = m_vec[3];
 			m_vec[3] = pos;
 
 			// Spline 곡선을 계산할 수 있을 때 true를 리턴한다.

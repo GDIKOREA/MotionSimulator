@@ -14,6 +14,9 @@ CDirt3View::CDirt3View(CWnd* pParent /*=NULL*/)
 : CDockablePaneChildView(CDirt3View::IDD, pParent)
 , m_state(STOP)
 , m_IsMotionSim(FALSE)
+, m_titleImage(common::str2wstr("../media/dirt3/title.jpg").c_str())
+, m_controllerState(-1)
+, m_controllerSubState(-1)
 {
 }
 
@@ -26,6 +29,8 @@ void CDirt3View::DoDataExchange(CDataExchange* pDX)
 	CDockablePaneChildView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BUTTON_START, m_StartButton);
 	DDX_Check(pDX, IDC_CHECK_MOTION_SIM, m_IsMotionSim);
+	DDX_Control(pDX, IDC_STATIC_STATE1, m_State1Text);
+	DDX_Control(pDX, IDC_STATIC_STATE2, m_State2Text);
 }
 
 
@@ -34,6 +39,7 @@ BEGIN_MESSAGE_MAP(CDirt3View, CDockablePaneChildView)
 	ON_BN_CLICKED(IDCANCEL, &CDirt3View::OnBnClickedCancel)
 	ON_BN_CLICKED(IDC_BUTTON_START, &CDirt3View::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_CHECK_MOTION_SIM, &CDirt3View::OnBnClickedCheckMotionSim)
+	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 
@@ -70,6 +76,20 @@ void CDirt3View::OnBnClickedButtonStart()
 void CDirt3View::Update(const float deltaSeconds)
 {
 	cDirt3Controller::Get()->Update(deltaSeconds);
+
+
+	// 정보가 바뀔 때, UI 출력을 변경한다.
+	if (cDirt3Controller::Get()->GetMotionSim().GetState() != m_controllerState)
+	{
+		m_controllerState = cDirt3Controller::Get()->GetMotionSim().GetState();
+		m_State1Text.SetWindowTextW(str2wstr(cDirt3Controller::Get()->GetMotionSim().GetStateStr()).c_str());
+	}
+	if (cDirt3Controller::Get()->GetMotionSim().GetSubState() != m_controllerSubState)
+	{
+		m_controllerSubState = cDirt3Controller::Get()->GetMotionSim().GetSubState();
+		m_State2Text.SetWindowTextW(str2wstr(cDirt3Controller::Get()->GetMotionSim().GetSubStateStr()).c_str());
+	}
+
 }
 
 
@@ -84,3 +104,12 @@ void CDirt3View::OnBnClickedCheckMotionSim()
 	UpdateData();
 }
 
+
+void CDirt3View::OnPaint()
+{
+	CPaintDC dc(this);
+
+	// 타이틀 이미지 출력
+	Gdiplus::Graphics graphic(dc);
+	graphic.DrawImage(&m_titleImage, Gdiplus::Rect(0, 0, m_titleImage.GetWidth(), m_titleImage.GetHeight()));
+}

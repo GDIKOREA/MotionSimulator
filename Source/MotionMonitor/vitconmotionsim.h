@@ -20,8 +20,6 @@ public:
 		END,	// Off() ¿œ ∂ß
 	};
 
-
-protected:
 	enum SUB_STATE {
 		SUBSTATE_OFF,
 		SUBSTATE_START_MOTION,
@@ -64,6 +62,9 @@ public:
 	void Play();
 	void Off();
 	STATE GetState() const;
+	SUB_STATE GetSubState() const;
+	string GetStateStr() const;
+	string GetSubStateStr() const;
 	
 
 protected:
@@ -98,3 +99,4 @@ protected:
 
 
 inline cVitconMotionSim::STATE cVitconMotionSim::GetState() const { return m_state;  }
+inline cVitconMotionSim::SUB_STATE cVitconMotionSim::GetSubState() const { return m_subState; }

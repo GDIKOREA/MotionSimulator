@@ -14,7 +14,7 @@ public:
 public:
 	string m_fileName;
 
-	string m_mode; // machinegun_stand, machinegun, dirt3, joystick, mwav
+	string m_mode; // machinegun_stand, machinegun, dirt3_release, dirt3, joystick, mwav
 
 	int m_udpPort;
 	string m_udpPlotCommand;
@@ -36,5 +36,6 @@ public:
 
 	string m_plotViewPlotCmd;
 	string m_plotViewPlotInputCmd;
+
 };
 

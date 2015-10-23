@@ -41,6 +41,12 @@ void cDirt3Controller::StartMotionSim(const string &configFileName, const bool i
 				pFrm->m_motionOutputView->Start();
 
 		m_vitconMotionSim.On();
+
+		// UDP 정보가 오기전에 기본값이 설정되어 있어야, 머신이 기본자세를 취하고 있다.
+		script::sFieldData data;
+		data.fVal = 1.55f;
+		data.type = script::FEILD_TYPE::T_FLOAT;
+		script::g_symbols["$7"] = data;
 	}
 }
 
@@ -50,8 +56,8 @@ void cDirt3Controller::StopMotionSim()
 	if (CMainFrame *pFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
 	{
 		// 안전을 위해 순서를 지키자.
-		if (pFrm->m_motionOutputView)
-			pFrm->m_motionOutputView->Stop();
+// 		if (pFrm->m_motionOutputView)
+// 			pFrm->m_motionOutputView->Stop();
 		if (pFrm->m_udpInputView)
 			pFrm->m_udpInputView->Stop();
 		if (pFrm->m_udpParseView)

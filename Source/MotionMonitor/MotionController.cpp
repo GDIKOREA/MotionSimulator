@@ -5,10 +5,10 @@
 
 
 cMotionController::cMotionController()
-	: m_yaw(0)
-	, m_pitch(0)
-	, m_roll(0)
-	, m_heave(0)
+	: m_yaw(255)
+	, m_pitch(255)
+	, m_roll(255)
+	, m_heave(512)
 {
 
 }

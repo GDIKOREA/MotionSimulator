@@ -23,6 +23,10 @@ protected:
 	enum STATE {STOP,START,};
 	STATE m_state;
 
+	Gdiplus::Bitmap m_titleImage;
+	int m_controllerState;
+	int m_controllerSubState;
+
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -32,4 +36,7 @@ public:
 	CButton m_StartButton;
 	BOOL m_IsMotionSim;
 	afx_msg void OnBnClickedCheckMotionSim();
+	afx_msg void OnPaint();
+	CStatic m_State1Text;
+	CStatic m_State2Text;
 };

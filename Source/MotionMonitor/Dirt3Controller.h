@@ -18,9 +18,12 @@ public:
 	void StopMotionSim();
 	void Update(const float deltaSeconds);
 	void UpdateUDP(const char *buffer, const int bufferLen);
-
+	cVitconMotionSim& GetMotionSim();
 
 protected:
 	cVitconMotionSim m_vitconMotionSim;
 	cVitconMotionSim::STATE m_oldState;
 };
+
+
+inline cVitconMotionSim& cDirt3Controller::GetMotionSim() { return m_vitconMotionSim; }
