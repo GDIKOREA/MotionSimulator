@@ -30,13 +30,14 @@ public:
 
 
 protected:
-	enum {MAX_BUFFERSIZE = 1024};
+	enum {MAX_BUFFERSIZE = 2048};
 
 	char m_ringBuffer[MAX_BUFFERSIZE]; 
 	// 정보는 head 에서 tail 로 저장된다. 새로 들어온 정보는 tail 부터 저장된다.
 	// headIndex == tailIndex 조건이 성립하면, 버퍼가 비었다는 뜻이다.
 	int m_headIndex = 0;  // 저장된 정보가 시작되는 index를 가르킨다.
 	int m_tailIndex = 0; // 정보를 쓰기 시작할 index를 가르킨다.
+	int m_checkIndex = 0; // 특정문자를 찾기 시작하는 index를 가르킨다.
 	int m_maxWaitTime; // default = 500
 	int m_lastReturnTime; // m_maxWaitTime 시간이 지나도록 문자 ch가 오지 않는다면, 리턴한다.
 };

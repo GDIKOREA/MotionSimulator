@@ -328,23 +328,23 @@ void CMixingView::Mixing(const float deltaSeconds,
 	heave += m_config.m_bias_heave;
 
 
-	if (pitch > 512)
-		pitch = 512;
+	if (pitch > 20000)
+		pitch = 20000;
 	if (pitch < 0)
 		pitch = 0;
 
-	if (roll > 512)
-		roll = 512;
+	if (roll > 20000)
+		roll = 20000;
 	if (roll < 0)
 		roll = 0;
 
-	if (yaw > 512)
-		yaw = 512;
+	if (yaw > 20000)
+		yaw = 20000;
 	if (yaw < 0)
 		yaw = 0;
 
-	if (heave > 512)
-		heave = 512;
+	if (heave > 20000)
+		heave = 20000;
 	if (heave < 0)
 		heave = 0;
 

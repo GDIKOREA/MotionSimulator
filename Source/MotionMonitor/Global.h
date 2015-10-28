@@ -141,6 +141,7 @@ const static COLORREF g_blueColor = RGB(51, 153, 255);
 const static COLORREF g_grayColor = RGB(240, 240, 240);
 const static COLORREF g_redColor = RGB(255, 127, 80);
 void SendMotionSimMessage(const int state);
+void SendMotionSimMessage2(const int state);
 
 
 bool WriteCameraSensitive(const string &fileName, const float sens);

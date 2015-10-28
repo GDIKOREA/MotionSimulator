@@ -116,6 +116,35 @@ void SendMotionSimMessage(const int state)
 }
 
 
+// Dirt3 motion simulator 용 프로토콜
+void SendMotionSimMessage2(const int state)
+{
+	const int out_pitch = 10000;
+	const int out_roll = 10000;
+	const int out_yaw = 10000;
+	const int out_sway = 10000;
+	const int out_surge = 10000;
+	const int out_heave = 10000;
+	const int spareSpeed = 100;
+	const int out_switch = state;
+
+// 	const string out = common::format(
+// 		"A%3d%3d%3d%3d%3d%3d%dZ", out_roll, out_pitch, out_yaw,
+// 		out_sway, out_surge, out_heave, out_switch);
+	const string out = common::format(
+		"A%5d%5d%5d%5d%5d%5d%3d%3d%3d%3d%3d%3d%1dZ", out_roll, out_pitch, out_yaw,
+		out_sway, out_surge, out_heave, 
+		spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed,
+		out_switch);
+
+	for (int i = 0; i < 5; ++i)
+	{
+		cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
+		Sleep(50);
+	}
+}
+
+
 // 카메라 감도 값 조정
 bool WriteCameraSensitive(const string &fileName, const float sens)
 {

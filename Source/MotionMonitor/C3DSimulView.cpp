@@ -63,8 +63,15 @@ void C3DSimulView::Update(const float deltaSeconds)
 	const float roll = cMotionController::Get()->m_roll;
 	const float heave = cMotionController::Get()->m_heave;
 
+// 	g_3dMotionView->GetCar().SetEulerAngle(
+// 		(roll-255.f) / 255.f, 
+// 		(pitch-255.f) / 255.f, 
+// 		(yaw-255.f) / 255);
+
 	g_3dMotionView->GetCar().SetEulerAngle(
-		(roll-255.f) / 255.f, 
-		(pitch-255.f) / 255.f, 
-		(yaw-255.f) / 255);
+		(roll - 10000.f) / 10000.f,
+		(pitch - 10000.f) / 10000.f,
+		(yaw - 10000.f) / 10000.f
+		);
+
 }

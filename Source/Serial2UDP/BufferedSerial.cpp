@@ -41,7 +41,7 @@ bool CBufferedSerial::ReadStringUntil(const char ch, OUT string &out)
 		for (int i = m_headIndex; i != m_tailIndex; i = (i + 1) % MAX_BUFFERSIZE)
 			out += m_ringBuffer[i];
 
-		m_headIndex = m_tailIndex = 0;
+		m_headIndex = m_tailIndex = m_checkIndex = 0;
 
 		return true; // 종료
 	}
@@ -52,8 +52,11 @@ bool CBufferedSerial::ReadStringUntil(const char ch, OUT string &out)
 
 		if (m_tailIndex >= m_headIndex)
 		{
-			remainBufferSize1 = MAX_BUFFERSIZE - m_tailIndex - 1;
+			remainBufferSize1 = MAX_BUFFERSIZE - m_tailIndex;
 			remainBufferSize2 = m_headIndex - 1;
+
+			if (m_headIndex == 0)
+				remainBufferSize1 -= 1;
 		}
 		else
 		{
@@ -69,16 +72,27 @@ bool CBufferedSerial::ReadStringUntil(const char ch, OUT string &out)
 
 	if (readBytes < 0) // error !!
 		return false;
-	if (0 == readBytes) // nothing to read
+
+	int checkBuffSize = 0;
+	if (m_tailIndex >= m_checkIndex)
+	{
+		checkBuffSize = m_tailIndex - m_checkIndex;
+	}
+	else
+	{
+		checkBuffSize = MAX_BUFFERSIZE - (m_checkIndex - m_tailIndex) - 1;
+	}
+
+	if ((0 == readBytes) && (checkBuffSize <= 0)) // nothing to read
 		return true;
 
 
 	// 읽은 위치부터 ch 문자가 있는지 검사한다.
 	int findChIndex = -1;
-	int i = 0; 
-	while (i < readBytes)
+	int i = 0;
+	while (i < readBytes+checkBuffSize)
 	{
-		const int idx = (m_tailIndex + i) % MAX_BUFFERSIZE;
+		const int idx = (m_checkIndex + i) % MAX_BUFFERSIZE;
 		if (ch == m_ringBuffer[idx])
 		{
 			findChIndex = idx;
@@ -100,10 +114,11 @@ bool CBufferedSerial::ReadStringUntil(const char ch, OUT string &out)
 		// tailIndex를 증가 시킨다.
 		m_tailIndex += readBytes;
 		m_tailIndex %= MAX_BUFFERSIZE;
+		m_checkIndex = m_headIndex;
 
 		// 버퍼가 완전히 비었다면, 0으로 초기화 한다.
 		if (m_tailIndex == m_headIndex)
-			m_tailIndex = m_headIndex = 0;
+			m_tailIndex = m_headIndex = m_checkIndex = 0;
 
 		m_lastReturnTime = 0;
 	}
@@ -112,6 +127,7 @@ bool CBufferedSerial::ReadStringUntil(const char ch, OUT string &out)
 		// tailIndex를 증가 시킨다.
 		m_tailIndex += readBytes;
 		m_tailIndex %= MAX_BUFFERSIZE;
+		m_checkIndex = m_tailIndex;
 
 		return false;
 	}
@@ -124,7 +140,7 @@ bool CBufferedSerial::ReadStringUntil(const char ch, OUT string &out)
 void CBufferedSerial::ClearBuffer()
 {
 	m_lastReturnTime = 0;
-	m_headIndex = m_tailIndex = 0;
+	m_headIndex = m_tailIndex = m_checkIndex = 0;
 }
 
 

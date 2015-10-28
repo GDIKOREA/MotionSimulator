@@ -22,8 +22,9 @@ CSerial2UDPDlg::CSerial2UDPDlg(CWnd* pParent /*=NULL*/)
 	, m_ServerPort(8888)
 	, m_isServerConnect(false)
 	, m_isComConnect(false)
-	, m_SerialReceiveText(_T(""))
-	, m_SerialReceiveCount(0)
+	, m_serialRxCnt(0)
+	//, m_SerialReceiveText(_T(""))
+	//, m_SerialReceiveCount(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -37,8 +38,8 @@ void CSerial2UDPDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO_SERIAL_PORT, m_ComPortComboBox);
 	DDX_Control(pDX, IDC_COMBO_SERIAL_BAUDRATE, m_ComBaudrateComboBox);
 	DDX_Control(pDX, IDC_BUTTON_START, m_StartButton);
-	DDX_Text(pDX, IDC_STATIC_SERIAL, m_SerialReceiveText);
-	DDX_Text(pDX, IDC_STATIC_SERIAL_COUNT, m_SerialReceiveCount);
+	DDX_Control(pDX, IDC_STATIC_SERIAL, m_SerialReceiveText);
+	DDX_Control(pDX, IDC_STATIC_SERIAL_COUNT, m_SerialReceiveCount);
 }
 
 BEGIN_MESSAGE_MAP(CSerial2UDPDlg, CDialogEx)
@@ -138,7 +139,7 @@ void CSerial2UDPDlg::MainLoop()
 
 		const int curT = timeGetTime();
 		const int deltaT = curT - oldT;
-		if (deltaT > 10)
+		//if (deltaT > 10)
 		{
 			oldT = curT;
 			Process(deltaT);
@@ -230,29 +231,47 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 		return;
 	}
 
-	string buff;
-	if (!m_serial.ReadStringUntil('\n', buff))
+	string readStr;
+	if (!m_serial.ReadStringUntil('\n', readStr))
 	{
 		// 에러 발생. 시리얼 포트 연결과 끊는다.
-		OnBnClickedButtonStart();
-		return;
+		//OnBnClickedButtonStart();
+		//return;
 	}
 
-	if (buff.empty())
+	if (readStr.empty())
 		return;
 
-	CString str = str2wstr(buff).c_str();
-	m_SerialReceiveText = str;
-	++m_SerialReceiveCount;
+	CString str = str2wstr(readStr).c_str();
+	//m_SerialReceiveText = str;
+	m_SerialReceiveText.SetWindowTextW(str);
+	//++m_SerialReceiveCount;
+	++m_serialRxCnt;
+	CString rxCnt;
+	rxCnt.Format(L"%d", m_serialRxCnt);
+	m_SerialReceiveCount.SetWindowTextW(rxCnt);
 
 
 	// 시리얼로 받은 정보를 UDP 네트워크를 통해 전송한다.
 	int slen = sizeof(m_sockAddr);
-	if (sendto(m_socket, buff.c_str(), buff.size(), 0, (struct sockaddr *) &m_sockAddr, slen) == SOCKET_ERROR)
+	char buffer[256];
+	if (readStr.size() < sizeof(buffer))
+	{
+		const int len = readStr.size();
+		memcpy(buffer, &readStr[0], len);
+		buffer[len - 1] = NULL;
+	}
+	else
+	{
+		memcpy(buffer, &readStr[0], sizeof(buffer)-1);
+		buffer[sizeof(buffer) - 1] = NULL;
+	}
+
+	if (sendto(m_socket, buffer, sizeof(buffer), 0, (struct sockaddr *) &m_sockAddr, slen) == SOCKET_ERROR)
  	{
   		//Log( format("sendto() failed with error code : %d", WSAGetLastError()) );
  		//OnBnClickedButtonStart();
  	}
 
-	UpdateData(FALSE);
+	//UpdateData(FALSE);
 }

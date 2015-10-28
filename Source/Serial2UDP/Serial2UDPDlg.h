@@ -33,6 +33,7 @@ protected:
 	bool m_loop;
 	bool m_isServerConnect;
 	bool m_isComConnect;
+	int m_serialRxCnt;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
@@ -50,6 +51,6 @@ public:
 	CComboBox m_ComBaudrateComboBox;
 	CButton m_StartButton;
 	afx_msg void OnBnClickedButtonClear();
-	CString m_SerialReceiveText;
-	int m_SerialReceiveCount;
+	CStatic m_SerialReceiveText;
+	CStatic m_SerialReceiveCount;
 };

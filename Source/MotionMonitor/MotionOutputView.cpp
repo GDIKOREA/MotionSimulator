@@ -196,8 +196,12 @@ void CMotionOutputView::Update(const float deltaSeconds)
 		m_totalIncTime += deltaSeconds;
 
 		//const int out_yaw = 256;
-		const int out_sway = 256;
-		const int out_surge = 256;
+		// machinegun
+// 		const int out_sway = 256;
+// 		const int out_surge = 256;
+		// dirt3
+		const int out_sway = 10000;
+		const int out_surge = 10000;
 		const int out_switch = 0;
 		const int out_yaw = (int)cMotionController::Get()->m_yaw;
 		const int out_pitch = (int)cMotionController::Get()->m_pitch;
@@ -211,13 +215,21 @@ void CMotionOutputView::Update(const float deltaSeconds)
 			m_incTime = 0;
 		}
 
-		if (m_incSerialTime > 0.07f) // 15 frame
+		//if (m_incSerialTime > 0.07f) // 15 frame, machine gun
+		if (m_incSerialTime > 0.033f) // 30 frame, dirt3
 		{
 			if (m_isStartSendMotion && !m_IsOnlyEmergency)
 			{
+				// machinegun version
+// 				const string out = common::format(
+// 					"A%3d%3d%3d%3d%3d%3d0Z", out_roll, out_pitch, out_yaw,
+// 					out_sway, out_surge, out_heave, out_switch);
+				const int spareSpeed = 100;
 				const string out = common::format(
-					"A%3d%3d%3d%3d%3d%3d0Z", out_roll, out_pitch, out_yaw,
-					out_sway, out_surge, out_heave, out_switch);
+					"A%5d%5d%5d%5d%5d%5d%3d%3d%3d%3d%3d%3d0Z", out_roll, out_pitch, out_yaw,
+					out_sway, out_surge, out_heave,  
+					spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed,
+					out_switch);
 
 				AppendToLogAndScroll(&m_OutputLog, common::str2wstr(out+"\n").c_str(), RGB(200, 200, 200));
 
@@ -308,17 +320,34 @@ void CMotionOutputView::SendMotionControllSwitchMessage(const int state)
 // 	float roll, pitch, yaw, heave;
 // 	cMotionController::Get()->m_udpMod.GetFinal(yaw, pitch, roll, heave);
 
-	const int out_pitch = 256;// (int)(pitch * 255) + 255;
-	const int out_roll = 256;
-	const int out_yaw = 256;
-	const int out_sway = 256;
-	const int out_surge = 256;
-	const int out_heave = 512;
+	// machinegun
+// 	const int out_pitch = 256;// (int)(pitch * 255) + 255;
+// 	const int out_roll = 256;
+// 	const int out_yaw = 256;
+// 	const int out_sway = 256;
+// 	const int out_surge = 256;
+// 	const int out_heave = 512;
+
+	const int out_pitch = 10000;// (int)(pitch * 255) + 255;
+	const int out_roll = 10000;
+	const int out_yaw = 10000;
+	const int out_sway = 10000;
+	const int out_surge = 10000;
+	const int out_heave = 10000;
+	const int spareSpeed = 100;
 	const int out_switch = state;
 
+	// machinegun
+// 	const string out = common::format(
+// 		"A%3d%3d%3d%3d%3d%3d%dZ", out_roll, out_pitch, out_yaw,
+// 		out_sway, out_surge, out_heave, out_switch);
+
 	const string out = common::format(
-		"A%3d%3d%3d%3d%3d%3d%dZ", out_roll, out_pitch, out_yaw,
-		out_sway, out_surge, out_heave, out_switch);
+		"A%5d%5d%5d%5d%5d%5d%3d%3d%3d%3d%3d%3d%1dZ", out_roll, out_pitch, out_yaw,
+		out_sway, out_surge, out_heave,
+		spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed,
+		out_switch);
+
 
 	AppendToLogAndScroll(&m_OutputLog, common::str2wstr(out + "\n").c_str(), RGB(200, 200, 200));
 	
