@@ -251,6 +251,10 @@
 #define IDC_CHECK_MOTION_SIM            1128
 #define IDC_STATIC_STATE1               1129
 #define IDC_STATIC_STATE2               1130
+#define IDC_RADIO_4AXIS                 1132
+#define IDC_RADIO_3AXIS                 1133
+#define IDC_SLIDER_ACTION_RANGE         1134
+#define IDC_EDIT_ACTUATOR               1135
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
@@ -259,7 +263,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        341
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1132
+#define _APS_NEXT_CONTROL_VALUE         1136
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

@@ -194,7 +194,7 @@ BOOL CMotionMonitorApp::InitInstance()
 		CRect wr;
 		m_pMainWnd->GetWindowRect(wr);
 		wr.right = wr.left + 475;
-		wr.bottom = wr.top + 460;
+		wr.bottom = wr.top + 550;
 		m_pMainWnd->MoveWindow(wr);
 	}
 

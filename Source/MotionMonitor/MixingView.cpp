@@ -35,6 +35,8 @@ CMixingView::CMixingView(CWnd* pParent /*=NULL*/)
 	, m_incTime(0)
 	, m_totalIncTime(0)
 	, m_state(STOP)
+	, m_AxisType(AXIS_TYPE::AXIS4)
+	, m_actuatorPowerRate(1.f)
 {
 }
 
@@ -259,17 +261,17 @@ void CMixingView::Mixing(const float deltaSeconds,
 
 			if (m_config.m_rate1_all == 0)
 			{
-				yaw += calcRate(joyYaw, m_config.m_rate1_center_yaw, m_config.m_rate1_yaw);
-				pitch += calcRate(joyPitch, m_config.m_rate1_center_pitch, m_config.m_rate1_pitch);
-				roll += calcRate(joyRoll, m_config.m_rate1_center_roll, m_config.m_rate1_roll);
-				heave += calcRate(joyHeave, m_config.m_rate1_center_heave, m_config.m_rate1_heave);
+				yaw += calcRate(joyYaw, m_config.m_rate1_center_yaw, m_config.m_rate1_yaw * m_actuatorPowerRate);
+				pitch += calcRate(joyPitch, m_config.m_rate1_center_pitch, m_config.m_rate1_pitch * m_actuatorPowerRate);
+				roll += calcRate(joyRoll, m_config.m_rate1_center_roll, m_config.m_rate1_roll * m_actuatorPowerRate);
+				heave += calcRate(joyHeave, m_config.m_rate1_center_heave, m_config.m_rate1_heave * m_actuatorPowerRate);
 			}
 			else
 			{
-				yaw += calcRate(joyYaw, m_config.m_rate1_center_yaw, m_config.m_rate1_all);
-				pitch += calcRate(joyPitch, m_config.m_rate1_center_pitch, m_config.m_rate1_all);
-				roll += calcRate(joyRoll, m_config.m_rate1_center_roll, m_config.m_rate1_all);
-				heave += calcRate(joyHeave, m_config.m_rate1_center_heave, m_config.m_rate1_all);
+				yaw += calcRate(joyYaw, m_config.m_rate1_center_yaw, m_config.m_rate1_all * m_actuatorPowerRate);
+				pitch += calcRate(joyPitch, m_config.m_rate1_center_pitch, m_config.m_rate1_all * m_actuatorPowerRate);
+				roll += calcRate(joyRoll, m_config.m_rate1_center_roll, m_config.m_rate1_all * m_actuatorPowerRate);
+				heave += calcRate(joyHeave, m_config.m_rate1_center_heave, m_config.m_rate1_all * m_actuatorPowerRate);
 			}
 		}
 	}
@@ -283,17 +285,17 @@ void CMixingView::Mixing(const float deltaSeconds,
 
 			if (m_config.m_rate2_all == 0)
 			{
-				yaw += calcRate(udpYaw, m_config.m_rate2_center_yaw, m_config.m_rate2_yaw);
-				pitch += calcRate(udpPitch, m_config.m_rate2_center_pitch, m_config.m_rate2_pitch);
-				roll += calcRate(udpRoll, m_config.m_rate2_center_roll, m_config.m_rate2_roll);
-				heave += calcRate(udpHeave, m_config.m_rate2_center_heave, m_config.m_rate2_heave);
+				yaw += calcRate(udpYaw, m_config.m_rate2_center_yaw, m_config.m_rate2_yaw * m_actuatorPowerRate);
+				pitch += calcRate(udpPitch, m_config.m_rate2_center_pitch, m_config.m_rate2_pitch * m_actuatorPowerRate);
+				roll += calcRate(udpRoll, m_config.m_rate2_center_roll, m_config.m_rate2_roll * m_actuatorPowerRate);
+				heave += calcRate(udpHeave, m_config.m_rate2_center_heave, m_config.m_rate2_heave * m_actuatorPowerRate);
 			}
 			else
 			{
-				yaw += calcRate(udpYaw, m_config.m_rate2_center_yaw, m_config.m_rate2_all);
-				pitch += calcRate(udpPitch, m_config.m_rate2_center_pitch, m_config.m_rate2_all);
-				roll += calcRate(udpRoll, m_config.m_rate2_center_roll, m_config.m_rate2_all);
-				heave += calcRate(udpHeave, m_config.m_rate2_center_heave, m_config.m_rate2_all);
+				yaw += calcRate(udpYaw, m_config.m_rate2_center_yaw, m_config.m_rate2_all * m_actuatorPowerRate);
+				pitch += calcRate(udpPitch, m_config.m_rate2_center_pitch, m_config.m_rate2_all * m_actuatorPowerRate);
+				roll += calcRate(udpRoll, m_config.m_rate2_center_roll, m_config.m_rate2_all * m_actuatorPowerRate);
+				heave += calcRate(udpHeave, m_config.m_rate2_center_heave, m_config.m_rate2_all * m_actuatorPowerRate);
 			}
 		}
 	}
@@ -307,17 +309,17 @@ void CMixingView::Mixing(const float deltaSeconds,
 
 			if (m_config.m_rate3_all == 0)
 			{
-				yaw += calcRate(mwavYaw, m_config.m_rate3_center_yaw, m_config.m_rate3_yaw);
-				pitch += calcRate(mwavPitch, m_config.m_rate3_center_pitch, m_config.m_rate3_pitch);
-				roll += calcRate(mwavRoll, m_config.m_rate3_center_roll, m_config.m_rate3_roll);
-				heave += calcRate(mwavHeave, m_config.m_rate3_center_heave, m_config.m_rate3_heave);
+				yaw += calcRate(mwavYaw, m_config.m_rate3_center_yaw, m_config.m_rate3_yaw * m_actuatorPowerRate);
+				pitch += calcRate(mwavPitch, m_config.m_rate3_center_pitch, m_config.m_rate3_pitch * m_actuatorPowerRate);
+				roll += calcRate(mwavRoll, m_config.m_rate3_center_roll, m_config.m_rate3_roll * m_actuatorPowerRate);
+				heave += calcRate(mwavHeave, m_config.m_rate3_center_heave, m_config.m_rate3_heave * m_actuatorPowerRate);
 			}
 			else
 			{
-				yaw += calcRate(mwavYaw, m_config.m_rate3_center_yaw, m_config.m_rate3_all);
-				pitch += calcRate(mwavPitch, m_config.m_rate3_center_pitch, m_config.m_rate3_all);
-				roll += calcRate(mwavRoll, m_config.m_rate3_center_roll, m_config.m_rate3_all);
-				heave += calcRate(mwavHeave, m_config.m_rate3_center_heave, m_config.m_rate3_all);
+				yaw += calcRate(mwavYaw, m_config.m_rate3_center_yaw, m_config.m_rate3_all * m_actuatorPowerRate);
+				pitch += calcRate(mwavPitch, m_config.m_rate3_center_pitch, m_config.m_rate3_all * m_actuatorPowerRate);
+				roll += calcRate(mwavRoll, m_config.m_rate3_center_roll, m_config.m_rate3_all * m_actuatorPowerRate);
+				heave += calcRate(mwavHeave, m_config.m_rate3_center_heave, m_config.m_rate3_all * m_actuatorPowerRate);
 			}
 		}
 	}
@@ -327,6 +329,10 @@ void CMixingView::Mixing(const float deltaSeconds,
 	roll += m_config.m_bias_roll;
 	heave += m_config.m_bias_heave;
 
+	if (AXIS_TYPE::AXIS3 == m_AxisType)
+	{
+		yaw = 10000; // 3축으로만 제어할 때는 Yaw축을 제거한다. (중심 값을 준다)
+	}
 
 	if (pitch > 20000)
 		pitch = 20000;
