@@ -33,8 +33,6 @@ public:
 		float incDiff;
 		//
 		
-
-
 		bool recoverEnable;
 		float recoverTarget;
 		float recoverProportion;

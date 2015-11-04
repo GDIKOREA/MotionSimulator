@@ -1,4 +1,4 @@
-// Dirt3View.cpp : implementation file
+Dirt3View.cpp : implementation file
 //
 
 #include "stdafx.h"
@@ -18,8 +18,13 @@ CDirt3View::CDirt3View(CWnd* pParent /*=NULL*/)
 , m_state(STOP)
 , m_IsMotionSim(FALSE)
 , m_titleImage(common::str2wstr("../media/dirt3/title.jpg").c_str())
+, m_controllerMainState(-1)
 , m_controllerState(-1)
 , m_controllerSubState(-1)
+, m_enChange1(false)
+, m_enChange2(false)
+, m_enChange3(false)
+, m_displayPlayTime(0)
 {
 }
 
@@ -33,10 +38,17 @@ void CDirt3View::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_RADIO_4AXIS, m_radioAxisType);
 	DDX_Control(pDX, IDC_BUTTON_START, m_StartButton);
 	DDX_Check(pDX, IDC_CHECK_MOTION_SIM, m_IsMotionSim);
+	DDX_Control(pDX, IDC_STATIC_STATE0, m_State0Text);
 	DDX_Control(pDX, IDC_STATIC_STATE1, m_State1Text);
 	DDX_Control(pDX, IDC_STATIC_STATE2, m_State2Text);
-	DDX_Control(pDX, IDC_SLIDER_ACTION_RANGE, m_actuatorLengthRange);
+	DDX_Control(pDX, IDC_SLIDER_ACTION_RANGE, m_sliderActuatorRange);
 	DDX_Control(pDX, IDC_EDIT_ACTUATOR, m_editActuatorRange);
+	DDX_Control(pDX, IDC_SLIDER_ACTION_SPEED, m_sliderActuatorSpeed);
+	DDX_Control(pDX, IDC_EDIT_ACTUATOR_SPEED, m_editActuatorSpeed);
+	DDX_Control(pDX, IDC_EDIT_PLAYTIME, m_editPlayTime);
+	DDX_Control(pDX, IDC_STATIC_PLAYTIME, m_PlayTimeText);
+	DDX_Control(pDX, IDC_SLIDER_YAW_RANGE, m_sliderActuatorYawRange);
+	DDX_Control(pDX, IDC_EDIT_ACTUATOR_YAW, m_editActuatorYawRange);
 }
 
 
@@ -50,6 +62,12 @@ BEGIN_MESSAGE_MAP(CDirt3View, CDockablePaneChildView)
 	ON_BN_CLICKED(IDC_RADIO_4AXIS, &CDirt3View::OnBnClickedRadio4axis)
 	ON_BN_CLICKED(IDC_RADIO_3AXIS, &CDirt3View::OnBnClickedRadio3axis)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_ACTION_RANGE, &CDirt3View::OnNMCustomdrawSliderActionRange)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_ACTION_SPEED, &CDirt3View::OnNMCustomdrawSliderActionSpeed)
+	ON_EN_CHANGE(IDC_EDIT_ACTUATOR, &CDirt3View::OnEnChangeEditActuator)
+	ON_EN_CHANGE(IDC_EDIT_ACTUATOR_SPEED, &CDirt3View::OnEnChangeEditActuatorSpeed)
+	ON_EN_CHANGE(IDC_EDIT_PLAYTIME, &CDirt3View::OnEnChangeEditPlaytime)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_YAW_RANGE, &CDirt3View::OnNMCustomdrawSliderYawRange)
+	ON_EN_CHANGE(IDC_EDIT_ACTUATOR_YAW, &CDirt3View::OnEnChangeEditActuatorYaw)
 END_MESSAGE_MAP()
 
 
@@ -67,14 +85,70 @@ BOOL CDirt3View::OnInitDialog()
 	CDockablePaneChildView::OnInitDialog();
 
 	float actuatorPowerRate = 1;
+	float actuatorYawRangeRate = 1;
+	float actuatorSpeedRate = 1;
 	m_radioAxisType = AXIS_TYPE::AXIS4;
 
-	const int maxRange = MAX_ACTUATOR_LIMIT;
-	m_actuatorLengthRange.SetRange(0, maxRange);
-	m_actuatorLengthRange.SetPos((int)((float)maxRange * actuatorPowerRate));
+	const int maxRange = MAX_SLIDER_LIMIT;
+	m_sliderActuatorRange.SetRange(0, maxRange);
+	m_sliderActuatorRange.SetPos((int)((float)maxRange * actuatorPowerRate));
+
+	m_sliderActuatorYawRange.SetRange(0, maxRange);
+	m_sliderActuatorYawRange.SetPos((int)((float)maxRange * actuatorYawRangeRate));
+
+	m_sliderActuatorSpeed.SetRange(0, maxRange);
+	m_sliderActuatorSpeed.SetPos((int)((float)maxRange * actuatorSpeedRate));
+
+	CString playTimeStr;
+	playTimeStr.Format(L"%f", cController::Get()->GetPlayTime());
+	m_editPlayTime.SetWindowTextW(playTimeStr);
 
 	UpdateData(FALSE);
 	return TRUE;
+}
+
+
+void CDirt3View::UpdateConfig(bool IsSaveAndValidate)
+{
+	if (IsSaveAndValidate)
+	{
+		m_radioAxisType = cMotionController::Get()->m_config.m_dirt3ViewAxisType;
+		if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+			frm->m_mixingView->SetMixingAxisMode((AXIS_TYPE::TYPE)cMotionController::Get()->m_config.m_dirt3ViewAxisType);
+
+		CString strPlayTime;
+		strPlayTime.Format(L"%f", cMotionController::Get()->m_config.m_dirt3ViewPlayTime);
+		m_editPlayTime.SetWindowTextW(strPlayTime);
+		cController::Get()->SetPlayTime(cMotionController::Get()->m_config.m_dirt3ViewPlayTime);
+
+		const int rangePos = (int)(cMotionController::Get()->m_config.m_dirt3ViewActuatorPower * MAX_SLIDER_LIMIT);
+		const int yawPos = (int)(cMotionController::Get()->m_config.m_dirt3ViewActuatorYawPower * MAX_SLIDER_LIMIT);
+		const int speedPos = (int)(cMotionController::Get()->m_config.m_dirt3ViewActuatorSpeed * MAX_SLIDER_LIMIT);
+		m_sliderActuatorRange.SetPos(rangePos);
+		m_sliderActuatorYawRange.SetPos(yawPos);
+		m_sliderActuatorSpeed.SetPos(speedPos);
+
+		if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+			frm->m_mixingView->SetActuatorPowerRate(cMotionController::Get()->m_config.m_dirt3ViewActuatorPower);
+		cController::Get()->SetActuatorSpeed(cMotionController::Get()->m_config.m_dirt3ViewActuatorSpeed);
+
+		UpdateData(FALSE);
+	}
+	else
+	{
+		UpdateData();
+
+		if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+			cMotionController::Get()->m_config.m_dirt3ViewAxisType = frm->m_mixingView->GetMixingAxisMode();
+
+		cMotionController::Get()->m_config.m_dirt3ViewPlayTime = cController::Get()->GetPlayTime();
+
+		if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+			cMotionController::Get()->m_config.m_dirt3ViewActuatorPower = frm->m_mixingView->GetActuatorPowerRate();
+
+		cMotionController::Get()->m_config.m_dirt3ViewActuatorYawPower = cController::Get()->GetActuatorYawPower();
+		cMotionController::Get()->m_config.m_dirt3ViewActuatorSpeed = cController::Get()->GetActuatorSpeed();
+	}
 }
 
 
@@ -105,6 +179,11 @@ void CDirt3View::Update(const float deltaSeconds)
 
 
 	// 정보가 바뀔 때, UI 출력을 변경한다.
+	if (cDirt3Controller::Get()->GetState() != m_controllerMainState)
+	{
+		m_controllerMainState = cDirt3Controller::Get()->GetState();
+		m_State0Text.SetWindowTextW(str2wstr(cDirt3Controller::Get()->GetStateStr()).c_str());
+	}
 	if (cDirt3Controller::Get()->GetMotionSim().GetState() != m_controllerState)
 	{
 		m_controllerState = cDirt3Controller::Get()->GetMotionSim().GetState();
@@ -114,6 +193,13 @@ void CDirt3View::Update(const float deltaSeconds)
 	{
 		m_controllerSubState = cDirt3Controller::Get()->GetMotionSim().GetSubState();
 		m_State2Text.SetWindowTextW(str2wstr(cDirt3Controller::Get()->GetMotionSim().GetSubStateStr()).c_str());
+	}
+	if ((int)cDirt3Controller::Get()->GetMotionSim().GetPlayTime() != m_displayPlayTime)
+	{
+		CString str;
+		str.Format(L"%d", (int)cDirt3Controller::Get()->GetMotionSim().GetPlayTime());
+		m_displayPlayTime = (int)cDirt3Controller::Get()->GetMotionSim().GetPlayTime();
+		m_PlayTimeText.SetWindowTextW(str);
 	}
 }
 
@@ -175,12 +261,101 @@ void CDirt3View::OnNMCustomdrawSliderActionRange(NMHDR *pNMHDR, LRESULT *pResult
 
 	if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
 	{
-		const float rate = (float)m_actuatorLengthRange.GetPos() / (float)MAX_ACTUATOR_LIMIT;
+		const float rate = (float)m_sliderActuatorRange.GetPos() / (float)MAX_SLIDER_LIMIT;
 		frm->m_mixingView->SetActuatorPowerRate(rate);
 
-		CString str;
-		str.Format(L"%f", rate);
-		m_editActuatorRange.SetWindowTextW(str);
+		if (!m_enChange1)
+		{
+			CString str;
+			str.Format(L"%f", rate);
+			m_editActuatorRange.SetWindowTextW(str);
+		}
 	}
-
 }
+
+
+void CDirt3View::OnNMCustomdrawSliderActionSpeed(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
+	*pResult = 0;
+
+	if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+	{
+		const float rate = (float)m_sliderActuatorSpeed.GetPos() / (float)MAX_SLIDER_LIMIT;
+		cController::Get()->SetActuatorSpeed(rate);
+
+		if (!m_enChange2)
+		{
+			CString str;
+			str.Format(L"%f", rate);
+			m_editActuatorSpeed.SetWindowTextW(str);
+		}
+	}
+}
+
+
+void CDirt3View::OnNMCustomdrawSliderYawRange(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
+	*pResult = 0;
+
+	if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+	{
+		const float rate = (float)m_sliderActuatorYawRange.GetPos() / (float)MAX_SLIDER_LIMIT;
+		cController::Get()->SetActuatorYawPower(rate);
+
+		if (!m_enChange3)
+		{
+			CString str;
+			str.Format(L"%f", rate);
+			m_editActuatorYawRange.SetWindowTextW(str);
+		}
+	}
+}
+
+
+void CDirt3View::OnEnChangeEditActuatorYaw()
+{
+	CString str;
+	m_editActuatorYawRange.GetWindowTextW(str);
+	const float rate = (float)_wtof((LPCTSTR)str);
+
+	m_enChange3 = true;
+	m_sliderActuatorYawRange.SetPos((int)(rate * MAX_SLIDER_LIMIT));
+	m_enChange3 = false;
+}
+
+
+void CDirt3View::OnEnChangeEditActuator()
+{
+	CString str;
+	m_editActuatorRange.GetWindowTextW(str);
+	const float rate = (float)_wtof((LPCTSTR)str);
+
+	m_enChange1 = true;
+	m_sliderActuatorRange.SetPos((int)(rate * MAX_SLIDER_LIMIT));
+	m_enChange1 = false;
+}
+
+
+void CDirt3View::OnEnChangeEditActuatorSpeed()
+{
+	CString str;
+	m_editActuatorSpeed.GetWindowTextW(str);
+	const float rate = (float)_wtof((LPCTSTR)str);
+
+	m_enChange2 = true;
+	m_sliderActuatorSpeed.SetPos((int)(rate * MAX_SLIDER_LIMIT));
+	m_enChange2 = false;
+}
+
+
+void CDirt3View::OnEnChangeEditPlaytime()
+{
+	CString str;
+	m_editPlayTime.GetWindowTextW(str);
+	const float t = (float)_wtof((LPCTSTR)str);
+
+	cController::Get()->SetPlayTime(t);
+}
+  

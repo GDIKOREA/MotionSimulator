@@ -215,8 +215,8 @@ void CMotionOutputView::Update(const float deltaSeconds)
 			m_incTime = 0;
 		}
 
-		//if (m_incSerialTime > 0.07f) // 15 frame, machine gun
-		if (m_incSerialTime > 0.033f) // 30 frame, dirt3
+		if (m_incSerialTime > 0.07f) // 15 frame, machine gun
+		//if (m_incSerialTime > 0.033f) // 30 frame, dirt3
 		{
 			if (m_isStartSendMotion && !m_IsOnlyEmergency)
 			{
@@ -225,11 +225,12 @@ void CMotionOutputView::Update(const float deltaSeconds)
 // 					"A%3d%3d%3d%3d%3d%3d0Z", out_roll, out_pitch, out_yaw,
 // 					out_sway, out_surge, out_heave, out_switch);
 				const int spareSpeed = 100;
-				const string out = common::format(
+				string out = common::format(
 					"A%5d%5d%5d%5d%5d%5d%3d%3d%3d%3d%3d%3d0Z", out_roll, out_pitch, out_yaw,
 					out_sway, out_surge, out_heave,  
 					spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed,
 					out_switch);
+				SpaceCharToZeroChar(out);
 
 				AppendToLogAndScroll(&m_OutputLog, common::str2wstr(out+"\n").c_str(), RGB(200, 200, 200));
 
@@ -342,12 +343,12 @@ void CMotionOutputView::SendMotionControllSwitchMessage(const int state)
 // 		"A%3d%3d%3d%3d%3d%3d%dZ", out_roll, out_pitch, out_yaw,
 // 		out_sway, out_surge, out_heave, out_switch);
 
-	const string out = common::format(
+	string out = common::format(
 		"A%5d%5d%5d%5d%5d%5d%3d%3d%3d%3d%3d%3d%1dZ", out_roll, out_pitch, out_yaw,
 		out_sway, out_surge, out_heave,
 		spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed,
 		out_switch);
-
+	SpaceCharToZeroChar(out);
 
 	AppendToLogAndScroll(&m_OutputLog, common::str2wstr(out + "\n").c_str(), RGB(200, 200, 200));
 	

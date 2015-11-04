@@ -104,15 +104,17 @@ void SendMotionSimMessage(const int state)
 	const int out_heave = 512;
 	const int out_switch = state;
 
-	const string out = common::format(
+	string out = common::format(
 		"A%3d%3d%3d%3d%3d%3d%dZ", out_roll, out_pitch, out_yaw,
 		out_sway, out_surge, out_heave, out_switch);
+	SpaceCharToZeroChar(out);
 
 	for (int i = 0; i < 5; ++i)
 	{
-		cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
 		Sleep(50);
+		cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
 	}
+	Sleep(50);
 }
 
 
@@ -131,17 +133,19 @@ void SendMotionSimMessage2(const int state)
 // 	const string out = common::format(
 // 		"A%3d%3d%3d%3d%3d%3d%dZ", out_roll, out_pitch, out_yaw,
 // 		out_sway, out_surge, out_heave, out_switch);
-	const string out = common::format(
+	string out = common::format(
 		"A%5d%5d%5d%5d%5d%5d%3d%3d%3d%3d%3d%3d%1dZ", out_roll, out_pitch, out_yaw,
 		out_sway, out_surge, out_heave, 
 		spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed,
 		out_switch);
+	SpaceCharToZeroChar(out);
 
 	for (int i = 0; i < 5; ++i)
 	{
-		cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
 		Sleep(50);
+		cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
 	}
+	Sleep(50);
 }
 
 
@@ -202,4 +206,11 @@ bool ReadCameraSensitive(const string &fileName, OUT float &sens)
 	}
 
 	return true;
+}
+
+
+// 문자열 중 space bar 를 숫자 0으로 바꾼다.
+void SpaceCharToZeroChar(string &str)
+{
+	common::replaceAll(str, " ", "0");
 }

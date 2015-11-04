@@ -52,6 +52,16 @@ bool cMotionMonitorConfig::ReadConfigFile(const string &fileName)
 
 		m_plotViewPlotCmd = props.get<string>("PLOTVIEW_PLOT_COMMAND", "");
 		m_plotViewPlotInputCmd = props.get<string>("PLOTVIEW_PLOTINPUT_COMMAND", "");
+
+		m_dirt3ViewPlayTime = props.get<float>("DIRT3VIEW_PLAYTIME", 60.f);
+		m_dirt3ViewAxisType = props.get<int>("DIRT3VIEW_AXISTYPE", 0);
+		m_dirt3ViewActuatorPower = props.get<float>("DIRT3VIEW_ACTUATOR_RANGE", 1.f);
+		m_dirt3ViewActuatorYawPower = props.get<float>("DIRT3VIEW_ACTUATOR_YAW_POWER", 1.f);
+		m_dirt3ViewActuatorSpeed = props.get<float>("DIRT3VIEW_ACTUATOR_SPEED", 1.f);
+
+		m_varModViewInputVar = props.get<string>("VARMODVIEW_INPUT_VAR", "");
+		m_varModViewOutputVar = props.get<string>("VARMODVIEW_OUTPUT_VAR", "");
+		m_varModViewScript = props.get<string>("VARMODVIEW_SCRIPT", "");
 	}
 	catch (std::exception&e)
 	{
@@ -98,6 +108,16 @@ bool cMotionMonitorConfig::WriteConfigFile(const string &fileName)
 
 		props.add<string>("PLOTVIEW_PLOT_COMMAND", m_plotViewPlotCmd);
 		props.add<string>("PLOTVIEW_PLOTINPUT_COMMAND", m_plotViewPlotInputCmd);
+
+		props.add<float>("DIRT3VIEW_PLAYTIME", m_dirt3ViewPlayTime);
+		props.add<int>("DIRT3VIEW_AXISTYPE", m_dirt3ViewAxisType);
+		props.add<float>("DIRT3VIEW_ACTUATOR_RANGE", m_dirt3ViewActuatorPower);
+		props.add<float>("DIRT3VIEW_ACTUATOR_YAW_POWER", m_dirt3ViewActuatorYawPower);
+		props.add<float>("DIRT3VIEW_ACTUATOR_SPEED", m_dirt3ViewActuatorSpeed);
+
+		props.add<string>("VARMODVIEW_INPUT_VAR", m_varModViewInputVar);
+		props.add<string>("VARMODVIEW_OUTPUT_VAR", m_varModViewOutputVar);
+		props.add<string>("VARMODVIEW_SCRIPT", m_varModViewScript);
 
 		boost::property_tree::write_json(fileName, props);
 	}

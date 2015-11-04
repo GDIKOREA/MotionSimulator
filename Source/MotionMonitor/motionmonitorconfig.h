@@ -37,5 +37,14 @@ public:
 	string m_plotViewPlotCmd;
 	string m_plotViewPlotInputCmd;
 
+	float m_dirt3ViewPlayTime;
+	int m_dirt3ViewAxisType;		// 0=4axis, 1=3axis
+	float m_dirt3ViewActuatorPower;			// 0 ~ 1
+	float m_dirt3ViewActuatorYawPower;	// 0 ~ 1
+	float m_dirt3ViewActuatorSpeed;			// 0 ~ 1
+
+	string m_varModViewInputVar;
+	string m_varModViewOutputVar;
+	string m_varModViewScript;
 };
 

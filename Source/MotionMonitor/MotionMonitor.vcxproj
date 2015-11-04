@@ -171,7 +171,9 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="motionwavemodulator.h" />
     <ClInclude Include="UDPParseView.h" />
+    <ClInclude Include="VarModulationView.h" />
     <ClInclude Include="vitconmotionsim.h" />
+    <ClInclude Include="vitconmotionsim2.h" />
     <ClInclude Include="X2GraphDialog.h" />
   </ItemGroup>
   <ItemGroup>
@@ -234,7 +236,9 @@
     </ClCompile>
     <ClCompile Include="motionwavemodulator.cpp" />
     <ClCompile Include="UDPParseView.cpp" />
+    <ClCompile Include="VarModulationView.cpp" />
     <ClCompile Include="vitconmotionsim.cpp" />
+    <ClCompile Include="vitconmotionsim2.cpp" />
     <ClCompile Include="X2GraphDialog.cpp" />
   </ItemGroup>
   <ItemGroup>

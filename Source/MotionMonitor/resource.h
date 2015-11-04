@@ -104,6 +104,7 @@
 #define IDD_DIALOG_PLOTINPUT            338
 #define IDD_DIALOG_SIMUL                339
 #define IDD_DIALOG_DIRT3                340
+#define IDD_DIALOG_MODULATION           341
 #define IDC_CHECK_FIXEDMODE             1000
 #define IDC_EDIT_COMMAND                1001
 #define IDC_BUTTON_HELP                 1002
@@ -251,19 +252,30 @@
 #define IDC_CHECK_MOTION_SIM            1128
 #define IDC_STATIC_STATE1               1129
 #define IDC_STATIC_STATE2               1130
+#define IDC_STATIC_STATE0               1131
 #define IDC_RADIO_4AXIS                 1132
 #define IDC_RADIO_3AXIS                 1133
 #define IDC_SLIDER_ACTION_RANGE         1134
 #define IDC_EDIT_ACTUATOR               1135
+#define IDC_SLIDER_ACTION_SPEED         1136
+#define IDC_EDIT_ACTUATOR_SPEED         1137
+#define IDC_EDIT_PLAYTIME               1138
+#define IDC_STATIC_PLAYTIME             1139
+#define IDC_EDIT_SCRIPT                 1139
+#define IDC_SLIDER_YAW_RANGE            1140
+#define IDC_EDIT_INPUTVAR               1140
+#define IDC_EDIT_ACTUATOR_YAW           1141
+#define IDC_EDIT_OUTPUTVAR              1141
+#define IDC_BUTTON1                     1142
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        341
+#define _APS_NEXT_RESOURCE_VALUE        342
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1136
+#define _APS_NEXT_CONTROL_VALUE         1143
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

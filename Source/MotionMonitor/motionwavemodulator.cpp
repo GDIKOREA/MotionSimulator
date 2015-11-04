@@ -9,7 +9,6 @@ cMotionWaveModulator::cMotionWaveModulator()
 	, m_isSplineEnable(false)
 	, m_splinePlotSamplingRate(10)
 	, m_splineInterpolationRate(10)
-
 	, m_motionviewSplineSamplingRate(2)
 	, m_motionviewSplineInterpolationRate(2)
 	, m_motionviewTimeScaling(1)
@@ -149,9 +148,6 @@ void cMotionWaveModulator::Update(const float deltaSeconds,
 		float diff = 0;
 		if (m_axis[i].maxDifferenceEnable)
 		{
-// 			diff = GetDifference(m_axis[i].value[0], value[i], 
-// 				m_axis[i].proportion, m_axis[i].integral, m_axis[i].difference,
-// 				m_axis[i].range, m_axis[i].maxDifference, m_axis[i].maxDifferenceProportion);
 			diff = GetManufactureValue(m_axis[i].value[0], value[i], m_axis[i]);
 			m_axis[i].value[1] += diff;
 			m_axis[i].value[1] = common::clamp(-MATH_PI, MATH_PI, m_axis[i].value[1]);
@@ -248,11 +244,6 @@ void cMotionWaveModulator::UpdateParseData()
 {
 	m_incTime = 0;
 
-// 	m_axis[0].proportion = GetFloat("yaw_proportion");
-// 	m_axis[1].proportion = GetFloat("pitch_proportion");
-// 	m_axis[2].proportion = GetFloat("roll_proportion");
-// 	m_axis[3].proportion = GetFloat("heave_proportion");
-
 	m_isSplineEnable = GetBool("spline_enable");
 
 	m_axis[0].a = GetFloat("yaw_c1");
@@ -284,10 +275,6 @@ void cMotionWaveModulator::UpdateParseData()
 	m_spline[2].Init(m_isSplineEnable, m_splinePlotSamplingRate, m_splineInterpolationRate);
 	m_spline[3].Init(m_isSplineEnable, m_splinePlotSamplingRate, m_splineInterpolationRate);
 
-	//m_yawX2Propertion = GetFloat("yaw_x2_proportion", 0.1f);
-	//m_yawX2Limit = GetFloat("yaw_x2_limit", 1.f);
-
-
 	string axis[4] = { "yaw", "pitch", "roll", "heave" };
 	for (int i = 0; i < 4; ++i)
 	{
@@ -305,42 +292,8 @@ void cMotionWaveModulator::UpdateParseData()
 		m_axis[i].maxDifference = GetFloat(axis[i] + "_max_difference", MATH_PI);
 		m_axis[i].maxDifferenceProportion = GetFloat(axis[i] + "_max_difference_proportion", 0.1f);
 		m_axis[i].range = GetFloat(axis[i] + "_range", MATH_PI * 2.f);
-
 	}
 
-
-// 	m_axis[0].recoverEnable = GetBool("yaw_recover_enable", true);
-// 	m_axis[0].maxDifferenceEnable = GetBool("yaw_max_difference_enable", true);
-// 	m_axis[0].recoverTarget = GetFloat("yaw_recover_target", 0);
-// 	m_axis[0].recoverProportion = GetFloat("yaw_recover_proportion", 0.01f);
-// 	m_axis[0].maxDifference = GetFloat("yaw_max_difference", MATH_PI);
-// 	m_axis[0].maxDifferenceProportion = GetFloat("yaw_max_difference_proportion", 0.1f);
-// 	m_axis[0].range = GetFloat("yaw_range", MATH_PI * 2.f);
-// 
-// 	m_axis[1].recoverEnable = GetBool("pitch_recover_enable", true);
-// 	m_axis[1].maxDifferenceEnable = GetBool("pitch_max_difference_enable", true);
-// 	m_axis[1].recoverTarget = GetFloat("pitch_recover_target", 0);
-// 	m_axis[1].recoverProportion = GetFloat("pitch_recover_proportion", 0.01f);
-// 	m_axis[1].maxDifference = GetFloat("pitch_max_difference", MATH_PI);
-// 	m_axis[1].maxDifferenceProportion = GetFloat("pitch_max_difference_proportion", 0.1f);
-// 	m_axis[1].range = GetFloat("pitch_range", MATH_PI * 2.f);
-// 
-// 	m_axis[2].recoverEnable = GetBool("roll_recover_enable", true);
-// 	m_axis[2].maxDifferenceEnable = GetBool("roll_max_difference_enable", true);
-// 	m_axis[2].recoverTarget = GetFloat("roll_recover_target", 0);
-// 	m_axis[2].recoverProportion = GetFloat("roll_recover_proportion", 0.01f);
-// 	m_axis[2].maxDifference = GetFloat("roll_max_difference", MATH_PI);
-// 	m_axis[2].maxDifferenceProportion = GetFloat("roll_max_difference_proportion", 0.1f);
-// 	m_axis[2].range = GetFloat("roll_range", MATH_PI * 2.f);
-// 
-// 	m_axis[3].recoverEnable = GetBool("heave_recover_enable", true);
-// 	m_axis[3].maxDifferenceEnable = GetBool("heave_max_difference_enable", true);
-// 	m_axis[3].recoverTarget = GetFloat("heave_recover_target", 0);
-// 	m_axis[3].recoverProportion = GetFloat("heave_recover_proportion", 0.01f);
-// 	m_axis[3].maxDifference = GetFloat("heave_max_difference", 1000);
-// 	m_axis[3].maxDifferenceProportion = GetFloat("heave_max_difference_proportion ", 0.01f);
-// 	m_axis[3].range = GetFloat("heave_range", 100000000);
-	
 }
 
 

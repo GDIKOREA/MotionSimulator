@@ -15,6 +15,7 @@
 #include "C3DSimulView.h"
 #include "Dirt3View.h"
 #include "MainFrm.h"
+#include "VarModulationView.h"
 #include "MachineGunController.h"
 
 #pragma comment(lib, "winmm.lib")
@@ -101,6 +102,7 @@ CMainFrame::CMainFrame()
 , m_controlBoardView(NULL)
 , m_plotView(NULL)
 , m_launcherView(NULL)
+, m_varModulationView(NULL)
 {
 	theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
 }
@@ -298,6 +300,7 @@ BOOL CMainFrame::CreateDockingWindows()
 		CREATE_PANE(CMotionWaveView, m_motionWaveView, SW_HIDE);
 		CREATE_PANE(CMotionOutputView, m_motionOutputView, SW_HIDE);
 		CREATE_PANE(CMixingView, m_mixingView, SW_HIDE);
+		CREATE_PANE(CVarModulationView, m_varModulationView, SW_HIDE);
 
 		g_mwaveView = m_motionWaveView;
 		g_udpInputView = m_udpInputView;
@@ -316,7 +319,8 @@ BOOL CMainFrame::CreateDockingWindows()
 		CREATE_DOCKPANE2(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
 		CREATE_DOCKPANE2(C3DSimulView, L"3D Simulation View", ID_VIEW_3DSIMUL, m_3dSimulView);
 		CREATE_DOCKPANE2(CDirt3View, L"Dirt3 View", ID_VIEW_DIRT3, m_dirt3View);
-
+		CREATE_DOCKPANE2(CVarModulationView, L"Var Modulation View", ID_VIEW_VARMODULATION, m_varModulationView);
+		
 		g_3dGameView = m_3DGameView;
 		g_3dMotionView = m_3DMotionView;
 		g_mwaveView = m_motionWaveView;

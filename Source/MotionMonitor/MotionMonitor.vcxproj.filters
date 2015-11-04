@@ -228,6 +228,12 @@
     <ClInclude Include="Dirt3View.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vitconmotionsim2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VarModulationView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -402,6 +408,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dirt3View.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vitconmotionsim2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VarModulationView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
