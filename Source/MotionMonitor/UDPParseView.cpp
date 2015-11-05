@@ -300,7 +300,7 @@ void CUDPParseView::Update(const float deltaSeconds)
 
 		const float roll = m_interpreter.Excute(m_rollParser.m_stmt);
 		const float pitch = m_interpreter.Excute(m_pitchParser.m_stmt);
-		const float yaw = m_interpreter.Excute(m_yawParser.m_stmt);
+		float yaw = m_interpreter.Excute(m_yawParser.m_stmt);
 		const float heave = m_interpreter.Excute(m_heaveParser.m_stmt);
 
 		// update roll-pitch-yaw symbol
@@ -310,6 +310,7 @@ void CUDPParseView::Update(const float deltaSeconds)
 		script::g_symbols["@roll0"] = data;
 		data.fVal = pitch;
 		script::g_symbols["@pitch0"] = data;
+		yaw = (float)atan2(script::g_symbols["$15"].fVal, script::g_symbols["$12"].fVal);
 		data.fVal = yaw;
 		script::g_symbols["@yaw0"] = data;
 		data.fVal = heave;

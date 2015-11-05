@@ -16,10 +16,8 @@ public:
 
 	virtual void UpdateConfig(bool IsSaveAndValidate = true) override;
 	void Mixing(const float deltaSeconds, OUT float &yaw, OUT float &pitch, OUT float &roll, OUT float &heave);
-	void SetMixingAxisMode(const AXIS_TYPE::TYPE type);
-	AXIS_TYPE::TYPE GetMixingAxisMode() const;
-	void SetActuatorPowerRate(const float rate);
-	float GetActuatorPowerRate() const;
+// 	void SetMixingAxisMode(const AXIS_TYPE::TYPE type);
+// 	AXIS_TYPE::TYPE GetMixingAxisMode() const;
 
 	virtual void Start() override;
 	virtual void Stop() override;
@@ -36,8 +34,7 @@ protected:
 	};
 
 	STATE m_state;
-	AXIS_TYPE::TYPE m_AxisType; // default : 4 axis
-	float m_actuatorPowerRate; // 액츄에이터의 움직임 크기를 조절하는 값 (0~1 사이값)
+//	AXIS_TYPE::TYPE m_AxisType; // default : 4 axis
 
 	CMultiPlotWindow *m_multiPlotWindows;
 	float m_incTime;
@@ -59,7 +56,5 @@ public:
 };
 
 
-inline void CMixingView::SetMixingAxisMode(const AXIS_TYPE::TYPE type) { m_AxisType = type;  }
-inline AXIS_TYPE::TYPE CMixingView::GetMixingAxisMode() const { return m_AxisType;  }
-inline void CMixingView::SetActuatorPowerRate(const float rate) { m_actuatorPowerRate = rate; }
-inline float CMixingView::GetActuatorPowerRate() const { return m_actuatorPowerRate; }
+// inline void CMixingView::SetMixingAxisMode(const AXIS_TYPE::TYPE type) { m_AxisType = type;  }
+// inline AXIS_TYPE::TYPE CMixingView::GetMixingAxisMode() const { return m_AxisType;  }

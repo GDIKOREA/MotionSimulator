@@ -15,8 +15,8 @@ public:
 	void Update(const float deltaSeconds, const float yaw, const float pitch, const float roll, const float heave);
 	void GetFinal(OUT float &yaw, OUT float &pitch, OUT float &roll, OUT float &heave);
 	void GetOriginal(OUT float &yaw, OUT float &pitch, OUT float &roll, OUT float &heave);
-	bool GetSplineInterpolations(const float s, const float t, vector<Vector2> &yawOut, vector<Vector2> &pitchOut,
-		vector<Vector2> &rollOut, vector<Vector2> &heaveOut);
+	bool GetSplineInterpolations(const float s, const float t, 
+		vector<Vector2> &yawOut, vector<Vector2> &pitchOut, vector<Vector2> &rollOut, vector<Vector2> &heaveOut);
 
 	virtual void InitDefault() override;
 	virtual void UpdateParseData() override;
@@ -64,7 +64,6 @@ public:
 	int m_motionviewSplineInterpolationRate;
 	float m_motionviewTimeScaling;
 	int m_motionviewStartDelay;
-
 
 	float m_incTime;
 	float m_totalIncTime;

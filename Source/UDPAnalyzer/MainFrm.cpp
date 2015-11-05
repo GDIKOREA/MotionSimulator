@@ -192,7 +192,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	CREATE_DOCKVIEW2(C3DView, m_dxView2, L"3D View2", ID_VIEW_DX2, IDD_DIALOG_3D);
 	CREATE_DOCKVIEW2(CUDPPlayerView, m_udpPlayerView, L"UDP Player View", ID_VIEW_UDP_PLAYER, IDD_DIALOG_UDP_PLAYER);
 
-	cController::Get()->Init(m_dxView->GetRenderer());
+	//cController::Get()->Init(m_dxView->GetRenderer());
 	m_dxView->SetRenderCube(true);
 
 	return TRUE;

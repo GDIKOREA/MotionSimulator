@@ -8,9 +8,6 @@
 
 cController::cController() :
 	m_globalSeconds(0)
-	, m_actuatorSpeed(1)
-	, m_actuatorYawPower(1)
-	, m_playTime(60)
 {
 	//m_cubeFlight = new cCubeFlight();
 	m_serialComm = new cSerialCommunication();

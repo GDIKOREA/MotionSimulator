@@ -171,7 +171,7 @@ void cVitconMotionSim2::State_OriginStop(const float deltaSeconds)
 void cVitconMotionSim2::State_StopReady(const float deltaSeconds)
 {
 	SendMotionSimMessage2(BITCON_SER::STOP);
-	Delay(3, SUBSTATE_READY);
+	Delay(10, SUBSTATE_READY);
 }
 
 
@@ -218,7 +218,7 @@ void cVitconMotionSim2::State_EndStop(const float deltaSeconds)
 {
 	//m_changeInformationPulse = true;
 	SendMotionSimMessage2(BITCON_SER::STOP);
-	Delay(3, SUBSTATE_STOP);
+	Delay(10, SUBSTATE_STOP);
 }
 
 

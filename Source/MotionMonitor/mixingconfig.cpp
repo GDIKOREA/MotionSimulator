@@ -57,6 +57,13 @@ void cMixingConfig::InitDefault()
 	m_rate3_roll = 1;
 	m_rate3_heave = 1;
 
+	m_input4_enable = false;
+	m_rate4_all  = 1;
+	m_rate4_pitch = 1;
+	m_rate4_roll = 1;
+	m_rate4_center_pitch = 0;
+	m_rate4_center_roll = 0;
+
 	m_bias_yaw = 0;
 	m_bias_pitch = 0;
 	m_bias_roll = 0;
@@ -102,6 +109,10 @@ void cMixingConfig::UpdateParseData()
 			{
 				m_inputType |= INPUT_MOTIONWAVE;
 			}
+			else if (str == "var")
+			{
+				m_inputType |= INPUT_VAR;
+			}
 		}
 	}
 
@@ -125,6 +136,13 @@ void cMixingConfig::UpdateParseData()
 	m_rate3_pitch = GetFloat("mixing_rate3_pitch");
 	m_rate3_roll = GetFloat("mixing_rate3_roll");
 	m_rate3_heave = GetFloat("mixing_rate3_heave");
+
+	m_input4_enable = GetBool("mixing_input4_enable");
+	m_rate4_all = GetFloat("mixing_rate4_all");
+	m_rate4_pitch = GetFloat("mixing_rate4_pitch");
+	m_rate4_roll = GetFloat("mixing_rate4_roll");
+	m_rate4_center_pitch = GetFloat("mixing_rate4_center_pitch", 0);
+	m_rate4_center_roll = GetFloat("mixing_rate4_center_roll", 0);
 
 	m_bias_yaw = GetFloat("mixing_bias_yaw", 0);
 	m_bias_pitch = GetFloat("mixing_bias_pitch", 0);

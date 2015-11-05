@@ -46,5 +46,9 @@ public:
 	string m_varModViewInputVar;
 	string m_varModViewOutputVar;
 	string m_varModViewScript;
+
+	string m_varModViewInputVar2;
+	string m_varModViewOutputVar2;
+	string m_varModViewScript2;
 };
 

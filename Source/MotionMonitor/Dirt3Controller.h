@@ -36,6 +36,8 @@ protected:
 	cVitconMotionSim2 m_vitconMotionSim;
 	cVitconMotionSim2::STATE m_oldState;
 	float m_lastUDPUpdateTime; // 가장 최근에 UDP 패킷을 받은 시간을 저장한다.
+	bool m_isLapTimeProgress; // @laptime 이 증가되기 시작하면, true 가 된다.
+	float m_lastLapTime; // 전 프레임의 lap time
 };
 
 

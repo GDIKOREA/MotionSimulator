@@ -149,6 +149,7 @@
     <ClInclude Include="mixingconfig.h" />
     <ClInclude Include="MixingView.h" />
     <ClInclude Include="EditDlg.h" />
+    <ClInclude Include="modulator.h" />
     <ClInclude Include="MotionController.h" />
     <ClInclude Include="PlotInputDlg.h" />
     <ClInclude Include="plotinputparser.h" />
@@ -157,6 +158,7 @@
     <ClInclude Include="protocolparser.h" />
     <ClInclude Include="script.h" />
     <ClInclude Include="SimpleController.h" />
+    <ClInclude Include="simplemodulator.h" />
     <ClInclude Include="UDPInputView.h" />
     <ClInclude Include="MotionMonitor.h" />
     <ClInclude Include="motionmonitorconfig.h" />
@@ -213,6 +215,7 @@
     <ClCompile Include="mixingconfig.cpp" />
     <ClCompile Include="MixingView.cpp" />
     <ClCompile Include="EditDlg.cpp" />
+    <ClCompile Include="modulator.cpp" />
     <ClCompile Include="MotionController.cpp" />
     <ClCompile Include="PlotInputDlg.cpp" />
     <ClCompile Include="plotinputparser.cpp" />
@@ -221,6 +224,7 @@
     <ClCompile Include="protocolparser.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="SimpleController.cpp" />
+    <ClCompile Include="simplemodulator.cpp" />
     <ClCompile Include="UDPInputView.cpp" />
     <ClCompile Include="MotionMonitor.cpp" />
     <ClCompile Include="motionmonitorconfig.cpp" />

@@ -266,7 +266,9 @@
 #define IDC_EDIT_INPUTVAR               1140
 #define IDC_EDIT_ACTUATOR_YAW           1141
 #define IDC_EDIT_OUTPUTVAR              1141
-#define IDC_BUTTON1                     1142
+#define IDC_EDIT_SCRIPT2                1142
+#define IDC_EDIT_INPUTVAR2              1143
+#define IDC_EDIT_OUTPUTVAR2             1144
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
@@ -275,7 +277,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        342
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1143
+#define _APS_NEXT_CONTROL_VALUE         1144
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

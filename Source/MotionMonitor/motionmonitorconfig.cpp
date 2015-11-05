@@ -62,6 +62,11 @@ bool cMotionMonitorConfig::ReadConfigFile(const string &fileName)
 		m_varModViewInputVar = props.get<string>("VARMODVIEW_INPUT_VAR", "");
 		m_varModViewOutputVar = props.get<string>("VARMODVIEW_OUTPUT_VAR", "");
 		m_varModViewScript = props.get<string>("VARMODVIEW_SCRIPT", "");
+
+		m_varModViewInputVar2 = props.get<string>("VARMODVIEW_INPUT_VAR2", "");
+		m_varModViewOutputVar2 = props.get<string>("VARMODVIEW_OUTPUT_VAR2", "");
+		m_varModViewScript2 = props.get<string>("VARMODVIEW_SCRIPT2", "");
+
 	}
 	catch (std::exception&e)
 	{
@@ -118,6 +123,10 @@ bool cMotionMonitorConfig::WriteConfigFile(const string &fileName)
 		props.add<string>("VARMODVIEW_INPUT_VAR", m_varModViewInputVar);
 		props.add<string>("VARMODVIEW_OUTPUT_VAR", m_varModViewOutputVar);
 		props.add<string>("VARMODVIEW_SCRIPT", m_varModViewScript);
+
+		props.add<string>("VARMODVIEW_INPUT_VAR2", m_varModViewInputVar2);
+		props.add<string>("VARMODVIEW_OUTPUT_VAR2", m_varModViewOutputVar2);
+		props.add<string>("VARMODVIEW_SCRIPT2", m_varModViewScript2);
 
 		boost::property_tree::write_json(fileName, props);
 	}

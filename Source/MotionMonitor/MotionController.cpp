@@ -3,32 +3,30 @@
 #include "MotionController.h"
 
 
-
 cMotionController::cMotionController()
 	: m_yaw(255)
 	, m_pitch(255)
 	, m_roll(255)
 	, m_heave(512)
+	, m_actuatorSpeed(1)
+	, m_actuatorYawPower(1)
+	, m_playTime(60)
 {
-
 }
 
 cMotionController::~cMotionController()
 {
-
 }
 
 
 bool cMotionController::ReadConfigFile(const string &fileName)
 {
-
 	return true;
 }
 
 
 bool cMotionController::WriteConfigFile(const string &fileName)
 {
-
 	return true;
 }
 

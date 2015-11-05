@@ -9,6 +9,7 @@ enum
 	INPUT_JOYSTICK = 0x01,
 	INPUT_UDP = 0x02,
 	INPUT_MOTIONWAVE = 0x04,
+	INPUT_VAR = 0x08,
 };
 
 
@@ -38,7 +39,6 @@ public:
 	float m_rate1_center_roll;
 	float m_rate1_center_heave;
 
-
 	bool m_input2_enable;
 	float m_rate2_all;
 	float m_rate2_yaw;
@@ -60,6 +60,13 @@ public:
 	float m_rate3_center_pitch;
 	float m_rate3_center_roll;
 	float m_rate3_center_heave;
+
+	bool m_input4_enable;
+	float m_rate4_all;
+	float m_rate4_pitch;
+	float m_rate4_roll;
+	float m_rate4_center_pitch;
+	float m_rate4_center_roll;
 
 	float m_bias_yaw;
 	float m_bias_pitch;

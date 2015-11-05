@@ -9,12 +9,15 @@
 #include "UDPInputView.h"
 #include "UDPParseView.h"
 #include "JoystickView.h"
+#include "VarModulationView.h"
 
 
 cDirt3Controller::cDirt3Controller() :
 	m_oldState(cVitconMotionSim2::OFF)
 	, m_lastUDPUpdateTime(0)
 	, m_state(OFF)
+	, m_isLapTimeProgress(false)
+	, m_lastLapTime(0)
 {
 }
 
@@ -33,6 +36,8 @@ void cDirt3Controller::StartMotionSim(const string &configFileName, const bool i
 		// 안전을 위해 순서를 지키자.
 		if (pFrm->m_mixingView)
 			pFrm->m_mixingView->Start();
+		if (pFrm->m_varModulationView)
+			pFrm->m_varModulationView->Start();
 		if (pFrm->m_udpInputView)
 			pFrm->m_udpInputView->Start();
 		if (pFrm->m_udpParseView)
@@ -50,6 +55,9 @@ void cDirt3Controller::StartMotionSim(const string &configFileName, const bool i
 		data.fVal = 1.55f;
 		data.type = script::FEILD_TYPE::T_FLOAT;
 		script::g_symbols["$7"] = data;
+// 		data.fVal = 0.f;
+// 		data.type = script::FEILD_TYPE::T_FLOAT;
+// 		script::g_symbols["$13"] = data;
 	}
 }
 
@@ -65,6 +73,8 @@ void cDirt3Controller::StopMotionSim()
 			pFrm->m_udpInputView->Stop();
 		if (pFrm->m_udpParseView)
 			pFrm->m_udpParseView->Stop();
+		if (pFrm->m_varModulationView)
+			pFrm->m_varModulationView->Stop();
 		if (pFrm->m_mixingView)
 			pFrm->m_mixingView->Stop();
 
@@ -86,22 +96,25 @@ void cDirt3Controller::Update(const float deltaSeconds)
 		break;
 
 	case cDirt3Controller::TIMEUPSTOP:
-		if (elapseUDPTime > 5.f)
+		//if (elapseUDPTime > 5.f)
+		if (script::g_symbols["@laptime"].fVal == 0.f)
 		{
-			// UDP 패킷이 더이상 오지 않는다면, 다음 게임을 진행 할 수 있는 상태로 바꾼다.
+			// 게임이 끝나거나면,  대기 상태로 바꾼다.
 			m_vitconMotionSim.Ready();
 			m_state = READY;
 		}
 		break;
 
 	case cDirt3Controller::PLAY:
-		if (elapseUDPTime > 5.f)
+//		if (elapseUDPTime > 5.f)
+		// 게임이 시작된 후, $laptime 값이 증가하다가, 0 이 될 때, 게임을 종료한다.
+		if (m_isLapTimeProgress && script::g_symbols["@laptime"].fVal == 0.f)
 		{
 			// UDP 패킷이 더이상 오지 않는다면, 게임을 Ready 상태로 바꾼다.
 			m_vitconMotionSim.Ready();
 			m_state = READY;
 		}
-		if (m_vitconMotionSim.GetPlayTime() > cController::Get()->GetPlayTime())
+		if (m_vitconMotionSim.GetPlayTime() > cMotionController::Get()->m_config.m_dirt3ViewPlayTime)
 		{
 			// 플레이할 수 있는 게임 시간을 넘었다면, 게임을 종료한다.
 			// UDP 전송이 완전히 끝 난 후, 
@@ -150,14 +163,36 @@ void cDirt3Controller::UpdateUDP(const char *buffer, const int bufferLen)
 	switch (m_state)
 	{
 	case cDirt3Controller::OFF:
-	case cDirt3Controller::PLAY:
 	case cDirt3Controller::TIMEUPSTOP:
 		break;
 
 	case cDirt3Controller::READY:
-		// UDP 정보가 들어오면, 게임을 시작한다.
-		if (m_vitconMotionSim.Play())
-			m_state = PLAY;
+		// UDP 정보가 들어오고,
+		// distance 값이 0이 될 때, 게임을 시작한다.
+		if (script::g_symbols["@distance"].fVal == 0.f)
+		{
+			if (m_vitconMotionSim.Play())
+			{
+				m_state = PLAY;
+				m_lastLapTime = 0;
+				m_isLapTimeProgress = false;
+			}
+		}
+		break;
+
+	case cDirt3Controller::PLAY:
+		if (!m_isLapTimeProgress)
+		{
+			const float lapTime = script::g_symbols["@laptime"].fVal;
+			if (lapTime > m_lastLapTime)
+			{
+				m_isLapTimeProgress = true;
+			}
+			else
+			{
+				m_lastLapTime = lapTime;
+			}
+		}
 		break;
 	}
 }

@@ -234,7 +234,7 @@ void COutputView::Update(const float deltaSeconds)
 		const float roll = m_interpreter.Excute(m_rollParser.m_stmt);
 		const float pitch = m_interpreter.Excute(m_pitchParser.m_stmt);
 		const float yaw = m_interpreter.Excute(m_yawParser.m_stmt);
-		cController::Get()->GetCubeFlight().SetEulerAngle(roll, yaw, pitch);
+		//cController::Get()->GetCubeFlight().SetEulerAngle(roll, yaw, pitch);
 		//
 
 		m_multiPlotWindows->SetString(sendStr.c_str());

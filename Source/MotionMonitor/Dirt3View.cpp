@@ -100,7 +100,7 @@ BOOL CDirt3View::OnInitDialog()
 	m_sliderActuatorSpeed.SetPos((int)((float)maxRange * actuatorSpeedRate));
 
 	CString playTimeStr;
-	playTimeStr.Format(L"%f", cController::Get()->GetPlayTime());
+	playTimeStr.Format(L"%f", cMotionController::Get()->m_config.m_dirt3ViewPlayTime);
 	m_editPlayTime.SetWindowTextW(playTimeStr);
 
 	UpdateData(FALSE);
@@ -113,13 +113,12 @@ void CDirt3View::UpdateConfig(bool IsSaveAndValidate)
 	if (IsSaveAndValidate)
 	{
 		m_radioAxisType = cMotionController::Get()->m_config.m_dirt3ViewAxisType;
-		if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
-			frm->m_mixingView->SetMixingAxisMode((AXIS_TYPE::TYPE)cMotionController::Get()->m_config.m_dirt3ViewAxisType);
+// 		if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+// 			frm->m_mixingView->SetMixingAxisMode((AXIS_TYPE::TYPE)cMotionController::Get()->m_config.m_dirt3ViewAxisType);
 
 		CString strPlayTime;
 		strPlayTime.Format(L"%f", cMotionController::Get()->m_config.m_dirt3ViewPlayTime);
 		m_editPlayTime.SetWindowTextW(strPlayTime);
-		cController::Get()->SetPlayTime(cMotionController::Get()->m_config.m_dirt3ViewPlayTime);
 
 		const int rangePos = (int)(cMotionController::Get()->m_config.m_dirt3ViewActuatorPower * MAX_SLIDER_LIMIT);
 		const int yawPos = (int)(cMotionController::Get()->m_config.m_dirt3ViewActuatorYawPower * MAX_SLIDER_LIMIT);
@@ -128,9 +127,9 @@ void CDirt3View::UpdateConfig(bool IsSaveAndValidate)
 		m_sliderActuatorYawRange.SetPos(yawPos);
 		m_sliderActuatorSpeed.SetPos(speedPos);
 
-		if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
-			frm->m_mixingView->SetActuatorPowerRate(cMotionController::Get()->m_config.m_dirt3ViewActuatorPower);
-		cController::Get()->SetActuatorSpeed(cMotionController::Get()->m_config.m_dirt3ViewActuatorSpeed);
+// 		if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+// 			frm->m_mixingView->SetActuatorPowerRate(cMotionController::Get()->m_config.m_dirt3ViewActuatorPower);
+		//cController::Get()->SetActuatorSpeed(cMotionController::Get()->m_config.m_dirt3ViewActuatorSpeed);
 
 		UpdateData(FALSE);
 	}
@@ -138,16 +137,16 @@ void CDirt3View::UpdateConfig(bool IsSaveAndValidate)
 	{
 		UpdateData();
 
-		if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
-			cMotionController::Get()->m_config.m_dirt3ViewAxisType = frm->m_mixingView->GetMixingAxisMode();
+// 		if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+// 			cMotionController::Get()->m_config.m_dirt3ViewAxisType = frm->m_mixingView->GetMixingAxisMode();
 
-		cMotionController::Get()->m_config.m_dirt3ViewPlayTime = cController::Get()->GetPlayTime();
+		//cMotionController::Get()->m_config.m_dirt3ViewPlayTime = cController::Get()->GetPlayTime();
 
-		if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
-			cMotionController::Get()->m_config.m_dirt3ViewActuatorPower = frm->m_mixingView->GetActuatorPowerRate();
+// 		if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+// 			cMotionController::Get()->m_config.m_dirt3ViewActuatorPower = frm->m_mixingView->GetActuatorPowerRate();
 
-		cMotionController::Get()->m_config.m_dirt3ViewActuatorYawPower = cController::Get()->GetActuatorYawPower();
-		cMotionController::Get()->m_config.m_dirt3ViewActuatorSpeed = cController::Get()->GetActuatorSpeed();
+		//cMotionController::Get()->m_config.m_dirt3ViewActuatorYawPower = cController::Get()->GetActuatorYawPower();
+		//cMotionController::Get()->m_config.m_dirt3ViewActuatorSpeed = cController::Get()->GetActuatorSpeed();
 	}
 }
 
@@ -241,16 +240,18 @@ void CDirt3View::OnBnClickedRadio4axis()
 {
 	UpdateData();
 
-	if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
-		frm->m_mixingView->SetMixingAxisMode((AXIS_TYPE::TYPE)m_radioAxisType);
+	cMotionController::Get()->m_config.m_dirt3ViewAxisType = m_radioAxisType;
+// 	if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+// 		frm->m_mixingView->SetMixingAxisMode((AXIS_TYPE::TYPE)m_radioAxisType);
 }
 
 void CDirt3View::OnBnClickedRadio3axis()
 {
 	UpdateData();
 
-	if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
-		frm->m_mixingView->SetMixingAxisMode((AXIS_TYPE::TYPE)m_radioAxisType);
+	cMotionController::Get()->m_config.m_dirt3ViewAxisType = m_radioAxisType;
+// 	if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+// 		frm->m_mixingView->SetMixingAxisMode((AXIS_TYPE::TYPE)m_radioAxisType);
 }
 
 
@@ -259,18 +260,16 @@ void CDirt3View::OnNMCustomdrawSliderActionRange(NMHDR *pNMHDR, LRESULT *pResult
 	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
 	*pResult = 0;
 
-	if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
-	{
-		const float rate = (float)m_sliderActuatorRange.GetPos() / (float)MAX_SLIDER_LIMIT;
-		frm->m_mixingView->SetActuatorPowerRate(rate);
+	const float rate = (float)m_sliderActuatorRange.GetPos() / (float)MAX_SLIDER_LIMIT;
+	cMotionController::Get()->m_config.m_dirt3ViewActuatorPower = rate;
 
-		if (!m_enChange1)
-		{
-			CString str;
-			str.Format(L"%f", rate);
-			m_editActuatorRange.SetWindowTextW(str);
-		}
+	if (!m_enChange1)
+	{
+		CString str;
+		str.Format(L"%f", rate);
+		m_editActuatorRange.SetWindowTextW(str);
 	}
+
 }
 
 
@@ -282,7 +281,7 @@ void CDirt3View::OnNMCustomdrawSliderActionSpeed(NMHDR *pNMHDR, LRESULT *pResult
 	if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
 	{
 		const float rate = (float)m_sliderActuatorSpeed.GetPos() / (float)MAX_SLIDER_LIMIT;
-		cController::Get()->SetActuatorSpeed(rate);
+		cMotionController::Get()->m_config.m_dirt3ViewActuatorSpeed = rate;
 
 		if (!m_enChange2)
 		{
@@ -302,7 +301,7 @@ void CDirt3View::OnNMCustomdrawSliderYawRange(NMHDR *pNMHDR, LRESULT *pResult)
 	if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
 	{
 		const float rate = (float)m_sliderActuatorYawRange.GetPos() / (float)MAX_SLIDER_LIMIT;
-		cController::Get()->SetActuatorYawPower(rate);
+		cMotionController::Get()->m_config.m_dirt3ViewActuatorYawPower = rate;
 
 		if (!m_enChange3)
 		{
@@ -356,6 +355,6 @@ void CDirt3View::OnEnChangeEditPlaytime()
 	m_editPlayTime.GetWindowTextW(str);
 	const float t = (float)_wtof((LPCTSTR)str);
 
-	cController::Get()->SetPlayTime(t);
+	cMotionController::Get()->m_config.m_dirt3ViewPlayTime = t;
 }
   
