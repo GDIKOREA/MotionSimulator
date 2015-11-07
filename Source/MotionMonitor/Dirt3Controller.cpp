@@ -108,12 +108,12 @@ void cDirt3Controller::Update(const float deltaSeconds)
 	case cDirt3Controller::PLAY:
 //		if (elapseUDPTime > 5.f)
 		// 게임이 시작된 후, $laptime 값이 증가하다가, 0 이 될 때, 게임을 종료한다.
-		if (m_isLapTimeProgress && script::g_symbols["@laptime"].fVal == 0.f)
-		{
-			// UDP 패킷이 더이상 오지 않는다면, 게임을 Ready 상태로 바꾼다.
-			m_vitconMotionSim.Ready();
-			m_state = READY;
-		}
+// 		if (m_isLapTimeProgress && script::g_symbols["@laptime"].fVal == 0.f)
+// 		{
+// 			// UDP 패킷이 더이상 오지 않는다면, 게임을 Ready 상태로 바꾼다.
+// 			m_vitconMotionSim.Ready();
+// 			m_state = READY;
+// 		}
 		if (m_vitconMotionSim.GetPlayTime() > cMotionController::Get()->m_config.m_dirt3ViewPlayTime)
 		{
 			// 플레이할 수 있는 게임 시간을 넘었다면, 게임을 종료한다.
@@ -167,9 +167,12 @@ void cDirt3Controller::UpdateUDP(const char *buffer, const int bufferLen)
 		break;
 
 	case cDirt3Controller::READY:
+	{
 		// UDP 정보가 들어오고,
 		// distance 값이 0이 될 때, 게임을 시작한다.
-		if (script::g_symbols["@distance"].fVal == 0.f)
+//		if (script::g_symbols["@distance"].fVal == 0.f)
+		const float curLabTime = script::g_symbols["@laptime"].fVal;
+		if (curLabTime != m_lastLapTime)
 		{
 			if (m_vitconMotionSim.Play())
 			{
@@ -178,23 +181,38 @@ void cDirt3Controller::UpdateUDP(const char *buffer, const int bufferLen)
 				m_isLapTimeProgress = false;
 			}
 		}
+	}
 		break;
 
 	case cDirt3Controller::PLAY:
-		if (!m_isLapTimeProgress)
+	{
+		const float curLapTime = script::g_symbols["@laptime"].fVal;
+		const float distance = script::g_symbols["@distance"].fVal;
+		if ((m_lastLapTime == curLapTime) && (m_lastLapTime == 0.f) && (distance != 0.f))
 		{
-			const float lapTime = script::g_symbols["@laptime"].fVal;
-			if (lapTime > m_lastLapTime)
-			{
-				m_isLapTimeProgress = true;
-			}
-			else
-			{
-				m_lastLapTime = lapTime;
-			}
+			// UDP 패킷이 더이상 오지 않는다면, 게임을 Ready 상태로 바꾼다.
+			m_vitconMotionSim.Ready();
+			m_state = READY;
 		}
+	}
+	break;
+
+// 		if (!m_isLapTimeProgress)
+// 		{
+// 			const float lapTime = script::g_symbols["@laptime"].fVal;
+// 			if (lapTime > m_lastLapTime)
+// 			{
+// 				m_isLapTimeProgress = true;
+// 			}
+// 			else
+// 			{
+// 				m_lastLapTime = lapTime;
+// 			}
+// 		}
 		break;
 	}
+
+	m_lastLapTime = script::g_symbols["@laptime"].fVal;
 }
 
 

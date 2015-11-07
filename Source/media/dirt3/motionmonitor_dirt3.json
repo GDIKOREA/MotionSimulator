@@ -25,5 +25,8 @@
     "DIRT3VIEW_ACTUATOR_SPEED": "1",
     "VARMODVIEW_INPUT_VAR": "$1",
     "VARMODVIEW_OUTPUT_VAR": "$2",
-    "VARMODVIEW_SCRIPT": "# speed modulation\r\n\r\nkp = 0.2\r\nki = 0.0\r\nkd = -0.2\r\n\r\nrecover_enable = 1\r\nmax_difference_enable = 1\r\nrecover_target = 0\r\nrecover_proportion = 0.02\r\nmax_difference = 0.5\r\nmax_difference_proportion = 0.2\r\nrange = 6.283\r\n\r\nc1 = 0\r\nc2 = 40000\r\nc3 = 10000\r\n\r\nspline_plot_sampling_rate = 10\r\nspline_interpolation_rate = 10\r\n\r\n"
+    "VARMODVIEW_SCRIPT": "# speed modulation\r\n\r\nkp = 0.2\r\nki = 0.0\r\nkd = -0.2\r\n\r\nrecover_enable = 1\r\nmax_difference_enable = 1\r\nrecover_target = 0\r\nrecover_proportion = 0.02\r\nmax_difference = 0.5\r\nmax_difference_proportion = 0.2\r\nrange = 6.283\r\n\r\nc1 = 0\r\nc2 = 40000\r\nc3 = 10000\r\n\r\nspline_plot_sampling_rate = 10\r\nspline_interpolation_rate = 10\r\n\r\n",
+    "VARMODVIEW_INPUT_VAR2": "",
+    "VARMODVIEW_OUTPUT_VAR2": "",
+    "VARMODVIEW_SCRIPT2": ""
 }

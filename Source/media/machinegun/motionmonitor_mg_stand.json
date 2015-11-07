@@ -17,5 +17,16 @@
     "UDP_INPUT_YAW_COMMAND": "$yaw",
     "UDP_INPUT_HEAVE_COMMAND": "0",
     "PLOTVIEW_PLOT_COMMAND": "plot1 = 0, 0, 0, 0, 0\r\nstring1 = %f;\r\nname1 = Yaw\r\nlinewidth1 = 2\r\nplot2 = 0, 0, 0, 0, 0\r\nstring2 = %*f; %f;\r\nname2 = Pitch\r\nlinewidth2 = 2\r\nplot3 = 0, 0, 0, 0, 0\r\nstring3 = %*f; %*f; %f; \r\nname3 = Roll\r\nlinewidth3 = 2\r\nplot4 = 0, 0, 0, 0, 0\r\nstring4 = %*f; %*f; %*f; %f;\r\nname4 = Heave\r\nlinewidth4 = 2",
-    "PLOTVIEW_PLOTINPUT_COMMAND": "$yaw;$pitch;$roll;"
+    "PLOTVIEW_PLOTINPUT_COMMAND": "$yaw;$pitch;$roll;",
+    "DIRT3VIEW_PLAYTIME": "60",
+    "DIRT3VIEW_AXISTYPE": "0",
+    "DIRT3VIEW_ACTUATOR_RANGE": "1",
+    "DIRT3VIEW_ACTUATOR_YAW_POWER": "1",
+    "DIRT3VIEW_ACTUATOR_SPEED": "1",
+    "VARMODVIEW_INPUT_VAR": "",
+    "VARMODVIEW_OUTPUT_VAR": "",
+    "VARMODVIEW_SCRIPT": "",
+    "VARMODVIEW_INPUT_VAR2": "",
+    "VARMODVIEW_OUTPUT_VAR2": "",
+    "VARMODVIEW_SCRIPT2": ""
 }
