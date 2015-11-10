@@ -114,7 +114,7 @@
     <ClInclude Include="..\Common\UIComponent\C3DView.h" />
     <ClInclude Include="..\Common\UIComponent\ComPortCombo.h" />
     <ClInclude Include="..\Common\UIComponent\Controller.h" />
-    <ClInclude Include="..\Common\UIComponent\CubeFlight.h" />
+    <ClInclude Include="..\Common\UIComponent\CubeCar.h" />
     <ClInclude Include="..\Common\UIComponent\DockablePaneBase.h" />
     <ClInclude Include="..\Common\UIComponent\DockablePaneChildView.h" />
     <ClInclude Include="..\Common\UIComponent\EnumDevices.h" />
@@ -126,7 +126,6 @@
     <ClInclude Include="..\Common\UIComponent\Serial.h" />
     <ClInclude Include="..\Common\UIComponent\SerialCommunication.h" />
     <ClInclude Include="..\Common\UIComponent\SerialObserver.h" />
-    <ClInclude Include="..\Common\UIComponent\UDPCommunication.h" />
     <ClInclude Include="..\Common\UIComponent\UDPObserver.h" />
     <ClInclude Include="..\Common\UIComponent\UIComponent.h" />
     <ClInclude Include="..\Common\UIComponent\UIUtiltity.h" />
@@ -183,7 +182,7 @@
     <ClCompile Include="..\Common\UIComponent\C3DView.cpp" />
     <ClCompile Include="..\Common\UIComponent\ComPortCombo.cpp" />
     <ClCompile Include="..\Common\UIComponent\Controller.cpp" />
-    <ClCompile Include="..\Common\UIComponent\CubeFlight.cpp" />
+    <ClCompile Include="..\Common\UIComponent\CubeCar.cpp" />
     <ClCompile Include="..\Common\UIComponent\DockablePaneBase.cpp" />
     <ClCompile Include="..\Common\UIComponent\DockablePaneChildView.cpp" />
     <ClCompile Include="..\Common\UIComponent\EnumDevices.cpp" />
@@ -195,7 +194,6 @@
     <ClCompile Include="..\Common\UIComponent\Serial.cpp" />
     <ClCompile Include="..\Common\UIComponent\SerialCommunication.cpp" />
     <ClCompile Include="..\Common\UIComponent\SerialObserver.cpp" />
-    <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp" />
     <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp" />
     <ClCompile Include="C3DSimulView.cpp" />
     <ClCompile Include="ControlBoard.cpp" />

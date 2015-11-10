@@ -305,7 +305,6 @@ void CUDPInputView::UpdateUDP(const char *buffer, const int bufferLen)
 		m_multiPlotWindows->SetString(t, str.c_str(), i);
 	}
 
-
 	++m_rcvPacketCount;
 	CString str;
 	str.Format(L"%d", m_rcvPacketCount);

@@ -29,7 +29,7 @@
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -79,6 +79,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -105,8 +106,10 @@
     <ClInclude Include="..\Common\UIComponent\AutoHeapAlloc.h" />
     <ClInclude Include="..\Common\UIComponent\AutoHModule.h" />
     <ClInclude Include="..\Common\UIComponent\BPCtrlAnchorMap.h" />
+    <ClInclude Include="multiproxy.h" />
     <ClInclude Include="ProxyWindow.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="settingconfigparser.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UDP2UDP.h" />
@@ -114,7 +117,9 @@
     <ClInclude Include="UDP2UDPDlg.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="multiproxy.cpp" />
     <ClCompile Include="ProxyWindow.cpp" />
+    <ClCompile Include="settingconfigparser.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

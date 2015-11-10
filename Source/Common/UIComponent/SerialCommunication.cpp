@@ -2,7 +2,6 @@
 #include "stdafx.h"
 #include "SerialCommunication.h"
 #include "Controller.h"
-#include "CubeFlight.h"
 
 
 cSerialCommunication::cSerialCommunication()

@@ -48,5 +48,4 @@ namespace network
 
 
 	inline bool cUDPServer::IsConnect() const { return m_isConnect; }
-
 }

@@ -19,7 +19,7 @@ class cUDPStream
 public:
 	cUDPStream();
 	virtual ~cUDPStream();
-	enum { MAX_BUFLEN = 128, MAX_RINGBUFF=32, };
+	enum { MAX_BUFLEN = 256, MAX_RINGBUFF=32, };
 
 	struct sElement
 	{

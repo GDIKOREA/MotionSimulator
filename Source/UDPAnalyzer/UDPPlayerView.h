@@ -34,7 +34,7 @@ protected:
 	cUDPStreamPlayer m_udpPlayer;
 	network::cUDPClient m_udpClient;
 	
-	char m_buffer[128];
+	char m_buffer[512];
 
 
 protected:

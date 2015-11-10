@@ -78,9 +78,6 @@
     <ClInclude Include="..\Common\UIComponent\Controller.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\CubeFlight.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\UIComponent\DockablePaneBase.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
@@ -106,9 +103,6 @@
       <Filter>UIComponent</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\UIComponent\SerialObserver.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\UDPCommunication.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\UIComponent\UDPObserver.h">
@@ -240,6 +234,9 @@
     <ClInclude Include="simplemodulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\CubeCar.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -272,9 +269,6 @@
     <ClCompile Include="..\Common\UIComponent\Controller.cpp">
       <Filter>UIComponent</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\CubeFlight.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\UIComponent\DockablePaneBase.cpp">
       <Filter>UIComponent</Filter>
     </ClCompile>
@@ -300,9 +294,6 @@
       <Filter>UIComponent</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\UIComponent\SerialObserver.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\UDPCommunication.cpp">
       <Filter>UIComponent</Filter>
     </ClCompile>
     <ClCompile Include="motionwave.cpp">
@@ -427,6 +418,9 @@
     </ClCompile>
     <ClCompile Include="simplemodulator.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\CubeCar.cpp">
+      <Filter>UIComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

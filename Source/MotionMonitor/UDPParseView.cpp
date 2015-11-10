@@ -259,7 +259,7 @@ void CUDPParseView::Start()
 	m_EditPort.GetWindowTextW(strPort);
 	const int serverPort = _wtoi((LPCTSTR)strPort);
 
-	if (cController::Get()->GetUDPComm().InitServer(serverPort))
+	if (cController::Get()->GetUDPComm().Init(0, serverPort))
 	{
 		m_ServerStartButton.SetWindowTextW(L"Server Stop");
 		g_udpInputView->Start();
@@ -331,7 +331,7 @@ void CUDPParseView::Update(const float deltaSeconds)
  		const float chYaw = euler.y;
  		const float chPitch = euler.z;
 		if (g_3dGameView)
-			g_3dGameView->GetCar().SetEulerAngle(chRoll, chPitch, chYaw);
+			g_3dGameView->GetCar().SetEulerAngle(chRoll, chPitch, chYaw, heave*0.1f);
 		cMotionController::Get()->m_udpMod.Update(m_incTime, yaw, pitch, roll, heave);
 // 
 // 		const Matrix44 tm = rot.GetMatrix();

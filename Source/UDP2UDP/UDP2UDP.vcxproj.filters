@@ -54,6 +54,12 @@
     <ClInclude Include="udp2udpconfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="settingconfigparser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="multiproxy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UDP2UDP.cpp">
@@ -69,6 +75,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="udp2udpconfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="settingconfigparser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="multiproxy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

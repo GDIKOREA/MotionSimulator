@@ -10,6 +10,7 @@
 
 // CUDP2UDPDlg dialog
 class CProxyWindow;
+class cMultiProxy;
 class CUDP2UDPDlg : public CDialogEx
 {
 // Construction
@@ -25,19 +26,29 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
-	void InitProxyWindows();
-	CProxyWindow* AddProxyWindow(const HWND instHwnd = NULL);
-	void RemoveProxyWindow(const HWND removeHwnd);
-	CProxyWindow* FindProxyWindow(const HWND hWnd);
-	void CalculateWindowSize();
+//	void InitProxyWindows();
+// 	CProxyWindow* AddProxyWindow(const HWND instHwnd = NULL);
+// 	void RemoveProxyWindow(const HWND removeHwnd);
+//	CProxyWindow* FindProxyWindow(const HWND hWnd);
+//	void CalculateWindowSize();
 	void Log(const string &str);
+	void InitListControl();
+	void UpdateListControl();
+	void CloseAll();
 
 
 // Implementation
 protected:
+	enum STATE {
+		STOP,
+		START
+	};
+
+	STATE m_state;
 	HICON m_hIcon;
 	bool m_loop;
-	vector<CProxyWindow*> m_proxyWindows;
+	vector<cMultiProxy*> m_multiProxy;
+	int m_RecvCountBuffer[100];
 
 
 	// Generated message map functions
@@ -50,7 +61,6 @@ protected:
 public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
-	afx_msg void OnBnClickedButtonStart();
 	CListBox m_LogList;
 	afx_msg void OnButtonAdd();
 	afx_msg void OnButtonRemove();
@@ -58,4 +68,10 @@ public:
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	virtual BOOL OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult);
+	afx_msg void OnBnClickedButtonStart();
+	afx_msg void OnBnClickedButtonHelp();
+	CEdit m_editScript;
+	CListCtrl m_listState;
+	afx_msg void OnBnClickedButtonPasteSample();
+	CButton m_StartButton;
 };

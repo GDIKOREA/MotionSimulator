@@ -130,11 +130,10 @@ void PrintBuffer(const char *buffer, const int bufferLen)
 unsigned WINAPI UDPServerThreadFunction(void* arg)
 {
 	cUDPServer *udp = (cUDPServer*)arg;
-	const int sleepMillis = udp->m_sleepMillis;
 
 	while (udp->m_threadLoop)
 	{
-		const timeval t = { 0, 1 }; // 10 millisecond
+		const timeval t = { 0, udp->m_sleepMillis }; // ? millisecond
 		fd_set readSockets;
 		FD_ZERO(&readSockets);
 		FD_SET(udp->m_socket, &readSockets);
@@ -146,9 +145,7 @@ unsigned WINAPI UDPServerThreadFunction(void* arg)
 			const int result = recv(readSockets.fd_array[0], buff, sizeof(buff), 0);
 			if (result == SOCKET_ERROR || result == 0) // 받은 패킷사이즈가 0이면 서버와 접속이 끊겼다는 의미다.
 			{
-// 				closesocket(udp->m_socket);
-// 				udp->m_threadLoop = false;
-// 				udp->m_isConnect = false;
+				// 에러가 발생하더라도, 수신 대기상태로 계속 둔다.
 			}
 			else
 			{
@@ -156,7 +153,7 @@ unsigned WINAPI UDPServerThreadFunction(void* arg)
 			}
 		}
 
-		Sleep(sleepMillis);
+		//Sleep(udp->m_sleepMillis);
 	}
 
 	return 0;

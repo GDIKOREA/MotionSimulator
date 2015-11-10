@@ -9,7 +9,7 @@
 #include "UDPObserver.h"
 
 
-class cCubeFlight;
+class cCubeCar;
 class cSerialCommunication;
 class cUDPCommunication;
 class cController : public common::cSingleton<cController>
@@ -20,7 +20,6 @@ public:
 	cController();
 	virtual ~cController();
 
-	//bool Init(graphic::cRenderer &renderer);
 	bool ConnectSerial(const int portNum, const int baudRate);
 	void CloseSerial();
 	void Update(const float deltaSeconds);
@@ -28,16 +27,16 @@ public:
 	float GetGlobalSeconds() const;
 
 	cSerialCommunication& GetSerialComm();
-	cUDPCommunication& GetUDPComm();
+	network::cUDPServer& GetUDPComm();
 
 
 protected:
 	cSerialCommunication *m_serialComm;
-	cUDPCommunication *m_udpComm;
+	network::cUDPServer m_udpServer;
 	float m_globalSeconds;
 };
 
 
 inline cSerialCommunication& cController::GetSerialComm() { return *m_serialComm;  }
-inline cUDPCommunication& cController::GetUDPComm() { return *m_udpComm; }
+inline network::cUDPServer& cController::GetUDPComm() { return m_udpServer; }
 inline float cController::GetGlobalSeconds() const { return m_globalSeconds; }

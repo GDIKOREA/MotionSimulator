@@ -267,7 +267,7 @@ void CUDPPlayerView::Update(const float deltaSeconds)
 			const int bufferLen = m_udpPlayer.Update(m_buffer, sizeof(m_buffer));
 			if (bufferLen > 0)
 			{
-				m_udpClient.SendData(m_buffer, 128);
+				m_udpClient.SendData(m_buffer, 256);
 				
 				const int curPos = m_udpPlayer.GetCurrentPlayElementIndex();
 				m_PlaySlider.SetPos(curPos);

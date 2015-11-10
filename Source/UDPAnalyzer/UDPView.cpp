@@ -101,7 +101,7 @@ void CUDPView::OnBnClickedButtonStart()
 	}
 	else
 	{
-		if (cController::Get()->GetUDPComm().InitServer(m_Port))
+		if (cController::Get()->GetUDPComm().Init(0, m_Port))
 		{
 			m_StartButton.SetWindowTextW(L"Server Stop");
 

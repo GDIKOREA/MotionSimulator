@@ -71,7 +71,7 @@ void C3DSimulView::Update(const float deltaSeconds)
 	g_3dMotionView->GetCar().SetEulerAngle(
 		(roll - 10000.f) / 10000.f,
 		(pitch - 10000.f) / 10000.f,
-		(yaw - 10000.f) / 10000.f
-		);
+		(yaw - 10000.f) / 10000.f, 
+		(heave - 10000.f) / 10000.f);
 
 }
