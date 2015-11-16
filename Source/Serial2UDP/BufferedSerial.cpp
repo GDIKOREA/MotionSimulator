@@ -101,6 +101,7 @@ bool CBufferedSerial::ReadStringUntil(const char ch, OUT char *out, OUT int &out
 		const int idx = (m_checkIndex + i) % MAX_BUFFERSIZE;
 		if (ch == m_ringBuffer[idx])
 		{
+			//findChIndex = (idx - 1 + MAX_BUFFERSIZE) % MAX_BUFFERSIZE;
 			findChIndex = idx;
 			break;
 		}
@@ -118,7 +119,7 @@ bool CBufferedSerial::ReadStringUntil(const char ch, OUT char *out, OUT int &out
 				out[idx] = m_ringBuffer[i];
 		}
 		//out += ch;
-		out[idx] = ch;
+		out[idx++] = ch;
 		outLen = idx;
 
 		// headIndex를 증가 시킨다.

@@ -79,6 +79,8 @@ BOOL CSerial2UDPDlg::OnInitDialog()
 	}
 	m_ComBaudrateComboBox.SetCurSel(0);
 
+	m_serial.SetMaxWaitTime(10);
+
 	return TRUE;
 }
 
@@ -186,7 +188,7 @@ void CSerial2UDPDlg::OnBnClickedButtonStart()
 		const string ip = ss.str();
 
 		//if (network::LaunchUDPClient(ip, m_ServerPort, m_sockAddr, m_socket))
-		if (m_client.Init(ip, m_ServerPort))
+		if (m_client.Init(ip, m_ServerPort, 10))
 		{
 			Log(common::format("서버 접속 성공, ip = %s, port = %d", ip.c_str(), m_ServerPort));
 
@@ -262,7 +264,7 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 		//return;
 	}
 
-	if (readLen <= 0)
+	if (readLen > 0)
 	{
 		CString str = str2wstr(readStr).c_str();
 		m_SerialReceiveText.SetWindowTextW(str);
@@ -273,11 +275,12 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 
 		// 시리얼로 받은 정보를 UDP 네트워크를 통해 전송한다.
 		//int slen = sizeof(m_sockAddr);
-		char buffer[512];
+		char buffer[256];
 		if (readLen < sizeof(buffer))
 		{
 			memcpy(buffer, &readStr[0], readLen);
-			buffer[readLen - 1] = NULL;
+			if (readLen + 1 < sizeof(buffer))
+				buffer[readLen] = NULL;
 		}
 		else
 		{
@@ -286,12 +289,6 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 		}
 
 		m_client.SendData(buffer, sizeof(buffer));
-
-// 	if (sendto(m_socket, buffer, sizeof(buffer), 0, (struct sockaddr *) &m_sockAddr, slen) == SOCKET_ERROR)
-//  	{
-//   		//Log( format("sendto() failed with error code : %d", WSAGetLastError()) );
-//  		//OnBnClickedButtonStart();
-//  	}
 	}
 
 	char rcvBuffer[512];
@@ -306,6 +303,4 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 		rxCnt.Format(L"%d", m_udpRxCnt);
 		m_UdpRxCount.SetWindowTextW(rxCnt);
 	}
-
-	//UpdateData(FALSE);
 }
