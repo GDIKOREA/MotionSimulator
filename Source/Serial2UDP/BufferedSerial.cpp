@@ -19,7 +19,7 @@ CBufferedSerial::~CBufferedSerial()
 // ch문자가 있을 때까지 시리얼정보를 읽어서 리턴한다.
 // ch문자가 없다면 빈문자열을 리턴한다.
 // 버퍼가 가득찼다면, 그 때까지 받은 데이타를 리턴한다.
-bool CBufferedSerial::ReadStringUntil(const char ch, OUT string &out)
+bool CBufferedSerial::ReadStringUntil(const char ch, OUT char *out, OUT int &outLen, const int maxSize)
 {
 	const int curT = timeGetTime();
 	if (0 == m_lastReturnTime)
@@ -37,9 +37,15 @@ bool CBufferedSerial::ReadStringUntil(const char ch, OUT string &out)
 			return false;
 
 		// 버퍼가 가득찼다면, 모두 복사해서 리턴한다.
-		out.reserve(MAX_BUFFERSIZE);
+		//out.reserve(MAX_BUFFERSIZE);
+		int idx = 0;
 		for (int i = m_headIndex; i != m_tailIndex; i = (i + 1) % MAX_BUFFERSIZE)
-			out += m_ringBuffer[i];
+		{
+			if (maxSize > idx)
+				out[idx++] = m_ringBuffer[i];
+		}
+
+		outLen = idx;
 
 		m_headIndex = m_tailIndex = m_checkIndex = 0;
 
@@ -104,10 +110,16 @@ bool CBufferedSerial::ReadStringUntil(const char ch, OUT string &out)
 	// ch를 찾았다면, head부터 findChIndex까지 out 저장한다.
 	if (findChIndex >= 0)
 	{
-		out.reserve(MAX_BUFFERSIZE);
+		//out.reserve(MAX_BUFFERSIZE);
+		int idx = 0;
 		for (int i = m_headIndex; i != findChIndex; i = ++i % MAX_BUFFERSIZE)
-			out += m_ringBuffer[i];
-		out += ch;
+		{
+			if (maxSize > idx)
+				out[idx] = m_ringBuffer[i];
+		}
+		//out += ch;
+		out[idx] = ch;
+		outLen = idx;
 
 		// headIndex를 증가 시킨다.
 		m_headIndex = (findChIndex + 1) % MAX_BUFFERSIZE;

@@ -252,15 +252,17 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 		return;
 	}
 
-	string readStr;
-	if (!m_serial.ReadStringUntil('\n', readStr))
+	//string readStr;
+	char readStr[512];
+	int readLen=0;
+	if (!m_serial.ReadStringUntil('\n', readStr, readLen, sizeof(readStr)))
 	{
 		// 에러 발생. 시리얼 포트 연결과 끊는다.
 		//OnBnClickedButtonStart();
 		//return;
 	}
 
-	if (!readStr.empty())
+	if (readLen <= 0)
 	{
 		CString str = str2wstr(readStr).c_str();
 		m_SerialReceiveText.SetWindowTextW(str);
@@ -272,11 +274,10 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 		// 시리얼로 받은 정보를 UDP 네트워크를 통해 전송한다.
 		//int slen = sizeof(m_sockAddr);
 		char buffer[512];
-		if (readStr.size() < sizeof(buffer))
+		if (readLen < sizeof(buffer))
 		{
-			const int len = readStr.size();
-			memcpy(buffer, &readStr[0], len);
-			buffer[len - 1] = NULL;
+			memcpy(buffer, &readStr[0], readLen);
+			buffer[readLen - 1] = NULL;
 		}
 		else
 		{

@@ -24,7 +24,8 @@ public:
 	CBufferedSerial();
 	virtual ~CBufferedSerial();
 
-	bool ReadStringUntil(const char ch, OUT string &out);
+	//bool ReadStringUntil(const char ch, OUT string &out);
+	bool ReadStringUntil(const char ch, OUT char *out, OUT int &outLen, const int maxSize);
 	void SetMaxWaitTime(const int milliseconds);
 	void ClearBuffer();
 
