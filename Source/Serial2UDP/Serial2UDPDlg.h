@@ -27,11 +27,12 @@ protected:
 // Implementation
 protected:
 	HICON m_hIcon;
-	SOCKET m_socket;
-	SOCKADDR_IN m_sockAddr;
-	CBufferedSerial m_serial;
+	network::cUDPClient m_client;
+// 	SOCKET m_socket;
+// 	SOCKADDR_IN m_sockAddr;
+ 	CBufferedSerial m_serial;
 	bool m_loop;
-	bool m_isServerConnect;
+//	bool m_isServerConnect;
 	bool m_isComConnect;
 	int m_serialRxCnt;
 

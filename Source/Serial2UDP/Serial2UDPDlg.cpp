@@ -20,7 +20,7 @@ CSerial2UDPDlg::CSerial2UDPDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSerial2UDPDlg::IDD, pParent)
 	, m_loop(true)
 	, m_ServerPort(8888)
-	, m_isServerConnect(false)
+//	, m_isServerConnect(false)
 	, m_isComConnect(false)
 	, m_serialRxCnt(0)
 	//, m_SerialReceiveText(_T(""))
@@ -64,6 +64,7 @@ BOOL CSerial2UDPDlg::OnInitDialog()
 	m_ComPortComboBox.InitList();
 	m_ServerIP.SetAddress(127, 0, 0, 1);
 
+	m_client.m_sleepMillis = 0;
 	
 	const int baudRate[] = { 9600, 14400, 19200, 38400, 56000, 57600, 115200, 912600 };
 	for (int i = 0; i < ARRAYSIZE(baudRate); ++i)
@@ -154,11 +155,13 @@ void CSerial2UDPDlg::OnBnClickedButtonStart()
 {
 	UpdateData();
 
-	if (m_isServerConnect)
+	//if (m_isServerConnect)
+	if (m_client.IsConnect())
 	{
 		// 서버와 접속을 종료한다.
-		closesocket(m_socket);
-		m_isServerConnect = false;
+		m_client.Close();
+// 		closesocket(m_socket);
+// 		m_isServerConnect = false;
 		m_StartButton.SetWindowTextW(L"Start");
 
 		Log(format("접속 종료"));
@@ -177,7 +180,8 @@ void CSerial2UDPDlg::OnBnClickedButtonStart()
 
 		const string ip = ss.str();
 
-		if (network::LaunchUDPClient(ip, m_ServerPort, m_sockAddr, m_socket))
+		//if (network::LaunchUDPClient(ip, m_ServerPort, m_sockAddr, m_socket))
+		if (m_client.Init(ip, m_ServerPort))
 		{
 			Log( common::format("서버 접속 성공, ip = %s, port = %d", ip.c_str(), m_ServerPort) );
 
@@ -190,14 +194,14 @@ void CSerial2UDPDlg::OnBnClickedButtonStart()
 			{
 				Log(common::format("COM%d 접속 성공, baudRate = %d", portNumber, _wtoi(baudRate)) );
 
-				m_isServerConnect = true;
+//				m_isServerConnect = true;
 				m_StartButton.SetWindowTextW(L"Stop");
 			}
 			else
 			{
 				Log( common::format("COM%d 접속 실패", portNumber) );
 
-				closesocket(m_socket);
+//				closesocket(m_socket);
 			}
 		}
 	}
@@ -224,7 +228,8 @@ void CSerial2UDPDlg::OnBnClickedButtonClear()
 // 받은 정보를 UDP로 전송한다.
 void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 {
-	if (!m_isServerConnect)
+	//if (!m_isServerConnect)
+	if (!m_client.IsConnect())
 	{
 		// 포트와 연결되어 있지 않다면, CPU 부담을 줄이기 위해 조금 쉬었다 넘어간다.
 		Sleep(10);
@@ -239,39 +244,46 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 		//return;
 	}
 
-	if (readStr.empty())
-		return;
-
-	CString str = str2wstr(readStr).c_str();
-	//m_SerialReceiveText = str;
-	m_SerialReceiveText.SetWindowTextW(str);
-	//++m_SerialReceiveCount;
-	++m_serialRxCnt;
-	CString rxCnt;
-	rxCnt.Format(L"%d", m_serialRxCnt);
-	m_SerialReceiveCount.SetWindowTextW(rxCnt);
-
-
-	// 시리얼로 받은 정보를 UDP 네트워크를 통해 전송한다.
-	int slen = sizeof(m_sockAddr);
-	char buffer[256];
-	if (readStr.size() < sizeof(buffer))
+	if (!readStr.empty())
 	{
-		const int len = readStr.size();
-		memcpy(buffer, &readStr[0], len);
-		buffer[len - 1] = NULL;
-	}
-	else
-	{
-		memcpy(buffer, &readStr[0], sizeof(buffer)-1);
-		buffer[sizeof(buffer) - 1] = NULL;
+		CString str = str2wstr(readStr).c_str();
+		m_SerialReceiveText.SetWindowTextW(str);
+		++m_serialRxCnt;
+		CString rxCnt;
+		rxCnt.Format(L"%d", m_serialRxCnt);
+		m_SerialReceiveCount.SetWindowTextW(rxCnt);
+
+		// 시리얼로 받은 정보를 UDP 네트워크를 통해 전송한다.
+		//int slen = sizeof(m_sockAddr);
+		char buffer[512];
+		if (readStr.size() < sizeof(buffer))
+		{
+			const int len = readStr.size();
+			memcpy(buffer, &readStr[0], len);
+			buffer[len - 1] = NULL;
+		}
+		else
+		{
+			memcpy(buffer, &readStr[0], sizeof(buffer)-1);
+			buffer[sizeof(buffer) - 1] = NULL;
+		}
+
+		m_client.SendData(buffer, sizeof(buffer));
+
+// 	if (sendto(m_socket, buffer, sizeof(buffer), 0, (struct sockaddr *) &m_sockAddr, slen) == SOCKET_ERROR)
+//  	{
+//   		//Log( format("sendto() failed with error code : %d", WSAGetLastError()) );
+//  		//OnBnClickedButtonStart();
+//  	}
 	}
 
-	if (sendto(m_socket, buffer, sizeof(buffer), 0, (struct sockaddr *) &m_sockAddr, slen) == SOCKET_ERROR)
- 	{
-  		//Log( format("sendto() failed with error code : %d", WSAGetLastError()) );
- 		//OnBnClickedButtonStart();
- 	}
+	char rcvBuffer[512];
+	const int len = m_client.GetReceiveData(rcvBuffer, sizeof(rcvBuffer));
+	if (len > 0)
+	{
+		// UDP로 부터 정보가 수신되면, 시리얼통신으로 보낸다.
+		m_serial.SendData(rcvBuffer, len);
+	}
 
 	//UpdateData(FALSE);
 }
