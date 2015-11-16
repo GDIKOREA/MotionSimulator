@@ -20,9 +20,11 @@ CSerial2UDPDlg::CSerial2UDPDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSerial2UDPDlg::IDD, pParent)
 	, m_loop(true)
 	, m_ServerPort(8888)
+	, m_RcvPort(8889)
 //	, m_isServerConnect(false)
 	, m_isComConnect(false)
 	, m_serialRxCnt(0)
+	, m_udpRxCnt(0)
 	//, m_SerialReceiveText(_T(""))
 	//, m_SerialReceiveCount(0)
 {
@@ -40,6 +42,8 @@ void CSerial2UDPDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_START, m_StartButton);
 	DDX_Control(pDX, IDC_STATIC_SERIAL, m_SerialReceiveText);
 	DDX_Control(pDX, IDC_STATIC_SERIAL_COUNT, m_SerialReceiveCount);
+	DDX_Text(pDX, IDC_EDIT_UDP_RCV_PORT, m_RcvPort);
+	DDX_Control(pDX, IDC_STATIC_UDP_COUNT, m_UdpRxCount);
 }
 
 BEGIN_MESSAGE_MAP(CSerial2UDPDlg, CDialogEx)
@@ -160,6 +164,7 @@ void CSerial2UDPDlg::OnBnClickedButtonStart()
 	{
 		// 서버와 접속을 종료한다.
 		m_client.Close();
+		m_server.Close();
 // 		closesocket(m_socket);
 // 		m_isServerConnect = false;
 		m_StartButton.SetWindowTextW(L"Start");
@@ -183,7 +188,7 @@ void CSerial2UDPDlg::OnBnClickedButtonStart()
 		//if (network::LaunchUDPClient(ip, m_ServerPort, m_sockAddr, m_socket))
 		if (m_client.Init(ip, m_ServerPort))
 		{
-			Log( common::format("서버 접속 성공, ip = %s, port = %d", ip.c_str(), m_ServerPort) );
+			Log(common::format("서버 접속 성공, ip = %s, port = %d", ip.c_str(), m_ServerPort));
 
 			const int portNumber = m_ComPortComboBox.GetPortNum();
 			CString baudRate;
@@ -192,17 +197,28 @@ void CSerial2UDPDlg::OnBnClickedButtonStart()
 			// Open Serial Port
 			if (m_serial.Open(portNumber, _wtoi(baudRate)))
 			{
-				Log(common::format("COM%d 접속 성공, baudRate = %d", portNumber, _wtoi(baudRate)) );
+				Log(common::format("COM%d 접속 성공, baudRate = %d", portNumber, _wtoi(baudRate)));
 
-//				m_isServerConnect = true;
+				//				m_isServerConnect = true;
 				m_StartButton.SetWindowTextW(L"Stop");
 			}
 			else
 			{
-				Log( common::format("COM%d 접속 실패", portNumber) );
-
-//				closesocket(m_socket);
+				Log(common::format("COM%d 접속 실패", portNumber));
 			}
+		}
+		else
+		{
+			Log(common::format("서버 접속 실패!!, ip = %s, port = %d", ip.c_str(), m_ServerPort));
+		}
+
+		if (m_server.Init(0, m_RcvPort))
+		{
+			Log(common::format("바인드 성공, port = %d", m_RcvPort));
+		}
+		else
+		{
+			Log(common::format("바인드 실패!!, port = %d", m_RcvPort));
 		}
 	}
 }
@@ -278,11 +294,16 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 	}
 
 	char rcvBuffer[512];
-	const int len = m_client.GetReceiveData(rcvBuffer, sizeof(rcvBuffer));
+	const int len = m_server.GetRecvData(rcvBuffer, sizeof(rcvBuffer));
 	if (len > 0)
 	{
 		// UDP로 부터 정보가 수신되면, 시리얼통신으로 보낸다.
 		m_serial.SendData(rcvBuffer, len);
+
+		++m_udpRxCnt;
+		CString rxCnt;
+		rxCnt.Format(L"%d", m_udpRxCnt);
+		m_UdpRxCount.SetWindowTextW(rxCnt);
 	}
 
 	//UpdateData(FALSE);
