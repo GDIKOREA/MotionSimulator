@@ -172,6 +172,9 @@
     <ClInclude Include="..\Common\UIComponent\CubeCar.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\PlotGlobal.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UDPAnalyzer.cpp">

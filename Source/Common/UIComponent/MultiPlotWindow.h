@@ -3,6 +3,8 @@
 //
 #pragma once
 
+#include "PlotGlobal.h"
+
 
 class CPlotWindow;
 class CMultiPlotWindow : public CScrollView
@@ -10,7 +12,6 @@ class CMultiPlotWindow : public CScrollView
 public:
 	CMultiPlotWindow();
 	virtual ~CMultiPlotWindow();
-
 
 	void SetString(const char *str, const int plotIndex=0);
 	void SetString(const float t, const char *str, const int plotIndex = 0);
@@ -31,25 +32,13 @@ protected:
 	vector<SPlot> m_plotWindows;
 	int m_plotWindowCount;
 
-	struct SPlotInfo
-	{
-		float xRange;
-		float yRange;
-		float xVisibleRange;
-		float yVisibleRange;
-		DWORD flags;
-		string scanString;
-		string name;
-		CPlotWindow::MODE mode;
-		int lineWidth;
-	};
-	vector<SPlotInfo> m_PlotInfos;
+	vector<plot::SPlotInfo> m_PlotInfos;
 
 
 
 protected:
 	CPlotWindow* CreatePlotWindow(const int plotIndex);
-	bool ParsePlotInfo(const int plotIndex, const wstring &str, SPlotInfo &out);
+	bool ParsePlotInfo(const int plotIndex, const wstring &str, plot::SPlotInfo &out);
 	wstring ParseKeyValue(const wstring &str, const wstring &key);
 	void CalcGraphWindowSize();
 

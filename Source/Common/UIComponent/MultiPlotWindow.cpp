@@ -2,6 +2,8 @@
 #include "stdafx.h"
 #include "MultiPlotWindow.h"
 
+using namespace plot;
+
 
 
 // CSerialGraphForm dialog
@@ -89,12 +91,14 @@ void CMultiPlotWindow::SetY(const int plotIndex, const float y, const int graphI
 // 스트링 분석에 문제가 생기면 false를 리턴하고 종료된다.
 bool CMultiPlotWindow::ParsePlotInfo(const int plotIndex, const wstring &str, SPlotInfo &out)
 {
-	CString plotStr, scanStr, nameStr, modeStr, lineWidthStr;
+	CString plotStr, scanStr, nameStr, modeStr, lineWidthStr, timeLineStr, vectorSizeStr;
 	plotStr.Format(L"plot%d =", plotIndex + 1);
 	scanStr.Format(L"string%d =", plotIndex + 1);
 	nameStr.Format(L"name%d =", plotIndex + 1);
 	modeStr.Format(L"mode%d =", plotIndex + 1);
 	lineWidthStr.Format(L"linewidth%d =", plotIndex + 1);
+	timeLineStr.Format(L"timeline%d =", plotIndex + 1);
+	vectorSizeStr.Format(L"vector%d =", plotIndex + 1);
 
 	// plot graph parameter
 	wstring plotParameters = ParseKeyValue(str, plotStr.GetBuffer());
@@ -118,6 +122,13 @@ bool CMultiPlotWindow::ParsePlotInfo(const int plotIndex, const wstring &str, SP
 	wstring lineWidthParameters = ParseKeyValue(str, lineWidthStr.GetBuffer());
 	common::trimw(lineWidthParameters);
 
+	// timeline
+	wstring timeLineParameters = ParseKeyValue(str, timeLineStr.GetBuffer());
+	common::trimw(timeLineParameters);
+
+	// vectorsize
+	wstring vectorSizeParameters = ParseKeyValue(str, vectorSizeStr.GetBuffer());
+	common::trimw(vectorSizeParameters);
 
 	vector<wstring> plotParams;
 	common::wtokenizer(plotParameters, L",", L"", plotParams);
@@ -132,8 +143,10 @@ bool CMultiPlotWindow::ParsePlotInfo(const int plotIndex, const wstring &str, SP
 
 	out.scanString = common::wstr2str(scanParameters);
 	out.name = common::wstr2str(nameParameters);
-	out.mode = (modeParameters == L"spline") ? CPlotWindow::SPLINE : CPlotWindow::NORMAL;
+	out.mode = (modeParameters == L"spline") ? plot::SPLINE : plot::NORMAL;
 	out.lineWidth = _wtoi(lineWidthParameters.c_str());
+	out.timeLine = _wtoi(timeLineParameters.c_str());
+	out.vectorSize = _wtoi(vectorSizeParameters.c_str());
 
 	return true;
 }
@@ -215,6 +228,10 @@ void CMultiPlotWindow::ProcessPlotCommand(const CString &str, const int plotCoun
 	for (int i = 0; i < 10; ++i)
 	{
 		SPlotInfo info;
+		info.timeLine = 0;
+		info.vectorSize = 0;
+		info.plotCount = plotCount;
+
 		if (!ParsePlotInfo(i, wstr, info))
 			break;
 		plotInfos.push_back(info);
@@ -238,10 +255,11 @@ void CMultiPlotWindow::ProcessPlotCommand(const CString &str, const int plotCoun
 		wnd->ShowWindow(SW_SHOW);
 
 		// 그래프 설정.
-		wnd->SetPlot(
-			plotInfos[i].xRange, plotInfos[i].yRange,
-			plotInfos[i].xVisibleRange, plotInfos[i].yVisibleRange, plotInfos[i].flags,
-			plotCount, plotInfos[i].name, plotInfos[i].mode, plotInfos[i].lineWidth);
+		wnd->SetPlot(plotInfos[i]);
+// 		wnd->SetPlot(
+// 			plotInfos[i].xRange, plotInfos[i].yRange,
+// 			plotInfos[i].xVisibleRange, plotInfos[i].yVisibleRange, plotInfos[i].flags,
+// 			plotInfos[i].plotCount, plotInfos[i].name, plotInfos[i].mode, plotInfos[i].lineWidth);
 
 		// 그래프 파싱 스트링 설정.
 		m_plotWindows[i].scanString = plotInfos[i].scanString;
@@ -284,7 +302,21 @@ CPlotWindow* CMultiPlotWindow::CreatePlotWindow(const int plotIndex)
 	plot->SetScrollSizes(MM_TEXT, CSize(10, 10));
 	plot->ShowWindow(SW_SHOW);
 
-	plot->SetPlot(0, 0, 0, 0, 0);
+	//plot->SetPlot(0, 0, 0, 0, 0);
+	plot::SPlotInfo info;
+	info.xRange = 0;
+	info.xVisibleRange = 0;
+	info.yRange = 0;
+	info.yVisibleRange = 0;
+	info.plotCount = 1;
+	info.name = "";
+	info.mode = plot::NORMAL;
+	info.timeLine = 0;
+	info.vectorSize = 0;
+	info.flags = 0;
+	info.lineWidth = 1;
+
+	plot->SetPlot(info);
 
 	return plot;
 }

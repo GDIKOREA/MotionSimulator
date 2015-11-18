@@ -1,5 +1,6 @@
 #pragma once
 
+#include "MultiPlotWindow.h"
 
 
 // CPlotWindow view
@@ -18,19 +19,17 @@ public:
 #endif
 #endif
 
-	enum MODE { NORMAL, SPLINE, };
-
-	bool SetPlot(const float x_range, const float y_range,
-		const float x_visble_range, const float y_visible_range, const DWORD flags,
-		const int plotCount = 1, const string &name = "", const MODE &mode=NORMAL, const int lineWidth = 1);
+// 	bool SetPlot(const float x_range, const float y_range,
+// 		const float x_visble_range, const float y_visible_range, const DWORD flags,
+// 		const int plotCount = 1, const string &name = "", const plot::MODE &mode = plot::NORMAL, const int lineWidth = 1);
+	bool SetPlot(const plot::SPlotInfo &info);
 
 	void SetPlotXY(const float x, const float y, const int plotIndex = 0);
 	void SetPlotY(const float y, const int plotIndex=0);
-	void SetMode(const MODE &mode);
+	void SetMode(const plot::MODE &mode);
 	void DrawPlot(const float deltaSeconds, const bool autoSet = true);
 	void SetFixedWidthMode(const bool isFixedWidth);
-
-
+	
 
 protected:
 	// Plot variable
@@ -39,7 +38,7 @@ protected:
 	float m_xVisibleRange;
 	float m_yVisibleRange;
 	DWORD m_flags;
-	MODE m_mode;
+	plot::MODE m_mode;
 	CString m_name;
 
 	float m_maxX;
@@ -48,6 +47,8 @@ protected:
 	float m_minY;
 	float m_scaleY;
 	float m_scaleX;
+	int m_timeLine;
+	int m_vectorSize;
 
 	// plot sync
 	float m_updateTime = 0; // seconds
@@ -98,4 +99,4 @@ public:
 
 
 inline void CPlotWindow::SetFixedWidthMode(const bool isFixedWidth) { m_isFixedPlot = isFixedWidth; }
-inline void CPlotWindow::SetMode(const MODE &mode) { m_mode = mode;  }
+inline void CPlotWindow::SetMode(const plot::MODE &mode) { m_mode = mode; }

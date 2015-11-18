@@ -121,6 +121,7 @@
     <ClInclude Include="..\Common\UIComponent\MemDumpWindow.h" />
     <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h" />
     <ClInclude Include="..\Common\UIComponent\overhauser.hpp" />
+    <ClInclude Include="..\Common\UIComponent\PlotGlobal.h" />
     <ClInclude Include="..\Common\UIComponent\PlotWindow.h" />
     <ClInclude Include="..\Common\UIComponent\Serial.h" />
     <ClInclude Include="..\Common\UIComponent\SerialCommunication.h" />

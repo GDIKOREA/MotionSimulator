@@ -4,6 +4,9 @@
 #include "stdafx.h"
 #include "PlotWindow.h"
 
+using namespace plot;
+
+
 COLORREF g_penColors[] = {
 	RGB(255, 255, 0),
 	RGB(0, 255, 0),
@@ -72,9 +75,9 @@ void CPlotWindow::OnDraw(CDC* pDC)
 	// 메모리 DC를 화면 DC에 고속 복사
 	//pDC->BitBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
 
-// 	memDC.SelectObject(pOldBitmap);
-// 	memDC.DeleteDC();
-// 	bitmap.DeleteObject(
+	// 	memDC.SelectObject(pOldBitmap);
+	// 	memDC.DeleteDC();
+	// 	bitmap.DeleteObject(
 
 
 
@@ -89,29 +92,46 @@ void CPlotWindow::OnDraw(CDC* pDC)
 	memDC.SelectObject(m_gridPen2); // center line width 2
 	memDC.MoveTo(CPoint(0, cr.Height() / 2));
 	memDC.LineTo(CPoint(cr.Width(), cr.Height() / 2));
-	memDC.SelectObject(m_gridPen1); 
-	memDC.MoveTo(CPoint(0, cr.Height() / 4 ));
+	memDC.SelectObject(m_gridPen1);
+	memDC.MoveTo(CPoint(0, cr.Height() / 4));
 	memDC.LineTo(CPoint(cr.Width(), cr.Height() / 4));
-	memDC.MoveTo(CPoint(0, cr.Height()* 3 / 4));
-	memDC.LineTo(CPoint(cr.Width(), cr.Height()*3 / 4));
+	memDC.MoveTo(CPoint(0, cr.Height() * 3 / 4));
+	memDC.LineTo(CPoint(cr.Width(), cr.Height() * 3 / 4));
 
 
 	// draw time line grid
-	float TOTAL_DRAW_TIMELINE = 0;
-	int oneSecondsWidth = 0; // 1초당 픽셀 간격
+	float oneSecondsWidth = 0; // 1초당 픽셀 간격
 
 	// 1초당 픽셀폭이 고정된 모드일 경우.
 	if (m_isFixedPlot)
 	{
-		oneSecondsWidth = 100; // 1초당 픽셀 간격을 100으로 고정시킨다.
-		TOTAL_DRAW_TIMELINE = (float)cr.Width() / (float)oneSecondsWidth;
-		m_plots[0].renderStartIndex = GetDrawStartIndex(0, m_plots[0].renderStartIndex, TOTAL_DRAW_TIMELINE-1); // 타임라인보다 1초 적게 출력해서, 그래프 끝에 여분을 둔다.
+		if (m_timeLine > 0)
+		{
+			// timeline값이 설정되어 있으면, 화면 전체크기를 몇초에 채울지를 설정한다.
+			oneSecondsWidth = cr.Width() / (m_timeLine / 1000.f);
+			// 			if (oneSecondsWidth <= 0)
+			// 				oneSecondsWidth = 1;
+		}
+		else
+		{
+			// 1초당 픽셀 간격을 100으로 고정시킨다.
+			oneSecondsWidth = 100.f;
+		}
+
+		if (oneSecondsWidth <= 0)
+			return;
+
+		const float TOTAL_DRAW_TIMELINE = (float)cr.Width() / (float)oneSecondsWidth;
+		// 타임라인보다 1초 적게 출력해서, 그래프 끝에 여분을 둔다.
+		m_plots[0].renderStartIndex = GetDrawStartIndex(0, m_plots[0].renderStartIndex, TOTAL_DRAW_TIMELINE - 1);
 	}
 	else
 	{ // 화면에 출력할 그래프의 시간을 고정시킬 경우.
-		TOTAL_DRAW_TIMELINE = 5.f; // 한 화면에 5초의 그래프를 출력하게 한다.
-		oneSecondsWidth = (int)((float)cr.Width() / TOTAL_DRAW_TIMELINE); // 1초당 픽셀 간격
-		m_plots[0].renderStartIndex = GetDrawStartIndex(0, m_plots[0].renderStartIndex, TOTAL_DRAW_TIMELINE-1);// 타임라인보다 1초 적게 출력해서, 그래프 끝에 여분을 둔다.
+		// 한 화면에 5초의 그래프를 출력하게 한다.
+		const float TOTAL_DRAW_TIMELINE = 5.f;
+		oneSecondsWidth = (float)cr.Width() / TOTAL_DRAW_TIMELINE; // 1초당 픽셀 간격
+		// 타임라인보다 1초 적게 출력해서, 그래프 끝에 여분을 둔다.
+		m_plots[0].renderStartIndex = GetDrawStartIndex(0, m_plots[0].renderStartIndex, TOTAL_DRAW_TIMELINE - 1);
 	}
 
 	const float timeElapse = m_plots[0].xy[m_plots[0].renderStartIndex].x - m_startTime; // 지나간 시간만큼 timeline을 이동시킨다.
@@ -121,12 +141,23 @@ void CPlotWindow::OnDraw(CDC* pDC)
 		return;
 
 	// 차이가 나는 시간 간격만큼 픽셀을 계산한다. 1초 단위의 간격만 알면된다.
-	const int offsetX = ((int)(timeElapse * (float)oneSecondsWidth)) % oneSecondsWidth;
-	const int timeLineCount = cr.Width() / oneSecondsWidth;
+	int offsetX = 0;
+	float verticalTime = 1;
+	float verticalLineWidth = oneSecondsWidth;
+	while ((oneSecondsWidth > 0) && (verticalLineWidth < 10))
+	{
+		verticalLineWidth *= 10.f;
+		verticalTime *= 10;
+	}
+
+	if (verticalLineWidth >= 1.f)
+		offsetX = ((int)(timeElapse * verticalLineWidth / verticalTime)) % (int)verticalLineWidth;
+	const int timeLineCount = (int)(cr.Width() / verticalLineWidth);
+
 	for (int i = 1; i <= timeLineCount + 1; ++i)
 	{
-		memDC.MoveTo(CPoint((i * oneSecondsWidth) - offsetX, 0));
-		memDC.LineTo(CPoint((i * oneSecondsWidth) - offsetX, cr.Height()));
+		memDC.MoveTo(CPoint((int)((i * verticalLineWidth) - offsetX), 0));
+		memDC.LineTo(CPoint((int)((i * verticalLineWidth) - offsetX), cr.Height()));
 	}
 
 	m_scaleY = (float)cr.Height() / (m_maxY - m_minY);
@@ -140,14 +171,29 @@ void CPlotWindow::OnDraw(CDC* pDC)
 		// 1초당 픽셀폭이 고정된 모드일 경우.
 		if (m_isFixedPlot)
 		{
-			oneSecondsWidth = 100; // 1초당 픽셀 간격을 100으로 고정시킨다.
-			TOTAL_DRAW_TIMELINE = (float)cr.Width() / (float)oneSecondsWidth;
+			if (m_timeLine > 0)
+			{
+				// timeline값이 설정되어 있으면, 화면 전체크기를 몇초에 채울지를 설정한다.
+				oneSecondsWidth = cr.Width() / (m_timeLine / 1000.f);
+// 				if (oneSecondsWidth <= 0)
+// 					oneSecondsWidth = 1;
+			}
+			else
+			{
+				// 1초당 픽셀 간격을 100으로 고정시킨다.
+				oneSecondsWidth = 100;
+			}
+
+			if (oneSecondsWidth <= 0)
+				continue;
+
+			const float TOTAL_DRAW_TIMELINE = (float)cr.Width() / (float)oneSecondsWidth;
 			plot.renderStartIndex = GetDrawStartIndex(i, plot.renderStartIndex, TOTAL_DRAW_TIMELINE);
 		}
 		else
 		{ // 화면에 출력할 그래프의 시간을 고정시킬 경우.
-			TOTAL_DRAW_TIMELINE = 5.f; // 한 화면에 5초의 그래프를 출력하게 한다.
-			oneSecondsWidth = (int)((float)cr.Width() / TOTAL_DRAW_TIMELINE); // 1초당 픽셀 간격
+			const float TOTAL_DRAW_TIMELINE = 5.f; // 한 화면에 5초의 그래프를 출력하게 한다.
+			oneSecondsWidth = (float)cr.Width() / TOTAL_DRAW_TIMELINE; // 1초당 픽셀 간격
 			plot.renderStartIndex = GetDrawStartIndex(i, plot.renderStartIndex, TOTAL_DRAW_TIMELINE);
 		}
 
@@ -186,7 +232,7 @@ void CPlotWindow::OnDraw(CDC* pDC)
 
 			CString strLastVal;
 			strLastVal.Format(L"%f", plot.xy[(plot.tailIdx - 1) % plot.xy.size()].y);
-			memDC.TextOutW(lastX - 10, y, strLastVal);
+			memDC.TextOutW(lastX - 70, y, strLastVal);
 		}
 	}
 
@@ -250,27 +296,79 @@ void CPlotWindow::Dump(CDumpContext& dc) const
 
 
 // CPlotWindow message handlers
-bool CPlotWindow::SetPlot(const float x_range, const float y_range,
-	const float x_visble_range, const float y_visible_range, const DWORD flags,
-	const int plotCount, const string &name, const MODE &mode, const int lineWidth)  // plotCount=1, name="", mode=NORMAL, lineWidth=1
+// bool CPlotWindow::SetPlot(const float x_range, const float y_range,
+// 	const float x_visble_range, const float y_visible_range, const DWORD flags,
+// 	const int plotCount, const string &name, const MODE &mode, const int lineWidth)  
+// 	// plotCount=1, name="", mode=NORMAL, lineWidth=1
+// {
+// 	m_xRange = x_range;
+// 	m_yRange = y_range;
+// 	m_xVisibleRange = x_visble_range;
+// 	m_yVisibleRange = y_visible_range;
+// 	m_flags = flags;
+// 	m_mode = mode;
+// 	m_name = common::str2wstr(name).c_str();
+// 
+// 	m_plots.resize(plotCount);
+// 	for (u_int i = 0; i < m_plots.size(); ++i)
+// 	{
+// 		m_plots[i].xy.resize(2048, Vector2(0.f, 0.f));
+// 		m_plots[i].headIdx = 0;
+// 		m_plots[i].tailIdx = 0;
+// 		m_plots[i].renderStartIndex = 0;
+// 
+// 		m_plots[i].splineTemp.resize(2048, Vector2(0.f, 0.f));
+// 		m_plots[i].spHeadIdx = 0;
+// 		m_plots[i].spTailIdx = 0;
+// 	}
+// 
+// 	m_maxX = -FLT_MAX;
+// 	m_minX = FLT_MAX;
+// 
+// 	if (0 == m_yRange)
+// 	{
+// 		m_maxY = -FLT_MAX;
+// 		m_minY = FLT_MAX;
+// 	}
+// 	else
+// 	{
+// 		m_maxY = m_yRange/2;
+// 		m_minY = -m_yRange/2;
+// 	}
+// 
+// 	m_scaleY = 1.f;
+// 	m_startTime = 0;
+// 	m_updateTime = 0;
+// 
+// 	for (int i = 0; i < 4; ++i)
+// 	{
+// 		m_plotPens[i].DeleteObject();
+// 		m_plotPens[i].CreatePen(0, lineWidth, g_penColors[i]);
+// 	}
+// 
+// 	return true;
+// }
+bool CPlotWindow::SetPlot(const plot::SPlotInfo &info)
 {
-	m_xRange = x_range;
-	m_yRange = y_range;
-	m_xVisibleRange = x_visble_range;
-	m_yVisibleRange = y_visible_range;
-	m_flags = flags;
-	m_mode = mode;
-	m_name = common::str2wstr(name).c_str();
+	m_xRange = info.xRange;
+	m_yRange = info.yRange;
+	m_xVisibleRange = info.xVisibleRange;
+	m_yVisibleRange = info.yVisibleRange;
+	m_flags = info.flags;
+	m_mode = info.mode;
+	m_name = common::str2wstr(info.name).c_str();
+	m_timeLine = info.timeLine;
+	m_vectorSize = info.vectorSize;
 
-	m_plots.resize(plotCount);
+	m_plots.resize(info.plotCount);
 	for (u_int i = 0; i < m_plots.size(); ++i)
 	{
-		m_plots[i].xy.resize(2048, Vector2(0.f, 0.f));
+		m_plots[i].xy.resize((info.vectorSize == 0) ? 2048 : info.vectorSize, Vector2(0.f, 0.f));
 		m_plots[i].headIdx = 0;
 		m_plots[i].tailIdx = 0;
 		m_plots[i].renderStartIndex = 0;
 
-		m_plots[i].splineTemp.resize(2048, Vector2(0.f, 0.f));
+		m_plots[i].splineTemp.resize((info.vectorSize == 0) ? 2048 : info.vectorSize, Vector2(0.f, 0.f));
 		m_plots[i].spHeadIdx = 0;
 		m_plots[i].spTailIdx = 0;
 	}
@@ -285,8 +383,8 @@ bool CPlotWindow::SetPlot(const float x_range, const float y_range,
 	}
 	else
 	{
-		m_maxY = m_yRange/2;
-		m_minY = -m_yRange/2;
+		m_maxY = m_yRange / 2;
+		m_minY = -m_yRange / 2;
 	}
 
 	m_scaleY = 1.f;
@@ -296,9 +394,8 @@ bool CPlotWindow::SetPlot(const float x_range, const float y_range,
 	for (int i = 0; i < 4; ++i)
 	{
 		m_plotPens[i].DeleteObject();
-		m_plotPens[i].CreatePen(0, lineWidth, g_penColors[i]);
+		m_plotPens[i].CreatePen(0, info.lineWidth, g_penColors[i]);
 	}
-
 
 	return true;
 }
