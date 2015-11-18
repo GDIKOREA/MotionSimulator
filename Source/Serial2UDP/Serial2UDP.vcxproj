@@ -111,6 +111,7 @@
     <ClInclude Include="ComPortCombo.h" />
     <ClInclude Include="EnumDevices.h" />
     <ClInclude Include="enumser.h" />
+    <ClInclude Include="NoticeDlg.h" />
     <ClInclude Include="Serial.h" />
     <ClInclude Include="Serial2UDP.h" />
     <ClInclude Include="Serial2UDPDlg.h" />
@@ -124,6 +125,7 @@
     <ClCompile Include="ComPortCombo.cpp" />
     <ClCompile Include="EnumDevices.cpp" />
     <ClCompile Include="enumser.cpp" />
+    <ClCompile Include="NoticeDlg.cpp" />
     <ClCompile Include="Serial.cpp" />
     <ClCompile Include="Serial2UDP.cpp" />
     <ClCompile Include="Serial2UDPDlg.cpp" />

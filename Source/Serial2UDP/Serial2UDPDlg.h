@@ -29,14 +29,12 @@ protected:
 	HICON m_hIcon;
 	network::cUDPClient m_client;
 	network::cUDPServer m_server;
-// 	SOCKET m_socket;
-// 	SOCKADDR_IN m_sockAddr;
  	CBufferedSerial m_serial;
 	bool m_loop;
-//	bool m_isServerConnect;
 	bool m_isComConnect;
 	int m_serialRxCnt;
 	int m_udpRxCnt;
+	int m_errCnt;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();

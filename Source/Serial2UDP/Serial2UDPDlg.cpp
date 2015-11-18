@@ -5,6 +5,7 @@
 #include "afxdialogex.h"
 #include <mmsystem.h>
 #include <sstream>
+#include "NoticeDlg.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -21,12 +22,10 @@ CSerial2UDPDlg::CSerial2UDPDlg(CWnd* pParent /*=NULL*/)
 	, m_loop(true)
 	, m_ServerPort(8888)
 	, m_RcvPort(8889)
-//	, m_isServerConnect(false)
 	, m_isComConnect(false)
 	, m_serialRxCnt(0)
 	, m_udpRxCnt(0)
-	//, m_SerialReceiveText(_T(""))
-	//, m_SerialReceiveCount(0)
+	, m_errCnt(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -65,10 +64,10 @@ BOOL CSerial2UDPDlg::OnInitDialog()
 
 	//m_ComPortComboBox.SetOnlyPresent(FALSE);
 	//m_ComPortComboBox.SetOnlyPhysical(FALSE);
-	m_ComPortComboBox.InitList();
+	//m_ComPortComboBox.InitList();
 	m_ServerIP.SetAddress(127, 0, 0, 1);
 
-	m_client.m_sleepMillis = 0;
+	m_client.m_sleepMillis = 1;
 	
 	const int baudRate[] = { 9600, 14400, 19200, 38400, 56000, 57600, 115200, 912600 };
 	for (int i = 0; i < ARRAYSIZE(baudRate); ++i)
@@ -79,7 +78,7 @@ BOOL CSerial2UDPDlg::OnInitDialog()
 	}
 	m_ComBaudrateComboBox.SetCurSel(0);
 
-	m_serial.SetMaxWaitTime(10);
+	m_serial.SetMaxWaitTime(20);
 
 	return TRUE;
 }
@@ -107,6 +106,20 @@ void CSerial2UDPDlg::OnPaint()
 	else
 	{
 		CDialogEx::OnPaint();
+
+		static bool onlyOne = true;
+		if (onlyOne)
+		{
+			onlyOne = false;
+
+			CNoticeDlg *dlg = new CNoticeDlg();
+			dlg->Create(CNoticeDlg::IDD, this);
+			dlg->CenterWindow();
+			dlg->ShowWindow(SW_SHOW);
+			m_ComPortComboBox.InitList();
+			dlg->ShowWindow(SW_HIDE);
+			delete dlg;
+		}
 	}
 }
 
@@ -161,15 +174,17 @@ void CSerial2UDPDlg::OnBnClickedButtonStart()
 {
 	UpdateData();
 
-	//if (m_isServerConnect)
 	if (m_client.IsConnect())
 	{
+		m_errCnt = 0;
+
 		// 서버와 접속을 종료한다.
 		m_client.Close();
 		m_server.Close();
-// 		closesocket(m_socket);
-// 		m_isServerConnect = false;
+		m_serial.Close();
 		m_StartButton.SetWindowTextW(L"Start");
+
+		SetBackgroundColor(g_grayColor);
 
 		Log(format("접속 종료"));
 	}
@@ -186,8 +201,8 @@ void CSerial2UDPDlg::OnBnClickedButtonStart()
 			<< (address & 0x000000ff);
 
 		const string ip = ss.str();
+		bool startOk = true;
 
-		//if (network::LaunchUDPClient(ip, m_ServerPort, m_sockAddr, m_socket))
 		if (m_client.Init(ip, m_ServerPort, 10))
 		{
 			Log(common::format("서버 접속 성공, ip = %s, port = %d", ip.c_str(), m_ServerPort));
@@ -201,27 +216,40 @@ void CSerial2UDPDlg::OnBnClickedButtonStart()
 			{
 				Log(common::format("COM%d 접속 성공, baudRate = %d", portNumber, _wtoi(baudRate)));
 
-				//				m_isServerConnect = true;
-				m_StartButton.SetWindowTextW(L"Stop");
+				if (m_server.Init(0, m_RcvPort))
+				{
+					Log(common::format("바인드 성공, port = %d", m_RcvPort));
+					m_StartButton.SetWindowTextW(L"Stop");
+				}
+				else
+				{
+					startOk = false;
+					Log(common::format("바인드 실패!!, port = %d", m_RcvPort));
+				}
 			}
 			else
 			{
+				startOk = false;
 				Log(common::format("COM%d 접속 실패", portNumber));
 			}
 		}
 		else
 		{
+			startOk = false;
 			Log(common::format("서버 접속 실패!!, ip = %s, port = %d", ip.c_str(), m_ServerPort));
 		}
 
-		if (m_server.Init(0, m_RcvPort))
+		if (startOk)
 		{
-			Log(common::format("바인드 성공, port = %d", m_RcvPort));
+			SetBackgroundColor(g_blueColor);
 		}
 		else
 		{
-			Log(common::format("바인드 실패!!, port = %d", m_RcvPort));
+			m_client.Close();
+			m_server.Close();
+			m_serial.Close();
 		}
+
 	}
 }
 
@@ -246,7 +274,6 @@ void CSerial2UDPDlg::OnBnClickedButtonClear()
 // 받은 정보를 UDP로 전송한다.
 void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 {
-	//if (!m_isServerConnect)
 	if (!m_client.IsConnect())
 	{
 		// 포트와 연결되어 있지 않다면, CPU 부담을 줄이기 위해 조금 쉬었다 넘어간다.
@@ -254,7 +281,6 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 		return;
 	}
 
-	//string readStr;
 	char readStr[512];
 	int readLen=0;
 	if (!m_serial.ReadStringUntil('\n', readStr, readLen, sizeof(readStr)))
@@ -266,6 +292,9 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 
 	if (readLen > 0)
 	{
+		if (sizeof(readStr) > readLen + 1)
+			readStr[readLen] = NULL;
+
 		CString str = str2wstr(readStr).c_str();
 		m_SerialReceiveText.SetWindowTextW(str);
 		++m_serialRxCnt;
@@ -274,7 +303,6 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 		m_SerialReceiveCount.SetWindowTextW(rxCnt);
 
 		// 시리얼로 받은 정보를 UDP 네트워크를 통해 전송한다.
-		//int slen = sizeof(m_sockAddr);
 		char buffer[256];
 		if (readLen < sizeof(buffer))
 		{
@@ -296,7 +324,17 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 	if (len > 0)
 	{
 		// UDP로 부터 정보가 수신되면, 시리얼통신으로 보낸다.
+		const int t0 = timeGetTime();
 		m_serial.SendData(rcvBuffer, len);
+
+		// 정보를 보내는데 너무 오래 걸리면, 접속을 끊는다.
+		const int t1 = timeGetTime();
+		if (t1 - t0 > 1000)
+		{
+			++m_errCnt;
+			if (m_errCnt > 1)
+				OnBnClickedButtonStart(); // Toggle Swich
+		}
 
 		++m_udpRxCnt;
 		CString rxCnt;
@@ -304,3 +342,4 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 		m_UdpRxCount.SetWindowTextW(rxCnt);
 	}
 }
+
