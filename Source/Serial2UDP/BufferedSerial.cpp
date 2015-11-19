@@ -116,7 +116,7 @@ bool CBufferedSerial::ReadStringUntil(const char ch, OUT char *out, OUT int &out
 		for (int i = m_headIndex; i != findChIndex; i = ++i % MAX_BUFFERSIZE)
 		{
 			if (maxSize > idx)
-				out[idx] = m_ringBuffer[i];
+				out[idx++] = m_ringBuffer[i];
 		}
 		//out += ch;
 		out[idx++] = ch;
