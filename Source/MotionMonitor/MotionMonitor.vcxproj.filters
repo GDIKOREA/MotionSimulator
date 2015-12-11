@@ -237,6 +237,12 @@
     <ClInclude Include="..\Common\UIComponent\CubeCar.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
+    <ClInclude Include="ChIDPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sharedmemcommunication.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -421,6 +427,12 @@
     </ClCompile>
     <ClCompile Include="..\Common\UIComponent\CubeCar.cpp">
       <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="ChIDPass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sharedmemcommunication.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -105,6 +105,7 @@
 #define IDD_DIALOG_SIMUL                339
 #define IDD_DIALOG_DIRT3                340
 #define IDD_DIALOG_MODULATION           341
+#define IDD_DIALOG_CHANGEIDPASS         342
 #define IDC_CHECK_FIXEDMODE             1000
 #define IDC_EDIT_COMMAND                1001
 #define IDC_BUTTON_HELP                 1002
@@ -232,7 +233,9 @@
 #define IDC_BUTTON_CAM_ADJUSTMENT_P1    1109
 #define IDC_EDIT_ID                     1109
 #define IDC_BUTTON_CAM_ADJUSTMENT_P2    1110
+#define IDC_EDIT_NEWPASS                1110
 #define IDC_SLIDER_CAM_SENS2            1111
+#define IDC_EDIT_NEWPASS_CONFIRM        1111
 #define IDC_EDIT_CAM_SENS2              1112
 #define IDC_EDIT_CREDIT                 1113
 #define IDC_EDIT_COIN                   1114
@@ -241,6 +244,7 @@
 #define IDC_STATIC_GAME_COUNT           1117
 #define IDC_STATIC_CREDIT_COUNT         1118
 #define IDC_BUTTON_MOD_EDITDLG          1119
+#define IDC_BUTTON_CHANGE_ACCOUNT       1119
 #define IDC_BUTTON_PLOTINPUT_DLG        1120
 #define IDC_BUTTON_PLOTCMD              1121
 #define IDC_EDIT_INPUTSTR1              1124
@@ -269,15 +273,16 @@
 #define IDC_EDIT_SCRIPT2                1142
 #define IDC_EDIT_INPUTVAR2              1143
 #define IDC_EDIT_OUTPUTVAR2             1144
+#define IDC_EDIT_NEWID                  1144
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        342
+#define _APS_NEXT_RESOURCE_VALUE        343
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1144
+#define _APS_NEXT_CONTROL_VALUE         1146
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

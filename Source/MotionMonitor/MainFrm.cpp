@@ -320,7 +320,8 @@ BOOL CMainFrame::CreateDockingWindows()
 		CREATE_DOCKPANE2(C3DSimulView, L"3D Simulation View", ID_VIEW_3DSIMUL, m_3dSimulView);
 		CREATE_DOCKPANE2(CDirt3View, L"Dirt3 View", ID_VIEW_DIRT3, m_dirt3View);
 		CREATE_DOCKPANE2(CVarModulationView, L"Var Modulation View", ID_VIEW_VARMODULATION, m_varModulationView);
-		
+		CREATE_DOCKPANE2(CLauncherView, L"Launcher View", ID_VIEW_LAUNCHER, m_launcherView);
+
 		g_3dGameView = m_3DGameView;
 		g_3dMotionView = m_3DMotionView;
 		g_mwaveView = m_motionWaveView;

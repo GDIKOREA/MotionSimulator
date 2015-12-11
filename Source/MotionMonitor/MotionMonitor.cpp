@@ -152,9 +152,9 @@ BOOL CMotionMonitorApp::InitInstance()
 		config.ReadConfigFile(commandLine);
 	}
 
-// 	CLoginDialog loginDlg;
-// 	if (IDCANCEL == loginDlg.DoModal())
-// 		return FALSE;
+ 	CLoginDialog loginDlg;
+ 	if (IDCANCEL == loginDlg.DoModal())
+ 		return FALSE;
 
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views
@@ -186,7 +186,7 @@ BOOL CMotionMonitorApp::InitInstance()
 		CRect wr;
 		m_pMainWnd->GetWindowRect(wr);
 		wr.right = wr.left + 445;
-		wr.bottom = wr.top + 580;
+		wr.bottom = wr.top + 600;
 		m_pMainWnd->MoveWindow(wr);
 	}
 	else if (config.m_mode == "dirt3_release")

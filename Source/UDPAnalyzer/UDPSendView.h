@@ -44,4 +44,6 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	BOOL m_IsConvertCR;
 	afx_msg void OnBnClickedCheckCr();
+	afx_msg void OnBnClickedCheckOnlystring();
+	BOOL m_IsOnlyString;
 };

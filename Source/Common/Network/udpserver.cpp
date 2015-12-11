@@ -110,6 +110,7 @@ void cUDPServer::Close(const bool isWait) // isWait = false
 	closesocket(m_socket);
 }
 
+
 // 패킷 전송
 int cUDPServer::SendData(const char *buff, const int buffLen)
 {

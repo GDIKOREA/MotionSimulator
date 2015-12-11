@@ -52,6 +52,8 @@ public:
 	float m_actuatorYawPower; // 0~1 사이 값
 	float m_playTime; // 한 게임당 플레이 할 수 있는 시간. seconds 단위, default : 60
 	float m_actuatorSpeed; // 0~1 사이 값
+
+	string m_loginId;
 };
 
 

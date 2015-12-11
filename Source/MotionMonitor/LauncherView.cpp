@@ -9,6 +9,7 @@
 #include "MainFrm.h"
 #include "MachineGunController.h"
 #include "ControlBoard.h"
+#include "ChIDPass.h"
 
 
 void GameExeTerminate(int id, void*arg);
@@ -38,7 +39,7 @@ CLauncherView::~CLauncherView()
 void CLauncherView::DoDataExchange(CDataExchange* pDX)
 {
 	CDockablePaneChildView::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_COMBO_DIFFICULT, m_DifficultCombo);
+//	DDX_Control(pDX, IDC_COMBO_DIFFICULT, m_DifficultCombo);
 	DDX_Control(pDX, IDC_SLIDER_CAM_SENS, m_CamSensSlider);
 	DDX_Text(pDX, IDC_EDIT_CAM_SENS, m_CamSens1Edit);
 	DDX_Text(pDX, IDC_EDIT_CAM_SENS2, m_CamSens2Edit);
@@ -50,6 +51,7 @@ void CLauncherView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_GAMESTART, m_StartButton);
 	DDX_Text(pDX, IDC_STATIC_GAME_COUNT, m_GameCount);
 	DDX_Text(pDX, IDC_STATIC_CREDIT_COUNT, m_CreditCount);
+	DDX_Control(pDX, IDC_BUTTON_HELP, m_HelpButton);
 }
 
 
@@ -69,6 +71,9 @@ BEGIN_MESSAGE_MAP(CLauncherView, CDockablePaneChildView)
 	ON_EN_CHANGE(IDC_EDIT_COINPERGAME, &CLauncherView::OnEnChangeEditCoinpergame)
 	ON_BN_CLICKED(IDC_BUTTON_BOARDCHECK, &CLauncherView::OnBnClickedButtonBoardcheck)
 	ON_WM_PAINT()
+	ON_BN_CLICKED(IDC_BUTTON_CHANGE_ACCOUNT, &CLauncherView::OnBnClickedButtonChangeAccount)
+	ON_BN_CLICKED(IDC_BUTTON_HELP, &CLauncherView::OnBnClickedButtonHelp)
+	ON_WM_LBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
 
@@ -88,10 +93,10 @@ BOOL CLauncherView::OnInitDialog()
 {
 	CDockablePaneChildView::OnInitDialog();
 
-	m_DifficultCombo.AddString(L"Easy");
-	m_DifficultCombo.AddString(L"Normal");
-	m_DifficultCombo.AddString(L"Hard");
-	m_DifficultCombo.SetCurSel(1);
+// 	m_DifficultCombo.AddString(L"Easy");
+// 	m_DifficultCombo.AddString(L"Normal");
+// 	m_DifficultCombo.AddString(L"Hard");
+// 	m_DifficultCombo.SetCurSel(1);
 
 	m_DifficultCombo2.AddString(L"Easy");
 	m_DifficultCombo2.AddString(L"Normal");
@@ -111,15 +116,12 @@ BOOL CLauncherView::OnInitDialog()
 	m_CamSensSlider.SetPos(sliderPos1 + 1000);
 	m_CamSens2Slider.SetPos(sliderPos2 + 1000);
 
-	//SetBackgroundColor(RGB(8, 8, 8));
+	if (!m_shMem.Init("mgsharedmem"))
+	{
+		::AfxMessageBox(L"Error!! shmem");
+	}
 
-
-// 	const wstring wfileName = common::str2wstr("../media/machinegun/MGX_White.png");
-// 	m_titleImage.FromFile(wfileName.c_str());
-// 	Gdiplus::Bitmap bmp(wfileName.c_str());
-// 	if (Gdiplus::Ok != bmp.GetLastStatus())
-// 		return false;
-
+	m_HelpButton.ShowWindow(SW_HIDE);
 
 	return TRUE;
 }
@@ -168,7 +170,8 @@ void CLauncherView::OnBnClickedButtonGamestart()
 
 	// 머신건 게임 실행
 	stringstream ss;
-	ss << m_DifficultCombo.GetCurSel() << " ";
+	//ss << m_DifficultCombo.GetCurSel() << " ";
+	ss << 1 << " ";
 	ss << m_DifficultCombo2.GetCurSel() << " ";
 	ss << 1920 << " " << 1080; // 해상도
 	const string commandLine = ss.str();	
@@ -335,4 +338,35 @@ void CLauncherView::OnPaint()
 	// 타이틀 이미지 출력
 	Gdiplus::Graphics graphic(dc);
 	graphic.DrawImage(&m_titleImage, Gdiplus::Rect(80, 0, m_titleImage.GetWidth(), m_titleImage.GetHeight()));
+}
+
+
+void CLauncherView::OnBnClickedButtonChangeAccount()
+{
+	CChIDPass dlg;
+	dlg.DoModal();
+}
+
+
+
+//--------------------------------------------------------------------
+// Shared Memory Communication
+struct sSharedMemData
+{
+	bool tryConnectServer; // connect to tcp/ip server
+	// true일 때 서버에 접속을 시도한다.
+};
+
+void CLauncherView::OnBnClickedButtonHelp()
+{
+	sSharedMemData data;
+	data.tryConnectServer = true;
+	*(sSharedMemData*)m_shMem.GetMemoryPtr() = data;
+}
+
+
+void CLauncherView::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	m_HelpButton.ShowWindow(SW_SHOW);
+	CDockablePaneChildView::OnLButtonDblClk(nFlags, point);
 }

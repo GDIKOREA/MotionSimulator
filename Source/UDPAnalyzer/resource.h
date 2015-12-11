@@ -157,6 +157,7 @@
 #define IDC_BUTTON9                     1065
 #define IDC_BUTTON10                    1066
 #define IDC_CHECK_CR                    1067
+#define IDC_CHECK_ONLYSTRING            1068
 #define ID_FILE_SAVEAS                  32771
 #define ID_VIEW_INITDOCKINGWINDOWS      32772
 

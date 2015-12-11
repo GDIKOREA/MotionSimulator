@@ -15,6 +15,7 @@ CUDPSendView::CUDPSendView(CWnd* pParent /*=NULL*/)
 	, m_IsSyncUDPView(FALSE)
 	, m_IsConnect(false)
 	, m_IsConvertCR(TRUE)
+	, m_IsOnlyString(FALSE)
 {
 }
 
@@ -30,6 +31,7 @@ void CUDPSendView::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_SYNC_UDPVIEW, m_IsSyncUDPView);
 	DDX_Control(pDX, IDC_BUTTON_CONNECT, m_ConnectButton);
 	DDX_Check(pDX, IDC_CHECK_CR, m_IsConvertCR);
+	DDX_Check(pDX, IDC_CHECK_ONLYSTRING, m_IsOnlyString);
 }
 
 
@@ -65,6 +67,7 @@ BEGIN_MESSAGE_MAP(CUDPSendView, CDockablePaneChildView)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BUTTON1, IDC_BUTTON10, &CUDPSendView::OnBnClickedSendButton)
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_CHECK_CR, &CUDPSendView::OnBnClickedCheckCr)
+	ON_BN_CLICKED(IDC_CHECK_ONLYSTRING, &CUDPSendView::OnBnClickedCheckOnlystring)
 END_MESSAGE_MAP()
 
 
@@ -195,8 +198,16 @@ void CUDPSendView::SendString(const int editIndex, const string &str)
 	RET((editIndex >= 10) || (editIndex < 0));
 	RET(str.length() <= 0);
 
-	m_edit[editIndex].ParseStr(str);
-	string packet = m_edit[editIndex].Execute();
+	string packet;
+	if (m_IsOnlyString)
+	{
+		packet = str;
+	}
+	else
+	{
+		m_edit[editIndex].ParseStr(str);
+		packet = m_edit[editIndex].Execute();
+	}
 
 	if (m_IsConvertCR)
 		replaceAll(packet, "\\n", "\n");
@@ -242,3 +253,10 @@ void CUDPSendView::SaveConfig()
 		g_option.m_udpSendEdit[i] = wstr2str((LPCTSTR)text);
 	}
 }
+
+
+void CUDPSendView::OnBnClickedCheckOnlystring()
+{
+	UpdateData();
+}
+

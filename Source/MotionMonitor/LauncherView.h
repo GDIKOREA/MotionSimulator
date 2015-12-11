@@ -3,6 +3,8 @@
 #include "afxcmn.h"
 
 #include "ExeTracker.h"
+#include "sharedmemcommunication.h"
+
 
 // CLauncherView dialog
 
@@ -31,6 +33,7 @@ protected:
 	float m_camSens2;
 	cExeTracker m_gameExeTracker;
 	cExeTracker m_cameraExeTracker;
+	cSharedMemoryCommunication m_shMem;
 
 	Gdiplus::Bitmap m_titleImage;
 
@@ -46,7 +49,7 @@ public:
 	afx_msg void OnBnClickedButtonPlayer2();
 	afx_msg void OnBnClickedButtonCamAdjustmentP1();
 	afx_msg void OnBnClickedButtonCamAdjustmentP2();
-	CComboBox m_DifficultCombo;
+	//CComboBox m_DifficultCombo;
 	CComboBox m_DifficultCombo2;
 	CSliderCtrl m_CamSensSlider;
 	float m_CamSens1Edit;
@@ -65,4 +68,8 @@ public:
 	int m_GameCount;
 	int m_CreditCount;
 	afx_msg void OnPaint();
+	afx_msg void OnBnClickedButtonChangeAccount();
+	afx_msg void OnBnClickedButtonHelp();
+	CButton m_HelpButton;
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 };

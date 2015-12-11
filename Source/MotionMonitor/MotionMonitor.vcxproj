@@ -131,6 +131,7 @@
     <ClInclude Include="..\Common\UIComponent\UIUtiltity.h" />
     <ClInclude Include="..\Common\UIComponent\UpdateObserver.h" />
     <ClInclude Include="C3DSimulView.h" />
+    <ClInclude Include="ChIDPass.h" />
     <ClInclude Include="ControlBoard.h" />
     <ClInclude Include="Dirt3Controller.h" />
     <ClInclude Include="Dirt3View.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="PlotView.h" />
     <ClInclude Include="protocolparser.h" />
     <ClInclude Include="script.h" />
+    <ClInclude Include="sharedmemcommunication.h" />
     <ClInclude Include="SimpleController.h" />
     <ClInclude Include="simplemodulator.h" />
     <ClInclude Include="UDPInputView.h" />
@@ -196,6 +198,7 @@
     <ClCompile Include="..\Common\UIComponent\SerialObserver.cpp" />
     <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp" />
     <ClCompile Include="C3DSimulView.cpp" />
+    <ClCompile Include="ChIDPass.cpp" />
     <ClCompile Include="ControlBoard.cpp" />
     <ClCompile Include="Dirt3Controller.cpp" />
     <ClCompile Include="Dirt3View.cpp" />
@@ -221,6 +224,7 @@
     <ClCompile Include="PlotView.cpp" />
     <ClCompile Include="protocolparser.cpp" />
     <ClCompile Include="script.cpp" />
+    <ClCompile Include="sharedmemcommunication.cpp" />
     <ClCompile Include="SimpleController.cpp" />
     <ClCompile Include="simplemodulator.cpp" />
     <ClCompile Include="UDPInputView.cpp" />
