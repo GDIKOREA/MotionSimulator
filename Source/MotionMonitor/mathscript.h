@@ -27,6 +27,7 @@ namespace mathscript
 			ID,
 			NUMBER,
 			EXPR,
+			FUNC,
 		};
 	}
 
@@ -44,13 +45,21 @@ namespace mathscript
 		sExpr *expr;
 	};
 
+	struct sFunc
+	{
+		string id;
+		sExpr *expr;
+	};
+
 	struct sFactor
 	{
 		FACTOR_TYPE::TYPE type;
 		string id;
 		float number;
 		sExpr *expr;
+		sFunc *func;
 	};
+
 
 	struct sAssignStmt
 	{
@@ -71,5 +80,6 @@ namespace mathscript
 	void rm_factor(sFactor *p);
 	void rm_term(sTerm *p);
 	void rm_expr(sExpr *p);
+	void rm_func(sFunc*p);
 }
 

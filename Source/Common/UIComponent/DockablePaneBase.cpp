@@ -43,7 +43,7 @@ int CDockablePaneBase::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CDockablePane::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	cController::Get()->GetSerialComm().AddObserver(this);
+	//cController::Get()->GetSerialComm().AddObserver(this);
 
 	if (m_dlg)
 	{

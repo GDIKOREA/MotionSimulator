@@ -285,24 +285,20 @@ void CUDPInputView::UpdateUDP(const char *buffer, const int bufferLen)
 	const float t = timeGetTime()*0.001f;
 	float yaw, pitch, roll, heave;
 	cMotionController::Get()->m_udpMod.GetOriginal(yaw, pitch, roll, heave);
-// 	string plotInputStr = common::format("%f;%f;%f;%f", yaw, pitch, roll, heave).c_str();
-// 	m_PlotInputString.SetWindowTextW(str2wstr(plotInputStr).c_str());
-
-	// 그래프 출력, 원래 주석
-	//m_multiPlotWindows->SetString(t, plotInputStr.c_str());
 
 	float origRoll, origPitch, origYaw, origHeave;
 	cMotionController::Get()->m_udpMod.GetOriginal(origYaw, origPitch, origRoll, origHeave);
-	//m_multiPlotWindows->SetString(t, common::format("%f;%f;%f;%f", origYaw, origPitch, origRoll, origHeave).c_str(), 0);
 
 	float froll, fpitch, fyaw, fheave;
 	cMotionController::Get()->m_udpMod.GetFinal(fyaw, fpitch, froll, fheave);
-	//m_multiPlotWindows->SetString(t, common::format("%f;%f;%f;%f;", fyaw, fpitch, froll, fheave).c_str(), 1);
 
-	for (u_int i = 0; i < m_plotInputParser.size(); ++i)
+	if (!g_isReleaseMode)
 	{
-		const string str = m_plotInputParser[i].Execute();
-		m_multiPlotWindows->SetString(t, str.c_str(), i);
+		for (u_int i = 0; i < m_plotInputParser.size(); ++i)
+		{
+			const string str = m_plotInputParser[i].Execute();
+			m_multiPlotWindows->SetString(t, str.c_str(), i);
+		}
 	}
 
 	++m_rcvPacketCount;

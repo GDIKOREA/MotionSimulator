@@ -4,10 +4,11 @@
 
 
 cMotionController::cMotionController()
-	: m_yaw(255)
-	, m_pitch(255)
-	, m_roll(255)
-	, m_heave(512)
+	: m_yaw(10000)
+	, m_pitch(10000)
+	, m_roll(10000)
+	, m_heave(10000)
+	, m_speed(0)
 	, m_actuatorSpeed(1)
 	, m_actuatorYawPower(1)
 	, m_playTime(60)

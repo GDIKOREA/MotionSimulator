@@ -29,6 +29,10 @@ cMotionWaveModulator::cMotionWaveModulator()
 		m_axis[i].maxDifference = MATH_PI;
 		m_axis[i].range = MATH_PI * 2.f;
 
+		m_axis[i].rangeEnable = false;
+		m_axis[i].rangeMax = FLT_MAX;
+		m_axis[i].rangeMin = FLT_MIN;
+
 		m_axis[i].a = 0;
 		m_axis[i].b = 1;
 		m_axis[i].c = 0;
@@ -115,10 +119,16 @@ float GetManufactureValue(const float x0, const float x1,
 
 
 // 변화값을 리턴한다.
-float GetNormalDifference(const float x0, const float x1, const float proportion)
+float GetNormalDifference(const float x00, const float x0, const float x1, cMotionWaveModulator::sAxisOption &option)
 {
-	float diff = (x1 - x0) * proportion;
-	return diff;
+	float diff = (x1 - x0) * option.Kp;
+
+	float ndiff = (x1 - x00) - option.oldDiff;
+	float mv = option.Kp * diff + option.Kd * ndiff + option.Ki * option.incDiff;
+	option.oldDiff = diff;
+	option.incDiff += diff;
+
+	return mv;
 }
 
 
@@ -154,11 +164,24 @@ void cMotionWaveModulator::Update(const float deltaSeconds,
 		}
 		else
 		{
-			diff = GetNormalDifference(m_axis[i].value[1], value[i], m_axis[i].Kp);
+			diff = GetNormalDifference(m_axis[i].value[0], m_axis[i].value[1], value[i], m_axis[i]);
 			m_axis[i].value[1] += diff;
 		}
 
 		m_axis[i].value[0] = value[i];
+	}
+
+	//---------------------------------------------------------------------------------------
+	// Limit
+	for (int i = 0; i < axisLen; ++i)
+	{
+		if (m_axis[i].rangeEnable)
+		{
+			if (m_axis[i].value[1] > m_axis[i].rangeMax)
+				m_axis[i].value[1] = m_axis[i].rangeMax;
+			if (m_axis[i].value[1] < m_axis[i].rangeMin)
+				m_axis[i].value[1] = m_axis[i].rangeMin;
+		}
 	}
 
 
@@ -235,8 +258,10 @@ void cMotionWaveModulator::InitDefault()
 		m_axis[i].recoverProportion = 0.01f;
 		m_axis[i].maxDifference = MATH_PI;
 		m_axis[i].range = MATH_PI * 2.f;
+		m_axis[i].rangeEnable = false;
+		m_axis[i].rangeMax = FLT_MAX;
+		m_axis[i].rangeMin = FLT_MIN;
 	}
-
 }
 
 
@@ -292,6 +317,10 @@ void cMotionWaveModulator::UpdateParseData()
 		m_axis[i].maxDifference = GetFloat(axis[i] + "_max_difference", MATH_PI);
 		m_axis[i].maxDifferenceProportion = GetFloat(axis[i] + "_max_difference_proportion", 0.1f);
 		m_axis[i].range = GetFloat(axis[i] + "_range", MATH_PI * 2.f);
+
+		m_axis[i].rangeEnable = GetBool(axis[i] + "_range_enable", false);
+		m_axis[i].rangeMax = GetFloat(axis[i] + "_range_max", FLT_MAX);
+		m_axis[i].rangeMin = GetFloat(axis[i] + "_range_min", FLT_MIN);
 	}
 
 }

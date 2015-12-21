@@ -393,7 +393,7 @@ void CUDPParseView::Update(const float deltaSeconds)
 		data.fVal = fheave;
 		script::g_symbols["@heave1"] = data;
 
-		if (m_IsUpdateSymbol)
+		if (!g_isReleaseMode && m_IsUpdateSymbol)
 		{
 			if (script::g_symbols.size() != m_symbolCount)
 			{

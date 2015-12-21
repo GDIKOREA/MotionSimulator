@@ -17,6 +17,8 @@
 #include "MainFrm.h"
 #include "VarModulationView.h"
 #include "MachineGunController.h"
+#include "Dirt3Controller.h"
+
 
 #pragma comment(lib, "winmm.lib")
 
@@ -32,11 +34,13 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWndEx)
 const int  iMaxUserToolbars = 10;
 const UINT uiFirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
 const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
+bool g_isReleaseMode = false;
 
 CMotionWaveView *g_mwaveView = NULL;
 CUDPInputView *g_udpInputView = NULL;
 CControlBoard *g_controlView = NULL;
 CLauncherView *g_launcherView = NULL;
+CDirt3View *g_dirt3View = NULL;
 C3DView *g_3dGameView = NULL;
 C3DView *g_3dMotionView = NULL;
 
@@ -128,6 +132,7 @@ void CMainFrame::OnClose()
 	UpdateConfig(false);
 	cMotionController::Get()->m_config.WriteConfigFile(cMotionController::Get()->m_config.m_fileName);
 	CFrameWndEx::OnClose();
+	g_isLoop = false;
 }
 
 
@@ -302,8 +307,11 @@ BOOL CMainFrame::CreateDockingWindows()
 		CREATE_PANE(CMixingView, m_mixingView, SW_HIDE);
 		CREATE_PANE(CVarModulationView, m_varModulationView, SW_HIDE);
 
+		g_isReleaseMode = true;
+ 
 		g_mwaveView = m_motionWaveView;
 		g_udpInputView = m_udpInputView;
+		g_dirt3View = m_dirt3View;
 	}
 	else
 	{
@@ -328,6 +336,7 @@ BOOL CMainFrame::CreateDockingWindows()
 		g_udpInputView = m_udpInputView;
 		g_controlView = m_controlBoardView;
 		g_launcherView = m_launcherView;
+		g_dirt3View = m_dirt3View;
 
 		m_3DGameView->SetRenderCube(true);
 		m_3DMotionView->SetRenderCube(true);
@@ -424,8 +433,16 @@ void CMainFrame::OnViewViewinitialize()
 // 뷰 전체에 UpdateConfig() 함수를 호출한다.
 void CMainFrame::UpdateConfig(bool IsSaveAndValidate) //IsSaveAndValidate=true
 {
-	for each (auto &view in m_viewList)
-		view->GetChildView()->UpdateConfig(IsSaveAndValidate);
+	if (m_viewList.empty())
+	{
+		for each (auto &view in m_childViewList)
+			view->UpdateConfig(IsSaveAndValidate);
+	}
+	else
+	{
+		for each (auto &view in m_viewList)
+			view->GetChildView()->UpdateConfig(IsSaveAndValidate);
+	}
 }
 
 

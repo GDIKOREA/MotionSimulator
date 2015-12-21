@@ -323,7 +323,7 @@ void cMachineGunController::MainBoardProcess(const char *buff, const int size)
 		if ('1' == packet->coin)
 		{
 			// 전 입력과 1초 이상 차이가 났을 때만, 코인입력으로 간주한다.
-			if ((timeGetTime() - m_coinUpEdgeTime) > 1000)
+			if ((timeGetTime() - m_coinUpEdgeTime) > 200)
 			{
 				m_checkCoin = true;
 				m_coinUpEdgeTime = timeGetTime();

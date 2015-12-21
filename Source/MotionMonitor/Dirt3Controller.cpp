@@ -18,6 +18,7 @@ cDirt3Controller::cDirt3Controller() :
 	, m_state(OFF)
 	, m_isLapTimeProgress(false)
 	, m_lastLapTime(0)
+	, m_timeUpCount(0)
 {
 }
 
@@ -100,25 +101,28 @@ void cDirt3Controller::Update(const float deltaSeconds)
 		if (script::g_symbols["@laptime"].fVal == 0.f)
 		{
 			// 게임이 끝나거나면,  대기 상태로 바꾼다.
-			m_vitconMotionSim.Ready();
+			m_vitconMotionSim.ReadyNoOrigin();
 			m_state = READY;
 		}
 		break;
 
 	case cDirt3Controller::PLAY:
-//		if (elapseUDPTime > 5.f)
-		// 게임이 시작된 후, $laptime 값이 증가하다가, 0 이 될 때, 게임을 종료한다.
-// 		if (m_isLapTimeProgress && script::g_symbols["@laptime"].fVal == 0.f)
-// 		{
-// 			// UDP 패킷이 더이상 오지 않는다면, 게임을 Ready 상태로 바꾼다.
-// 			m_vitconMotionSim.Ready();
-// 			m_state = READY;
-// 		}
+		if (elapseUDPTime > 0.5f)
+		{
+			// 게임이 시작된 후, $laptime 값이 증가하다가, 
+			// UDP 패킷이 더이상 오지 않는다면, 게임을 Ready 상태로 바꾼다.
+			if (m_isLapTimeProgress && (script::g_symbols["@laptime"].fVal != 0.f))
+			{
+				m_vitconMotionSim.ReadyNoOrigin();
+				m_state = READY;
+			}
+		}
+
 		if (m_vitconMotionSim.GetPlayTime() > cMotionController::Get()->m_config.m_dirt3ViewPlayTime)
 		{
 			// 플레이할 수 있는 게임 시간을 넘었다면, 게임을 종료한다.
 			// UDP 전송이 완전히 끝 난 후, 
-			m_vitconMotionSim.Ready();
+			m_vitconMotionSim.ReadyNoOrigin();
 			m_state = TIMEUPSTOP;
 		}
 		break;
@@ -152,7 +156,6 @@ void cDirt3Controller::Update(const float deltaSeconds)
 
 		m_oldState = m_vitconMotionSim.GetState();
 	}
-
 }
 
 
@@ -169,20 +172,27 @@ void cDirt3Controller::UpdateUDP(const char *buffer, const int bufferLen)
 	case cDirt3Controller::READY:
 	{
 		// UDP 정보가 들어오고,
-		// distance 값이 0이 될 때, 게임을 시작한다.
-//		if (script::g_symbols["@distance"].fVal == 0.f)
+		// labtime이 일정시간 이상 증가될 때,  
 		const float curLabTime = script::g_symbols["@laptime"].fVal;
-		if (curLabTime != m_lastLapTime)
+		if (curLabTime > m_lastLapTime)
 		{
-			if (m_vitconMotionSim.Play())
+			++m_timeUpCount;
+			
+			// 5 frame 동안 시간이 증가 되었을 때, 게임을 시작한다.
+			if (m_timeUpCount > 5)
 			{
-				m_state = PLAY;
-				m_lastLapTime = 0;
-				m_isLapTimeProgress = false;
+				if (m_vitconMotionSim.Play())
+				{
+					m_state = PLAY;
+					m_lastLapTime = 0;
+					m_timeUpCount = 0;
+					m_isLapTimeProgress = false;
+				}
 			}
+
 		}
 	}
-		break;
+	break;
 
 	case cDirt3Controller::PLAY:
 	{
@@ -190,26 +200,25 @@ void cDirt3Controller::UpdateUDP(const char *buffer, const int bufferLen)
 		const float distance = script::g_symbols["@distance"].fVal;
 		if ((m_lastLapTime == curLapTime) && (m_lastLapTime == 0.f) && (distance != 0.f))
 		{
-			// UDP 패킷이 더이상 오지 않는다면, 게임을 Ready 상태로 바꾼다.
-			m_vitconMotionSim.Ready();
+			// 레이스가 끝났다면, 게임을 Ready 상태로 바꾼다.
+			m_vitconMotionSim.ReadyNoOrigin();
 			m_state = READY;
 		}
+
+		if (!m_isLapTimeProgress)
+		{
+			if (curLapTime > m_lastLapTime)
+			{
+				m_isLapTimeProgress = true;
+			}
+			else
+			{
+				m_lastLapTime = curLapTime;
+			}
+		}
+
 	}
 	break;
-
-// 		if (!m_isLapTimeProgress)
-// 		{
-// 			const float lapTime = script::g_symbols["@laptime"].fVal;
-// 			if (lapTime > m_lastLapTime)
-// 			{
-// 				m_isLapTimeProgress = true;
-// 			}
-// 			else
-// 			{
-// 				m_lastLapTime = lapTime;
-// 			}
-// 		}
-		break;
 	}
 
 	m_lastLapTime = script::g_symbols["@laptime"].fVal;

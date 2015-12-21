@@ -58,6 +58,7 @@ bool cMotionMonitorConfig::ReadConfigFile(const string &fileName)
 		m_dirt3ViewActuatorPower = props.get<float>("DIRT3VIEW_ACTUATOR_RANGE", 1.f);
 		m_dirt3ViewActuatorYawPower = props.get<float>("DIRT3VIEW_ACTUATOR_YAW_POWER", 1.f);
 		m_dirt3ViewActuatorSpeed = props.get<float>("DIRT3VIEW_ACTUATOR_SPEED", 1.f);
+		m_dirt3ViewAutoStart = props.get<bool>("DIRT3VIEW_AUTOSTART", false);
 
 		m_varModViewInputVar = props.get<string>("VARMODVIEW_INPUT_VAR", "");
 		m_varModViewOutputVar = props.get<string>("VARMODVIEW_OUTPUT_VAR", "");
@@ -66,6 +67,10 @@ bool cMotionMonitorConfig::ReadConfigFile(const string &fileName)
 		m_varModViewInputVar2 = props.get<string>("VARMODVIEW_INPUT_VAR2", "");
 		m_varModViewOutputVar2 = props.get<string>("VARMODVIEW_OUTPUT_VAR2", "");
 		m_varModViewScript2 = props.get<string>("VARMODVIEW_SCRIPT2", "");
+
+		m_varModViewInputVar3 = props.get<string>("VARMODVIEW_INPUT_VAR3", "");
+		m_varModViewOutputVar3 = props.get<string>("VARMODVIEW_OUTPUT_VAR3", "");
+		m_varModViewScript3 = props.get<string>("VARMODVIEW_SCRIPT3", "");
 
 	}
 	catch (std::exception&e)
@@ -119,6 +124,7 @@ bool cMotionMonitorConfig::WriteConfigFile(const string &fileName)
 		props.add<float>("DIRT3VIEW_ACTUATOR_RANGE", m_dirt3ViewActuatorPower);
 		props.add<float>("DIRT3VIEW_ACTUATOR_YAW_POWER", m_dirt3ViewActuatorYawPower);
 		props.add<float>("DIRT3VIEW_ACTUATOR_SPEED", m_dirt3ViewActuatorSpeed);
+		props.add<bool>("DIRT3VIEW_AUTOSTART", m_dirt3ViewAutoStart);
 
 		props.add<string>("VARMODVIEW_INPUT_VAR", m_varModViewInputVar);
 		props.add<string>("VARMODVIEW_OUTPUT_VAR", m_varModViewOutputVar);
@@ -127,6 +133,10 @@ bool cMotionMonitorConfig::WriteConfigFile(const string &fileName)
 		props.add<string>("VARMODVIEW_INPUT_VAR2", m_varModViewInputVar2);
 		props.add<string>("VARMODVIEW_OUTPUT_VAR2", m_varModViewOutputVar2);
 		props.add<string>("VARMODVIEW_SCRIPT2", m_varModViewScript2);
+
+		props.add<string>("VARMODVIEW_INPUT_VAR3", m_varModViewInputVar3);
+		props.add<string>("VARMODVIEW_OUTPUT_VAR3", m_varModViewOutputVar3);
+		props.add<string>("VARMODVIEW_SCRIPT3", m_varModViewScript3);
 
 		boost::property_tree::write_json(fileName, props);
 	}

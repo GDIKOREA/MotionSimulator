@@ -102,8 +102,8 @@ BOOL CSerial::WriteCommByte( unsigned char ucByte )
 		}
 
 	return( TRUE );
-
 }
+
 
 int CSerial::SendData( const char *buffer, int size )
 {

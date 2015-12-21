@@ -243,6 +243,9 @@
     <ClInclude Include="sharedmemcommunication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\UIComponent\SerialAsync.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -434,6 +437,9 @@
     <ClCompile Include="sharedmemcommunication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\UIComponent\SerialAsync.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MotionMonitor.rc">
@@ -526,6 +532,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\machinegun_x.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon3.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\dirt3.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

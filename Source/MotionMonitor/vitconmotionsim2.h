@@ -60,6 +60,7 @@ public:
 	void Update(const float deltaSeconds);
 	void On();
 	void Ready();
+	void ReadyNoOrigin();
 	bool Play();
 	void Stop();
 	void Off();

@@ -30,6 +30,7 @@ public:
 	float m_pitch;
 	float m_roll;
 	float m_heave;
+	float m_speed;
 
 	
 	// Joystick으로부터 받아서 계산된 값
@@ -46,6 +47,9 @@ public:
 
 	// Roll 축 연산
 	cSimpleModulator m_varModulator2;
+
+	// Speed 연산
+	cSimpleModulator m_varModulator3;
 
 	cMotionMonitorConfig m_config;
 

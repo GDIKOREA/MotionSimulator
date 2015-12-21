@@ -209,19 +209,23 @@ void CMixingView::Update(const float deltaSeconds)
 
 	if (m_incTime > elapseT)
 	{
-		float yaw, pitch, roll, heave;
-		Mixing(deltaSeconds, yaw, pitch, roll, heave);
+		float yaw, pitch, roll, heave, speed;
+		Mixing(deltaSeconds, yaw, pitch, roll, heave, speed);
 
 		cMotionController::Get()->m_yaw = yaw;
 		cMotionController::Get()->m_pitch = pitch;
 		cMotionController::Get()->m_roll = roll;
 		cMotionController::Get()->m_heave = heave;
-
-		m_multiPlotWindows->SetXY(0, m_totalIncTime, yaw, 0);
-		m_multiPlotWindows->SetXY(1, m_totalIncTime, pitch, 0);
-		m_multiPlotWindows->SetXY(2, m_totalIncTime, roll, 0);
-		m_multiPlotWindows->SetXY(3, m_totalIncTime, heave, 0);
-		m_multiPlotWindows->DrawGraph(m_incTime, false);
+		cMotionController::Get()->m_speed = speed;
+		
+		if (!g_isReleaseMode)
+		{
+			m_multiPlotWindows->SetXY(0, m_totalIncTime, yaw, 0);
+			m_multiPlotWindows->SetXY(1, m_totalIncTime, pitch, 0);
+			m_multiPlotWindows->SetXY(2, m_totalIncTime, roll, 0);
+			m_multiPlotWindows->SetXY(3, m_totalIncTime, heave, 0);
+			m_multiPlotWindows->DrawGraph(m_incTime, false);
+		}
 
 		m_incTime -= elapseT;
 		if (m_incTime > elapseT)
@@ -237,12 +241,13 @@ float calcRate(const float src, const float center, const float rate)
 
 // 입력값을 믹싱해서 리턴한다.
 void CMixingView::Mixing(const float deltaSeconds, 
-	OUT float &yaw, OUT float &pitch, OUT float &roll, OUT float &heave)
+	OUT float &yaw, OUT float &pitch, OUT float &roll, OUT float &heave, OUT float &speed)
 {
 	yaw = 0;
 	pitch = 0;
 	roll = 0;
 	heave = 0;
+	speed = 0;
 
 	if (m_config.m_inputType | INPUT_JOYSTICK)
 	{
@@ -325,16 +330,20 @@ void CMixingView::Mixing(const float deltaSeconds,
 			cMotionController::Get()->m_varModulator1.GetFinal(varPitch);
 			float varRoll;
 			cMotionController::Get()->m_varModulator2.GetFinal(varRoll);
+			float varSpeed;
+			cMotionController::Get()->m_varModulator3.GetFinal(varSpeed);
 
  			if (m_config.m_rate4_all == 0)
 			{
 				pitch += calcRate(varPitch, m_config.m_rate4_center_pitch, m_config.m_rate4_pitch * cMotionController::Get()->m_config.m_dirt3ViewActuatorPower);
 				roll += calcRate(varRoll, m_config.m_rate4_center_roll, m_config.m_rate4_roll * cMotionController::Get()->m_config.m_dirt3ViewActuatorPower);
+				speed += varSpeed;
 			}
 			else
 			{
 				pitch += calcRate(varPitch, m_config.m_rate4_center_pitch, m_config.m_rate4_all * cMotionController::Get()->m_config.m_dirt3ViewActuatorPower);
 				roll += calcRate(varRoll, m_config.m_rate4_center_roll, m_config.m_rate4_all * cMotionController::Get()->m_config.m_dirt3ViewActuatorPower);
+				speed += varSpeed;
 			}
 		}
 	}
@@ -364,11 +373,15 @@ void CMixingView::Mixing(const float deltaSeconds,
 	if (yaw < 0)
 		yaw = 0;
 
-	if (heave > 20000)
-		heave = 20000;
-	if (heave < 0)
-		heave = 0;
+	if (heave > 14000)
+		heave = 14000;
+	if (heave < 4000)
+		heave = 4000;
 
+	if (speed > 100)
+		speed = 100;
+	if (speed < 0)
+		speed = 0;
 }
 
 

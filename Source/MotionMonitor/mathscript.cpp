@@ -25,6 +25,7 @@ void mathscript::rm_factor(sFactor *p)
 {
 	RET(!p);
 	rm_expr(p->expr);
+	rm_func(p->func);
 	delete p;
 }
 
@@ -44,3 +45,9 @@ void mathscript::rm_expr(sExpr *p)
 	delete p;
 }
 
+void mathscript::rm_func(sFunc *p)
+{
+	RET(!p);
+	rm_expr(p->expr);
+	delete p;
+}

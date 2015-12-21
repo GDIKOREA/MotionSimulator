@@ -15,7 +15,7 @@ public:
 	enum { IDD = IDD_DIALOG_MIXING };
 
 	virtual void UpdateConfig(bool IsSaveAndValidate = true) override;
-	void Mixing(const float deltaSeconds, OUT float &yaw, OUT float &pitch, OUT float &roll, OUT float &heave);
+	void Mixing(const float deltaSeconds, OUT float &yaw, OUT float &pitch, OUT float &roll, OUT float &heave, OUT float &speed);
 // 	void SetMixingAxisMode(const AXIS_TYPE::TYPE type);
 // 	AXIS_TYPE::TYPE GetMixingAxisMode() const;
 

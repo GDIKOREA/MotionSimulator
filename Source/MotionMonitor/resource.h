@@ -13,6 +13,8 @@
 #define IDS_TOOLBAR_CUSTOMIZE           125
 #define ID_VIEW_CUSTOMIZE               126
 #define IDR_MAINFRAME                   128
+#define I2DR_MAINFRAME                  128
+#define IDR_MAINFRAME2                  128
 #define IDR_MAINFRAME_256               129
 #define IDR_MotionMonitorTYPE           130
 #define ID_WINDOW_MANAGER               131
@@ -271,18 +273,23 @@
 #define IDC_EDIT_ACTUATOR_YAW           1141
 #define IDC_EDIT_OUTPUTVAR              1141
 #define IDC_EDIT_SCRIPT2                1142
+#define IDC_CHECK_AUTOSTART             1142
 #define IDC_EDIT_INPUTVAR2              1143
 #define IDC_EDIT_OUTPUTVAR2             1144
 #define IDC_EDIT_NEWID                  1144
+#define IDC_EDIT_SCRIPT3                1145
+#define IDC_EDIT_INPUTVAR3              1146
+#define IDC_STATIC_FRAME                1146
+#define IDC_EDIT_OUTPUTVAR3             1147
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        343
+#define _APS_NEXT_RESOURCE_VALUE        346
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1146
+#define _APS_NEXT_CONTROL_VALUE         1147
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

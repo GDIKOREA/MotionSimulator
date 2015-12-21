@@ -29,6 +29,9 @@ void CVarModulationView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_INPUTVAR2, m_editInputVar2);
 	DDX_Control(pDX, IDC_EDIT_OUTPUTVAR2, m_editOutputVar2);
 	DDX_Control(pDX, IDC_EDIT_SCRIPT2, m_editScript2);
+	DDX_Control(pDX, IDC_EDIT_INPUTVAR3, m_editInputVar3);
+	DDX_Control(pDX, IDC_EDIT_OUTPUTVAR3, m_editOutputVar3);
+	DDX_Control(pDX, IDC_EDIT_SCRIPT3, m_editScript3);
 }
 
 
@@ -39,6 +42,9 @@ BEGIN_ANCHOR_MAP(CVarModulationView)
 	ANCHOR_MAP_ENTRY(IDC_EDIT_INPUTVAR2, ANF_LEFT | ANF_TOP | ANF_RIGHT)
 	ANCHOR_MAP_ENTRY(IDC_EDIT_OUTPUTVAR2, ANF_LEFT | ANF_TOP | ANF_RIGHT)
 	ANCHOR_MAP_ENTRY(IDC_EDIT_SCRIPT2, ANF_LEFT | ANF_TOP | ANF_RIGHT)
+	ANCHOR_MAP_ENTRY(IDC_EDIT_INPUTVAR3, ANF_LEFT | ANF_TOP | ANF_RIGHT)
+	ANCHOR_MAP_ENTRY(IDC_EDIT_OUTPUTVAR3, ANF_LEFT | ANF_TOP | ANF_RIGHT)
+	ANCHOR_MAP_ENTRY(IDC_EDIT_SCRIPT3, ANF_LEFT | ANF_TOP | ANF_RIGHT)
 	ANCHOR_MAP_ENTRY(IDC_BUTTON_UPDATE, ANF_TOP | ANF_RIGHT)
 END_ANCHOR_MAP()
 
@@ -68,6 +74,8 @@ BOOL CVarModulationView::OnInitDialog()
 
 	InitAnchors();
 
+	UpdateConfig();
+
 	return TRUE;
 }
 
@@ -93,6 +101,10 @@ void CVarModulationView::UpdateConfig(bool IsSaveAndValidate)
 		m_editInputVar2.SetWindowText(common::str2wstr(cMotionController::Get()->m_config.m_varModViewInputVar2).c_str());
 		m_editOutputVar2.SetWindowText(common::str2wstr(cMotionController::Get()->m_config.m_varModViewOutputVar2).c_str());
 		m_editScript2.SetWindowText(common::str2wstr(cMotionController::Get()->m_config.m_varModViewScript2).c_str());
+
+		m_editInputVar3.SetWindowText(common::str2wstr(cMotionController::Get()->m_config.m_varModViewInputVar3).c_str());
+		m_editOutputVar3.SetWindowText(common::str2wstr(cMotionController::Get()->m_config.m_varModViewOutputVar3).c_str());
+		m_editScript3.SetWindowText(common::str2wstr(cMotionController::Get()->m_config.m_varModViewScript3).c_str());
 
 		UpdateVariable();
 	}
@@ -123,6 +135,19 @@ void CVarModulationView::UpdateConfig(bool IsSaveAndValidate)
 		m_editScript2.GetWindowTextW(strScript2);
 		cMotionController::Get()->m_config.m_varModViewScript2 = common::wstr2str((LPCTSTR)strScript2);
 
+
+		CString strInputVar3;
+		m_editInputVar3.GetWindowTextW(strInputVar3);
+		cMotionController::Get()->m_config.m_varModViewInputVar3 = common::wstr2str((LPCTSTR)strInputVar3);
+
+		CString strOutputVar3;
+		m_editOutputVar3.GetWindowTextW(strOutputVar3);
+		cMotionController::Get()->m_config.m_varModViewOutputVar3 = common::wstr2str((LPCTSTR)strOutputVar3);
+
+		CString strScript3;
+		m_editScript3.GetWindowTextW(strScript3);
+		cMotionController::Get()->m_config.m_varModViewScript3 = common::wstr2str((LPCTSTR)strScript3);
+
 	}
 }
 
@@ -137,8 +162,10 @@ void CVarModulationView::Update(const float deltaSeconds)
 	{
 		const float input1 = m_interpreter.Excute(m_inputVarParser1.m_stmt);
 		const float input2 = m_interpreter.Excute(m_inputVarParser2.m_stmt);
+		const float input3 = m_interpreter.Excute(m_inputVarParser3.m_stmt);
 		cMotionController::Get()->m_varModulator1.Update(m_incTime, input1);
 		cMotionController::Get()->m_varModulator2.Update(m_incTime, input2);
+		cMotionController::Get()->m_varModulator3.Update(m_incTime, input3);
 
 		if (!m_outputVar1.empty())
 		{
@@ -160,6 +187,17 @@ void CVarModulationView::Update(const float deltaSeconds)
 			data.fVal = x2;
 			data.type = script::FEILD_TYPE::T_FLOAT;
 			script::g_symbols[m_outputVar2] = data;
+		}
+
+		if (!m_outputVar3.empty())
+		{
+			float x3;
+			cMotionController::Get()->m_varModulator3.GetFinal(x3);
+
+			script::sFieldData data;
+			data.fVal = x3;
+			data.type = script::FEILD_TYPE::T_FLOAT;
+			script::g_symbols[m_outputVar3] = data;
 		}
 
 		m_incTime = 0;
@@ -207,6 +245,18 @@ void CVarModulationView::UpdateVariable()
 	m_editScript2.GetWindowTextW(strScript2);
 	cMotionController::Get()->m_varModulator2.ParseStr(wstr2str((LPCTSTR)strScript2));
 
+
+	CString strInputVar3;
+	m_editInputVar3.GetWindowTextW(strInputVar3);
+	m_inputVarParser3.ParseStr(common::wstr2str((LPCTSTR)strInputVar3));
+
+	CString strOutputVar3;
+	m_editOutputVar3.GetWindowTextW(strOutputVar3);
+	m_outputVar3 = common::wstr2str((LPCTSTR)strOutputVar3);
+
+	CString strScript3;
+	m_editScript3.GetWindowTextW(strScript3);
+	cMotionController::Get()->m_varModulator3.ParseStr(wstr2str((LPCTSTR)strScript3));
 }
 
 

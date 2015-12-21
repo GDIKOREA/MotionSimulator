@@ -22,8 +22,9 @@ using namespace Gdiplus;
 #endif
 
 
-// CMotionMonitorApp
+bool g_isLoop = true;
 
+// CMotionMonitorApp
 BEGIN_MESSAGE_MAP(CMotionMonitorApp, CWinAppEx)
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
@@ -152,9 +153,9 @@ BOOL CMotionMonitorApp::InitInstance()
 		config.ReadConfigFile(commandLine);
 	}
 
- 	CLoginDialog loginDlg;
- 	if (IDCANCEL == loginDlg.DoModal())
- 		return FALSE;
+//  	CLoginDialog loginDlg;
+//  	if (IDCANCEL == loginDlg.DoModal())
+//  		return FALSE;
 
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views
@@ -194,7 +195,7 @@ BOOL CMotionMonitorApp::InitInstance()
 		CRect wr;
 		m_pMainWnd->GetWindowRect(wr);
 		wr.right = wr.left + 475;
-		wr.bottom = wr.top + 660;
+		wr.bottom = wr.top + 680;
 		m_pMainWnd->MoveWindow(wr);
 	}
 
@@ -220,6 +221,31 @@ BOOL CMotionMonitorApp::InitInstance()
 	}
 	((CMainFrame*)m_pMainWnd)->Init();
 		
+	MSG msg;
+	ZeroMemory(&msg, sizeof(MSG));
+
+	int oldT = timeGetTime();
+	while (1)
+	{
+		//PeekMessage 는 메시지 큐에 메시지가 없어도 프로그램이 멈추기 않고 진행이 된다.
+		//이때 메시지큐에 메시지가 없으면 false 가 리턴되고 메시지가 있으면 true 가 리턴이된다.
+		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg); //눌린 키보드 의 문자를 번역하여 WM_CHAR 메시지를 발생시킨다.
+			DispatchMessage(&msg);  //받아온 메시지 정보로 윈도우 프로시져 함수를 실행시킨다.
+		}
+
+		if (!g_isLoop)
+			break;
+
+		const int curT = timeGetTime();
+		const float deltaSeconds = (float)(curT - oldT) * 0.001f; // 1초가 경과되면 1이된다.
+		if (deltaSeconds > 0.01f)
+		{
+			cController::Get()->Update(deltaSeconds);
+			oldT = curT;
+		}
+	}
 	//Close down COM
 	CoUninitialize();
 

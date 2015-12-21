@@ -24,6 +24,7 @@ namespace mathscript
 		float expr(const sExpr*p);
 		float term(const sTerm *p);
 		float factor(const sFactor *p);
+		float func(const sFunc *p);
 	};
 
 }

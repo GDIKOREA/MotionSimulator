@@ -104,17 +104,20 @@ namespace GAME_TYPE {
 
 
 extern GAME_TYPE::TYPE g_gameType;
-
+extern bool g_isReleaseMode;
+extern bool g_isLoop;
 
 class CMotionWaveView;
 class CUDPInputView;
 class CControlBoard;
 class CLauncherView;
+class CDirt3View;
 
 extern CMotionWaveView *g_mwaveView;
 extern CUDPInputView *g_udpInputView;
 extern CControlBoard *g_controlView;
 extern CLauncherView *g_launcherView;
+extern CDirt3View *g_dirt3View;
 extern C3DView *g_3dGameView;
 extern C3DView *g_3dMotionView;
 

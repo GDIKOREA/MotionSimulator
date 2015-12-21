@@ -8,7 +8,7 @@
 cController::cController() :
 	m_globalSeconds(0)
 {
-	m_serialComm = new cSerialCommunication();
+	m_serialComm = new cSerialAsync();
 	m_udpServer.m_sleepMillis = 1;
 }
 
@@ -23,7 +23,7 @@ cController::~cController()
 bool cController::ConnectSerial(const int portNum, const int baudRate)
 {
 	RETV(!m_serialComm, false);
-	return m_serialComm->ConnectSerial(portNum, baudRate);
+	return m_serialComm->Open(portNum, baudRate);
 }
 
 
@@ -41,7 +41,7 @@ void cController::Update(const float deltaSeconds)
 
 	m_globalSeconds += deltaSeconds;
 
-	m_serialComm->ProcessSerialCommunicatoin(deltaSeconds);	
+	//m_serialComm->ProcessSerialCommunicatoin(deltaSeconds);	
 
 	char buffer[512];
 	const int bufferLen = m_udpServer.GetRecvData(buffer, sizeof(buffer));

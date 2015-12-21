@@ -26,17 +26,19 @@ public:
 
 	float GetGlobalSeconds() const;
 
-	cSerialCommunication& GetSerialComm();
+	//cSerialCommunication& GetSerialComm();
+	cSerialAsync& GetSerialComm();
 	network::cUDPServer& GetUDPComm();
 
 
 protected:
-	cSerialCommunication *m_serialComm;
+	//cSerialCommunication *m_serialComm;
+	cSerialAsync *m_serialComm;
 	network::cUDPServer m_udpServer;
 	float m_globalSeconds;
 };
 
 
-inline cSerialCommunication& cController::GetSerialComm() { return *m_serialComm;  }
+inline cSerialAsync& cController::GetSerialComm() { return *m_serialComm; }
 inline network::cUDPServer& cController::GetUDPComm() { return m_udpServer; }
 inline float cController::GetGlobalSeconds() const { return m_globalSeconds; }

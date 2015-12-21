@@ -69,9 +69,11 @@ public:
 	cVitconMotionSim::STATE m_oldState;
 
 	// UDP 통신
+	// MainBoard 간 통신
 	network::cUDPServer m_mainBoardInput; // 머신건 매인보드로 부터 정보를 얻는다.
 	network::cUDPClient m_mainBoardSender; // 머신건 매인보드에게 정보를 보내는 객체
 	network::cUDPClient m_mainBoardProxy; // 머신건 매인보드로 부터 받은 정보를 그대로 내보낸다.
+
 	network::cUDPServer m_cameraUDPReceiver; // 머신건 카메라로 부터 정보를 얻는다.
 	network::cUDPClient m_gameClientSender; // 머신건 클라이언트에 정보를 보낸다.
 

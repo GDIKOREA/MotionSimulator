@@ -35,12 +35,15 @@ protected:
 	STATE m_state;
 	cMathParser m_inputVarParser1;
 	cMathParser m_inputVarParser2;
+	cMathParser m_inputVarParser3;
 	mathscript::cMathInterpreter m_interpreter;
 
 	string m_inputVar1;
 	string m_outputVar1;
 	string m_inputVar2;
 	string m_outputVar2;
+	string m_inputVar3;
+	string m_outputVar3;
 
 	float m_incTime;
 
@@ -51,10 +54,13 @@ public:
 	afx_msg void OnBnClickedCancel();
 	CEdit m_editInputVar;
 	CEdit m_editInputVar2;
+	CEdit m_editInputVar3;
 	CEdit m_editOutputVar;
 	CEdit m_editOutputVar2;
+	CEdit m_editOutputVar3;
 	CEdit m_editScript;
 	CEdit m_editScript2;
+	CEdit m_editScript3;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnBnClickedButtonStart();

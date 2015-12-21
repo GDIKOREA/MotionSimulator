@@ -42,6 +42,7 @@ public:
 	float m_dirt3ViewActuatorPower;			// 0 ~ 1
 	float m_dirt3ViewActuatorYawPower;	// 0 ~ 1
 	float m_dirt3ViewActuatorSpeed;			// 0 ~ 1
+	bool m_dirt3ViewAutoStart;
 
 	string m_varModViewInputVar;
 	string m_varModViewOutputVar;
@@ -50,5 +51,9 @@ public:
 	string m_varModViewInputVar2;
 	string m_varModViewOutputVar2;
 	string m_varModViewScript2;
+
+	string m_varModViewInputVar3;
+	string m_varModViewOutputVar3;
+	string m_varModViewScript3;
 };
 

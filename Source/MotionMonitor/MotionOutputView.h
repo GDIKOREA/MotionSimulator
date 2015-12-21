@@ -32,7 +32,8 @@ protected:
 	float m_incTime;
 	float m_totalIncTime;
 	float m_incSerialTime;
-
+	float m_frameIncTime;
+	int m_sendCount;
 
 	DECLARE_ANCHOR_MAP();
 	DECLARE_MESSAGE_MAP()
@@ -58,4 +59,5 @@ public:
 	BOOL m_IsOnlyEmergency;
 	afx_msg void OnBnClickedCheck1();
 	afx_msg void OnDestroy();
+	CStatic m_Frame;
 };

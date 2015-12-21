@@ -14,6 +14,9 @@ GAME_TYPE::TYPE g_gameType = GAME_TYPE::MACHINEGUN;
 // http://www.codeproject.com/Articles/12093/Using-RichEditCtrl-to-Display-Formatted-Logs
 int AppendToLogAndScroll(CRichEditCtrl* pCtrl, CString str, COLORREF color)
 {
+	if (g_isReleaseMode)
+		return 0;
+
 	long nVisible = 0;
 	long nInsertionPoint = 0;
 	CHARFORMAT cf;
@@ -112,7 +115,7 @@ void SendMotionSimMessage(const int state)
 	for (int i = 0; i < 5; ++i)
 	{
 		Sleep(50);
-		cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
+		cController::Get()->GetSerialComm().m_serial.SendData(out.c_str(), out.size());
 	}
 	Sleep(50);
 }
@@ -143,7 +146,7 @@ void SendMotionSimMessage2(const int state)
 	for (int i = 0; i < 5; ++i)
 	{
 		Sleep(50);
-		cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
+		cController::Get()->GetSerialComm().m_serial.SendData(out.c_str(), out.size());
 	}
 	Sleep(50);
 }

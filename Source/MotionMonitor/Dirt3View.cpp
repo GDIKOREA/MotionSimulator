@@ -16,7 +16,8 @@ Dirt3View.cpp : implementation file
 CDirt3View::CDirt3View(CWnd* pParent /*=NULL*/)
 : CDockablePaneChildView(CDirt3View::IDD, pParent)
 , m_state(STOP)
-, m_IsMotionSim(FALSE)
+, m_IsMotionSim(TRUE)
+, m_IsAutoStart(FALSE)
 , m_titleImage(common::str2wstr("../media/dirt3/title.jpg").c_str())
 , m_controllerMainState(-1)
 , m_controllerState(-1)
@@ -25,6 +26,7 @@ CDirt3View::CDirt3View(CWnd* pParent /*=NULL*/)
 , m_enChange2(false)
 , m_enChange3(false)
 , m_displayPlayTime(0)
+, m_startTimer(0)
 {
 }
 
@@ -38,6 +40,7 @@ void CDirt3View::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_RADIO_4AXIS, m_radioAxisType);
 	DDX_Control(pDX, IDC_BUTTON_START, m_StartButton);
 	DDX_Check(pDX, IDC_CHECK_MOTION_SIM, m_IsMotionSim);
+	DDX_Check(pDX, IDC_CHECK_AUTOSTART, m_IsAutoStart);	
 	DDX_Control(pDX, IDC_STATIC_STATE0, m_State0Text);
 	DDX_Control(pDX, IDC_STATIC_STATE1, m_State1Text);
 	DDX_Control(pDX, IDC_STATIC_STATE2, m_State2Text);
@@ -49,6 +52,7 @@ void CDirt3View::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_PLAYTIME, m_PlayTimeText);
 	DDX_Control(pDX, IDC_SLIDER_YAW_RANGE, m_sliderActuatorYawRange);
 	DDX_Control(pDX, IDC_EDIT_ACTUATOR_YAW, m_editActuatorYawRange);
+	DDX_Control(pDX, IDC_STATIC_FRAME, m_FrameStr);
 }
 
 
@@ -68,6 +72,7 @@ BEGIN_MESSAGE_MAP(CDirt3View, CDockablePaneChildView)
 	ON_EN_CHANGE(IDC_EDIT_PLAYTIME, &CDirt3View::OnEnChangeEditPlaytime)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_YAW_RANGE, &CDirt3View::OnNMCustomdrawSliderYawRange)
 	ON_EN_CHANGE(IDC_EDIT_ACTUATOR_YAW, &CDirt3View::OnEnChangeEditActuatorYaw)
+	ON_BN_CLICKED(IDC_CHECK_AUTOSTART, &CDirt3View::OnBnClickedCheckAutostart)
 END_MESSAGE_MAP()
 
 
@@ -83,6 +88,8 @@ void CDirt3View::OnBnClickedCancel()
 BOOL CDirt3View::OnInitDialog()
 {
 	CDockablePaneChildView::OnInitDialog();
+
+	UpdateConfig();
 
 	float actuatorPowerRate = 1;
 	float actuatorYawRangeRate = 1;
@@ -127,6 +134,20 @@ void CDirt3View::UpdateConfig(bool IsSaveAndValidate)
 		m_sliderActuatorYawRange.SetPos(yawPos);
 		m_sliderActuatorSpeed.SetPos(speedPos);
 
+		const bool autoStart = cMotionController::Get()->m_config.m_dirt3ViewAutoStart;
+		m_IsAutoStart = autoStart? TRUE : FALSE;
+
+		static bool onlyOne = true; // 프로그램 시작시 한번만 실행된다.
+		if (onlyOne)
+		{
+			onlyOne = false;
+			if (autoStart)
+			{
+				// 일정 시간이 지난 후 Start를 시작한다.
+				m_startTimer = timeGetTime();
+			}
+		}
+
 // 		if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
 // 			frm->m_mixingView->SetActuatorPowerRate(cMotionController::Get()->m_config.m_dirt3ViewActuatorPower);
 		//cController::Get()->SetActuatorSpeed(cMotionController::Get()->m_config.m_dirt3ViewActuatorSpeed);
@@ -136,6 +157,8 @@ void CDirt3View::UpdateConfig(bool IsSaveAndValidate)
 	else
 	{
 		UpdateData();
+
+		cMotionController::Get()->m_config.m_dirt3ViewAutoStart = m_IsAutoStart? true : false;
 
 // 		if (CMainFrame *frm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
 // 			cMotionController::Get()->m_config.m_dirt3ViewAxisType = frm->m_mixingView->GetMixingAxisMode();
@@ -174,8 +197,17 @@ void CDirt3View::OnBnClickedButtonStart()
 
 void CDirt3View::Update(const float deltaSeconds)
 {
-	cDirt3Controller::Get()->Update(deltaSeconds);
+	if (m_startTimer)
+	{
+		// 프로그램이 시작된 후, 5초후에 Start 상태로 시작한다.
+		if (timeGetTime() - m_startTimer > 5000)
+		{
+			m_startTimer = 0;
+			OnBnClickedButtonStart();
+		}
+	}
 
+	cDirt3Controller::Get()->Update(deltaSeconds);
 
 	// 정보가 바뀔 때, UI 출력을 변경한다.
 	if (cDirt3Controller::Get()->GetState() != m_controllerMainState)
@@ -358,3 +390,8 @@ void CDirt3View::OnEnChangeEditPlaytime()
 	cMotionController::Get()->m_config.m_dirt3ViewPlayTime = t;
 }
   
+
+void CDirt3View::OnBnClickedCheckAutostart()
+{
+
+}

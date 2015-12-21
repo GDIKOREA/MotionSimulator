@@ -5,6 +5,7 @@
 #include "MotionMonitor.h"
 #include "MotionOutputView.h"
 #include "afxdialogex.h"
+#include "Dirt3View.h"
 
 
 const static CString g_outputViewPlotCommand = L"\r\n\
@@ -35,6 +36,8 @@ CMotionOutputView::CMotionOutputView(CWnd* pParent /*=NULL*/)
 	, m_incTime(0)
 	, m_totalIncTime(0)
 	, m_incSerialTime(0)
+	, m_frameIncTime(0)
+	, m_sendCount(0)
 	, m_multiPlotWindows(NULL)
 	, m_IsOnlyEmergency(FALSE)
 {
@@ -54,6 +57,7 @@ void CMotionOutputView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_RICHEDIT2_LOG, m_Log);
 	DDX_Control(pDX, IDC_RICHEDIT2_OUTPUT_LOG, m_OutputLog);
 	DDX_Check(pDX, IDC_CHECK1, m_IsOnlyEmergency);
+	DDX_Control(pDX, IDC_STATIC_FRAME, m_Frame);
 }
 
 
@@ -152,7 +156,7 @@ void CMotionOutputView::UpdateConfig(bool IsSaveAndValidate) //IsSaveAndValidate
 // 시리얼 포트와 연결한다.
 void CMotionOutputView::OnBnClickedButtonConnect()
 {
-	const bool isConnect = cController::Get()->GetSerialComm().IsConnect();
+	const bool isConnect = cController::Get()->GetSerialComm().IsOpen();
 
 	if (isConnect)
 	{
@@ -187,18 +191,23 @@ void CMotionOutputView::OnBnClickedButtonConnect()
 // 매 프레임마다 호출된다.
 void CMotionOutputView::Update(const float deltaSeconds)
 {
-	const bool isSerialConnect = cController::Get()->GetSerialComm().IsConnect();
+	const bool isSerialConnect = cController::Get()->GetSerialComm().IsOpen();
 	if (isSerialConnect)
 	{
-		//Quaternion quat = cController::Get()->GetCubeFlight().GetRotation();
 		m_incTime += deltaSeconds;
 		m_incSerialTime += deltaSeconds;
 		m_totalIncTime += deltaSeconds;
+		m_frameIncTime += deltaSeconds;
 
-		//const int out_yaw = 256;
-		// machinegun
-// 		const int out_sway = 256;
-// 		const int out_surge = 256;
+		if (m_frameIncTime > 1.f)
+		{
+			if (!g_isReleaseMode)
+				m_Frame.SetWindowTextW(common::formatw("%d", m_sendCount).c_str());
+			g_dirt3View->m_FrameStr.SetWindowTextW(common::formatw("%d", m_sendCount).c_str());
+			m_sendCount = 0;
+			m_frameIncTime = 0;
+		}
+
 		// dirt3
 		const int out_sway = 10000;
 		const int out_surge = 10000;
@@ -207,37 +216,38 @@ void CMotionOutputView::Update(const float deltaSeconds)
 		const int out_pitch = (int)cMotionController::Get()->m_pitch;
 		const int out_roll = (int)cMotionController::Get()->m_roll;
 		const int out_heave = (int)cMotionController::Get()->m_heave;
+		const int out_speed = (int)cMotionController::Get()->m_speed;
 
-		if (m_incTime > 0.033f)
+		if (!g_isReleaseMode && (m_incTime > 0.033f))
 		{
 			m_multiPlotWindows->SetString(m_totalIncTime, common::format("%d;%d;%d;%d", out_yaw, out_pitch, out_roll, out_heave).c_str(), 0);
 			m_multiPlotWindows->DrawGraph(m_incTime, false);
 			m_incTime = 0;
 		}
 
-		if (m_incSerialTime > 0.07f) // 15 frame, machine gun
-		//if (m_incSerialTime > 0.033f) // 30 frame, dirt3
+
+		//if (m_incSerialTime > 0.07f) // 15 frame, machine gun
+		if (m_incSerialTime > 0.03f) // 30 frame, dirt3
 		{
+			++m_sendCount;
+
 			if (m_isStartSendMotion && !m_IsOnlyEmergency)
 			{
-				// machinegun version
-// 				const string out = common::format(
-// 					"A%3d%3d%3d%3d%3d%3d0Z", out_roll, out_pitch, out_yaw,
-// 					out_sway, out_surge, out_heave, out_switch);
 				const int spareSpeed = 100;
 				string out = common::format(
 					"A%5d%5d%5d%5d%5d%5d%3d%3d%3d%3d%3d%3d0Z", out_roll, out_pitch, out_yaw,
 					out_sway, out_surge, out_heave,  
-					spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed,
+					spareSpeed, spareSpeed, spareSpeed, spareSpeed, spareSpeed, out_speed,
 					out_switch);
 				SpaceCharToZeroChar(out);
 
 				AppendToLogAndScroll(&m_OutputLog, common::str2wstr(out+"\n").c_str(), RGB(200, 200, 200));
 
 				// 시리얼 포트로 모션 시뮬레이터 장비에 모션 정보를 전송한다.
-				cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
+				cController::Get()->GetSerialComm().m_serial.SendData(out.c_str(), out.size());
 
-				m_multiPlotWindows->SetString(m_totalIncTime, common::format("%d;%d;%d;%d", out_yaw, out_pitch, out_roll, out_heave).c_str(), 1);
+				if (!g_isReleaseMode)
+					m_multiPlotWindows->SetString(m_totalIncTime, common::format("%d;%d;%d;%d", out_yaw, out_pitch, out_roll, out_heave).c_str(), 1);
 			}
 
 			m_incSerialTime = 0;
@@ -318,17 +328,6 @@ void CMotionOutputView::SendMotionControllSwitchMessage(const int state)
 	if (!m_isStartSendMotion)
 		return;
 
-// 	float roll, pitch, yaw, heave;
-// 	cMotionController::Get()->m_udpMod.GetFinal(yaw, pitch, roll, heave);
-
-	// machinegun
-// 	const int out_pitch = 256;// (int)(pitch * 255) + 255;
-// 	const int out_roll = 256;
-// 	const int out_yaw = 256;
-// 	const int out_sway = 256;
-// 	const int out_surge = 256;
-// 	const int out_heave = 512;
-
 	const int out_pitch = 10000;// (int)(pitch * 255) + 255;
 	const int out_roll = 10000;
 	const int out_yaw = 10000;
@@ -337,11 +336,6 @@ void CMotionOutputView::SendMotionControllSwitchMessage(const int state)
 	const int out_heave = 10000;
 	const int spareSpeed = 100;
 	const int out_switch = state;
-
-	// machinegun
-// 	const string out = common::format(
-// 		"A%3d%3d%3d%3d%3d%3d%dZ", out_roll, out_pitch, out_yaw,
-// 		out_sway, out_surge, out_heave, out_switch);
 
 	string out = common::format(
 		"A%5d%5d%5d%5d%5d%5d%3d%3d%3d%3d%3d%3d%1dZ", out_roll, out_pitch, out_yaw,
@@ -352,10 +346,22 @@ void CMotionOutputView::SendMotionControllSwitchMessage(const int state)
 
 	AppendToLogAndScroll(&m_OutputLog, common::str2wstr(out + "\n").c_str(), RGB(200, 200, 200));
 	
-	for (int i = 0; i < 5; ++i)
+// 	for (int i = 0; i < 10; ++i)
+// 	{
+// 		cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
+//			Sleep(100);
+// 	}
+
+	int cnt = 0;
+	int oldT = timeGetTime();
+	while (cnt < 10)
 	{
-		cController::Get()->GetSerialComm().GetSerial().SendData(out.c_str(), out.size());
-		Sleep(50);
+		if (timeGetTime() - oldT > 100)
+		{
+			++cnt;
+			oldT = timeGetTime();
+			cController::Get()->GetSerialComm().m_serial.SendData(out.c_str(), out.size());
+		}
 	}
 
 	m_incSerialTime = 0;

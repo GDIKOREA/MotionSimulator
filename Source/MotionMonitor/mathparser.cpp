@@ -140,7 +140,7 @@ sTerm* cMathParser::term(string &src)
 }
 
 
-//factor -> id, number, (exp)
+//factor -> id, number, func, (exp)
 sFactor* cMathParser::factor(string &src)
 {
 	trim(src);
@@ -170,11 +170,31 @@ sFactor* cMathParser::factor(string &src)
 	}
 	else
 	{
-		factor->id = id(src);
-		factor->type = FACTOR_TYPE::ID;
+		string strId = id(src);
+		if (check(src, '('))
+		{
+ 			factor->func = func(strId, src);
+ 			factor->type = FACTOR_TYPE::FUNC;
+		}
+		else
+		{
+			factor->id = strId;
+			factor->type = FACTOR_TYPE::ID;
+		}
 	}
 
 	return factor;
+}
+
+
+// func -> id ( expression )
+mathscript::sFunc* cMathParser::func(const string &name, string &src)
+{
+	sFunc *fn = new sFunc({});
+	fn->id = name;
+	fn->expr = expression(src);
+	check(src, ')');
+	return fn;
 }
 
 

@@ -257,9 +257,10 @@ void CLauncherView::Update(const float deltaSeconds)
 	if (m_isGameExeTerminate)
 	{
 		m_isGameExeTerminate = false;
+		m_cameraExeTracker.Termaniate(); // 카메라 프로그램 종료한다.
+		m_gameExeTracker.Termaniate(); // 게임 프로그램 종료.
 		::ShowWindow(::AfxGetMainWnd()->m_hWnd, SW_RESTORE);
-	}
-	
+	}	
 }
 
 
@@ -327,7 +328,7 @@ void CLauncherView::OnBnClickedButtonBoardcheck()
 	const string fileName = "../media/machinegun/mg_controller.ini";
 	const int proxyPort = uiutil::GetProfileInt("MainBoard UDP", "ProxyPort", 10000, fileName);
 
-	ShellExecuteA(NULL, "open", exeName.c_str(), format("%d", proxyPort).c_str(), exeDir.c_str(), SW_SHOW);
+	ShellExecuteA(NULL, "open", exeName.c_str(), format("0 %d", proxyPort).c_str(), exeDir.c_str(), SW_SHOW);
 }
 
 

@@ -86,6 +86,22 @@ float cMathInterpreter::term(const sTerm *p)
 }
 
 
+float cMathInterpreter::func(const sFunc *p)
+{
+	using namespace script;
+
+	RETV(!p, 0);
+	float val = 0;
+
+	if (p->id == "abs")
+	{
+		val = abs( expr(p->expr) );
+	}
+
+	return val;
+}
+
+
 float cMathInterpreter::factor(const sFactor *p)
 {
 	using namespace script;
@@ -112,6 +128,9 @@ float cMathInterpreter::factor(const sFactor *p)
 		break;
 	case FACTOR_TYPE::EXPR:
 		val = expr(p->expr);
+		break;
+	case FACTOR_TYPE::FUNC:
+		val = func(p->func);
 		break;
 	}
 

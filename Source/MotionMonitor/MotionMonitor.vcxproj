@@ -124,6 +124,7 @@
     <ClInclude Include="..\Common\UIComponent\overhauser.hpp" />
     <ClInclude Include="..\Common\UIComponent\PlotWindow.h" />
     <ClInclude Include="..\Common\UIComponent\Serial.h" />
+    <ClInclude Include="..\Common\UIComponent\SerialAsync.h" />
     <ClInclude Include="..\Common\UIComponent\SerialCommunication.h" />
     <ClInclude Include="..\Common\UIComponent\SerialObserver.h" />
     <ClInclude Include="..\Common\UIComponent\UDPObserver.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="..\Common\UIComponent\overhauser.cpp" />
     <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp" />
     <ClCompile Include="..\Common\UIComponent\Serial.cpp" />
+    <ClCompile Include="..\Common\UIComponent\SerialAsync.cpp" />
     <ClCompile Include="..\Common\UIComponent\SerialCommunication.cpp" />
     <ClCompile Include="..\Common\UIComponent\SerialObserver.cpp" />
     <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp" />
@@ -255,6 +257,7 @@
     <Image Include="res\classview_hc.bmp" />
     <Image Include="res\class_view.ico" />
     <Image Include="res\class_view_hc.ico" />
+    <Image Include="res\dirt3.ico" />
     <Image Include="res\explorer.bmp" />
     <Image Include="res\explorer_hc.bmp" />
     <Image Include="res\fileview.bmp" />
@@ -263,6 +266,7 @@
     <Image Include="res\file_view_hc.ico" />
     <Image Include="res\icon1.ico" />
     <Image Include="res\icon2.ico" />
+    <Image Include="res\icon3.ico" />
     <Image Include="res\imachinegun_x.ico" />
     <Image Include="res\machinegun_x.ico" />
     <Image Include="res\menuimages.bmp" />

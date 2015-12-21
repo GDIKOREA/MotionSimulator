@@ -62,12 +62,21 @@ void cVitconMotionSim2::On()
 }
 
 
-// 플레이를 종료하고, Stop 상태에서 대기한다.
+// 플레이를 종료하고, Origin으로 돌아간후, Stop 상태에서 대기한다.
 // STOP -> READY
 void cVitconMotionSim2::Ready()
 {
 	m_subState = SUBSTATE_ORIGIN_STOP;
 	m_playTime = 0;
+}
+
+
+// 플레이를 종료하고, Origin없이, Stop 상태에서 대기한다.
+// STOP -> READY
+void cVitconMotionSim2::ReadyNoOrigin()
+{
+	m_playTime = 0;
+	Delay(0.1f, SUBSTATE_STOP_READY);
 }
 
 
@@ -81,8 +90,12 @@ bool cVitconMotionSim2::Play()
 	case cVitconMotionSim2::END:
 		return false; // 아무일 없음.
 
-	case cVitconMotionSim2::PLAY:
 	case cVitconMotionSim2::READY_PLAY:
+		return true;
+
+	case cVitconMotionSim2::PLAY:
+		if (SUBSTATE_DELAY == m_subState)
+			m_subState = SUBSTATE_START; // 게임을 Stop 중인 상태라면, 멈추고, 재시작한다.
 		return true;
 
 	case cVitconMotionSim2::READY:
@@ -171,7 +184,7 @@ void cVitconMotionSim2::State_OriginStop(const float deltaSeconds)
 void cVitconMotionSim2::State_StopReady(const float deltaSeconds)
 {
 	SendMotionSimMessage2(BITCON_SER::STOP);
-	Delay(10, SUBSTATE_READY);
+	Delay(3, SUBSTATE_READY);
 }
 
 
@@ -218,7 +231,7 @@ void cVitconMotionSim2::State_EndStop(const float deltaSeconds)
 {
 	//m_changeInformationPulse = true;
 	SendMotionSimMessage2(BITCON_SER::STOP);
-	Delay(10, SUBSTATE_STOP);
+	Delay(3, SUBSTATE_STOP);
 }
 
 

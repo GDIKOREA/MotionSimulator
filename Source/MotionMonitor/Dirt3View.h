@@ -35,6 +35,8 @@ protected:
 	bool m_enChange2;
 	bool m_enChange3;
 
+	int m_startTimer;
+
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -43,6 +45,7 @@ public:
 	afx_msg void OnBnClickedButtonStart();
 	CButton m_StartButton;
 	BOOL m_IsMotionSim;
+	BOOL m_IsAutoStart;
 	afx_msg void OnBnClickedCheckMotionSim();
 	afx_msg void OnPaint();
 	CStatic m_State0Text;
@@ -68,4 +71,6 @@ public:
 	afx_msg void OnEnChangeEditPlaytime();
 	afx_msg void OnNMCustomdrawSliderYawRange(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnEnChangeEditActuatorYaw();
+	CStatic m_FrameStr;
+	afx_msg void OnBnClickedCheckAutostart();
 };

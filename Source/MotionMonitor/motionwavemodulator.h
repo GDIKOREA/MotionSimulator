@@ -42,6 +42,10 @@ public:
 		float maxDifferenceProportion;
 		float range;
 
+		bool rangeEnable;
+		float rangeMax;
+		float rangeMin;
+
 		// ax^2 + bx + c
 		float a;
 		float b;
