@@ -5,7 +5,6 @@
 #include "MotionMonitor.h"
 #include "LauncherView.h"
 #include "afxdialogex.h"
-#include "LauncherConfig.h"
 #include "MainFrm.h"
 #include "MachineGunController.h"
 #include "ControlBoard.h"
@@ -167,7 +166,6 @@ void CLauncherView::OnBnClickedButtonGamestart()
 	// 머신건 카메라 프로그램 실행
 	m_cameraExeTracker.Execute(launcherConfig.m_cameraExePath, "", 1, GameExeTerminate, this);
 
-
 	// 머신건 게임 실행
 	stringstream ss;
 	//ss << m_DifficultCombo.GetCurSel() << " ";
@@ -176,7 +174,6 @@ void CLauncherView::OnBnClickedButtonGamestart()
 	ss << 1920 << " " << 1080; // 해상도
 	const string commandLine = ss.str();	
 	m_gameExeTracker.Execute(launcherConfig.m_gameExePath, commandLine, 0, GameExeTerminate, this);
-	
 
 	// 매니저 프로그램은 타이틀바로 이동한다.
 	::ShowWindow(::AfxGetMainWnd()->m_hWnd, SW_MINIMIZE);

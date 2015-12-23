@@ -246,6 +246,12 @@
     <ClInclude Include="..\Common\UIComponent\SerialAsync.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
+    <ClInclude Include="RealShotView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RealshotController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MotionMonitor.cpp">
@@ -439,6 +445,12 @@
     </ClCompile>
     <ClCompile Include="..\Common\UIComponent\SerialAsync.cpp">
       <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="RealShotView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RealshotController.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

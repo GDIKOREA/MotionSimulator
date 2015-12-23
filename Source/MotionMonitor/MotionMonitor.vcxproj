@@ -157,6 +157,8 @@
     <ClInclude Include="plotinputscript.h" />
     <ClInclude Include="PlotView.h" />
     <ClInclude Include="protocolparser.h" />
+    <ClInclude Include="RealshotController.h" />
+    <ClInclude Include="RealShotView.h" />
     <ClInclude Include="script.h" />
     <ClInclude Include="sharedmemcommunication.h" />
     <ClInclude Include="SimpleController.h" />
@@ -225,6 +227,8 @@
     <ClCompile Include="plotinputscript.cpp" />
     <ClCompile Include="PlotView.cpp" />
     <ClCompile Include="protocolparser.cpp" />
+    <ClCompile Include="RealshotController.cpp" />
+    <ClCompile Include="RealShotView.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="sharedmemcommunication.cpp" />
     <ClCompile Include="SimpleController.cpp" />

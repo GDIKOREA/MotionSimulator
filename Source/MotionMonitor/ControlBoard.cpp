@@ -9,6 +9,7 @@
 #include "Dirt3Controller.h"
 #include "SimpleController.h"
 #include "MainFrm.h"
+#include "RealshotController.h"
 
 
 // CControlBoard dialog
@@ -18,6 +19,7 @@ const static string g_configFileNames[] =
 	"../media/machinegun/motionmonitor_mg.json",
 	"../media/machinegun/motionmonitor_joystick.json",
 	"../media/machinegun/motionmonitor_mwave.json",
+	"../media/machinegun/motionmonitor_realshot.json",
 };
 
 
@@ -39,6 +41,7 @@ CControlBoard::~CControlBoard()
 	cMachineGunController::Release();
 	cDirt3Controller::Release();
 	cSimpleController::Release();
+	cRealShotController::Release();
 }
 
 void CControlBoard::DoDataExchange(CDataExchange* pDX)
@@ -132,6 +135,23 @@ void CControlBoard::Update(const float deltaSeconds)
 {
 	switch (g_gameType)
 	{
+	case GAME_TYPE::REALSHOT:
+	{
+		cRealShotController::Get()->Update(deltaSeconds);
+
+		if (cRealShotController::Get()->CheckChangeState())
+		{
+// 			switch (cRealShotController::Get()->m_gameState)
+// 			{
+// 			case 0: m_GameState = L"Wait"; break;
+// 			case 1: m_GameState = L"Playing"; break;
+// 			default:
+// 				break;
+// 			}
+		}
+	}
+	break;
+
 	case GAME_TYPE::DIRT3:
 		{
 			cDirt3Controller::Get()->Update(deltaSeconds);
@@ -222,6 +242,7 @@ void CControlBoard::Start()
 	{
 	case GAME_TYPE::DIRT3: cDirt3Controller::Get()->StartMotionSim(g_configFileNames[m_GameType]); break;
 	case GAME_TYPE::MACHINEGUN: cMachineGunController::Get()->StartMotionSim(g_configFileNames[m_GameType], m_IsPlayMotionSim ? true : false); break;
+	case GAME_TYPE::REALSHOT: cRealShotController::Get()->StartMotionSim(g_configFileNames[m_GameType], false); break;
 	case GAME_TYPE::JOYSTICK:
 	case GAME_TYPE::MWAVE: 
 		cSimpleController::Get()->StartMotionSim(g_configFileNames[m_GameType], m_IsPlayMotionSim? true:false);
@@ -248,6 +269,7 @@ void CControlBoard::Stop()
 	{
 	case GAME_TYPE::DIRT3: cDirt3Controller::Get()->StopMotionSim(); break;
 	case GAME_TYPE::MACHINEGUN: cMachineGunController::Get()->StopMotionSim(); break;
+	case GAME_TYPE::REALSHOT: cRealShotController::Get()->StopMotionSim(); break;
 	case GAME_TYPE::JOYSTICK:
 	case GAME_TYPE::MWAVE: 
 		cSimpleController::Get()->StopMotionSim();

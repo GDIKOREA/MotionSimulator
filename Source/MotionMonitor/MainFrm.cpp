@@ -18,7 +18,8 @@
 #include "VarModulationView.h"
 #include "MachineGunController.h"
 #include "Dirt3Controller.h"
-
+#include "RealShotView.h"
+#include "RealshotController.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -313,6 +314,39 @@ BOOL CMainFrame::CreateDockingWindows()
 		g_udpInputView = m_udpInputView;
 		g_dirt3View = m_dirt3View;
 	}
+	else if (config.m_mode == "realshot")
+	{
+		CREATE_DOCKPANE(C3DView, L"3D Game View", ID_VIEW_3D, IDD_DIALOG_3D, m_3DGameView);
+		CREATE_DOCKPANE(C3DView, L"3D Motion View", ID_VIEW_MOTION3D, IDD_DIALOG_3D, m_3DMotionView);
+		CREATE_DOCKPANE2(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
+		CREATE_DOCKPANE2(CUDPInputView, L"UDP Input View", ID_VIEW_MOTION_INPUT, m_udpInputView);
+		CREATE_DOCKPANE2(CMotionWaveView, L"MotionWave View", ID_VIEW_MOTIONWAVE, m_motionWaveView);
+		CREATE_DOCKPANE2(CMotionOutputView, L"Motion Output View", ID_VIEW_MOTION_OUTPUT, m_motionOutputView);
+		CREATE_DOCKPANE2(CJoystickView, L"Joystick View", ID_VIEW_JOYSTICK, m_joystickView);
+		CREATE_DOCKPANE2(CMixingView, L"Mixing View", ID_VIEW_MIXING, m_mixingView);
+		CREATE_DOCKPANE2(CControlBoard, L"Control Board", ID_VIEW_CONTROLBOARD, m_controlBoardView);
+		CREATE_DOCKPANE2(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
+		CREATE_DOCKPANE2(C3DSimulView, L"3D Simulation View", ID_VIEW_3DSIMUL, m_3dSimulView);
+		CREATE_DOCKPANE2(CDirt3View, L"Dirt3 View", ID_VIEW_DIRT3, m_dirt3View);
+		CREATE_DOCKPANE2(CVarModulationView, L"Var Modulation View", ID_VIEW_VARMODULATION, m_varModulationView);
+		CREATE_DOCKPANE2(CLauncherView, L"Launcher View", ID_VIEW_LAUNCHER, m_launcherView);
+		CREATE_DOCKPANE2(CRealShotView, L"RealShot View", ID_VIEW_REALSHOT, m_realShotView);
+
+		g_3dGameView = m_3DGameView;
+		g_3dMotionView = m_3DMotionView;
+		g_mwaveView = m_motionWaveView;
+		g_udpInputView = m_udpInputView;
+		g_controlView = m_controlBoardView;
+		g_launcherView = m_launcherView;
+		g_dirt3View = m_dirt3View;
+
+		g_gameType = GAME_TYPE::REALSHOT;
+
+		m_3DGameView->SetRenderCube(true);
+		m_3DMotionView->SetRenderCube(true);
+
+		cRealShotController::Get()->Init();
+	}
 	else
 	{
 		CREATE_DOCKPANE(C3DView, L"3D Game View", ID_VIEW_3D, IDD_DIALOG_3D, m_3DGameView);
@@ -329,6 +363,7 @@ BOOL CMainFrame::CreateDockingWindows()
 		CREATE_DOCKPANE2(CDirt3View, L"Dirt3 View", ID_VIEW_DIRT3, m_dirt3View);
 		CREATE_DOCKPANE2(CVarModulationView, L"Var Modulation View", ID_VIEW_VARMODULATION, m_varModulationView);
 		CREATE_DOCKPANE2(CLauncherView, L"Launcher View", ID_VIEW_LAUNCHER, m_launcherView);
+		CREATE_DOCKPANE2(CRealShotView, L"RealShot View", ID_VIEW_REALSHOT, m_realShotView);
 
 		g_3dGameView = m_3DGameView;
 		g_3dMotionView = m_3DMotionView;

@@ -19,6 +19,7 @@ class CLauncherView;
 class C3DSimulView;
 class CDirt3View;
 class CVarModulationView;
+class CRealShotView;
 
 class CMainFrame : public CFrameWndEx
 {	
@@ -70,6 +71,7 @@ public:
 	C3DSimulView *m_3dSimulView;
 	CDirt3View *m_dirt3View;
 	CVarModulationView *m_varModulationView;
+	CRealShotView *m_realShotView;
 
 
 // Generated message map functions

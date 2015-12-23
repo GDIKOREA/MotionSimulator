@@ -88,6 +88,7 @@ enum VIEW_TYPE {
 	ID_VIEW_3DSIMUL,
 	ID_VIEW_VARMODULATION,
 	ID_VIEW_DIRT3,
+	ID_VIEW_REALSHOT,
 };
 
 #define CENUMERATESERIAL_USE_STL
@@ -99,6 +100,7 @@ namespace GAME_TYPE {
 		MACHINEGUN,
 		JOYSTICK,
 		MWAVE,
+		REALSHOT,
 	};
 }
 
@@ -128,3 +130,4 @@ extern C3DView *g_3dMotionView;
 #include "spline.h"
 #include "MotionController.h"
 #include "plotinputparser.h"
+#include "LauncherConfig.h"

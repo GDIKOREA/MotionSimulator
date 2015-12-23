@@ -108,6 +108,7 @@
 #define IDD_DIALOG_DIRT3                340
 #define IDD_DIALOG_MODULATION           341
 #define IDD_DIALOG_CHANGEIDPASS         342
+#define IDD_DIALOG_REALSHOT             346
 #define IDC_CHECK_FIXEDMODE             1000
 #define IDC_EDIT_COMMAND                1001
 #define IDC_BUTTON_HELP                 1002
@@ -281,15 +282,16 @@
 #define IDC_EDIT_INPUTVAR3              1146
 #define IDC_STATIC_FRAME                1146
 #define IDC_EDIT_OUTPUTVAR3             1147
+#define IDC_BUTTON_CALIBRATION          1147
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        346
+#define _APS_NEXT_RESOURCE_VALUE        347
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1147
+#define _APS_NEXT_CONTROL_VALUE         1149
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
