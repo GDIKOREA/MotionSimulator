@@ -198,7 +198,14 @@ BOOL CMotionMonitorApp::InitInstance()
 		wr.bottom = wr.top + 680;
 		m_pMainWnd->MoveWindow(wr);
 	}
-
+	else if (config.m_mode == "realshot")
+	{
+		CRect wr;
+		m_pMainWnd->GetWindowRect(wr);
+		wr.right = wr.left + 350;
+		wr.bottom = wr.top + 200;
+		m_pMainWnd->MoveWindow(wr);
+	}
 
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
@@ -214,6 +221,10 @@ BOOL CMotionMonitorApp::InitInstance()
 	else if (config.m_mode == "dirt3_release")
 	{
 		m_pMainWnd->SetWindowTextW(L"Dirt3 Manager");
+	}
+	else if (config.m_mode == "realshot")
+	{
+		m_pMainWnd->SetWindowTextW(L"RealShot Manager");
 	}
 	else
 	{

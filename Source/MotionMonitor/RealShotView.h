@@ -16,10 +16,15 @@ public:
 	virtual void Update(const float deltaSeconds) override;
 
 
+public:
+	bool m_isCameraExeTerminate;
+
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	bool m_isStart;
+	cExeTracker m_cameraExeTracker;
 
 	DECLARE_MESSAGE_MAP()
 public:

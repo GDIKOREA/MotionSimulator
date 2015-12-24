@@ -177,7 +177,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	const cMotionMonitorConfig &config = cMotionController::Get()->m_config;
 
 	// 머신건 스탠드 버젼은 심플하게 간다.
-	if ((config.m_mode == "machinegun_stand") || (config.m_mode == "dirt3_release"))
+	if ((config.m_mode == "machinegun_stand") 
+		|| (config.m_mode == "dirt3_release")
+		|| (config.m_mode == "realshot")
+		)
 	{
 		SetMenu(NULL);
 	}
@@ -266,7 +269,10 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 
 	const cMotionMonitorConfig &config = cMotionController::Get()->m_config;
-	if ((config.m_mode == "machinegun_stand") || (config.m_mode == "dirt3_release"))
+	if ((config.m_mode == "machinegun_stand") 
+		|| (config.m_mode == "dirt3_release")
+		|| (config.m_mode == "realshot")
+		)
 	{
 		// 사이즈를 줄이거나 늘리지 못하게 한다.
 		cs.style = WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX | WS_BORDER;
@@ -316,35 +322,11 @@ BOOL CMainFrame::CreateDockingWindows()
 	}
 	else if (config.m_mode == "realshot")
 	{
-		CREATE_DOCKPANE(C3DView, L"3D Game View", ID_VIEW_3D, IDD_DIALOG_3D, m_3DGameView);
-		CREATE_DOCKPANE(C3DView, L"3D Motion View", ID_VIEW_MOTION3D, IDD_DIALOG_3D, m_3DMotionView);
-		CREATE_DOCKPANE2(CUDPParseView, L"UDP Parse View", ID_VIEW_UDPPARSE, m_udpParseView);
-		CREATE_DOCKPANE2(CUDPInputView, L"UDP Input View", ID_VIEW_MOTION_INPUT, m_udpInputView);
-		CREATE_DOCKPANE2(CMotionWaveView, L"MotionWave View", ID_VIEW_MOTIONWAVE, m_motionWaveView);
-		CREATE_DOCKPANE2(CMotionOutputView, L"Motion Output View", ID_VIEW_MOTION_OUTPUT, m_motionOutputView);
-		CREATE_DOCKPANE2(CJoystickView, L"Joystick View", ID_VIEW_JOYSTICK, m_joystickView);
-		CREATE_DOCKPANE2(CMixingView, L"Mixing View", ID_VIEW_MIXING, m_mixingView);
-		CREATE_DOCKPANE2(CControlBoard, L"Control Board", ID_VIEW_CONTROLBOARD, m_controlBoardView);
-		CREATE_DOCKPANE2(CPlotView, L"Plot View", ID_VIEW_PLOT, m_plotView);
-		CREATE_DOCKPANE2(C3DSimulView, L"3D Simulation View", ID_VIEW_3DSIMUL, m_3dSimulView);
-		CREATE_DOCKPANE2(CDirt3View, L"Dirt3 View", ID_VIEW_DIRT3, m_dirt3View);
-		CREATE_DOCKPANE2(CVarModulationView, L"Var Modulation View", ID_VIEW_VARMODULATION, m_varModulationView);
-		CREATE_DOCKPANE2(CLauncherView, L"Launcher View", ID_VIEW_LAUNCHER, m_launcherView);
-		CREATE_DOCKPANE2(CRealShotView, L"RealShot View", ID_VIEW_REALSHOT, m_realShotView);
+		CREATE_PANE(CControlBoard, m_controlBoardView, SW_HIDE);
+		CREATE_PANE(CRealShotView, m_realShotView, SW_SHOW);
 
-		g_3dGameView = m_3DGameView;
-		g_3dMotionView = m_3DMotionView;
-		g_mwaveView = m_motionWaveView;
-		g_udpInputView = m_udpInputView;
 		g_controlView = m_controlBoardView;
-		g_launcherView = m_launcherView;
-		g_dirt3View = m_dirt3View;
-
 		g_gameType = GAME_TYPE::REALSHOT;
-
-		m_3DGameView->SetRenderCube(true);
-		m_3DMotionView->SetRenderCube(true);
-
 		cRealShotController::Get()->Init();
 	}
 	else

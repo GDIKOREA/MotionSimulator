@@ -131,3 +131,4 @@ extern C3DView *g_3dMotionView;
 #include "MotionController.h"
 #include "plotinputparser.h"
 #include "LauncherConfig.h"
+#include "ExeTracker.h"

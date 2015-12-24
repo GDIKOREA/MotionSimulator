@@ -552,6 +552,9 @@
     <Image Include="res\dirt3.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\gun.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\MotionMonitor.rc2">

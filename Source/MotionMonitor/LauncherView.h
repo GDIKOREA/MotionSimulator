@@ -2,7 +2,7 @@
 #include "afxwin.h"
 #include "afxcmn.h"
 
-#include "ExeTracker.h"
+
 #include "sharedmemcommunication.h"
 
 

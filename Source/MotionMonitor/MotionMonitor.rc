@@ -439,12 +439,11 @@ BEGIN
     LTEXT           "Confirm New Pass Word",IDC_STATIC,7,54,78,8
 END
 
-IDD_DIALOG_REALSHOT DIALOGEX 0, 0, 309, 176
+IDD_DIALOG_REALSHOT DIALOGEX 0, 0, 228, 106
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    PUSHBUTTON      "Calibration",IDC_BUTTON_CALIBRATION,118,57,66,14
-    PUSHBUTTON      "Start",IDC_BUTTON_START,117,97,67,28
+    PUSHBUTTON      "Start",IDC_BUTTON_START,22,25,186,54
 END
 
 
@@ -627,9 +626,9 @@ BEGIN
     IDD_DIALOG_REALSHOT, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 302
+        RIGHTMARGIN, 221
         TOPMARGIN, 7
-        BOTTOMMARGIN, 169
+        BOTTOMMARGIN, 99
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -657,7 +656,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\dirt3.ico"
+IDR_MAINFRAME           ICON                    "res\\gun.ico"
 #endif    // Korean (Korea) resources
 /////////////////////////////////////////////////////////////////////////////
 
