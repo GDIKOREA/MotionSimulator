@@ -12,6 +12,7 @@
 #include "MixingView.h"
 #include "MotionWaveView.h"
 #include "JoystickView.h"
+#include "RealShotView.h"
 
 
 
@@ -85,24 +86,37 @@ void cRealShotController::Update(const float deltaSeconds)
 		const int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 		
 		const float x = rcvPacket->x1 * screenWidth;
-		const float y = rcvPacket->y1 * screenHeight;
+		const float y = (1-rcvPacket->y1) * screenHeight;
 
-		static float oldX = x;
-		static float oldY = y;
+		POINT mousePos;
+		GetCursorPos(&mousePos);
+		const float oldX = (float)mousePos.x;
+		const float oldY = (float)mousePos.y;
 
 		const int dx = (int)(x - oldX);
-		const int dy = (int)(oldY - y);
+		const int dy = (int)(y - oldY);
 
-		oldX = x;
-		oldY = y;
-		
-		static INPUT input;
-		input.type = INPUT_MOUSE;
-		input.mi.dwFlags = MOUSEEVENTF_MOVE;
-		input.mi.dx = dx;
-		input.mi.dy = dy;
-		input.mi.mouseData = 0;
-		SendInput(1, &input, sizeof(INPUT));
+		if (CMainFrame *pFrm = dynamic_cast<CMainFrame*>(AfxGetMainWnd()))
+		{
+			pFrm->m_realShotView->m_PrintStr.SetWindowTextW(common::formatw("%.1f, %.1f, %.1f, %.1f, %d, %d", 
+				x, y, oldX, oldY, screenWidth, screenHeight).c_str());
+		}
+
+		if ((abs(dx) > 0) && (abs(dy) > 0))
+		{
+			static INPUT input;
+			input.type = INPUT_MOUSE;
+			//input.mi.dwFlags = MOUSEEVENTF_MOVE;
+// 			input.mi.dx = dx;
+// 			input.mi.dy = dy;
+			input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE;
+			input.mi.dx = (int)x;
+			input.mi.dy = (int)y;
+			input.mi.mouseData = 0;
+			//SendInput(1, &input, sizeof(INPUT));
+
+			SetCursorPos((int)x, (int)y); 
+		}
 
 		m_gameClientSender.SendData((char*)&sndPacket, sizeof(sndPacket));
 	}

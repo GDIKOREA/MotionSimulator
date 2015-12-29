@@ -33,4 +33,5 @@ public:
 	afx_msg void OnBnClickedButtonCalibration();
 	afx_msg void OnBnClickedButtonStart();
 	CButton m_StartButton;
+	CStatic m_PrintStr;
 };

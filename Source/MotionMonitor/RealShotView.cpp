@@ -28,6 +28,7 @@ void CRealShotView::DoDataExchange(CDataExchange* pDX)
 {
 	CDockablePaneChildView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BUTTON_START, m_StartButton);
+	DDX_Control(pDX, IDC_STATIC1, m_PrintStr);
 }
 
 

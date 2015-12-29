@@ -147,15 +147,15 @@ BOOL CMotionMonitorApp::InitInstance()
 
 	// 실행인자값으로 넘어온 설정파일명을 로드한다.
 	cMotionMonitorConfig &config = cMotionController::Get()->m_config;
-	string commandLine = wstr2str(m_lpCmdLine);
+	string commandLine = wstr2str(__targv[1]);
 	if (!commandLine.empty())
 	{
 		config.ReadConfigFile(commandLine);
 	}
 
-//  	CLoginDialog loginDlg;
-//  	if (IDCANCEL == loginDlg.DoModal())
-//  		return FALSE;
+ 	CLoginDialog loginDlg;
+ 	if (IDCANCEL == loginDlg.DoModal())
+ 		return FALSE;
 
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views
@@ -180,14 +180,27 @@ BOOL CMotionMonitorApp::InitInstance()
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
 
+	int width=0, height=0;
+	if (__argc > 3)
+	{
+		width = _ttoi(__targv[2]);
+		height = _ttoi(__targv[3]);
+	}
+
 
 	// 윈도우 크기 설정
 	if (config.m_mode == "machinegun_stand")
 	{
+		if (width == 0 || height == 0)
+		{
+			width = 445;
+			height = 600;
+		}
+
 		CRect wr;
 		m_pMainWnd->GetWindowRect(wr);
-		wr.right = wr.left + 445;
-		wr.bottom = wr.top + 600;
+		wr.right = wr.left + width;
+		wr.bottom = wr.top + height;
 		m_pMainWnd->MoveWindow(wr);
 	}
 	else if (config.m_mode == "dirt3_release")
@@ -202,6 +215,8 @@ BOOL CMotionMonitorApp::InitInstance()
 	{
 		CRect wr;
 		m_pMainWnd->GetWindowRect(wr);
+// 		wr.right = wr.left + 650;
+// 		wr.bottom = wr.top + 400;
 		wr.right = wr.left + 350;
 		wr.bottom = wr.top + 200;
 		m_pMainWnd->MoveWindow(wr);
