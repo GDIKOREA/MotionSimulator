@@ -34,4 +34,6 @@ public:
 	afx_msg void OnBnClickedButtonStart();
 	CButton m_StartButton;
 	CStatic m_PrintStr;
+	CButton m_CalibrationButton;
+	virtual BOOL OnInitDialog();
 };

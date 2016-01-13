@@ -555,6 +555,9 @@
     <Image Include="res\gun.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\machinegun_x2.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\MotionMonitor.rc2">

@@ -29,6 +29,7 @@ void CRealShotView::DoDataExchange(CDataExchange* pDX)
 	CDockablePaneChildView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BUTTON_START, m_StartButton);
 	DDX_Control(pDX, IDC_STATIC1, m_PrintStr);
+	DDX_Control(pDX, IDC_BUTTON_CALIBRATION, m_CalibrationButton);
 }
 
 
@@ -52,6 +53,17 @@ void CRealShotView::OnBnClickedOk()
 void CRealShotView::OnBnClickedCancel()
 {
 	//CDockablePaneChildView::OnCancel();
+}
+
+
+BOOL CRealShotView::OnInitDialog()
+{
+	CDockablePaneChildView::OnInitDialog();
+
+	m_StartButton.MoveWindow(CRect(25, 25, 300, 125));
+	m_CalibrationButton.MoveWindow(CRect(25, 150, 300, 250));
+
+	return TRUE;
 }
 
 
@@ -119,3 +131,4 @@ void CameraExeTerminate(int id, void*arg)
 	CRealShotView *realshot = (CRealShotView*)arg;
 	realshot->m_isCameraExeTerminate = true;
 }
+

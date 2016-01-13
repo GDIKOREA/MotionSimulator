@@ -153,9 +153,9 @@ BOOL CMotionMonitorApp::InitInstance()
 		config.ReadConfigFile(commandLine);
 	}
 
- 	CLoginDialog loginDlg;
- 	if (IDCANCEL == loginDlg.DoModal())
- 		return FALSE;
+//  	CLoginDialog loginDlg;
+//  	if (IDCANCEL == loginDlg.DoModal())
+//  		return FALSE;
 
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views
@@ -218,7 +218,7 @@ BOOL CMotionMonitorApp::InitInstance()
 // 		wr.right = wr.left + 650;
 // 		wr.bottom = wr.top + 400;
 		wr.right = wr.left + 350;
-		wr.bottom = wr.top + 200;
+		wr.bottom = wr.top + 300;
 		m_pMainWnd->MoveWindow(wr);
 	}
 

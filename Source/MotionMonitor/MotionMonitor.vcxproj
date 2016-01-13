@@ -274,6 +274,7 @@
     <Image Include="res\icon3.ico" />
     <Image Include="res\imachinegun_x.ico" />
     <Image Include="res\machinegun_x.ico" />
+    <Image Include="res\machinegun_x2.ico" />
     <Image Include="res\menuimages.bmp" />
     <Image Include="res\menuimages_hc.bmp" />
     <Image Include="res\MotionMonitor.ico" />
