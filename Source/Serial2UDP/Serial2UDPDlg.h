@@ -3,7 +3,6 @@
 #include "afxwin.h"
 #include "afxcmn.h"
 #include "ComPortCombo.h"
-#include "BufferedSerial.h"
 
 
 class CSerial2UDPDlg : public CDialogEx
@@ -29,7 +28,7 @@ protected:
 	HICON m_hIcon;
 	network::cUDPClient m_client;
 	network::cUDPServer m_server;
- 	CBufferedSerial m_serial;
+ 	common::CBufferedSerial m_serial;
 	bool m_loop;
 	bool m_isComConnect;
 	int m_serialRxCnt;

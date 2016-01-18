@@ -46,6 +46,7 @@ using std::pair;
 using std::string;
 using std::wstring;
 
+#include "../../../Common/Common/common.h"
 #include "../../../Common/Network/network.h"
 #include "stringfunc.h"
 

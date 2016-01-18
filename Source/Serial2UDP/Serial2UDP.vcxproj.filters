@@ -39,12 +39,6 @@
     <ClInclude Include="EnumDevices.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BufferedSerial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Serial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stringfunc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -78,12 +72,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EnumDevices.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BufferedSerial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Serial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stringfunc.cpp">
