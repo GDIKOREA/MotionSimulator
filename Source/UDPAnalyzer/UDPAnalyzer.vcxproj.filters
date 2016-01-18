@@ -46,75 +46,6 @@
     <ClInclude Include="ViewTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\AutoHandle.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\AutoHeapAlloc.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\AutoHModule.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\BPCtrlAnchorMap.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\BufferedSerial.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\C3DView.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\ComPortCombo.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\Controller.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\DockablePaneBase.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\DockablePaneChildView.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\EnumDevices.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\enumser.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\FileTreeCtrl.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\overhauser.hpp">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\PlotWindow.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\Serial.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\SerialCommunication.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\SerialObserver.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\UDPObserver.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\UIComponent.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\UIUtiltity.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\UpdateObserver.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
     <ClInclude Include="UDPView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -151,9 +82,6 @@
     <ClInclude Include="mathscript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\MemDumpWindow.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
     <ClInclude Include="udpanalyzeroption.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -169,10 +97,85 @@
     <ClInclude Include="UDPSendView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\CubeCar.h">
+    <ClInclude Include="..\..\..\Common\UIComponent\AutoHandle.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\PlotGlobal.h">
+    <ClInclude Include="..\..\..\Common\UIComponent\AutoHeapAlloc.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\AutoHModule.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\BPCtrlAnchorMap.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\BufferedSerial.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\C3DView.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\ComPortCombo.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\Controller.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\CubeCar.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\DockablePaneBase.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\DockablePaneChildView.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\EnumDevices.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\enumser.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\FileTreeCtrl.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\MemDumpWindow.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\MultiPlotWindow.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\overhauser.hpp">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\PlotGlobal.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\PlotWindow.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\Serial.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\SerialAsync.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\SerialCommunication.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\SerialObserver.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\UDPObserver.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\UIComponent.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\UIUtiltity.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\UpdateObserver.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
   </ItemGroup>
@@ -194,54 +197,6 @@
     </ClCompile>
     <ClCompile Include="ViewTree.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\DockablePaneBase.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\DockablePaneChildView.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\EnumDevices.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\enumser.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\FileTreeCtrl.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\overhauser.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\Serial.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\SerialCommunication.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\SerialObserver.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\BufferedSerial.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\C3DView.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\ComPortCombo.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\Controller.cpp">
-      <Filter>UIComponent</Filter>
     </ClCompile>
     <ClCompile Include="UDPView.cpp">
       <Filter>Source Files</Filter>
@@ -279,9 +234,6 @@
     <ClCompile Include="mathscript.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\MemDumpWindow.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
     <ClCompile Include="udpanalyzeroption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -297,7 +249,61 @@
     <ClCompile Include="UDPSendView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\CubeCar.cpp">
+    <ClCompile Include="..\..\..\Common\UIComponent\BufferedSerial.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\C3DView.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\ComPortCombo.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\Controller.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\CubeCar.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\DockablePaneBase.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\DockablePaneChildView.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\EnumDevices.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\enumser.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\FileTreeCtrl.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\MemDumpWindow.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\MultiPlotWindow.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\overhauser.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\PlotWindow.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\Serial.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\SerialAsync.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\SerialCommunication.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\SerialObserver.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\UIUtiltity.cpp">
       <Filter>UIComponent</Filter>
     </ClCompile>
   </ItemGroup>

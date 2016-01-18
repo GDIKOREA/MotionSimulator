@@ -63,8 +63,8 @@ using std::wstring;
 using std::vector;
 using std::pair;
 
-#include "../Common/Common/common.h"
-#include "../Common/Network/network.h"
+#include "../../../Common/Common/common.h"
+#include "../../../Common/Network/network.h"
 
 
 

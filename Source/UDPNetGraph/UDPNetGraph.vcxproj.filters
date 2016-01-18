@@ -39,29 +39,29 @@
     <ClInclude Include="GraphWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\AutoHandle.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\AutoHeapAlloc.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\AutoHModule.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\BPCtrlAnchorMap.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\PlotWindow.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
     <ClInclude Include="MiniFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="udpnetgraphconfig.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\AutoHandle.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\AutoHeapAlloc.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\AutoHModule.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\BPCtrlAnchorMap.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\MultiPlotWindow.h">
+      <Filter>UIComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\UIComponent\PlotWindow.h">
+      <Filter>UIComponent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -77,17 +77,17 @@
     <ClCompile Include="GraphWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
     <ClCompile Include="MiniFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="udpnetgraphconfig.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\MultiPlotWindow.cpp">
+      <Filter>UIComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\UIComponent\PlotWindow.cpp">
+      <Filter>UIComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -264,7 +264,7 @@ void CUDPNetGraphDlg::PacketProcess()
 	if (0 == m_ConnectRadioType)
 	{
  		// Client
-		char buff[512];
+		BYTE buff[512];
 
 		// 주기적으로 서버에게 패킷을 보내고, 받는다. 1초에 30번을 보낸다.
 // 		if ((timeGetTime() - m_clientSndTime) < 33)
@@ -277,7 +277,7 @@ void CUDPNetGraphDlg::PacketProcess()
 		if (const int result = m_udpClient.GetReceiveData(buff, sizeof(buff)))
 		{
 			buff[result] = NULL;
-			ParsePacket(buff, result);
+			ParsePacket((char*)buff, result);
 		}
 	}
 	else

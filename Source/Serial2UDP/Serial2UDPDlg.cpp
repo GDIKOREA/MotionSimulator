@@ -316,7 +316,7 @@ void CSerial2UDPDlg::Process(const int deltaMilliseconds)
 			buffer[sizeof(buffer) - 1] = NULL;
 		}
 
-		m_client.SendData(buffer, sizeof(buffer));
+		m_client.SendData((const BYTE*)buffer, sizeof(buffer));
 	}
 
 	char rcvBuffer[512];

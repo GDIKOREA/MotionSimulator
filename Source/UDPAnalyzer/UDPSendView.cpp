@@ -215,12 +215,12 @@ void CUDPSendView::SendString(const int editIndex, const string &str)
 	// 이미 연결된 UDP로 전송한다.
 	if (m_IsSyncUDPView)
 	{
-		cController::Get()->GetUDPComm().SendData(packet.c_str(), packet.length());
+		//cController::Get()->GetUDPComm().SendData(packet.c_str(), packet.length());
 	}
 	else
 	{
 		// 직접 연결한 UDP로 전송한다.
-		m_udpClient.SendData(packet.c_str(), packet.length());
+		m_udpClient.SendData((BYTE*)packet.c_str(), packet.length());
 	}
 }
 

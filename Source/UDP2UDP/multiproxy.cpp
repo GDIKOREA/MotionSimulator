@@ -43,11 +43,11 @@ void cMultiProxy::Update()
 
 	if (m_udpServer.m_isReceiveData)
 	{
-		char buff[cUDPServer::BUFLEN];
-		if (const int buffLen = m_udpServer.GetRecvData(buff, cUDPServer::BUFLEN))
+		char buff[network::BUFFER_LENGTH];
+		if (const int buffLen = m_udpServer.GetRecvData(buff, network::BUFFER_LENGTH))
 		{
 			for (u_int i = 0; i < m_clients.size(); ++i)
-				m_clients[i].SendData(buff, buffLen);
+				m_clients[i].SendData((BYTE*)buff, buffLen);
 
 			++m_ReceiveCount;
 		}

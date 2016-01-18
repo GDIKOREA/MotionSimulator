@@ -21,7 +21,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Static</UseOfMfc>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -104,32 +104,33 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\UIComponent\AutoHandle.h" />
-    <ClInclude Include="..\Common\UIComponent\AutoHeapAlloc.h" />
-    <ClInclude Include="..\Common\UIComponent\AutoHModule.h" />
-    <ClInclude Include="..\Common\UIComponent\BPCtrlAnchorMap.h" />
-    <ClInclude Include="..\Common\UIComponent\BufferedSerial.h" />
-    <ClInclude Include="..\Common\UIComponent\C3DView.h" />
-    <ClInclude Include="..\Common\UIComponent\ComPortCombo.h" />
-    <ClInclude Include="..\Common\UIComponent\Controller.h" />
-    <ClInclude Include="..\Common\UIComponent\CubeCar.h" />
-    <ClInclude Include="..\Common\UIComponent\DockablePaneBase.h" />
-    <ClInclude Include="..\Common\UIComponent\DockablePaneChildView.h" />
-    <ClInclude Include="..\Common\UIComponent\EnumDevices.h" />
-    <ClInclude Include="..\Common\UIComponent\enumser.h" />
-    <ClInclude Include="..\Common\UIComponent\FileTreeCtrl.h" />
-    <ClInclude Include="..\Common\UIComponent\MemDumpWindow.h" />
-    <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h" />
-    <ClInclude Include="..\Common\UIComponent\overhauser.hpp" />
-    <ClInclude Include="..\Common\UIComponent\PlotGlobal.h" />
-    <ClInclude Include="..\Common\UIComponent\PlotWindow.h" />
-    <ClInclude Include="..\Common\UIComponent\Serial.h" />
-    <ClInclude Include="..\Common\UIComponent\SerialCommunication.h" />
-    <ClInclude Include="..\Common\UIComponent\SerialObserver.h" />
-    <ClInclude Include="..\Common\UIComponent\UDPObserver.h" />
-    <ClInclude Include="..\Common\UIComponent\UIComponent.h" />
-    <ClInclude Include="..\Common\UIComponent\UIUtiltity.h" />
-    <ClInclude Include="..\Common\UIComponent\UpdateObserver.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\AutoHandle.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\AutoHeapAlloc.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\AutoHModule.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\BPCtrlAnchorMap.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\BufferedSerial.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\C3DView.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\ComPortCombo.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\Controller.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\CubeCar.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\DockablePaneBase.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\DockablePaneChildView.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\EnumDevices.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\enumser.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\FileTreeCtrl.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\MemDumpWindow.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\MultiPlotWindow.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\overhauser.hpp" />
+    <ClInclude Include="..\..\..\Common\UIComponent\PlotGlobal.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\PlotWindow.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\Serial.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\SerialAsync.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\SerialCommunication.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\SerialObserver.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\UDPObserver.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\UIComponent.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\UIUtiltity.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\UpdateObserver.h" />
     <ClInclude Include="DXView.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="mathinterpreter.h" />
@@ -157,24 +158,25 @@
     <ClInclude Include="ViewTree.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\UIComponent\BufferedSerial.cpp" />
-    <ClCompile Include="..\Common\UIComponent\C3DView.cpp" />
-    <ClCompile Include="..\Common\UIComponent\ComPortCombo.cpp" />
-    <ClCompile Include="..\Common\UIComponent\Controller.cpp" />
-    <ClCompile Include="..\Common\UIComponent\CubeCar.cpp" />
-    <ClCompile Include="..\Common\UIComponent\DockablePaneBase.cpp" />
-    <ClCompile Include="..\Common\UIComponent\DockablePaneChildView.cpp" />
-    <ClCompile Include="..\Common\UIComponent\EnumDevices.cpp" />
-    <ClCompile Include="..\Common\UIComponent\enumser.cpp" />
-    <ClCompile Include="..\Common\UIComponent\FileTreeCtrl.cpp" />
-    <ClCompile Include="..\Common\UIComponent\MemDumpWindow.cpp" />
-    <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp" />
-    <ClCompile Include="..\Common\UIComponent\overhauser.cpp" />
-    <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp" />
-    <ClCompile Include="..\Common\UIComponent\Serial.cpp" />
-    <ClCompile Include="..\Common\UIComponent\SerialCommunication.cpp" />
-    <ClCompile Include="..\Common\UIComponent\SerialObserver.cpp" />
-    <ClCompile Include="..\Common\UIComponent\UIUtiltity.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\BufferedSerial.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\C3DView.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\ComPortCombo.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\Controller.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\CubeCar.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\DockablePaneBase.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\DockablePaneChildView.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\EnumDevices.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\enumser.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\FileTreeCtrl.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\MemDumpWindow.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\MultiPlotWindow.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\overhauser.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\PlotWindow.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\Serial.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\SerialAsync.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\SerialCommunication.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\SerialObserver.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\UIUtiltity.cpp" />
     <ClCompile Include="DXView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="mathinterpreter.cpp" />
@@ -236,16 +238,16 @@
     <None Include="res\UDPAnalyzer.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\AI\AI.vcxproj">
+    <ProjectReference Include="..\..\..\Common\AI\AI.vcxproj">
       <Project>{c7f9eba2-b553-483b-bc34-d25f1c718255}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Common\Common.vcxproj">
+    <ProjectReference Include="..\..\..\Common\Common\Common.vcxproj">
       <Project>{ef9ca22d-0c8f-42e9-ab66-98bc1a640f10}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Graphic\Graphic.vcxproj">
+    <ProjectReference Include="..\..\..\Common\Graphic\Graphic.vcxproj">
       <Project>{3a91e3aa-18df-4733-9f41-ed09a61f97e3}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Network\Network.vcxproj">
+    <ProjectReference Include="..\..\..\Common\Network\Network.vcxproj">
       <Project>{a202aa06-f0ee-4b05-86de-da63b9f146d4}</Project>
     </ProjectReference>
   </ItemGroup>

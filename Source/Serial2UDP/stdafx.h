@@ -46,7 +46,7 @@ using std::pair;
 using std::string;
 using std::wstring;
 
-#include "../Common/Network/network.h"
+#include "../../../Common/Network/network.h"
 #include "stringfunc.h"
 
 #define CENUMERATESERIAL_USE_STL

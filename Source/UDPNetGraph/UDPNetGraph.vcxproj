@@ -21,7 +21,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Static</UseOfMfc>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -56,7 +56,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -106,12 +106,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\UIComponent\AutoHandle.h" />
-    <ClInclude Include="..\Common\UIComponent\AutoHeapAlloc.h" />
-    <ClInclude Include="..\Common\UIComponent\AutoHModule.h" />
-    <ClInclude Include="..\Common\UIComponent\BPCtrlAnchorMap.h" />
-    <ClInclude Include="..\Common\UIComponent\MultiPlotWindow.h" />
-    <ClInclude Include="..\Common\UIComponent\PlotWindow.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\AutoHandle.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\AutoHeapAlloc.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\AutoHModule.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\BPCtrlAnchorMap.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\MultiPlotWindow.h" />
+    <ClInclude Include="..\..\..\Common\UIComponent\PlotWindow.h" />
     <ClInclude Include="GraphWindow.h" />
     <ClInclude Include="MiniFrame.h" />
     <ClInclude Include="Resource.h" />
@@ -122,8 +122,8 @@
     <ClInclude Include="UDPNetGraphDlg.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\UIComponent\MultiPlotWindow.cpp" />
-    <ClCompile Include="..\Common\UIComponent\PlotWindow.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\MultiPlotWindow.cpp" />
+    <ClCompile Include="..\..\..\Common\UIComponent\PlotWindow.cpp" />
     <ClCompile Include="GraphWindow.cpp" />
     <ClCompile Include="MiniFrame.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -144,13 +144,13 @@
     <Image Include="res\UDPNetGraph.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common\Common.vcxproj">
+    <ProjectReference Include="..\..\..\Common\Common\Common.vcxproj">
       <Project>{ef9ca22d-0c8f-42e9-ab66-98bc1a640f10}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Graphic\Graphic.vcxproj">
+    <ProjectReference Include="..\..\..\Common\Graphic\Graphic.vcxproj">
       <Project>{3a91e3aa-18df-4733-9f41-ed09a61f97e3}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Network\Network.vcxproj">
+    <ProjectReference Include="..\..\..\Common\Network\Network.vcxproj">
       <Project>{a202aa06-f0ee-4b05-86de-da63b9f146d4}</Project>
     </ProjectReference>
   </ItemGroup>

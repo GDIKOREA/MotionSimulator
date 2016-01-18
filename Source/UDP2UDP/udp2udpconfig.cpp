@@ -8,7 +8,7 @@ const string configFileName = "udp2udpconfig.cfg";
 
 cUDP2UDPConfig::cUDP2UDPConfig()
 {
-	Init(configFileName);
+	Read(configFileName);
 }
 
 cUDP2UDPConfig::~cUDP2UDPConfig()

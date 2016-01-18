@@ -8,7 +8,7 @@ const string configFileName = "udpnetgraphconfig.cfg";
 
 cUDPNetGraphConfig::cUDPNetGraphConfig()
 {
-	Init(configFileName);
+	Read(configFileName);
 }
 
 cUDPNetGraphConfig::~cUDPNetGraphConfig()

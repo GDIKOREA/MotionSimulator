@@ -248,7 +248,7 @@ void COutputView::Update(const float deltaSeconds)
 	{
 		m_incSerialTime += deltaSeconds;
 
-		const bool isSerialConnect = cController::Get()->GetSerialComm().IsConnect();
+		const bool isSerialConnect = cController::Get()->GetSerialComm().IsOpen();
 		if (isSerialConnect)
 		{
 			if (m_incSerialTime > elapseT)
@@ -256,7 +256,7 @@ void COutputView::Update(const float deltaSeconds)
 				const string sendStr = m_sendFormatParser.Execute();
 
 				// 시리얼 포트로 모션 시뮬레이터 장비에 모션 정보를 전송한다.
-				cController::Get()->GetSerialComm().GetSerial().SendData(sendStr.c_str(), sendStr.size());
+				cController::Get()->GetSerialComm().SendData((BYTE*)sendStr.c_str(), sendStr.size());
 
 				m_incSerialTime = 0;
 			}
@@ -269,7 +269,7 @@ void COutputView::Update(const float deltaSeconds)
 		if (m_incUDPTime > elapseT)
 		{
 			const string sendStr = m_sendFormatParser.Execute();
-			m_udpSendClient.SendData(sendStr.c_str(), sendStr.size());
+			m_udpSendClient.SendData((BYTE*)sendStr.c_str(), sendStr.size());
 
 			m_incUDPTime = 0;
 		}
@@ -317,7 +317,7 @@ void COutputView::OnBnClickedButtonConnect()
 
 	if (0 == m_SendType) // Serial
 	{
-		const bool isConnect = cController::Get()->GetSerialComm().IsConnect();
+		const bool isConnect = cController::Get()->GetSerialComm().IsOpen();
 
 		if (isConnect)
 		{
