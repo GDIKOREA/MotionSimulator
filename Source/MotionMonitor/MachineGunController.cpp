@@ -127,7 +127,7 @@ void cMachineGunController::Update(const float deltaSeconds)
 	if (devBuffLen > 0)
 	{
 		memcpy(&m_devicePacket, hwBuff, sizeof(m_devicePacket));
-		m_mainBoardProxy.SendData(hwBuff, devBuffLen);
+		m_mainBoardProxy.SendData((BYTE*)hwBuff, devBuffLen);
 
 		MainBoardProcess(hwBuff, devBuffLen);
 	}
@@ -158,7 +158,7 @@ void cMachineGunController::Update(const float deltaSeconds)
 		sndPacket.coinCount = m_coin;
 		sndPacket.coinPerGame = m_coinPerGame;
 
-		m_gameClientSender.SendData((char*)&sndPacket, sizeof(sndPacket));
+		m_gameClientSender.SendData((BYTE*)&sndPacket, sizeof(sndPacket));
 	}
 
 }
@@ -401,7 +401,7 @@ void cMachineGunController::ActiveMainBoard()
 	sndPacket.cr[0] = (char)0x0d;
 	sndPacket.cr[1] = (char)0x0a;
 
-	m_mainBoardSender.SendData((char*)&sndPacket, sizeof(sndPacket));
+	m_mainBoardSender.SendData((BYTE*)&sndPacket, sizeof(sndPacket));
 }
 
 
@@ -446,7 +446,7 @@ void cMachineGunController::ActiveGunFire(const bool active1, const bool active2
 	sndPacket.cr[0] = (char)0x0d;
 	sndPacket.cr[1] = (char)0x0a;
 
-	m_mainBoardSender.SendData((char*)&sndPacket, sizeof(sndPacket));
+	m_mainBoardSender.SendData((BYTE*)&sndPacket, sizeof(sndPacket));
 }
 
 

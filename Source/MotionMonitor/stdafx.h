@@ -56,10 +56,10 @@
 
 
 
-#include "../Common/Common/common.h"
-#include "../Common/Graphic/graphic.h"
-#include "../Common/Network/network.h"
-#include "../Common/UIComponent/uicomponent.h"
+#include "../../../Common/Common/common.h"
+#include "../../../Common/Graphic/graphic.h"
+#include "../../../Common/Network/network.h"
+#include "../../../Common/UIComponent/uicomponent.h"
 #include <mmsystem.h>
 #include <fstream>
 //#include "Serial.h"

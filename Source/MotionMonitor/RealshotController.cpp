@@ -118,7 +118,7 @@ void cRealShotController::Update(const float deltaSeconds)
 			SetCursorPos((int)x, (int)y); 
 		}
 
-		m_gameClientSender.SendData((char*)&sndPacket, sizeof(sndPacket));
+		m_gameClientSender.SendData((BYTE*)&sndPacket, sizeof(sndPacket));
 	}
 
 }

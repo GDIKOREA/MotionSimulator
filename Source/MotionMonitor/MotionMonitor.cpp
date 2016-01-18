@@ -147,10 +147,13 @@ BOOL CMotionMonitorApp::InitInstance()
 
 	// 실행인자값으로 넘어온 설정파일명을 로드한다.
 	cMotionMonitorConfig &config = cMotionController::Get()->m_config;
-	string commandLine = wstr2str(__targv[1]);
-	if (!commandLine.empty())
+	if (__argc > 1)
 	{
-		config.ReadConfigFile(commandLine);
+		string commandLine = wstr2str(__targv[1]);
+		if (!commandLine.empty())
+		{
+			config.ReadConfigFile(commandLine);
+		}
 	}
 
 //  	CLoginDialog loginDlg;
