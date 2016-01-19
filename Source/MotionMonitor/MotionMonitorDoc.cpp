@@ -133,7 +133,11 @@ BOOL CMotionMonitorDoc::OnNewDocument()
 		string fileName;
 		if (isFirst)
 		{
+#ifdef MG_STAND_RELEASE
+			fileName = "../media/machinegun/motionmonitor_mg_stand.json";
+#else
 			fileName = "../media/machinegun/motionmonitor_mg.json";
+#endif
 			isFirst = false;
 		}
 		else

@@ -147,6 +147,14 @@ BOOL CMotionMonitorApp::InitInstance()
 
 	// 실행인자값으로 넘어온 설정파일명을 로드한다.
 	cMotionMonitorConfig &config = cMotionController::Get()->m_config;
+
+#ifdef MG_STAND_RELEASE
+	CLoginDialog loginDlg;
+	if (IDCANCEL == loginDlg.DoModal())
+		return FALSE;
+	
+	config.ReadConfigFile("../media/machinegun/motionmonitor_mg_stand.json");
+#else
 	if (__argc > 1)
 	{
 		string commandLine = wstr2str(__targv[1]);
@@ -155,10 +163,8 @@ BOOL CMotionMonitorApp::InitInstance()
 			config.ReadConfigFile(commandLine);
 		}
 	}
+#endif
 
-//  	CLoginDialog loginDlg;
-//  	if (IDCANCEL == loginDlg.DoModal())
-//  		return FALSE;
 
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views

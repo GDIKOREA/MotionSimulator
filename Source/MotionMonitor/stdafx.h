@@ -132,3 +132,7 @@ extern C3DView *g_3dMotionView;
 #include "plotinputparser.h"
 #include "LauncherConfig.h"
 #include "ExeTracker.h"
+
+
+// 머신건X 릴리즈
+#define MG_STAND_RELEASE 1
