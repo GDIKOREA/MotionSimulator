@@ -122,17 +122,17 @@ void cMachineGunController::Update(const float deltaSeconds)
 	}
 
 	
-	char hwBuff[256];
+	BYTE hwBuff[256];
 	const int devBuffLen = m_mainBoardInput.GetRecvData(hwBuff, sizeof(hwBuff));
 	if (devBuffLen > 0)
 	{
 		memcpy(&m_devicePacket, hwBuff, sizeof(m_devicePacket));
-		m_mainBoardProxy.SendData((BYTE*)hwBuff, devBuffLen);
+		m_mainBoardProxy.SendData(hwBuff, devBuffLen);
 
 		MainBoardProcess(hwBuff, devBuffLen);
 	}
 
-	char camBuff[256];
+	BYTE camBuff[256];
 	const int camBuffLen = m_cameraUDPReceiver.GetRecvData(camBuff, sizeof(camBuff));
 	if (camBuffLen > 0)
 	{
@@ -293,7 +293,7 @@ bool cMachineGunController::CheckChangeState()
 
 
 // 매인보드로부터 오는 신호를 처리한다.
-void cMachineGunController::MainBoardProcess(const char *buff, const int size)
+void cMachineGunController::MainBoardProcess(const BYTE *buff, const int size)
 {
 	sMGDevicePacket *packet = (sMGDevicePacket*)buff;
 

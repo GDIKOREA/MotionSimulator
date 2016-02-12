@@ -72,4 +72,5 @@ public:
 	afx_msg void OnBnClickedButtonHelp();
 	CButton m_HelpButton;
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+	afx_msg void OnBnClickedButtonBoardactive();
 };
