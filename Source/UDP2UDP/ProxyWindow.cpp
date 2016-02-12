@@ -76,7 +76,7 @@ void CProxyWindow::Update()
 
 	if (m_udpReceiveServer.m_isReceiveData)
 	{
-		char buff[network::BUFFER_LENGTH];
+		BYTE buff[network::BUFFER_LENGTH];
 		if (const int buffLen = m_udpReceiveServer.GetRecvData(buff, network::BUFFER_LENGTH))
 		{
 			m_udpSendClient.SendData((BYTE*)buff, buffLen);

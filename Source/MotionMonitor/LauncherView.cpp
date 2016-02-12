@@ -73,6 +73,7 @@ BEGIN_MESSAGE_MAP(CLauncherView, CDockablePaneChildView)
 	ON_BN_CLICKED(IDC_BUTTON_CHANGE_ACCOUNT, &CLauncherView::OnBnClickedButtonChangeAccount)
 	ON_BN_CLICKED(IDC_BUTTON_HELP, &CLauncherView::OnBnClickedButtonHelp)
 	ON_WM_LBUTTONDBLCLK()
+	ON_BN_CLICKED(IDC_BUTTON_BOARDACTIVE, &CLauncherView::OnBnClickedButtonBoardactive)
 END_MESSAGE_MAP()
 
 
@@ -367,4 +368,10 @@ void CLauncherView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	m_HelpButton.ShowWindow(SW_SHOW);
 	CDockablePaneChildView::OnLButtonDblClk(nFlags, point);
+}
+
+
+void CLauncherView::OnBnClickedButtonBoardactive()
+{
+	cMachineGunController::Get()->ActiveMainBoard();
 }

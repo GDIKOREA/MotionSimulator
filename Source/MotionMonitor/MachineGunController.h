@@ -22,6 +22,7 @@ public:
 	void Update(const float deltaSeconds);
 	void UpdateUDP(const sMotionPacket &packet);
 	bool CheckChangeState();
+	void ActiveMainBoard();
 	//CString GetInnerStateName();
 
 
@@ -31,7 +32,6 @@ protected:
 	void MainBoardProcess(const BYTE *buff, const int size);
 	void CheckCreditPulse(const sMotionPacket &packet);
 	void CheckReload(const sMotionPacket &packet);
-	void ActiveMainBoard();
 	void ActiveGunFire(const bool active1, const bool active2);
 
 

@@ -127,7 +127,7 @@ void cMachineGunController::Update(const float deltaSeconds)
 	if (devBuffLen > 0)
 	{
 		memcpy(&m_devicePacket, hwBuff, sizeof(m_devicePacket));
-		m_mainBoardProxy.SendData((BYTE*)hwBuff, devBuffLen);
+		m_mainBoardProxy.SendData(hwBuff, devBuffLen);
 
 		MainBoardProcess(hwBuff, devBuffLen);
 	}
