@@ -109,9 +109,6 @@
     <ClInclude Include="..\..\..\Common\UIComponent\BPCtrlAnchorMap.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Common\UIComponent\BufferedSerial.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Common\UIComponent\C3DView.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
@@ -152,12 +149,6 @@
       <Filter>UIComponent</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\UIComponent\PlotWindow.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\UIComponent\Serial.h">
-      <Filter>UIComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\UIComponent\SerialAsync.h">
       <Filter>UIComponent</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\UIComponent\SerialCommunication.h">
@@ -249,9 +240,6 @@
     <ClCompile Include="UDPSendView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Common\UIComponent\BufferedSerial.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Common\UIComponent\C3DView.cpp">
       <Filter>UIComponent</Filter>
     </ClCompile>
@@ -289,12 +277,6 @@
       <Filter>UIComponent</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\UIComponent\PlotWindow.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\UIComponent\Serial.cpp">
-      <Filter>UIComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\UIComponent\SerialAsync.cpp">
       <Filter>UIComponent</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\UIComponent\SerialCommunication.cpp">

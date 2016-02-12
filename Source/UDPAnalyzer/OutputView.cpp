@@ -124,6 +124,7 @@ BOOL COutputView::OnInitDialog()
 	}
 
 	UpdateData(FALSE);
+
 	return TRUE;
 }
 

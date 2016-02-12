@@ -65,7 +65,7 @@ void cRealShotController::Update(const float deltaSeconds)
 {
 	RET(!m_isPlayGame);
 
-	char camBuff[256];
+	BYTE camBuff[256];
 	const int camBuffLen = m_cameraUDPReceiver.GetRecvData(camBuff, sizeof(camBuff));
 	if (camBuffLen > 0)
 	{

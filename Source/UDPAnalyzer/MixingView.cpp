@@ -82,7 +82,7 @@ void CMixingView::UpdateConfig()
 	}
 	m_CommandEditor.SetWindowTextW(cmdStr);
 
-	m_parser.ParseStr(wstr2str((LPCTSTR)cmdStr));
+//	m_parser.ParseStr(wstr2str((LPCTSTR)cmdStr));
 
 	UpdateData(FALSE);
 }

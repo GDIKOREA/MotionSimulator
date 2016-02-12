@@ -28,7 +28,7 @@ public:
 protected:
 	void GameStart(const int stage);
 	void GameStop();
-	void MainBoardProcess(const char *buff, const int size);
+	void MainBoardProcess(const BYTE *buff, const int size);
 	void CheckCreditPulse(const sMotionPacket &packet);
 	void CheckReload(const sMotionPacket &packet);
 	void ActiveMainBoard();

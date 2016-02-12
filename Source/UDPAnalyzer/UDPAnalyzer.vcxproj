@@ -108,7 +108,6 @@
     <ClInclude Include="..\..\..\Common\UIComponent\AutoHeapAlloc.h" />
     <ClInclude Include="..\..\..\Common\UIComponent\AutoHModule.h" />
     <ClInclude Include="..\..\..\Common\UIComponent\BPCtrlAnchorMap.h" />
-    <ClInclude Include="..\..\..\Common\UIComponent\BufferedSerial.h" />
     <ClInclude Include="..\..\..\Common\UIComponent\C3DView.h" />
     <ClInclude Include="..\..\..\Common\UIComponent\ComPortCombo.h" />
     <ClInclude Include="..\..\..\Common\UIComponent\Controller.h" />
@@ -123,8 +122,6 @@
     <ClInclude Include="..\..\..\Common\UIComponent\overhauser.hpp" />
     <ClInclude Include="..\..\..\Common\UIComponent\PlotGlobal.h" />
     <ClInclude Include="..\..\..\Common\UIComponent\PlotWindow.h" />
-    <ClInclude Include="..\..\..\Common\UIComponent\Serial.h" />
-    <ClInclude Include="..\..\..\Common\UIComponent\SerialAsync.h" />
     <ClInclude Include="..\..\..\Common\UIComponent\SerialCommunication.h" />
     <ClInclude Include="..\..\..\Common\UIComponent\SerialObserver.h" />
     <ClInclude Include="..\..\..\Common\UIComponent\UDPObserver.h" />
@@ -158,7 +155,6 @@
     <ClInclude Include="ViewTree.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Common\UIComponent\BufferedSerial.cpp" />
     <ClCompile Include="..\..\..\Common\UIComponent\C3DView.cpp" />
     <ClCompile Include="..\..\..\Common\UIComponent\ComPortCombo.cpp" />
     <ClCompile Include="..\..\..\Common\UIComponent\Controller.cpp" />
@@ -172,8 +168,6 @@
     <ClCompile Include="..\..\..\Common\UIComponent\MultiPlotWindow.cpp" />
     <ClCompile Include="..\..\..\Common\UIComponent\overhauser.cpp" />
     <ClCompile Include="..\..\..\Common\UIComponent\PlotWindow.cpp" />
-    <ClCompile Include="..\..\..\Common\UIComponent\Serial.cpp" />
-    <ClCompile Include="..\..\..\Common\UIComponent\SerialAsync.cpp" />
     <ClCompile Include="..\..\..\Common\UIComponent\SerialCommunication.cpp" />
     <ClCompile Include="..\..\..\Common\UIComponent\SerialObserver.cpp" />
     <ClCompile Include="..\..\..\Common\UIComponent\UIUtiltity.cpp" />
