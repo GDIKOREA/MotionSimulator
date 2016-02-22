@@ -37,6 +37,7 @@ cMachineGunController::cMachineGunController() :
 	, m_totalGameCount(0)
 	, m_totalCredit(0)
 	, m_totalInputCredit(0)
+	, m_isPlayerSwitch(false)
 
 {
 	ZeroMemory(&m_devicePacket, sizeof(m_devicePacket));
@@ -73,6 +74,8 @@ bool cMachineGunController::Init()
 	
 	const string proxyIp = uiutil::GetProfileString("MainBoard UDP", "ProxyIP", "127.0.0.1", fileName);
 	const int proxyPort = uiutil::GetProfileInt("MainBoard UDP", "ProxyPort", 10000, fileName);
+
+	m_isPlayerSwitch = uiutil::GetProfileInt("MainBoard UDP", "PlayerSwitch", 0, fileName)==0? false : true;
 
 	const int cameraPort = uiutil::GetProfileInt("Camera UDP", "ReceivePort", 8888, fileName);
 	const string gameClientIp = uiutil::GetProfileString("Game UDP", "ClientIP", "127.0.0.1", fileName);
@@ -139,20 +142,41 @@ void cMachineGunController::Update(const float deltaSeconds)
 		// 총 좌표에 관련된 정보는 카메라 프로그램으로부터 받는다.
 		SMGCameraData *rcvPacket = (SMGCameraData*)camBuff;
 
- 		SMGCameraData sndPacket;
+		SMGCameraData sndPacket;
 		ZeroMemory(&sndPacket, sizeof(sndPacket));
-		sndPacket.x1 = rcvPacket->x1;
-		sndPacket.y1 = rcvPacket->y1;
-		sndPacket.x2 = rcvPacket->x2;
-		sndPacket.y2 = rcvPacket->y2;
-		
-		sndPacket.fire1 = (m_devicePacket.player1Fire == '1') ? 1 : 0;
-		sndPacket.start1 = (m_devicePacket.player1Start == '1') ? 1 : 0;
-		sndPacket.reload1 = (m_devicePacket.player1Reload == '1') ? 1 : 0;
 
-		sndPacket.fire2 = (m_devicePacket.player2Fire == '1') ? 1 : 0;
-		sndPacket.start2 = (m_devicePacket.player2Start == '1') ? 1 : 0;
-		sndPacket.reload2 = (m_devicePacket.player2Reload == '1') ? 1 : 0;
+		if (m_isPlayerSwitch)
+		{
+			sndPacket.x2 = rcvPacket->x1;
+			sndPacket.y2 = rcvPacket->y1;
+
+			sndPacket.x1 = rcvPacket->x2;
+			sndPacket.y1 = rcvPacket->y2;
+
+			sndPacket.fire2 = (m_devicePacket.player1Fire == '1') ? 1 : 0;
+			sndPacket.start2 = (m_devicePacket.player1Start == '1') ? 1 : 0;
+			sndPacket.reload2 = (m_devicePacket.player1Reload == '1') ? 1 : 0;
+
+			sndPacket.fire1 = (m_devicePacket.player2Fire == '1') ? 1 : 0;
+			sndPacket.start1 = (m_devicePacket.player2Start == '1') ? 1 : 0;
+			sndPacket.reload1 = (m_devicePacket.player2Reload == '1') ? 1 : 0;
+		}
+		else
+		{
+			sndPacket.x1 = rcvPacket->x1;
+			sndPacket.y1 = rcvPacket->y1;
+
+			sndPacket.x2 = rcvPacket->x2;
+			sndPacket.y2 = rcvPacket->y2;
+		
+			sndPacket.fire1 = (m_devicePacket.player1Fire == '1') ? 1 : 0;
+			sndPacket.start1 = (m_devicePacket.player1Start == '1') ? 1 : 0;
+			sndPacket.reload1 = (m_devicePacket.player1Reload == '1') ? 1 : 0;
+
+			sndPacket.fire2 = (m_devicePacket.player2Fire == '1') ? 1 : 0;
+			sndPacket.start2 = (m_devicePacket.player2Start == '1') ? 1 : 0;
+			sndPacket.reload2 = (m_devicePacket.player2Reload == '1') ? 1 : 0;
+		}
 
 		sndPacket.credit = m_credit;
 		sndPacket.coinCount = m_coin;
@@ -416,7 +440,17 @@ void cMachineGunController::ActiveGunFire(const bool active1, const bool active2
 	sndPacket.zero1 = '0';
 	sndPacket.comma2 = ',';
 
-	sndPacket.player1Fire = (active1)? '1' : '0';
+	if (m_isPlayerSwitch)
+	{
+		sndPacket.player2Fire = (active1) ? '1' : '0';
+		sndPacket.player1Fire = (active2) ? '1' : '0';
+	}
+	else
+	{
+		sndPacket.player1Fire = (active1)? '1' : '0';
+		sndPacket.player2Fire = (active2) ? '1' : '0';
+	}
+
 	sndPacket.player1FireEvent = '1';
 	sndPacket.player1Reload = '1';
 	sndPacket.player1Start = '1';
@@ -428,7 +462,6 @@ void cMachineGunController::ActiveGunFire(const bool active1, const bool active2
 	sndPacket.coin = '0';
 	sndPacket.space1 = '0';
 
-	sndPacket.player2Fire = (active2) ? '1' : '0';
 	sndPacket.player2FireEvent = '1';
 	sndPacket.player2Reload = '1';
 	sndPacket.player2Start = '1';
@@ -548,7 +581,7 @@ void cMachineGunController::CheckReload(const sMotionPacket &packet)
 	else if (!m_activeGunFire2 && packet.bulletcount2 > 0)
 	{
 		m_activeGunFire2 = true;
- 		ActiveGunFire(m_activeGunFire1, m_activeGunFire2);
+		ActiveGunFire(m_activeGunFire1, m_activeGunFire2);
 	}
 
 }

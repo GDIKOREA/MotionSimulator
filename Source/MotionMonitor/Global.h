@@ -92,7 +92,7 @@ struct sMGDevicePacket
 	char comma3;
 	char at;
 
-	char cr[2];
+	char cr[2];					// 0x0d, 0x0a
 };
 
 

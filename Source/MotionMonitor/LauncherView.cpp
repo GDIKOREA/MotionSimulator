@@ -38,7 +38,7 @@ CLauncherView::~CLauncherView()
 void CLauncherView::DoDataExchange(CDataExchange* pDX)
 {
 	CDockablePaneChildView::DoDataExchange(pDX);
-//	DDX_Control(pDX, IDC_COMBO_DIFFICULT, m_DifficultCombo);
+	//	DDX_Control(pDX, IDC_COMBO_DIFFICULT, m_DifficultCombo);
 	DDX_Control(pDX, IDC_SLIDER_CAM_SENS, m_CamSensSlider);
 	DDX_Text(pDX, IDC_EDIT_CAM_SENS, m_CamSens1Edit);
 	DDX_Text(pDX, IDC_EDIT_CAM_SENS2, m_CamSens2Edit);

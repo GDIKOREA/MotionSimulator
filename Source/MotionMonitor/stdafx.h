@@ -135,4 +135,4 @@ extern C3DView *g_3dMotionView;
 
 
 // 머신건X 릴리즈
-//#define MG_STAND_RELEASE 1
+#define MG_STAND_RELEASE 1

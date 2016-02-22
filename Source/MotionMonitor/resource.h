@@ -286,6 +286,7 @@
 #define IDC_BUTTON_CALIBRATION          1147
 #define IDC_STATIC2                     1149
 #define IDC_BUTTON1                     1150
+#define IDC_CHECK_PLAYER_SWITCH         1151
 #define ID_VIEW_VIEWINITIALIZE          32771
 
 // Next default values for new objects
@@ -294,7 +295,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        347
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1151
+#define _APS_NEXT_CONTROL_VALUE         1152
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

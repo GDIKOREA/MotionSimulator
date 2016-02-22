@@ -65,7 +65,9 @@ public:
 	bool m_activeGunFire1; // 1 플레어 총 활성화
 	bool m_activeGunFire2; // 2 플레어 총 활성화
 
- 	bool m_changeInformationPulse; // game state가 바뀔 때만 true 가 된다.
+	bool m_isPlayerSwitch; // 보드로부터 오는 Player1,2 신호를 스위칭한다.
+
+	bool m_changeInformationPulse; // game state가 바뀔 때만 true 가 된다.
 	cVitconMotionSim::STATE m_oldState;
 
 	// UDP 통신
