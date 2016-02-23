@@ -240,7 +240,7 @@ BOOL CMotionMonitorApp::InitInstance()
 
 	if (config.m_mode == "machinegun_stand")
 	{
-		m_pMainWnd->SetWindowTextW(L"MachineGun-X Admin Manager Ver 1.01");
+		m_pMainWnd->SetWindowTextW(L"MachineGun-X Admin Manager");
 	}
 	else if (config.m_mode == "dirt3_release")
 	{
